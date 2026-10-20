@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#166534">
-<meta name="platform-build" content="2026-10-20-students-only-v5">
+<meta name="platform-build" content="2026-10-20-teacher-persistent-login-v6">
 <meta name="description" content="منصة التحديات التعليمية لمرافقة التلاميذ وفق المنهاج الجزائري.">
 <title>منصة التحديات التعليمية</title>
 <style>
@@ -99,11 +99,27 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
     document.getElementById("login").scrollIntoView({ behavior: "smooth", block: "center" });
   });
   document.getElementById("logoutBtn").addEventListener("click", async () => {
-    const token = sessionStorage.getItem("tahadi_access_token");
+    const token = localStorage.getItem("tahadi_teacher_token") || sessionStorage.getItem("tahadi_access_token");
     if (token) { try { await fetch(endpoint, {method:"POST", headers:{"Content-Type":"application/json","Authorization":"Bearer "+token}, body:JSON.stringify({action:"logout"})}); } catch (_) {} }
+    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires");
     sessionStorage.removeItem("tahadi_access_token"); sessionStorage.removeItem("tahadi_access_expires"); sessionStorage.removeItem("tahadi_access_role");
     dashboard.className = "dashboard"; profile.className = "profile"; showStatus("تم تسجيل الخروج.", "ok");
   });
+  const savedTeacherToken = localStorage.getItem("tahadi_teacher_token");
+  const savedTeacherExpiry = localStorage.getItem("tahadi_teacher_expires");
+  if (savedTeacherToken && savedTeacherExpiry && new Date(savedTeacherExpiry).getTime() > Date.now()) {
+    profile.textContent = "مرحبًا أستاذة حياة";
+    profile.className = "profile show";
+    loadDashboard(savedTeacherToken).then(() => showStatus("تم الدخول تلقائيًا إلى فضاء الأستاذة.", "ok")).catch(() => {
+      localStorage.removeItem("tahadi_teacher_token");
+      localStorage.removeItem("tahadi_teacher_expires");
+      profile.className = "profile";
+      dashboard.className = "dashboard";
+    });
+  } else if (savedTeacherToken || savedTeacherExpiry) {
+    localStorage.removeItem("tahadi_teacher_token");
+    localStorage.removeItem("tahadi_teacher_expires");
+  }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const code = document.getElementById("code").value.trim();
@@ -120,10 +136,15 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
       });
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || "تعذر تسجيل الدخول.");
-      sessionStorage.setItem("tahadi_access_token", result.token);
-      sessionStorage.setItem("tahadi_access_expires", result.expires_at);
-      sessionStorage.setItem("tahadi_access_role", result.profile.role);
-      showStatus("تم التحقق من الكود بنجاح. الجلسة صالحة لمدة 12 ساعة.", "ok");
+      if (result.profile.role === "teacher") {
+        localStorage.setItem("tahadi_teacher_token", result.token);
+        localStorage.setItem("tahadi_teacher_expires", result.expires_at);
+      } else {
+        sessionStorage.setItem("tahadi_access_token", result.token);
+        sessionStorage.setItem("tahadi_access_expires", result.expires_at);
+        sessionStorage.setItem("tahadi_access_role", result.profile.role);
+      }
+      showStatus(result.profile.role === "teacher" ? "تم تسجيل دخول الأستاذة. سيبقى الدخول محفوظًا لمدة 30 يومًا أو حتى تسجيل الخروج." : "تم التحقق من الكود بنجاح.", "ok");
       const name = result.profile.student?.full_name;
       profile.textContent = name ? "مرحبًا " + name + " — المستوى: " + (result.profile.student.level || "غير محدد") : "تم تسجيل الدخول إلى فضاء الأستاذة.";
       profile.className = "profile show";
