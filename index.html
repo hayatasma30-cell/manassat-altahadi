@@ -28,7 +28,7 @@ button{font:inherit;border:0;border-radius:12px;padding:14px 18px;background:var
 button:disabled{opacity:.6;cursor:wait}
 .notice{border-right:4px solid var(--green2);background:#f0f7ef;padding:16px 18px;border-radius:10px}
 .status{margin-top:14px;padding:10px 12px;border-radius:10px;display:none;overflow-wrap:anywhere}.status.show{display:block}.status.error{background:#fff0f0;color:var(--danger)}.status.ok{background:#eef8ee;color:var(--green)}
-.profile{display:none;margin-top:18px;padding:14px;background:#f0f7ef;border-radius:12px}.profile.show{display:block}
+.profile{display:none;margin-top:18px;padding:14px;background:#f0f7ef;border-radius:12px}.profile.show{display:block}.dashboard{display:none;margin-top:20px}.dashboard.show{display:block}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.stat{background:#f0f7ef;padding:14px;border-radius:12px}.stat strong{display:block;font-size:1.5rem;color:var(--green)}.data-list{display:grid;gap:10px}.data-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}.data-item strong{display:block}.subheading{margin-top:20px!important}
 footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px solid var(--line);font-size:.9rem}
 .small{font-size:.9rem;margin-top:10px}.card-action{display:block;text-align:center;text-decoration:none}.card button{margin-top:14px}.card p{min-height:3.6em}
 </style>
@@ -54,7 +54,7 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
 <button id="submitBtn" type="submit">دخول</button>
 </form>
 <div id="status" class="status" role="status" aria-live="polite"></div>
-<div id="profile" class="profile"></div>
+<div id="profile" class="profile"></div><section id="dashboard" class="dashboard"><h2>لوحة تحكم الأستاذة</h2><p>ملخص مباشر من قاعدة بيانات Supabase.</p><div id="stats" class="stats"></div><h2 class="subheading">التلاميذ</h2><div id="studentsList" class="data-list"></div><h2 class="subheading">طلبات التسجيل</h2><div id="requestsList" class="data-list"></div><button type="button" id="logoutBtn">تسجيل الخروج</button></section>
 <p class="small">إذا لم يصلك كود بعد، لا يمكن الدخول حاليًا. لا تشاركي كودك مع أشخاص آخرين.</p>
 </section>
 <section class="section"><h2>هدفنا</h2><div class="notice">مرافقة التلميذ خطوة بخطوة، وتسهيل التواصل بين الأستاذة والتلاميذ وأولياء الأمور، مع الحفاظ على خصوصية البيانات.</div></section>
@@ -67,6 +67,21 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
   const button = document.getElementById("submitBtn");
   const status = document.getElementById("status");
   const profile = document.getElementById("profile");
+
+  const dashboard = document.getElementById("dashboard");
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>"]/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+  async function loadDashboard(token) {
+    const res = await fetch(endpoint, { method: "POST", headers: {"Content-Type":"application/json","Authorization":"Bearer "+token}, body: JSON.stringify({action:"dashboard"}) });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || "تعذر تحميل لوحة الأستاذة.");
+    const d = data.dashboard;
+    const items = [["التلاميذ",d.counts.students],["طلبات معلّقة",d.counts.pendingRequests],["الاشتراكات",d.counts.subscriptions],["المدفوعات",d.counts.payments],["الفروض والاختبارات",d.counts.assessments],["سجلات الحضور",d.counts.attendance],["ملاحظات الأستاذة",d.counts.notes]];
+    document.getElementById("stats").innerHTML = items.map(x => '<div class="stat"><strong>'+x[1]+'</strong>'+x[0]+'</div>').join("");
+    document.getElementById("studentsList").innerHTML = d.students.length ? d.students.map(s => '<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span></div>').join("") : "<p>لا يوجد تلاميذ مسجلون.</p>";
+    document.getElementById("requestsList").innerHTML = d.requests.length ? d.requests.map(q => '<div class="data-item"><strong>'+escapeHtml(q.full_name)+'</strong><span>'+escapeHtml(q.service_name||q.request_type||"طلب تسجيل")+' · الحالة: '+escapeHtml(q.status)+'</span></div>').join("") : "<p>لا توجد طلبات تسجيل.</p>";
+    dashboard.className = "dashboard show";
+  }
+
   function showStatus(message, kind) {
     status.textContent = message;
     status.className = "status show " + kind;
@@ -82,6 +97,12 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
   document.getElementById("resourcesBtn").addEventListener("click", () => {
     showStatus("قسم الموارد التعليمية لم يُربط بعد. سنفعّله بعد تجهيز مكتبة الدروس.", "error");
     document.getElementById("login").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    const token = sessionStorage.getItem("tahadi_access_token");
+    if (token) { try { await fetch(endpoint, {method:"POST", headers:{"Content-Type":"application/json","Authorization":"Bearer "+token}, body:JSON.stringify({action:"logout"})}); } catch (_) {} }
+    sessionStorage.removeItem("tahadi_access_token"); sessionStorage.removeItem("tahadi_access_expires"); sessionStorage.removeItem("tahadi_access_role");
+    dashboard.className = "dashboard"; profile.className = "profile"; showStatus("تم تسجيل الخروج.", "ok");
   });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -106,6 +127,7 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
       const name = result.profile.student?.full_name;
       profile.textContent = name ? "مرحبًا " + name + " — المستوى: " + (result.profile.student.level || "غير محدد") : "تم تسجيل الدخول إلى فضاء الأستاذة.";
       profile.className = "profile show";
+      if (result.profile.role === "teacher") { try { await loadDashboard(result.token); } catch (e) { showStatus("تم تسجيل الدخول، لكن تعذر تحميل لوحة البيانات: " + (e instanceof Error ? e.message : "خطأ"), "error"); } }
     } catch (error) {
       showStatus(error instanceof Error ? error.message : "تعذر الاتصال بالخدمة. حاولي لاحقًا.", "error");
     } finally {
