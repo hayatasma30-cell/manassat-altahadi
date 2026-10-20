@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#166534">
-<meta name="platform-build" content="2026-10-20-teacher-persistent-login-v6">
+<meta name="platform-build" content="2026-10-20-teacher-persistent-login-v7">
 <meta name="description" content="منصة التحديات التعليمية لمرافقة التلاميذ وفق المنهاج الجزائري.">
 <title>منصة التحديات التعليمية</title>
 <style>
@@ -75,10 +75,10 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
     const data = await res.json();
     if (!res.ok || !data.ok) throw new Error(data.error || "تعذر تحميل لوحة الأستاذة.");
     const d = data.dashboard;
-    const items = [["التلاميذ",d.counts.students],["طلبات معلّقة",d.counts.pendingRequests],["الاشتراكات",d.counts.subscriptions],["المدفوعات",d.counts.payments],["الفروض والاختبارات",d.counts.assessments],["سجلات الحضور",d.counts.attendance],["ملاحظات الأستاذة",d.counts.notes]];
+    const items = [["التلاميذ",d.counts.students],["الاشتراكات",d.counts.subscriptions],["المدفوعات",d.counts.payments],["الفروض والاختبارات",d.counts.assessments],["سجلات الحضور",d.counts.attendance],["ملاحظات الأستاذة",d.counts.notes]];
     document.getElementById("stats").innerHTML = items.map(x => '<div class="stat"><strong>'+x[1]+'</strong>'+x[0]+'</div>').join("");
     document.getElementById("studentsList").innerHTML = d.students.length ? d.students.map(s => '<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span></div>').join("") : "<p>لا يوجد تلاميذ مسجلون.</p>";
-    document.getElementById("requestsList").innerHTML = d.requests.length ? d.requests.map(q => '<div class="data-item"><strong>'+escapeHtml(q.full_name)+'</strong><span>'+escapeHtml(q.service_name||q.request_type||"طلب تسجيل")+' · الحالة: '+escapeHtml(q.status)+'</span><div>المبلغ: '+escapeHtml(q.amount??"غير محدد")+' · المدفوع: '+escapeHtml(q.amount_paid??0)+' · المتبقي: '+escapeHtml(q.remaining_balance??Math.max(0,Number(q.amount||0)-Number(q.amount_paid||0)))+'</div></div>').join("") : "<p>لا توجد طلبات تسجيل.</p>";
+
     dashboard.className = "dashboard show";
   }
 
