@@ -28,7 +28,7 @@ button:disabled{opacity:.6;cursor:wait}
 .status{margin-top:14px;padding:10px 12px;border-radius:10px;display:none;overflow-wrap:anywhere}.status.show{display:block}.status.error{background:#fff0f0;color:var(--danger)}.status.ok{background:#eef8ee;color:var(--green)}
 .profile{display:none;margin-top:18px;padding:14px;background:#f0f7ef;border-radius:12px}.profile.show{display:block}
 footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px solid var(--line);font-size:.9rem}
-.small{font-size:.9rem;margin-top:10px}
+.small{font-size:.9rem;margin-top:10px}.card-action{display:block;text-align:center;text-decoration:none}.card button{margin-top:14px}.card p{min-height:3.6em}
 </style>
 </head>
 <body>
@@ -36,10 +36,10 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
 <header class="hero"><h1>خطوة جديدة نحو التفوق في العلوم الطبيعية</h1><p>فضاء تعليمي لمرافقة التلاميذ وفق المنهاج الجزائري، وتنظيم التسجيلات والاشتراكات ومتابعة النتائج والتقدم الدراسي.</p></header></div>
 <main class="wrap">
 <section class="cards" id="spaces">
-<article class="card"><div class="symbol">👩‍🏫</div><h2>فضاء الأستاذة</h2><p>دخول مخصص لإدارة المنصة. تتطلب إدارة البيانات تفعيل الصلاحيات الآمنة.</p></article>
-<article class="card"><div class="symbol">🎓</div><h2>فضاء التلميذ</h2><p>فضاء متابعة النتائج والتقييمات والتقدم الدراسي.</p></article>
-<article class="card"><div class="symbol">👨‍👩‍👧</div><h2>فضاء وليّ الأمر</h2><p>متابعة بيانات التلميذ المرتبط بالحساب.</p></article>
-<article class="card"><div class="symbol">📚</div><h2>الموارد التعليمية</h2><p>الدروس والملخصات والتمارين والتسجيلات التعليمية.</p></article>
+<article class="card"><div class="symbol">👩‍🏫</div><h2>فضاء الأستاذة</h2><p>دخول مخصص لإدارة المنصة.</p><button type="button" class="choose-role" data-role="teacher">الدخول كأستاذة</button></article>
+<article class="card"><div class="symbol">🎓</div><h2>فضاء التلميذ</h2><p>متابعة النتائج والتقييمات والتقدم الدراسي.</p><button type="button" class="choose-role" data-role="student">الدخول كتلميذ</button></article>
+<article class="card"><div class="symbol">👨‍👩‍👧</div><h2>فضاء وليّ الأمر</h2><p>متابعة بيانات التلميذ المرتبط بالحساب.</p><button type="button" class="choose-role" data-role="guardian">الدخول كوليّ أمر</button></article>
+<article class="card"><div class="symbol">📚</div><h2>الموارد التعليمية</h2><p>الدروس والملخصات والتمارين والتسجيلات التعليمية.</p><button type="button" id="resourcesBtn">عرض حالة الموارد</button></article>
 </section>
 <section class="login" id="login">
 <h2>🔐 الدخول إلى المنصة</h2>
@@ -69,6 +69,18 @@ footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px sol
     status.textContent = message;
     status.className = "status show " + kind;
   }
+  document.querySelectorAll(".choose-role").forEach((item) => {
+    item.addEventListener("click", () => {
+      document.getElementById("role").value = item.dataset.role;
+      document.getElementById("login").scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById("code").focus({ preventScroll: true });
+      showStatus("اختير فضاء الدخول. أدخلي الكود المخصص لك.", "ok");
+    });
+  });
+  document.getElementById("resourcesBtn").addEventListener("click", () => {
+    showStatus("قسم الموارد التعليمية لم يُربط بعد. سنفعّله بعد تجهيز مكتبة الدروس.", "error");
+    document.getElementById("login").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const code = document.getElementById("code").value.trim();
