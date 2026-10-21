@@ -3,146 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#166534">
-<meta name="platform-build" content="2026-10-21-teacher-only-supabase-v1">
-<meta name="description" content="منصة التحديات التعليمية لمرافقة التلاميذ وفق المنهاج الجزائري.">
-<title>منصة التحديات التعليمية</title>
+<meta name="theme-color" content="#14532d">
+<meta name="platform-build" content="2026-10-21-teacher-dashboard-v2">
+<meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
+<title>منصة التحدي | فضاء الأستاذة</title>
 <style>
-:root{--green:#166534;--green2:#15803d;--cream:#fbf8ef;--ink:#183126;--muted:#5e7065;--line:#e3e9df;--danger:#a61b1b}
-*{box-sizing:border-box}
-body{margin:0;font-family:Tahoma,Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.8}
-.top{background:linear-gradient(120deg,#14532d,#15803d);color:white;padding:22px 18px 64px}
-nav,header,.wrap{max-width:1080px;margin:auto}
-nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand{font-weight:800;font-size:1.12rem}.tag{font-size:.85rem;background:#ffffff20;border:1px solid #ffffff55;border-radius:999px;padding:4px 12px}
-.hero{padding:40px 0 0;max-width:760px}.hero h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.35;margin:0 0 14px}.hero p{font-size:1.05rem;color:#e7f5e9;margin:0}
-.wrap{padding:0 18px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:-30px}
-.card,.login{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 10px 25px #153d2010}
-.symbol{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#e9f5e9;font-size:1.45rem}
-h2{font-size:1.15rem;margin:12px 0 6px}p{margin:0;color:var(--muted)}.section{padding:38px 0}.section h2{font-size:1.5rem}
-.login{max-width:540px;margin:24px auto;padding:24px}.login h2{margin-top:0;font-size:1.45rem}
-label{display:block;font-weight:700;margin:14px 0 6px}
-select,input{font:inherit;width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:10px;background:#fff;color:var(--ink)}
-button{font:inherit;border:0;border-radius:12px;padding:14px 18px;background:var(--green);color:#fff;font-weight:700;cursor:pointer;width:100%;margin-top:16px;min-height:50px;display:block;position:relative;z-index:2;touch-action:manipulation;-webkit-tap-highlight-color:rgba(21,128,61,.2)}
-.card button{font-size:1rem;box-shadow:0 3px 0 #0f4523}.card button:active{transform:translateY(1px)}
-button:disabled{opacity:.6;cursor:wait}
-.notice{border-right:4px solid var(--green2);background:#f0f7ef;padding:16px 18px;border-radius:10px}
-.status{margin-top:14px;padding:10px 12px;border-radius:10px;display:none;overflow-wrap:anywhere}.status.show{display:block}.status.error{background:#fff0f0;color:var(--danger)}.status.ok{background:#eef8ee;color:var(--green)}
-.profile{display:none;margin-top:18px;padding:14px;background:#f0f7ef;border-radius:12px}.profile.show{display:block}.dashboard{display:none;margin-top:20px}.dashboard.show{display:block}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.stat{background:#f0f7ef;padding:14px;border-radius:12px}.stat strong{display:block;font-size:1.5rem;color:var(--green)}.data-list{display:grid;gap:10px}.data-item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}.data-item strong{display:block}.subheading{margin-top:20px!important}
-footer{text-align:center;padding:25px 18px;color:var(--muted);border-top:1px solid var(--line);font-size:.9rem}
-.small{font-size:.9rem;margin-top:10px}.card-action{display:block;text-align:center;text-decoration:none}.card button{margin-top:14px}.card p{min-height:3.6em}
+:root{--g:#14532d;--g2:#166534;--g3:#21834c;--cream:#faf8ee;--ink:#18382a;--muted:#69786d;--line:#e3e9dc;--pale:#eef7ec;--gold:#f1d38a;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
+button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.topbar{background:linear-gradient(120deg,#103f28,var(--g2));color:#fff;padding:12px 16px;box-shadow:0 4px 18px #143e2518}
+.top-inner{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-size:1.15rem;font-weight:800}.brand small{display:block;font-size:.7rem;font-weight:400;color:#d6ead9}
+.teacher-chip{display:flex;align-items:center;gap:8px;font-size:.82rem}.avatar{width:37px;height:37px;border-radius:50%;display:grid;place-items:center;background:#e8f5e9;color:var(--g);font-size:1.2rem}
+.wrap{max-width:1120px;margin:auto;padding:18px}.hero{background:linear-gradient(115deg,#fff9e7,#edf7e9);border:1px solid #e7e5d5;border-radius:24px;padding:25px 22px;margin:8px 0 18px;position:relative;overflow:hidden}.hero:after{content:"🌿";position:absolute;left:18px;bottom:0;font-size:4rem;opacity:.14}.hero h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.3;color:var(--g);margin:0 0 8px}.hero p{margin:0;color:var(--muted);max-width:720px}.eyebrow{color:#8c6c24;font-size:.82rem;font-weight:700;margin-bottom:4px}
+.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.menu-btn{width:100%;min-height:95px;background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;display:flex;align-items:center;gap:12px;text-align:right;color:var(--ink);box-shadow:0 5px 16px #193d2010;transition:transform .15s,border-color .15s}.menu-btn:active{transform:scale(.985)}.menu-btn:hover{border-color:#9bc7a0}.menu-icon{width:45px;height:45px;flex:0 0 45px;display:grid;place-items:center;border-radius:14px;background:var(--pale);font-size:1.35rem}.menu-copy{flex:1}.menu-copy strong{display:block;font-size:.98rem}.menu-copy small{display:block;color:var(--muted);font-size:.76rem;line-height:1.45;margin-top:2px}.chev{color:var(--g2);font-size:1.35rem}
+.view{display:none}.view.active{display:block;animation:fade .18s ease}@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+.view-head{display:flex;align-items:center;gap:10px;margin:10px 0 16px}.back{width:auto;min-height:40px;margin:0;padding:8px 13px;border-radius:11px;background:#e8f3e6;color:var(--g);font-size:.86rem}.view-head h2{margin:0;font-size:1.35rem}.panel{background:#fff;border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 8px 24px #153d2010}.muted{color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.stat{background:var(--pale);border-radius:15px;padding:14px}.stat strong{display:block;font-size:1.6rem;color:var(--g2)}.stat span{font-size:.88rem}
+.list{display:grid;gap:10px}.data-item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff;overflow-wrap:anywhere}.data-item strong{display:block;margin-bottom:3px}.data-item span,.data-item .small{font-size:.88rem;color:var(--muted)}.small{font-size:.85rem;margin-top:6px}.status{display:none;padding:10px 13px;margin:12px 0;border-radius:12px;overflow-wrap:anywhere}.status.show{display:block}.status.error{background:#fff0f0;color:#a61b1b}.status.ok{background:#eef8ee;color:var(--g)}
+.login{max-width:520px;margin:25px auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 24px #153d2010}.login h2{margin-top:0}.login p{color:var(--muted)}label{display:block;font-weight:700;margin:13px 0 6px}input{width:100%;padding:12px 14px;border:1px solid #cbd7ca;border-radius:12px;background:white;color:var(--ink)}.primary{width:100%;border:0;border-radius:12px;background:var(--g2);color:white;padding:12px 16px;min-height:46px;font-weight:700;margin-top:12px}.primary:disabled{opacity:.6}
+.note{margin-top:18px;padding:15px;border-right:4px solid var(--g3);border-radius:12px;background:#edf6eb;color:#405c48;font-size:.9rem}.logout{width:auto;margin:0;padding:8px 12px;min-height:38px;border-radius:10px;background:#ffffff20;border:1px solid #ffffff50;color:#fff;font-size:.82rem}
+footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
+@media(max-width:700px){.wrap{padding:13px}.topbar{padding:10px 12px}.brand{font-size:1rem}.teacher-chip{font-size:.75rem}.hero{padding:21px 17px;border-radius:19px}.menu{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.menu-btn{min-height:102px;padding:11px;gap:8px;align-items:flex-start}.menu-icon{width:37px;height:37px;flex-basis:37px;border-radius:11px;font-size:1.1rem}.menu-copy strong{font-size:.88rem}.menu-copy small{font-size:.7rem}.chev{display:none}.panel{padding:14px}.view-head h2{font-size:1.15rem}}
+@media(max-width:380px){.menu{grid-template-columns:1fr}.menu-btn{min-height:72px;align-items:center}.menu-copy small{font-size:.76rem}}
 </style>
 </head>
 <body>
-<div class="top"><nav><div class="brand">🌿 منصة التحديات</div><span class="tag">التعليم • التميز • المتابعة</span></nav>
-<header class="hero"><h1>فضاء الأستاذة</h1><p>إدارة التلاميذ ومراجعة إشعارات الدفع والاشتراكات من قاعدة بيانات المنصة، مع إبقاء التسجيلات والنتائج والحضور وملاحظات الأستاذة في بوت تيليغرام.</p></header></div>
+<div class="topbar"><div class="top-inner"><div class="brand">🌿 منصة التحدي<small>التعليم • التميز • المتابعة</small></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
 <main class="wrap">
-<section class="cards" id="spaces">
-<article class="card"><div class="symbol">🎓</div><h2>التلاميذ</h2><p>عرض قائمة التلاميذ النشطين والبحث في بياناتهم.</p><div class="small">تظهر القائمة بعد دخول الأستاذة.</div></article>
-<article class="card"><div class="symbol">💳</div><h2>إشعارات الدفع</h2><p>متابعة المدفوعات والاشتراكات المسجلة في Supabase.</p><div class="small">تظهر الإشعارات بعد دخول الأستاذة.</div></article>
+<section id="homeView" class="view active">
+<div class="hero"><div class="eyebrow">فضاء الأستاذة</div><h1>منصة التحدي</h1><p>مرحبًا بكِ في فضائكِ التعليمي؛ اختاري القسم الذي تريدين فتحه، وستظهر معلوماته في صفحة مستقلة.</p></div>
+<div class="menu" aria-label="أقسام المنصة">
+<button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button>
+</div>
+<div class="note">تظهر بيانات التلاميذ والمدفوعات بعد دخول الأستاذة. بيانات التسجيلات والنتائج والحضور وملاحظات الأستاذة تبقى في بوت تيليغرام.</div>
 </section>
-<section class="login" id="login">
-<h2>🔐 دخول الأستاذة</h2>
-<p>أدخلي رمز الأستاذة الخاص للوصول إلى قائمة التلاميذ وإشعارات الدفع.</p>
-<form id="loginForm">
-<label for="code">كود الدخول</label>
-<input id="code" name="code" type="password" minlength="6" maxlength="64" autocomplete="current-password" required placeholder="أدخلي الكود هنا">
-<button id="submitBtn" type="submit">دخول</button>
-</form>
+<section id="loginView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ رجوع</button><h2>🔐 دخول الأستاذة</h2></div>
+<div class="login"><p>أدخلي رمز الأستاذة الخاص للوصول إلى معلومات المنصة.</p><form id="loginForm"><label for="code">كود الدخول</label><input id="code" type="password" minlength="6" maxlength="64" autocomplete="current-password" required placeholder="أدخلي الكود هنا"><button class="primary" id="submitBtn" type="submit">دخول</button></form></div>
+</section>
+<section id="studentsView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div><div class="panel"><p class="muted">التلاميذ النشطون المسجلون في قاعدة بيانات المنصة.</p><div id="studentsList" class="list" style="margin-top:14px"></div></div>
+</section>
+<section id="paymentsView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div><div class="panel"><p class="muted">أحدث المدفوعات المسجلة والاشتراكات المرتبطة بها.</p><div id="paymentsList" class="list" style="margin-top:14px"></div></div>
+</section>
+<section id="overviewView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📊 ملخص المنصة</h2></div><div class="panel"><p class="muted">ملخص مباشر من قاعدة بيانات Supabase.</p><div id="stats" class="stats"></div><button class="primary" id="refreshBtn" type="button">تحديث البيانات</button></div>
+</section>
+<section id="telegramView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 التسجيلات والنتائج</h2></div><div class="panel"><p>التسجيلات وتجديد الاشتراكات ووصولات الدفع والنتائج والحضور وملاحظات الأستاذة تبقى في بوت تيليغرام، كما اتفقنا.</p><div class="note">هذا القسم للتذكير بتنظيم العمل فقط؛ لا نعرض هنا بيانات غير متوفرة في المنصة.</div></div>
+</section>
+<section id="helpView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>❔ المساعدة</h2></div><div class="panel"><p>اختاري قسمًا من الصفحة الرئيسية لعرض معلوماته. استعملي زر «الرئيسية» للعودة، وزر «تحديث البيانات» لجلب أحدث المعلومات من قاعدة البيانات.</p><div class="note">حافظي على سرية رمز دخول الأستاذة، واستعملي «تسجيل الخروج» عند استخدام جهاز مشترك.</div></div>
+</section>
 <div id="status" class="status" role="status" aria-live="polite"></div>
-<div id="profile" class="profile"></div><section id="dashboard" class="dashboard"><h2>لوحة تحكم الأستاذة</h2><p>ملخص مباشر من قاعدة بيانات Supabase.</p><div id="stats" class="stats"></div><h2 class="subheading">التلاميذ</h2><div id="studentsList" class="data-list"></div><h2 class="subheading">إشعارات الدفع</h2><p>أحدث المدفوعات المسجلة، دون عرض طلبات التسجيل.</p><div id="paymentsList" class="data-list"></div><button type="button" id="refreshBtn">تحديث البيانات</button><button type="button" id="logoutBtn">تسجيل الخروج</button></section>
-<p class="small">هذا الفضاء خاص بالأستاذة. لا تشاركي رمز الدخول مع أي شخص.</p>
-</section>
-<section class="section"><h2>تنظيم العمل</h2><div class="notice">التسجيلات وتجديد الاشتراكات ووصولات الدفع والنتائج والحضور وملاحظات الأستاذة تبقى في بوت تيليغرام. هذه الصفحة مخصصة لإدارة التلاميذ ومراجعة المدفوعات فقط.</div></section>
+<div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
 </main>
-<footer>© منصة التحديات التعليمية</footer>
+<footer>© منصة التحدي التعليمية</footer>
 <script>
 (() => {
   const endpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
-  const form = document.getElementById("loginForm");
-  const button = document.getElementById("submitBtn");
-  const status = document.getElementById("status");
-  const profile = document.getElementById("profile");
-
-  const dashboard = document.getElementById("dashboard");
-  const escapeHtml = (value) => String(value ?? "").replace(/[&<>"]/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+  const $ = (id) => document.getElementById(id);
+  const status = $("status"), form = $("loginForm"), loginView = $("loginView");
+  let activeView = "homeView";
+  const escapeHtml = (value) => String(value ?? "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+  function showStatus(message, kind) { status.textContent = message; status.className = "status show " + kind; }
+  function showView(id) {
+    if (id !== "homeView" && id !== "loginView" && !localStorage.getItem("tahadi_teacher_token")) id = "loginView";
+    document.querySelectorAll(".view").forEach(v => v.classList.toggle("active", v.id === id));
+    activeView = id;
+    status.className = "status";
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
+  document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
   async function loadDashboard(token) {
-    const res = await fetch(endpoint, { method: "POST", headers: {"Content-Type":"application/json","Authorization":"Bearer "+token}, body: JSON.stringify({action:"dashboard"}) });
+    const res = await fetch(endpoint, {method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"dashboard"})});
     const data = await res.json();
-    if (!res.ok || !data.ok) throw new Error(data.error || "تعذر تحميل لوحة الأستاذة.");
-    const d = data.dashboard;
-    const items = [["التلاميذ",d.counts.students],["الاشتراكات",d.counts.subscriptions],["المدفوعات",d.counts.payments],["مدفوعات قيد المراجعة",d.counts.pendingPayments ?? 0]];
-    document.getElementById("stats").innerHTML = items.map(x => '<div class="stat"><strong>'+x[1]+'</strong>'+x[0]+'</div>').join("");
-    document.getElementById("studentsList").innerHTML = d.students.length ? d.students.map(s => '<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span></div>').join("") : "<p>لا يوجد تلاميذ نشطون.</p>";
+    if (!res.ok || !data.ok) throw new Error(data.error || "تعذر تحميل بيانات المنصة.");
+    const d = data.dashboard || {};
+    const counts = d.counts || {};
+    $("stats").innerHTML = [["التلاميذ",counts.students],["الاشتراكات",counts.subscriptions],["المدفوعات",counts.payments],["مدفوعات قيد المراجعة",counts.pendingPayments ?? 0]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1] ?? 0)+'</strong><span>'+x[0]+'</span></div>').join("");
+    const students = Array.isArray(d.students) ? d.students : [];
+    $("studentsList").innerHTML = students.length ? students.map(s=>'<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span></div>').join("") : '<div class="data-item">لا يوجد تلاميذ نشطون.</div>';
     const payStatus = {pending:"قيد المراجعة",approved:"مقبول",rejected:"مرفوض"};
     const payments = Array.isArray(d.payments) ? d.payments : [];
-    document.getElementById("paymentsList").innerHTML = payments.length ? payments.map(p => '<div class="data-item"><strong>'+escapeHtml(p.student_name || "تلميذ غير محدد")+'</strong><span>المبلغ: '+escapeHtml(p.amount_paid ?? 0)+' دج · الحالة: '+escapeHtml(payStatus[p.status] || p.status || "غير محددة")+'</span><div class="small">الخدمة: '+escapeHtml(p.service_name || p.service_type || "غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month || "غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method || "غير محددة")+' · التاريخ: '+escapeHtml(p.payment_date || p.created_at || "غير محدد")+'</div></div>').join("") : "<p>لا توجد مدفوعات مسجلة حتى الآن.</p>";
-
-    dashboard.className = "dashboard show";
+    $("paymentsList").innerHTML = payments.length ? payments.map(p=>'<div class="data-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><span>المبلغ: '+escapeHtml(p.amount_paid ?? 0)+' دج · الحالة: '+escapeHtml(payStatus[p.status]||p.status||"غير محددة")+'</span><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month||"غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+' · التاريخ: '+escapeHtml(p.payment_date||p.created_at||"غير محدد")+'</div></div>').join("") : '<div class="data-item">لا توجد مدفوعات مسجلة حتى الآن.</div>';
+    $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
   }
-
-  function showStatus(message, kind) {
-    status.textContent = message;
-    status.className = "status show " + kind;
-  }
-  document.getElementById("refreshBtn").addEventListener("click", async () => {
+  async function refresh() {
     const token = localStorage.getItem("tahadi_teacher_token");
-    if (!token) { showStatus("سجلي الدخول أولًا.", "error"); return; }
+    if (!token) { showView("loginView"); showStatus("سجلي الدخول أولًا.", "error"); return; }
     try { await loadDashboard(token); showStatus("تم تحديث البيانات.", "ok"); }
-    catch (error) { showStatus(error instanceof Error ? error.message : "تعذر تحديث البيانات.", "error"); }
-  });
-  document.getElementById("logoutBtn").addEventListener("click", async () => {
-    const token = localStorage.getItem("tahadi_teacher_token") || sessionStorage.getItem("tahadi_access_token");
-    if (token) { try { await fetch(endpoint, {method:"POST", headers:{"Content-Type":"application/json","Authorization":"Bearer "+token}, body:JSON.stringify({action:"logout"})}); } catch (_) {} }
-    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires");
-    sessionStorage.removeItem("tahadi_access_token"); sessionStorage.removeItem("tahadi_access_expires"); sessionStorage.removeItem("tahadi_access_role");
-    dashboard.className = "dashboard"; profile.className = "profile"; showStatus("تم تسجيل الخروج.", "ok");
-  });
-  const savedTeacherToken = localStorage.getItem("tahadi_teacher_token");
-  const savedTeacherExpiry = localStorage.getItem("tahadi_teacher_expires");
-  if (savedTeacherToken && savedTeacherExpiry && new Date(savedTeacherExpiry).getTime() > Date.now()) {
-    profile.textContent = "مرحبًا أستاذة حياة";
-    profile.className = "profile show";
-    loadDashboard(savedTeacherToken).then(() => showStatus("تم الدخول تلقائيًا إلى فضاء الأستاذة.", "ok")).catch(() => {
-      localStorage.removeItem("tahadi_teacher_token");
-      localStorage.removeItem("tahadi_teacher_expires");
-      profile.className = "profile";
-      dashboard.className = "dashboard";
-    });
-  } else if (savedTeacherToken || savedTeacherExpiry) {
-    localStorage.removeItem("tahadi_teacher_token");
-    localStorage.removeItem("tahadi_teacher_expires");
+    catch (e) { showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
   }
-  form.addEventListener("submit", async (event) => {
+  $("refreshBtn").addEventListener("click", refresh);
+  async function logout() {
+    const token = localStorage.getItem("tahadi_teacher_token");
+    if (token) { try { await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"logout"})}); } catch (_) {} }
+    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires");
+    $("sessionActions").style.display="none"; $("topLogout").hidden=true;
+    showView("homeView"); showStatus("تم تسجيل الخروج.", "ok");
+  }
+  $("logoutBtn").addEventListener("click", logout); $("topLogout").addEventListener("click", logout);
+  const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
+  if (savedToken && expiry && new Date(expiry).getTime() > Date.now()) {
+    loadDashboard(savedToken).then(()=>{}).catch(()=>{localStorage.removeItem("tahadi_teacher_token");localStorage.removeItem("tahadi_teacher_expires");});
+  } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
+  form.addEventListener("submit", async event => {
     event.preventDefault();
-    const code = document.getElementById("code").value.trim();
-    const role = "teacher";
+    const code = $("code").value.trim();
     if (code.length < 6) { showStatus("الكود يجب أن يحتوي على 6 أحرف أو أرقام على الأقل.", "error"); return; }
-    button.disabled = true;
-    button.textContent = "جارٍ التحقق...";
-    profile.className = "profile";
+    const btn = $("submitBtn"); btn.disabled = true; btn.textContent = "جارٍ التحقق...";
     try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "login", code, role })
-      });
+      const response = await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"login",code,role:"teacher"})});
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || "تعذر تسجيل الدخول.");
-      if (result.profile.role !== "teacher") throw new Error("هذا الفضاء مخصص للأستاذة فقط.");
-      localStorage.setItem("tahadi_teacher_token", result.token);
-      localStorage.setItem("tahadi_teacher_expires", result.expires_at);
-      showStatus("تم تسجيل دخول الأستاذة. سيبقى الدخول محفوظًا لمدة 30 يومًا أو حتى تسجيل الخروج.", "ok");
-      const name = result.profile.student?.full_name;
-      profile.textContent = "مرحبًا أستاذة حياة";
-      profile.className = "profile show";
-      if (result.profile.role === "teacher") { try { await loadDashboard(result.token); } catch (e) { showStatus("تم تسجيل الدخول، لكن تعذر تحميل لوحة البيانات: " + (e instanceof Error ? e.message : "خطأ"), "error"); } }
-    } catch (error) {
-      showStatus(error instanceof Error ? error.message : "تعذر الاتصال بالخدمة. حاولي لاحقًا.", "error");
-    } finally {
-      button.disabled = false;
-      button.textContent = "دخول";
-    }
+      if (!result.profile || result.profile.role !== "teacher") throw new Error("هذا الفضاء مخصص للأستاذة فقط.");
+      localStorage.setItem("tahadi_teacher_token",result.token); localStorage.setItem("tahadi_teacher_expires",result.expires_at);
+      await loadDashboard(result.token); showStatus("تم تسجيل الدخول بنجاح.", "ok"); showView("homeView");
+    } catch (e) { showStatus(e instanceof Error ? e.message : "تعذر الاتصال بالخدمة.", "error"); }
+    finally { btn.disabled=false; btn.textContent="دخول"; }
   });
 })();
 </script>
