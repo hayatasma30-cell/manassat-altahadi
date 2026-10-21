@@ -70,6 +70,12 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
   const status = $("status"), form = $("loginForm"), loginView = $("loginView");
   let activeView = "homeView";
   const escapeHtml = (value) => String(value ?? "").replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
+  function formatDate(value) {
+    if (!value) return "غير محدد";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return escapeHtml(value);
+    return new Intl.DateTimeFormat("ar-DZ", {year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false,timeZone:"Africa/Algiers"}).format(date);
+  }
   function showStatus(message, kind) { status.textContent = message; status.className = "status show " + kind; }
   function showView(id) {
     if (id !== "homeView" && id !== "loginView" && !localStorage.getItem("tahadi_teacher_token")) id = "loginView";
@@ -91,7 +97,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
     $("studentsList").innerHTML = students.length ? students.map(s=>'<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span></div>').join("") : '<div class="data-item">لا يوجد تلاميذ نشطون.</div>';
     const payStatus = {pending:"قيد المراجعة",approved:"مقبول",rejected:"مرفوض"};
     const payments = Array.isArray(d.payments) ? d.payments : [];
-    $("paymentsList").innerHTML = payments.length ? payments.map(p=>'<div class="data-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><span>المبلغ: '+escapeHtml(p.amount_paid ?? 0)+' دج · الحالة: '+escapeHtml(payStatus[p.status]||p.status||"غير محددة")+'</span><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month||"غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+' · التاريخ: '+escapeHtml(p.payment_date||p.created_at||"غير محدد")+'</div></div>').join("") : '<div class="data-item">لا توجد مدفوعات مسجلة حتى الآن.</div>';
+    $("paymentsList").innerHTML = payments.length ? payments.map(p=>'<div class="data-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><span>المبلغ: '+escapeHtml(p.amount_paid ?? 0)+' دج · الحالة: '+escapeHtml(payStatus[p.status]||p.status||"غير محددة")+'</span><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month||"غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+' · التاريخ: '+formatDate(p.payment_date||p.created_at)+'</div></div>').join("") : '<div class="data-item">لا توجد مدفوعات مسجلة حتى الآن.</div>';
     $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
   }
   async function refresh() {
