@@ -35,6 +35,17 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 .payment-date{border-top:1px dashed #dce5d8;padding-top:11px;margin-top:11px}
 @media(max-width:600px){.data-item{padding:16px;border-radius:20px}.student-detail-btn{width:100%;min-height:46px}.payment-meta{gap:7px 10px}}
 
+
+/* توحيد شكل التنقل داخل الصفحات */
+.view-head{flex-wrap:wrap;align-items:center;gap:12px;margin:12px 0 18px}
+.view-head h2{flex:1;min-width:130px}
+.back{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #b8d5b5;border-bottom:3px solid #6b9b68;background:linear-gradient(145deg,#f5fbf1,#e3f1df);color:#14532d;border-radius:13px;padding:9px 14px;min-height:43px;font-weight:700;box-shadow:0 4px 10px rgba(20,83,45,.10)}
+.back:active{transform:translateY(2px);box-shadow:0 2px 5px rgba(20,83,45,.10)}
+.primary{background:linear-gradient(135deg,#1c7440,#14532d);border:1px solid #1b6a3c;border-bottom:4px solid #0d4223;border-radius:14px;box-shadow:0 7px 14px rgba(20,83,45,.16);transition:transform .16s,box-shadow .16s}
+.primary:active{transform:translateY(2px);box-shadow:0 3px 7px rgba(20,83,45,.14)}
+.panel{border-radius:22px;box-shadow:0 10px 26px rgba(20,83,45,.07)}
+@media(max-width:480px){.view-head{align-items:flex-start}.view-head h2{width:100%;flex:1 0 100%;order:-1}.back{max-width:100%}}
+
 </style>
 </head>
 <body>
