@@ -32,7 +32,6 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 <section id="homeView" class="view active">
 <div class="hero"><div class="eyebrow">فضاء الأستاذة</div><h1>منصة التحدي</h1><p>مرحبًا بكِ في فضائكِ التعليمي؛ اختاري القسم الذي تريدين فتحه، وستظهر معلوماته في صفحة مستقلة.</p></div>
 <div class="menu" aria-label="أقسام المنصة">
-<button class="menu-btn" data-view="manualRegisterView"><span class="menu-icon">➕</span><span class="menu-copy"><strong>تسجيل تلميذ يدويًا</strong><small>إضافة تلميذ وتسجيل وصل الدفع</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
@@ -48,30 +47,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 <section id="manualRegisterView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>➕ تسجيل تلميذ يدويًا</h2></div>
 <div class="panel">
-<p class="muted">أضيفي التلميذ والاشتراك والدفعة من هنا. تاريخ وصل الدفع هو نفسه تاريخ التسجيل، وهو حقل إلزامي.</p>
-<form id="manualRegisterForm">
-<label for="manualName">الاسم واللقب *</label><input id="manualName" required minlength="2" maxlength="160" autocomplete="name">
-<label for="manualPhone">رقم الهاتف</label><input id="manualPhone" type="tel" maxlength="40" autocomplete="tel">
-<label for="manualLevel">المستوى الدراسي *</label>
-<select id="manualLevel" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink)">
-<option value="">اختاري المستوى</option><option>الأولى متوسط</option><option>الثانية متوسط</option><option>الثالثة متوسط</option><option>الرابعة متوسط</option><option>الأولى ثانوي جذع مشترك علمي</option>
-</select>
-<label for="manualServiceType">نوع الخدمة *</label><select id="manualServiceType" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink)"><option value="جماعية">جماعية</option><option value="فردية">فردية</option></select>
-<label for="manualServiceName">اسم الاشتراك *</label><input id="manualServiceName" required value="اشتراك شهري" maxlength="120">
-<label>الأشهر المطلوبة * (يمكن اختيار أكثر من شهر)</label>
-<div id="manualMonths" class="list" style="grid-template-columns:repeat(2,minmax(0,1fr));gap:6px">
-<label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="أكتوبر 2026" style="width:auto"> أكتوبر 2026</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="نوفمبر 2026" style="width:auto"> نوفمبر 2026</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="ديسمبر 2026" style="width:auto"> ديسمبر 2026</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="جانفي 2027" style="width:auto"> جانفي 2027</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="فيفري 2027" style="width:auto"> فيفري 2027</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="مارس 2027" style="width:auto"> مارس 2027</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="أفريل 2027" style="width:auto"> أفريل 2027</label><label style="display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:8px;border-radius:10px;margin:0;font-weight:400"><input type="checkbox" value="ماي 2027" style="width:auto"> ماي 2027</label>
-</div>
-<label for="manualDue">المبلغ الإجمالي المطلوب (دج) *</label><input id="manualDue" type="number" min="0" step="0.01" required>
-<label for="manualPaid">المبلغ المدفوع (دج) *</label><input id="manualPaid" type="number" min="0" step="0.01" value="0" required>
-<label for="manualMethod">طريقة الدفع *</label><select id="manualMethod" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink)"><option value="">اختاري طريقة الدفع</option><option>CCP</option><option>BaridiMob</option><option>نقدًا</option><option>تحويل بريدي</option><option>أخرى</option></select>
-<label for="manualReceiptDate">تاريخ وصل الدفع / تاريخ التسجيل *</label><input id="manualReceiptDate" type="date" required>
-<button class="primary" id="manualRegisterSubmit" type="submit">حفظ التسجيل</button>
-</form>
-<div class="note">راجعي الاسم والمستوى والمبالغ والتاريخ قبل الحفظ. لا تضغطي على الحفظ مرتين.</div>
-</div></section>
-<section id="studentsView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div><div class="panel"><p class="muted">التلاميذ النشطون المسجلون في قاعدة بيانات المنصة.</p><div id="studentsList" class="list" style="margin-top:14px"></div><div id="studentDetails" class="panel" hidden style="margin-top:16px"><h3 id="studentDetailsTitle">ملف التلميذ</h3><div id="studentDetailsBody"></div><button class="secondary" id="closeStudentDetails" type="button">إغلاق التفاصيل</button></div></div>
+<p class="muted">أضيفي التلميذ والاشتراك والنات المنصة.</p><div id="studentsList" class="list" style="margin-top:14px"></div><div id="studentDetails" class="panel" hidden style="margin-top:16px"><h3 id="studentDetailsTitle">ملف التلميذ</h3><div id="studentDetailsBody"></div><button class="secondary" id="closeStudentDetails" type="button">إغلاق التفاصيل</button></div></div>
 </section>
 <section id="paymentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div><div class="panel"><p class="muted">أحدث المدفوعات المسجلة والاشتراكات المرتبطة بها.</p><div id="paymentsList" class="list" style="margin-top:14px"></div></div>
@@ -141,25 +117,6 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
     try { await loadDashboard(token); showStatus("تم تحديث البيانات.", "ok"); }
     catch (e) { showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
   }
-  $("manualRegisterForm").addEventListener("submit", async event => {
-    event.preventDefault();
-    const token=localStorage.getItem("tahadi_teacher_token");
-    if(!token){showView("loginView");showStatus("سجلي الدخول أولًا.","error");return;}
-    const months=Array.from(document.querySelectorAll("#manualMonths input:checked")).map(x=>x.value);
-    const due=Number($("manualDue").value),paid=Number($("manualPaid").value);
-    if(!months.length){showStatus("اختاري شهرًا واحدًا على الأقل.","error");return;}
-    if(!Number.isFinite(due)||!Number.isFinite(paid)||paid>due||paid<0){showStatus("تأكدي من المبلغ المطلوب والمدفوع.","error");return;}
-    if(!$("manualReceiptDate").value){showStatus("تاريخ وصل الدفع إلزامي، وهو تاريخ التسجيل.","error");return;}
-    const btn=$("manualRegisterSubmit");btn.disabled=true;btn.textContent="جارٍ الحفظ...";
-    try{
-      const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"manual_register",full_name:$("manualName").value,phone:$("manualPhone").value,level:$("manualLevel").value,service_type:$("manualServiceType").value,service_name:$("manualServiceName").value,months,amount_due:due,amount_paid:paid,payment_method:$("manualMethod").value,receipt_date:$("manualReceiptDate").value})});
-      const result=await response.json();
-      if(!response.ok||!result.ok)throw new Error(result.error||"تعذر حفظ التسجيل.");
-      $("manualRegisterForm").reset();$("manualServiceName").value="اشتراك شهري";$("manualPaid").value="0";
-      await loadDashboard(token);showStatus("تم تسجيل "+result.student.full_name+" بنجاح. تاريخ التسجيل: "+result.student.registration_date,"ok");showView("studentsView");
-    }catch(e){showStatus(e instanceof Error?e.message:"تعذر حفظ التسجيل.","error");}
-    finally{btn.disabled=false;btn.textContent="حفظ التسجيل";}
-  });
   $("closeStudentDetails").addEventListener("click", () => { $("studentDetails").hidden = true; });
   $("refreshBtn").addEventListener("click", refresh);
   $("refreshRequestsBtn").addEventListener("click", refresh);
