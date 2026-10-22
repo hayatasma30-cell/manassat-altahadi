@@ -51,7 +51,7 @@ async function setState(uid: number, chat: number, step: string, data: State) {
 }
 async function reset(uid: number, chat: number) { await setState(uid, chat, "start", {}); }
 async function beginNew(uid: number, chat: number, mode: "new" | "new_family" = "new") {
-  await setState(uid, chat, "new_name", { mode, items: mode === "new_family" ? ((await getState(uid, chat)).conversation_data as State).items ?? [] : [] });
+  await setState(uid, chat, "new_name", { mode, items: [] });
   await send(chat, `📝 <b>${mode === "new_family" ? "تسجيل عدة تلاميذ" : "تسجيل تلميذ جديد"}</b>\nابعثي الاسم واللقب الكامل للتلميذ:`);
 }
 async function beginRenew(uid: number, chat: number) {
