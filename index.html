@@ -43,6 +43,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 .back:active{transform:translateY(2px);box-shadow:0 2px 5px rgba(20,83,45,.10)}
 .primary{background:linear-gradient(135deg,#1c7440,#14532d);border:1px solid #1b6a3c;border-bottom:4px solid #0d4223;border-radius:14px;box-shadow:0 7px 14px rgba(20,83,45,.16);transition:transform .16s,box-shadow .16s}
 .primary:active{transform:translateY(2px);box-shadow:0 3px 7px rgba(20,83,45,.14)}
+.income-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.income-month-field{display:flex;flex-direction:column;gap:5px;font-weight:600}.income-month-field input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);font:inherit}@media(max-width:520px){.income-input-grid{grid-template-columns:1fr}}
 /* Consistent 3D buttons throughout the platform */
 button,.primary,.secondary,.back,.menu-btn,.level-filter,.logout{
   border-radius:14px!important;
@@ -118,7 +119,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <p class="muted">حساب المداخيل من المدفوعات المسجلة في Supabase. يُحتسب المبلغ كدخل مؤكد عندما تكون حالة الدفع «مقبول» فقط، وتُعرض المدفوعات المعلقة منفصلة.</p>
 <label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px">
 <div id="incomeStats" class="stats"></div>
-<h3 style="margin-top:22px">تفصيل المداخيل حسب الشهر</h3><div id="incomeMonthly" class="list"></div>
+<h3 style="margin-top:22px">مداخيل العام الماضي 2025 — إدخال يدوي</h3><p class="muted">أدخلي مجموع كل شهر، ثم احفظي في قاعدة البيانات.</p><div id="manualIncomeInputs" class="income-input-grid"></div><button class="primary" id="saveManualIncomeBtn" type="button">حفظ مداخيل 2025</button><div id="manualIncomeStatus" class="small"></div><h3 style="margin-top:22px">مقارنة 2025 مع 2026</h3><div id="incomeCompare" class="list"></div><h3 style="margin-top:22px">تفصيل المداخيل حسب الشهر</h3><div id="incomeMonthly" class="list"></div>
 <h3 style="margin-top:22px">المدفوعات في الشهر المختار</h3><div id="incomePayments" class="list"></div>
 <div class="note">يُحسب الدخل من سجلات المدفوعات فقط لتجنب احتساب طلب التسجيل العائلي مرة ثانية إذا كانت دفعات أطفاله مسجلة أصلًا. لا تُحتسب الطلبات أو الاشتراكات المطلوبة كدخل قبل تسجيل الدفع.</div>
 <button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button>
