@@ -291,18 +291,26 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 
     const levelFilters = $("studentLevelFilters");
     let selectedStudentLevel = "all";
+    const normalizeStudentLevel = value => {
+      const level = String(value || "").trim().replace(/^السنة\s+/,"").replace(/\s+/g," ");
+      if (/^(الأولى|الاولى) متوسط$/.test(level)) return "الأولى متوسط";
+      if (/^الثانية متوسط$/.test(level)) return "الثانية متوسط";
+      if (/^الثالثة متوسط$/.test(level)) return "الثالثة متوسط";
+      if (/^الرابعة متوسط$/.test(level)) return "الرابعة متوسط";
+      return level;
+    };
     const knownLevels = ["الأولى متوسط","الثانية متوسط","الثالثة متوسط","الرابعة متوسط"];
-    const studentLevels = [...new Set(students.map(s => String(s.level || "").trim()).filter(Boolean))];
+    const studentLevels = [...new Set(students.map(s => normalizeStudentLevel(s.level)).filter(Boolean))];
     const orderedLevels = [...knownLevels, ...studentLevels.filter(level => !knownLevels.includes(level)).sort((a,b) => a.localeCompare(b,"ar"))];
     const renderStudentFilters = () => {
       const options = [{value:"all",label:"الكل"}, ...orderedLevels.map(level => ({value:level,label:level}))];
       levelFilters.innerHTML = options.map(option => {
-        const count = option.value === "all" ? students.length : students.filter(s => String(s.level || "").trim() === option.value).length;
+        const count = option.value === "all" ? students.length : students.filter(s => normalizeStudentLevel(s.level) === option.value).length;
         return '<button type="button" class="level-filter" data-level="'+escapeHtml(option.value)+'"><span>'+escapeHtml(option.label)+'</span><span class="level-count">'+count+'</span><span class="level-open">فتح الصفحة ←</span></button>';
       }).join("");
     };
     const renderStudents = () => {
-      const filteredStudents = selectedStudentLevel === "all" ? students : students.filter(s => String(s.level || "").trim() === selectedStudentLevel);
+      const filteredStudents = selectedStudentLevel === "all" ? students : students.filter(s => normalizeStudentLevel(s.level) === selectedStudentLevel);
       $("studentLevelTitle").textContent = selectedStudentLevel === "all" ? "🎓 جميع التلاميذ" : "🎓 "+selectedStudentLevel;
       $("studentLevelDescription").textContent = "عدد التلاميذ في هذه الصفحة: "+filteredStudents.length;
       $("studentsList").innerHTML = filteredStudents.length ? filteredStudents.map(s=>'<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span><button class="secondary student-detail-btn" type="button" data-student-id="'+escapeHtml(s.id)+'" style="margin-top:10px">عرض ملف التلميذ</button><div class="actions-row"><button class="secondary" data-edit="students" data-id="'+escapeHtml(s.id)+'" type="button">تعديل</button><button class="secondary" data-delete="students" data-id="'+escapeHtml(s.id)+'" type="button">حذف</button></div></div>').join("") : '<div class="data-item">لا يوجد تلاميذ في هذا المستوى حاليًا.</div>';
