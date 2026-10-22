@@ -279,7 +279,7 @@ async function handleMessage(m: any) {
     const matches=all.flat().filter((x:any)=>`${x.full_name??""} ${x.phone??""}`.toLowerCase().includes(term.toLowerCase()));
     if(!matches.length) return send(chat,"ما لقيتش تلميذًا مرتبطًا بهذا الحساب بهذا الاسم. جربي جزءًا آخر من الاسم.");
     s.matches=matches; await setState(uid,chat,"results_choose",s);
-    return send(chat,"اختاري التلميذ لعرض نتائجه:",keyboard(matches.map((x:any,i:number)=>[{text:`${x.full_name} — ${x.level??"المستوى غير محدد"}`,callback_data:`results:student:${i}`}]).concat([[{text:"🏠 القائمة الرئيسية",callback_data:"menu:main"}]]));
+    return send(chat,"اختاري التلميذ لعرض نتائجه:",keyboard(matches.map((x:any,i:number)=>[{text:`${x.full_name} — ${x.level??"المستوى غير محدد"}`,callback_data:`results:student:${i}`}]).concat([[{text:"🏠 القائمة الرئيسية",callback_data:"menu:main"}]])));
   }
   if (step === "new_name") { s.full_name = text; await setState(uid, chat, "new_phone", s); return send(chat, "ابعثي رقم هاتف وليّ التلميذ أو رقم التواصل:"); }
   if (step === "new_phone") { s.phone = text; await setState(uid, chat, "new_level", s); return send(chat, "اختاري المستوى الدراسي للتلميذ:", keyboard([[{text:"السنة الأولى متوسط",callback_data:"level:السنة الأولى متوسط"}],[{text:"السنة الثانية متوسط",callback_data:"level:السنة الثانية متوسط"}],[{text:"السنة الثالثة متوسط",callback_data:"level:السنة الثالثة متوسط"}],[{text:"السنة الرابعة متوسط",callback_data:"level:السنة الرابعة متوسط"}],[{text:"❌ إلغاء العملية",callback_data:"cancel"}]])); }
