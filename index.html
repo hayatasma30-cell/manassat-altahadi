@@ -165,7 +165,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     student_subscriptions:[["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["status","حالة الاشتراك"],["amount_due","المبلغ المطلوب",1]],
     student_payments:[["amount_paid","المبلغ المدفوع",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["status","حالة الدفع"]],
     student_requests:[["full_name","اسم التلميذ"],["phone","رقم الهاتف"],["level","المستوى"],["request_type","نوع الطلب"],["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["amount","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["registration_date","تاريخ التسجيل"],["status","حالة الطلب"]],
-    family_payment_batches:[["request_type","نوع الطلب"],["amount","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["status","حالة الطلب"]]
+    family_payment_batches:[["request_type","نوع الطلب"],["amount","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["status","حالة الطلب"]],
+    family_payment_items:[["full_name","اسم التلميذ"],["phone","رقم الهاتف"],["level","المستوى"],["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["amount_due","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1]]
   };
   let editorTarget=null;
   const editorModal=$("recordEditorModal");
@@ -211,6 +212,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const requests = Array.isArray(d.requests) ? d.requests : [];
     window.tahadiRecordCache={};
     for(const r of requests){const family=String(r.id).startsWith("F-");window.tahadiRecordCache[(family?"family_payment_batches":"student_requests")+":"+(family?String(r.id).slice(2):r.id)]=r;}
+    for(const r of requests){if(Array.isArray(r.family_items))for(const item of r.family_items){if(item.id)window.tahadiRecordCache["family_payment_items:"+item.id]=item;}}
+
 
     const requestStatus = {pending:"قيد المراجعة",approved:"مقبول",rejected:"مرفوض"};
     $("requestCount").textContent = String(requests.filter(r=>String(r.status||"").toLowerCase()==="pending").length);
