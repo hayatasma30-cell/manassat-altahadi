@@ -66,7 +66,8 @@ async function createBatch(state: State, uid: number, chat: number, username?: s
   const items = state.items ?? [];
   if (!items.length || !state.receipt_file_id || !state.payment_method || !state.payment_date) throw new Error("Incomplete payment information");
   const total = items.reduce((n, x) => n + x.amount_due, 0);
-  const requestType = state.mode === "new" ? "تسجيل جديد" : state.mode === "new_family" ? "تسجيل عدة تلاميذ" : state.mode === "family" ? "تجديد عائلي" : "تجديد اشتراك شهري";
+  // Keep request_type within the database CHECK constraint; family/individual detail belongs in item rows, not this constrained field.
+  const requestType = (state.mode === "new" || state.mode === "new_family") ? "تسجيل جديد" : "تجديد اشتراك شهري";
   const itemRows = (batchId: string) => items.map(x => ({
     batch_id: batchId, student_id: x.student_id, full_name: x.full_name, phone: x.phone,
     level: x.level, service_type: x.service_type, service_name: x.service_name,
