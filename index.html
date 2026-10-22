@@ -314,6 +314,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const total25=Object.values(manual2025).reduce((s,v)=>s+(Number(v)||0),0),total26=Object.values(actual).reduce((s,v)=>s+v,0),diff=total26-total25;
       $("incomeCompare").innerHTML='<div class="data-item"><strong>مجموع 2025: '+escapeHtml(money(total25))+'</strong><div>مجموع 2026: '+escapeHtml(money(total26))+'</div><div>الفرق: '+(diff>=0?"+":"")+escapeHtml(money(diff))+(total25?' · التغير '+(diff/total25*100).toFixed(1)+'%':'')+'</div></div>'+monthLabels.map((n,i)=>{const m=i+1,a=Number(manual2025[m])||0,b=actual[m]||0,d=b-a;return '<div class="data-item"><strong>'+n+'</strong><div>2025: '+escapeHtml(money(a))+' | 2026: '+escapeHtml(money(b))+'</div><div>الفرق: '+(d>=0?"+":"")+escapeHtml(money(d))+'</div></div>';}).join("");
     }
+    drawManual2025();
     async function loadManual2025(){
       try{const t=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action:"income_data"})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل البيانات");manual2025={};(d.entries||[]).forEach(x=>manual2025[x.month]=Number(x.amount)||0);drawManual2025();}catch(e){$("manualIncomeStatus").textContent=e.message;}
     }
