@@ -43,6 +43,22 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 .back:active{transform:translateY(2px);box-shadow:0 2px 5px rgba(20,83,45,.10)}
 .primary{background:linear-gradient(135deg,#1c7440,#14532d);border:1px solid #1b6a3c;border-bottom:4px solid #0d4223;border-radius:14px;box-shadow:0 7px 14px rgba(20,83,45,.16);transition:transform .16s,box-shadow .16s}
 .primary:active{transform:translateY(2px);box-shadow:0 3px 7px rgba(20,83,45,.14)}
+/* Consistent 3D buttons throughout the platform */
+button,.primary,.secondary,.back,.menu-btn,.level-filter,.logout{
+  border-radius:14px!important;
+  border:1px solid #b7d0b6!important;
+  border-bottom:4px solid #8eb28c!important;
+  box-shadow:0 6px 0 rgba(20,83,45,.10),0 10px 18px rgba(20,83,45,.12)!important;
+  transition:transform .15s ease,box-shadow .15s ease,filter .15s ease;
+}
+button:active,.primary:active,.secondary:active,.back:active,.menu-btn:active,.level-filter:active,.logout:active{
+  transform:translateY(3px)!important;
+  border-bottom-width:1px!important;
+  box-shadow:0 2px 5px rgba(20,83,45,.14)!important;
+}
+button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
+.actions-row button{min-height:46px;font-weight:700}
+
 .panel{border-radius:22px;box-shadow:0 10px 26px rgba(20,83,45,.07)}
 @media(max-width:480px){.view-head{align-items:flex-start}.view-head h2{width:100%;flex:1 0 100%;order:-1}.back{max-width:100%}}
 
@@ -232,7 +248,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
         const s=students.find(x=>String(x.id)===btn.dataset.studentId);if(!s)return;
         const ss=subscriptions.filter(x=>String(x.student_id)===String(s.id));const ssIds=new Set(ss.map(x=>String(x.id)));const pp=payments.filter(x=>ssIds.has(String(x.subscription_id)));
         $("studentDetailsTitle").textContent="ملف التلميذ: "+(s.full_name||"");
-        $("studentDetailsBody").innerHTML='<div class="data-item"><strong>المعلومات الأساسية</strong><div class="small">المستوى: '+escapeHtml(s.level||"غير محدد")+'</div><div class="small">الحالة: '+escapeHtml(s.status||"غير محددة")+'</div><div class="small">تاريخ التسجيل: '+formatDate(s.created_at)+'</div></div><h4>الاشتراكات</h4>'+(ss.length?ss.map(x=>'<div class="data-item"><strong>'+escapeHtml(x.service_name||x.service_type||"اشتراك") +'</strong><div class="small">الشهر: '+escapeHtml(x.subscription_month||"غير محدد")+' · الحالة: '+escapeHtml(x.status||"غير محددة")+'</div><div class="small">المبلغ المطلوب: '+escapeHtml(x.amount_due??0)+' دج</div></div>').join(""):'<div class="data-item">لا توجد اشتراكات مسجلة لهذا التلميذ.</div>')+'<h4>المدفوعات المرتبطة بالاشتراكات</h4>'+(pp.length?pp.map(p=>'<div class="data-item"><strong>'+escapeHtml(p.amount_paid??0)+' دج</strong><div class="small">الحالة: '+escapeHtml(p.status||"غير محددة")+' · طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+'</div><div class="small">التاريخ: '+formatDate(p.payment_date||p.created_at)+'</div></div>').join(""):'<div class="data-item">لا توجد مدفوعات مرتبطة باشتراكاته.</div>')+'<div class="note">النتائج والحضور وملاحظات الأستاذة غير معروضة هنا لأنها تحتاج إلى جداول وبيانات مخصصة لها في قاعدة البيانات.</div>';
+        $("studentDetailsBody").innerHTML='<div class="data-item"><strong>المعلومات الأساسية</strong><div class="small">الاسم الكامل: '+escapeHtml(s.full_name||"غير محدد")+'</div><div class="small">المستوى: '+escapeHtml(s.level||"غير محدد")+'</div><div class="small">الحالة: '+escapeHtml(s.status||"غير محددة")+'</div><div class="small">رقم الهاتف: '+escapeHtml(s.phone||"غير مسجل")+'</div><div class="small">اسم تيليغرام: '+escapeHtml(s.telegram_username?("@"+s.telegram_username):"غير مسجل")+'</div><div class="small">تاريخ التسجيل: '+formatDate(s.registration_date||s.created_at)+'</div><div class="actions-row"><button class="secondary" data-edit="students" data-id="'+escapeHtml(s.id)+'" type="button">تعديل جميع المعلومات</button></div></div><h4>الاشتراكات</h4>'+(ss.length?ss.map(x=>'<div class="data-item"><strong>'+escapeHtml(x.service_name||x.service_type||"اشتراك") +'</strong><div class="small">الشهر: '+escapeHtml(x.subscription_month||"غير محدد")+' · الحالة: '+escapeHtml(x.status||"غير محددة")+'</div><div class="small">المبلغ المطلوب: '+escapeHtml(x.amount_due??0)+' دج</div></div>').join(""):'<div class="data-item">لا توجد اشتراكات مسجلة لهذا التلميذ.</div>')+'<h4>المدفوعات المرتبطة بالاشتراكات</h4>'+(pp.length?pp.map(p=>'<div class="data-item"><strong>'+escapeHtml(p.amount_paid??0)+' دج</strong><div class="small">الحالة: '+escapeHtml(p.status||"غير محددة")+' · طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+'</div><div class="small">التاريخ: '+formatDate(p.payment_date||p.created_at)+'</div></div>').join(""):'<div class="data-item">لا توجد مدفوعات مرتبطة باشتراكاته.</div>')+'<div class="note">النتائج والحضور وملاحظات الأستاذة غير معروضة هنا لأنها تحتاج إلى جداول وبيانات مخصصة لها في قاعدة البيانات.</div>';
         showView("studentProfileView");
       }));
     };
