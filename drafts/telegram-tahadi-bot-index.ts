@@ -82,6 +82,15 @@ async function createBatch(state: State, uid: number, chat: number, username?: s
   );
   let batch = existing?.[0];
   let createdHere = false;
+
+  // Family registration only: a previously rejected request must not block a corrected
+  // resubmission that uses the same receipt. Pending requests remain idempotent, while
+  // an approved receipt must never be silently reused for a new registration.
+  if (state.mode === "new_family" && batch?.status === "rejected") batch = undefined;
+  if (state.mode === "new_family" && batch?.status === "approved") {
+    throw new Error("This receipt belongs to an already approved request; use a new receipt for a new registration");
+  }
+
   if (batch) {
     if (Number(batch.amount) !== total || batch.request_type !== requestType) {
       throw new Error("Receipt is already associated with a different payment request; manual review required");
