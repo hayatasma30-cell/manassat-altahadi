@@ -58,7 +58,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 .level-filter{flex-direction:column;min-width:calc(50% - 7px);min-height:88px}
 .level-filter .level-count{font-size:1rem;min-width:30px;height:30px}
 @media(max-width:600px){.level-filter{flex:1 1 calc(50% - 7px);min-height:88px}.level-filter:first-child{flex-basis:100%}}
-.actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions-row button{flex:1 1 100px;min-height:40px}</style>
+.actions-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions-row button{flex:1 1 100px;min-height:40px}.editor-overlay{position:fixed;inset:0;z-index:9999;background:#10251dcc;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}.editor-overlay[hidden]{display:none}.editor-panel{width:min(760px,100%);max-height:92vh;overflow:auto;background:#fffdf7;color:#173e2b;border-radius:20px;padding:20px;box-shadow:0 20px 70px #0004}.editor-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.editor-head h2{margin:0;font-size:1.25rem}.editor-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}.editor-field{display:flex;flex-direction:column;gap:6px;font-weight:600}.editor-field input{width:100%;box-sizing:border-box;border:1px solid #cbd7ca;border-radius:10px;padding:12px;background:#fff;color:#173e2b;font:inherit}.editor-actions{display:flex;gap:10px}.editor-actions button{flex:1}@media(max-width:560px){.editor-fields{grid-template-columns:1fr}.editor-panel{padding:15px;max-height:94vh}}</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -108,6 +108,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 <div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
 </main>
 <footer>© منصة التحدي التعليمية</footer>
+<div id="recordEditorModal" class="editor-overlay" hidden><section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="recordEditorTitle"><div class="editor-head"><h2 id="recordEditorTitle">تعديل المعلومات</h2><button type="button" id="closeRecordEditor" class="secondary">إغلاق ✕</button></div><p class="muted">تظهر هنا جميع الحقول المتاحة لهذا السجل. عدّلي ما تحتاجينه ثم احفظي.</p><form id="recordEditorForm"><div id="recordEditorFields" class="editor-fields"></div><div class="editor-actions"><button class="primary" type="submit">حفظ كل التعديلات</button><button class="secondary" type="button" id="cancelRecordEditor">إلغاء</button></div></form></section></div>
 <script>
 (() => {
   const endpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
@@ -144,12 +145,31 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
   const editFields={
-    students:[["full_name","اسم التلميذ"],["level","المستوى"],["status","الحالة"],["registration_date","تاريخ التسجيل YYYY-MM-DD"]],
-    student_subscriptions:[["service_name","الخدمة"],["service_type","نوع الخدمة"],["subscription_month","الشهر"],["status","الحالة"],["amount_due","المبلغ المطلوب",1]],
-    student_payments:[["amount_paid","المبلغ المدفوع",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع YYYY-MM-DD"],["status","الحالة"]],
-    student_requests:[["full_name","الاسم"],["level","المستوى"],["service_name","الخدمة"],["amount","المطلوب",1],["amount_paid","المدفوع",1],["remaining_balance","الباقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع YYYY-MM-DD"],["registration_date","تاريخ التسجيل YYYY-MM-DD"],["status","الحالة"]],
-    family_payment_batches:[["amount","المطلوب",1],["amount_paid","المدفوع",1],["remaining_balance","الباقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع YYYY-MM-DD"],["status","الحالة"]]
+    students:[["full_name","اسم التلميذ"],["level","المستوى"],["status","الحالة"],["registration_date","تاريخ التسجيل"],["phone","رقم الهاتف"],["telegram_username","اسم تيليغرام"]],
+    student_subscriptions:[["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["status","حالة الاشتراك"],["amount_due","المبلغ المطلوب",1]],
+    student_payments:[["amount_paid","المبلغ المدفوع",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["status","حالة الدفع"]],
+    student_requests:[["full_name","اسم التلميذ"],["level","المستوى"],["request_type","نوع الطلب"],["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["amount","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["registration_date","تاريخ التسجيل"],["status","حالة الطلب"]],
+    family_payment_batches:[["request_type","نوع الطلب"],["amount","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["status","حالة الطلب"]]
   };
+  let editorTarget=null;
+  const editorModal=$("recordEditorModal");
+  function openRecordEditor(table,id){
+    const record=(window.tahadiRecordCache||{})[table+":"+id];
+    if(!record){alert("ما قدرتش نجيب المعلومات الحالية. حدّثي الصفحة وجربي مرة أخرى.");return;}
+    editorTarget={table,id,record};
+    $("recordEditorTitle").textContent="تعديل "+(table==="students"?"ملف التلميذ":table==="student_subscriptions"?"الاشتراك":table==="student_payments"?"الدفعة":"الطلب");
+    $("recordEditorFields").innerHTML=(editFields[table]||[]).map(([key,label,num])=>'<label class="editor-field"><span>'+escapeHtml(label)+'</span><input name="'+escapeHtml(key)+'" type="'+(num?"number":"text")+'" '+(num?'min="0" step="0.01"':'')+' value="'+escapeHtml(record[key]??"")+'" autocomplete="off"></label>').join("");
+    editorModal.hidden=false;document.body.style.overflow="hidden";
+  }
+  function closeRecordEditor(){editorModal.hidden=true;document.body.style.overflow="";editorTarget=null;}
+  $("closeRecordEditor").addEventListener("click",closeRecordEditor);
+  $("cancelRecordEditor").addEventListener("click",closeRecordEditor);
+  editorModal.addEventListener("click",e=>{if(e.target===editorModal)closeRecordEditor();});
+  $("recordEditorForm").addEventListener("submit",async e=>{
+    e.preventDefault();if(!editorTarget)return;
+    const values={};for(const field of editFields[editorTarget.table]||[]){const key=field[0],input=$("recordEditorFields").querySelector('[name="'+key+'"]');if(!input)continue;values[key]=field[2]?Number(input.value):input.value.trim();if(field[2]&&(!Number.isFinite(values[key])||values[key]<0)){alert("تحققي من المبلغ المدخل.");return;}}
+    try{const token=localStorage.getItem("tahadi_teacher_token");const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"edit_record",table:editorTarget.table,id:editorTarget.id,values})});const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر الحفظ.");closeRecordEditor();await refresh();alert("تم حفظ التعديلات بنجاح.");}catch(err){alert(err.message||"تعذر حفظ التعديلات.");}
+  });
   document.addEventListener("click",async e=>{
     const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]");
     if(!edit&&!del)return;
@@ -162,16 +182,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
         const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر الحذف.");
         alert("تم الحذف.");await refresh();return;
       }
-      const vals={};
-      for(const [key,label,num] of (editFields[table]||[])){
-        const v=prompt(label+" — أدخلي القيمة الجديدة:");
-        if(v===null)return;
-        vals[key]=num?Number(v):v.trim();
-        if(num&&(!Number.isFinite(vals[key])||vals[key]<0))throw new Error("المبلغ غير صحيح.");
-      }
-      const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"edit_record",table,id,values:vals})});
-      const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر التعديل.");
-      alert("تم تعديل المعلومات.");await refresh();
+      openRecordEditor(table,id);
     }catch(err){alert(err.message||"حدث خطأ.");}
   });
   async function loadDashboard(token) {
@@ -182,6 +193,9 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
     const counts = d.counts || {};
     $("stats").innerHTML = [["التلاميذ",counts.students],["الاشتراكات",counts.subscriptions],["المدفوعات",counts.payments],["مدفوعات قيد المراجعة",counts.pendingPayments ?? 0]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1] ?? 0)+'</strong><span>'+x[0]+'</span></div>').join("");
     const requests = Array.isArray(d.requests) ? d.requests : [];
+    window.tahadiRecordCache={};
+    for(const r of requests){const family=String(r.id).startsWith("F-");window.tahadiRecordCache[(family?"family_payment_batches":"student_requests")+":"+(family?String(r.id).slice(2):r.id)]=r;}
+
     const requestStatus = {pending:"قيد المراجعة",approved:"مقبول",rejected:"مرفوض"};
     $("requestCount").textContent = String(requests.filter(r=>String(r.status||"").toLowerCase()==="pending").length);
     $("requestTotal").textContent = String(requests.length);
@@ -189,8 +203,14 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
     window.tahadiRenderRequests = renderRequests;
     renderRequests();
     const students = Array.isArray(d.students) ? d.students : [];
+    for(const s of students)window.tahadiRecordCache["students:"+s.id]=s;
+
     const subscriptions = Array.isArray(d.subscriptions) ? d.subscriptions : [];
+    for(const x of subscriptions)window.tahadiRecordCache["student_subscriptions:"+x.id]=x;
+
     const payments = Array.isArray(d.payments) ? d.payments : [];
+    for(const p of payments)window.tahadiRecordCache["student_payments:"+p.id]=p;
+
     const levelFilters = $("studentLevelFilters");
     let selectedStudentLevel = "all";
     const knownLevels = ["الأولى متوسط","الثانية متوسط","الثالثة متوسط","الرابعة متوسط"];
