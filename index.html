@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-10-22-teacher-dashboard-edit-delete-v1">
+<meta name="platform-build" content="2026-10-22-income-dashboard-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -85,6 +85,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button>
@@ -111,6 +112,17 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <section id="paymentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div><div class="panel"><p class="muted">أحدث المدفوعات المسجلة والاشتراكات المرتبطة بها.</p><div id="paymentsList" class="list" style="margin-top:14px"></div></div>
 </section>
+<section id="incomeView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💰 مداخيلي</h2></div>
+<div class="panel">
+<p class="muted">حساب المداخيل من المدفوعات المسجلة في Supabase. يُحتسب المبلغ كدخل مؤكد عندما تكون حالة الدفع «مقبول» فقط، وتُعرض المدفوعات المعلقة منفصلة.</p>
+<label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px">
+<div id="incomeStats" class="stats"></div>
+<h3 style="margin-top:22px">تفصيل المداخيل حسب الشهر</h3><div id="incomeMonthly" class="list"></div>
+<h3 style="margin-top:22px">المدفوعات في الشهر المختار</h3><div id="incomePayments" class="list"></div>
+<div class="note">يُحسب الدخل من سجلات المدفوعات فقط لتجنب احتساب طلب التسجيل العائلي مرة ثانية إذا كانت دفعات أطفاله مسجلة أصلًا. لا تُحتسب الطلبات أو الاشتراكات المطلوبة كدخل قبل تسجيل الدفع.</div>
+<button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button>
+</div></section>
 <section id="overviewView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📊 ملخص المنصة</h2></div><div class="panel"><p class="muted">ملخص مباشر من قاعدة بيانات Supabase.</p><div id="stats" class="stats"></div><button class="primary" id="refreshBtn" type="button">تحديث البيانات</button></div>
 </section>
@@ -269,6 +281,33 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const subStatus = {active:"نشط",paid:"مدفوع",pending:"قيد المراجعة",expired:"منتهي",cancelled:"ملغى"};
     $("subscriptionsList").innerHTML = subscriptions.length ? subscriptions.map(x=>{const student=students.find(s=>String(s.id)===String(x.student_id));return '<div class="data-item"><strong>'+escapeHtml(student?.full_name||"تلميذ غير محدد")+'</strong><div class="small">المستوى: '+escapeHtml(student?.level||"غير محدد")+'</div><div class="small">الخدمة: '+escapeHtml(x.service_name||x.service_type||"اشتراك")+'</div><div class="small">الشهر: '+escapeHtml(x.subscription_month||"غير محدد")+'</div><div class="payment-meta"><span>المبلغ المطلوب: <b>'+escapeHtml(x.amount_due??0)+' دج</b></span><span class="payment-status '+(String(x.status||"").toLowerCase()==="paid"?"approved":String(x.status||"").toLowerCase()==="pending"?"pending":"")+'">'+escapeHtml(subStatus[String(x.status||"").toLowerCase()]||x.status||"غير محددة")+'</span></div><div class="actions-row"><button class="secondary" data-edit="student_subscriptions" data-id="'+escapeHtml(x.id)+'" type="button">تعديل</button><button class="secondary" data-delete="student_subscriptions" data-id="'+escapeHtml(x.id)+'" type="button">حذف</button></div></div>'}).join("") : '<div class="data-item">لا توجد اشتراكات مسجلة.</div>';
     const payStatus = {pending:"قيد المراجعة",approved:"مقبول",rejected:"مرفوض"};
+
+    const money = value => (Number(value)||0).toLocaleString("fr-FR",{maximumFractionDigits:2})+" دج";
+    const dateKey = p => {const raw=p.payment_date||p.created_at;if(!raw)return "";const dt=new Date(raw);return Number.isNaN(dt.getTime())?"":dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0");};
+    const currentMonth = new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0");
+    const incomeMonthInput=$("incomeMonth");
+    if(!incomeMonthInput.value)incomeMonthInput.value=currentMonth;
+    const renderIncome=()=>{
+      const month=incomeMonthInput.value||currentMonth;
+      const approved=payments.filter(p=>String(p.status||"").toLowerCase()==="approved");
+      const pending=payments.filter(p=>String(p.status||"").toLowerCase()==="pending");
+      const thisMonth=approved.filter(p=>dateKey(p)===month);
+      const monthPending=pending.filter(p=>dateKey(p)===month);
+      const allTotal=approved.reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
+      const monthTotal=thisMonth.reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
+      const pendingTotal=pending.reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
+      const monthly={};
+      approved.forEach(p=>{const k=dateKey(p);if(k)monthly[k]=(monthly[k]||0)+(Number(p.amount_paid)||0);});
+      $("incomeStats").innerHTML=[["إجمالي المداخيل المؤكدة",money(allTotal)],["مداخيل الشهر المختار",money(monthTotal)],["عدد الدفعات المقبولة",approved.length],["مدفوعات قيد المراجعة",money(pendingTotal)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
+      const monthNames=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+      const keys=Object.keys(monthly).sort((a,b)=>b.localeCompare(a));
+      $("incomeMonthly").innerHTML=keys.length?keys.map(k=>{const [y,m]=k.split("-");return '<div class="data-item"><strong>'+monthNames[Number(m)-1]+' '+y+'</strong><div class="payment-meta"><span>المداخيل المؤكدة</span><b>'+escapeHtml(money(monthly[k]))+'</b></div></div>';}).join(""):'<div class="data-item">لا توجد مداخيل مؤكدة بعد.</div>';
+      const rows=payments.filter(p=>dateKey(p)===month).sort((a,b)=>new Date(b.payment_date||b.created_at)-new Date(a.payment_date||a.created_at));
+      $("incomePayments").innerHTML=rows.length?rows.map(p=>{const state=String(p.status||"").toLowerCase();return '<div class="data-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><div class="payment-meta"><span>'+escapeHtml(money(p.amount_paid))+'</span><span class="payment-status '+(state==="approved"?"approved":state==="pending"?"pending":"rejected")+'">'+escapeHtml(payStatus[state]||p.status||"غير محددة")+'</span></div><div class="small">'+escapeHtml(p.service_name||p.service_type||"خدمة غير محددة")+' · '+escapeHtml(p.payment_method||"طريقة غير محددة")+'</div><div class="payment-date">تاريخ الدفع: '+formatDate(p.payment_date||p.created_at)+'</div></div>';}).join(""):'<div class="data-item">لا توجد دفعات في هذا الشهر.</div>';
+    };
+    incomeMonthInput.onchange=renderIncome;
+    $("refreshIncomeBtn").onclick=()=>refresh();
+    renderIncome();
     $("paymentsList").innerHTML = payments.length ? payments.map(p=>{const state=String(p.status||"").toLowerCase();const stateClass=state==="pending"?"pending":state==="approved"?"approved":state==="rejected"?"rejected":"";return '<div class="data-item payment-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><div class="payment-meta"><span>المبلغ: <b>'+escapeHtml(p.amount_paid ?? 0)+' دج</b></span><span class="payment-status '+stateClass+'">'+escapeHtml(payStatus[state]||p.status||"غير محددة")+'</span></div><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month||"غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+'</div><div class="payment-date">📅 تاريخ الدفع: '+formatDate(p.payment_date||p.created_at)+'</div>'+'<div class="small">🧾 مراجعة وصل الدفع تتم من البوت فقط.</div><div class="actions-row"><button class="secondary" data-edit="student_payments" data-id="'+escapeHtml(p.id)+'" type="button">تعديل</button><button class="secondary" data-delete="student_payments" data-id="'+escapeHtml(p.id)+'" type="button">حذف</button></div>'+'</div>'}).join("") : '<div class="data-item">لا توجد مدفوعات مسجلة حتى الآن.</div>';
     $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
   }
