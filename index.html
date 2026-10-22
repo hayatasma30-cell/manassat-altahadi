@@ -44,6 +44,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 .primary{background:linear-gradient(135deg,#1c7440,#14532d);border:1px solid #1b6a3c;border-bottom:4px solid #0d4223;border-radius:14px;box-shadow:0 7px 14px rgba(20,83,45,.16);transition:transform .16s,box-shadow .16s}
 .primary:active{transform:translateY(2px);box-shadow:0 3px 7px rgba(20,83,45,.14)}
 .income-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.income-month-field{display:flex;flex-direction:column;gap:5px;font-weight:600}.income-month-field input{width:100%;box-sizing:border-box;padding:11px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);font:inherit}@media(max-width:520px){.income-input-grid{grid-template-columns:1fr}}
+.income-nav-grid{display:grid;grid-template-columns:1fr;gap:12px}.income-subpage[hidden]{display:none!important}
 /* Consistent 3D buttons throughout the platform */
 button,.primary,.secondary,.back,.menu-btn,.level-filter,.logout{
   border-radius:14px!important;
@@ -113,17 +114,18 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <section id="paymentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div><div class="panel"><p class="muted">أحدث المدفوعات المسجلة والاشتراكات المرتبطة بها.</p><div id="paymentsList" class="list" style="margin-top:14px"></div></div>
 </section>
-<section id="incomeView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💰 مداخيلي</h2></div>
-<div class="panel">
-<p class="muted">حساب المداخيل من المدفوعات المسجلة في Supabase. يُحتسب المبلغ كدخل مؤكد عندما تكون حالة الدفع «مقبول» فقط، وتُعرض المدفوعات المعلقة منفصلة.</p>
-<label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px">
-<div id="incomeStats" class="stats"></div>
-<h3 style="margin-top:22px">مداخيل العام الماضي 2025 — إدخال يدوي</h3><p class="muted">أدخلي مجموع كل شهر، ثم احفظي في قاعدة البيانات.</p><div id="manualIncomeInputs" class="income-input-grid"></div><button class="primary" id="saveManualIncomeBtn" type="button">حفظ مداخيل 2025</button><div id="manualIncomeStatus" class="small"></div><h3 style="margin-top:22px">مقارنة 2025 مع 2026</h3><div id="incomeCompare" class="list"></div><h3 style="margin-top:22px">تفصيل المداخيل حسب الشهر</h3><div id="incomeMonthly" class="list"></div>
-<h3 style="margin-top:22px">المدفوعات في الشهر المختار</h3><div id="incomePayments" class="list"></div>
-<div class="note">يُحسب الدخل من سجلات المدفوعات فقط لتجنب احتساب طلب التسجيل العائلي مرة ثانية إذا كانت دفعات أطفاله مسجلة أصلًا. لا تُحتسب الطلبات أو الاشتراكات المطلوبة كدخل قبل تسجيل الدفع.</div>
-<button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button>
-</div></section>
+<section id="incomeView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💰 مداخيلي</h2></div>
+<div id="incomeHomePage" class="panel"><p class="muted">اختاري الخدمة؛ كل زر يفتح صفحة مستقلة.</p><div class="income-nav-grid">
+<button class="menu-btn" data-income-page="incomeTotalsPage" type="button"><span class="menu-icon">💰</span><span class="menu-copy"><strong>المداخيل الحالية</strong><small>الإجمالي والشهر المختار</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-income-page="manual2025Page" type="button"><span class="menu-icon">📝</span><span class="menu-copy"><strong>إدخال مداخيل 2025</strong><small>إدخال الأرقام يدويًا</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-income-page="incomeComparePage" type="button"><span class="menu-icon">📊</span><span class="menu-copy"><strong>مقارنة 2025 و2026</strong><small>الفرق شهرًا بشهر</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-income-page="incomeMonthlyPage" type="button"><span class="menu-icon">📅</span><span class="menu-copy"><strong>تفصيل المداخيل الشهرية</strong><small>مراجعة مداخيل كل شهر</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-income-page="incomePaymentsPage" type="button"><span class="menu-icon">🧾</span><span class="menu-copy"><strong>دفعات الشهر</strong><small>عرض تفاصيل المدفوعات</small></span><span class="chev">‹</span></button></div></div>
+<div id="incomeTotalsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>💰 المداخيل الحالية</h3></div><label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomeStats" class="stats"></div><button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button></div>
+<div id="manual2025Page" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>📝 إدخال مداخيل 2025</h3></div><p class="muted">أدخلي مجموع كل شهر ثم احفظيه في قاعدة البيانات.</p><div id="manualIncomeInputs" class="income-input-grid"></div><button class="primary" id="saveManualIncomeBtn" type="button">حفظ مداخيل 2025</button><div id="manualIncomeStatus" class="small"></div></div>
+<div id="incomeComparePage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>📊 مقارنة 2025 مع 2026</h3></div><div id="incomeCompare" class="list"></div></div>
+<div id="incomeMonthlyPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>📅 تفصيل المداخيل حسب الشهر</h3></div><div id="incomeMonthly" class="list"></div></div>
+<div id="incomePaymentsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>🧾 دفعات الشهر</h3></div><label for="incomeMonthPayments">اختاري الشهر</label><input id="incomeMonthPayments" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomePayments" class="list"></div><div class="note">تُحسب الدفعات المسجلة فقط لتجنب احتساب المبلغ العائلي مرتين.</div></div></section>
 <section id="overviewView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📊 ملخص المنصة</h2></div><div class="panel"><p class="muted">ملخص مباشر من قاعدة بيانات Supabase.</p><div id="stats" class="stats"></div><button class="primary" id="refreshBtn" type="button">تحديث البيانات</button></div>
 </section>
@@ -323,7 +325,13 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       if(entries.some(x=>!Number.isFinite(x.amount)||x.amount<0)){alert("أدخلي مبالغ صحيحة.");return;}
       try{const t=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action:"income_save",entries})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر الحفظ");manual2025={};(d.entries||[]).forEach(x=>manual2025[x.month]=Number(x.amount)||0);drawManual2025();$("manualIncomeStatus").textContent="تم حفظ مداخيل 2025 في Supabase.";}catch(e){$("manualIncomeStatus").textContent=e.message;}
     };
-    incomeMonthInput.onchange=renderIncome;
+    const incomePageIds=["incomeTotalsPage","manual2025Page","incomeComparePage","incomeMonthlyPage","incomePaymentsPage"];
+    function showIncomePage(id){$("incomeHomePage").hidden=id!=="home";incomePageIds.forEach(pid=>$(pid).hidden=pid!==id);}
+    document.querySelectorAll("[data-income-page]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage(btn.dataset.incomePage)));
+    document.querySelectorAll("[data-income-home]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("home")));
+    $("incomeMonthPayments").value=incomeMonthInput.value;
+    $("incomeMonthPayments").addEventListener("change",()=>{incomeMonthInput.value=$("incomeMonthPayments").value;renderIncome();});
+    incomeMonthInput.onchange=()=>{$("incomeMonthPayments").value=incomeMonthInput.value;renderIncome();};
     $("refreshIncomeBtn").onclick=()=>refresh();
     renderIncome();
     loadManual2025();
