@@ -306,9 +306,26 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const rows=payments.filter(p=>dateKey(p)===month).sort((a,b)=>new Date(b.payment_date||b.created_at)-new Date(a.payment_date||a.created_at));
       $("incomePayments").innerHTML=rows.length?rows.map(p=>{const state=String(p.status||"").toLowerCase();return '<div class="data-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><div class="payment-meta"><span>'+escapeHtml(money(p.amount_paid))+'</span><span class="payment-status '+(state==="approved"?"approved":state==="pending"?"pending":"rejected")+'">'+escapeHtml(payStatus[state]||p.status||"غير محددة")+'</span></div><div class="small">'+escapeHtml(p.service_name||p.service_type||"خدمة غير محددة")+' · '+escapeHtml(p.payment_method||"طريقة غير محددة")+'</div><div class="payment-date">تاريخ الدفع: '+formatDate(p.payment_date||p.created_at)+'</div></div>';}).join(""):'<div class="data-item">لا توجد دفعات في هذا الشهر.</div>';
     };
+    const monthLabels=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+    let manual2025={};
+    function drawManual2025(){
+      $("manualIncomeInputs").innerHTML=monthLabels.map((n,i)=>'<label class="income-month-field"><span>'+n+' 2025 (دج)</span><input type="number" min="0" step="0.01" data-manual-month="'+(i+1)+'" value="'+escapeHtml(manual2025[i+1]??"")+'" placeholder="0"></label>').join("");
+      const actual={};payments.filter(p=>String(p.status).toLowerCase()==="approved").forEach(p=>{const k=dateKey(p);if(k&&k.startsWith("2026-")){const m=Number(k.slice(5));actual[m]=(actual[m]||0)+(Number(p.amount_paid)||0);}});
+      const total25=Object.values(manual2025).reduce((s,v)=>s+(Number(v)||0),0),total26=Object.values(actual).reduce((s,v)=>s+v,0),diff=total26-total25;
+      $("incomeCompare").innerHTML='<div class="data-item"><strong>مجموع 2025: '+escapeHtml(money(total25))+'</strong><div>مجموع 2026: '+escapeHtml(money(total26))+'</div><div>الفرق: '+(diff>=0?"+":"")+escapeHtml(money(diff))+(total25?' · التغير '+(diff/total25*100).toFixed(1)+'%':'')+'</div></div>'+monthLabels.map((n,i)=>{const m=i+1,a=Number(manual2025[m])||0,b=actual[m]||0,d=b-a;return '<div class="data-item"><strong>'+n+'</strong><div>2025: '+escapeHtml(money(a))+' | 2026: '+escapeHtml(money(b))+'</div><div>الفرق: '+(d>=0?"+":"")+escapeHtml(money(d))+'</div></div>';}).join("");
+    }
+    async function loadManual2025(){
+      try{const t=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action:"income_data"})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل البيانات");manual2025={};(d.entries||[]).forEach(x=>manual2025[x.month]=Number(x.amount)||0);drawManual2025();}catch(e){$("manualIncomeStatus").textContent=e.message;}
+    }
+    $("saveManualIncomeBtn").onclick=async()=>{
+      const entries=[...$("manualIncomeInputs").querySelectorAll("[data-manual-month]")].map(x=>({month:Number(x.dataset.manualMonth),amount:x.value.trim()===""?0:Number(x.value)}));
+      if(entries.some(x=>!Number.isFinite(x.amount)||x.amount<0)){alert("أدخلي مبالغ صحيحة.");return;}
+      try{const t=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action:"income_save",entries})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر الحفظ");manual2025={};(d.entries||[]).forEach(x=>manual2025[x.month]=Number(x.amount)||0);drawManual2025();$("manualIncomeStatus").textContent="تم حفظ مداخيل 2025 في Supabase.";}catch(e){$("manualIncomeStatus").textContent=e.message;}
+    };
     incomeMonthInput.onchange=renderIncome;
     $("refreshIncomeBtn").onclick=()=>refresh();
     renderIncome();
+    loadManual2025();
     $("paymentsList").innerHTML = payments.length ? payments.map(p=>{const state=String(p.status||"").toLowerCase();const stateClass=state==="pending"?"pending":state==="approved"?"approved":state==="rejected"?"rejected":"";return '<div class="data-item payment-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><div class="payment-meta"><span>المبلغ: <b>'+escapeHtml(p.amount_paid ?? 0)+' دج</b></span><span class="payment-status '+stateClass+'">'+escapeHtml(payStatus[state]||p.status||"غير محددة")+'</span></div><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month||"غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+'</div><div class="payment-date">📅 تاريخ الدفع: '+formatDate(p.payment_date||p.created_at)+'</div>'+'<div class="small">🧾 مراجعة وصل الدفع تتم من البوت فقط.</div><div class="actions-row"><button class="secondary" data-edit="student_payments" data-id="'+escapeHtml(p.id)+'" type="button">تعديل</button><button class="secondary" data-delete="student_payments" data-id="'+escapeHtml(p.id)+'" type="button">حذف</button></div>'+'</div>'}).join("") : '<div class="data-item">لا توجد مدفوعات مسجلة حتى الآن.</div>';
     $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
   }
