@@ -199,7 +199,7 @@ async function handleCallback(q: any) {
     s.student_id = student.id; s.full_name = student.full_name; s.phone = student.phone ?? "غير متوفر"; s.level = student.level ?? "غير محدد";
     if (!familyMode) { s.mode = "renew"; s.items = []; }
     await setState(uid, chat, "service_type", s);
-    return send(chat, `${familyMode ? "👨‍👧‍👧 التلميذ المختار" : "تم اختيار"}: <b>${esc(s.full_name)}</b>\nالمستوى: ${esc(s.level)}\nاختاري نوع الخدمة:`, serviceMenu);
+    return send(chat, `${familyMode ? "👨‍👧‍👧 التلميذ المختار" : "تم اختيار"}: <b>${esc(String(s.full_name ?? "غير محدد"))}</b>\nالمستوى: ${esc(String(s.level ?? "غير محدد"))}\nاختاري نوع الخدمة:`, serviceMenu);
   }
   if (data.startsWith("method:")) {
     const row = await getState(uid, chat); const s = row.conversation_data as State; s.payment_method = data.slice(7) === "ccp" ? "CCP" : "BaridiMob";
