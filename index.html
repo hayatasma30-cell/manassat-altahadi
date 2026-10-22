@@ -161,7 +161,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
   const editFields={
-    students:[["full_name","اسم التلميذ"],["level","المستوى"],["status","الحالة"],["registration_date","تاريخ التسجيل"],["phone","رقم الهاتف"],["telegram_username","اسم تيليغرام"]],
+    students:[["full_name","اسم التلميذ"],["level","المستوى"],["status","الحالة"],["registration_date","تاريخ التسجيل"],["phone","رقم الهاتف"]],
     student_subscriptions:[["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["status","حالة الاشتراك"],["amount_due","المبلغ المطلوب",1]],
     student_payments:[["amount_paid","المبلغ المدفوع",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["status","حالة الدفع"]],
     student_requests:[["full_name","اسم التلميذ"],["level","المستوى"],["request_type","نوع الطلب"],["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["amount","المبلغ المطلوب",1],["amount_paid","المبلغ المدفوع",1],["remaining_balance","المبلغ المتبقي",1],["payment_method","طريقة الدفع"],["payment_date","تاريخ الدفع"],["registration_date","تاريخ التسجيل"],["status","حالة الطلب"]],
