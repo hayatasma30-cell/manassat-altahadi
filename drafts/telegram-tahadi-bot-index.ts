@@ -146,7 +146,7 @@ async function handleCallback(q: any) {
   const data = String(q.data ?? ""); const chat = q.message?.chat?.id; const uid = q.from?.id;
   if (q.id) await tg("answerCallbackQuery", { callback_query_id: q.id }).catch(() => null);
   if (!chat || !uid) return;
-  if (data === "cancel") { await reset(uid, chat); await tg("sendMessage", {chat_id:chat,text:"تم إلغاء العملية.",reply_markup:{remove_keyboard:true}}); await send(chat, "القائمة الرئيسية — اختاري عملية واحدة:", mainMenu); return; }
+  if (data === "cancel") { await reset(uid, chat); if (q.message?.message_id) { const edited = await tg("editMessageText", { chat_id: chat, message_id: q.message.message_id, text: "تم إلغاء العملية.\n\nالقائمة الرئيسية — اختاري عملية واحدة:", reply_markup: mainMenu }); if (edited?.ok) return; } return send(chat, "تم إلغاء العملية.\n\nالقائمة الرئيسية — اختاري عملية واحدة:", mainMenu); }
   if (data === "receipt:add") { const row=await getState(uid,chat); const s=row.conversation_data as State; if (!s.receipt_file_ids?.length) return send(chat,"أرسلي أول وصل قبل إضافة وصول آخر."); await setState(uid,chat,"receipt_more",s); return send(chat,"أرسلي صورة أو ملف الوصل التالي:"); }
   if (data === "receipt:finish") {
     const row=await getState(uid,chat); const s=row.conversation_data as State;
@@ -168,7 +168,7 @@ async function handleCallback(q: any) {
   if (data === "renew") return send(chat, "💳 <b>التجديد</b>\nاختاري نوع التجديد:", keyboard([[{text:"👤 تجديد تلميذ واحد",callback_data:"renew:one"}],[{text:"👨‍👧‍👧 تجديد عائلي لعدة تلاميذ مسجلين",callback_data:"renew:family"}],[{text:"⬅️ القائمة الرئيسية",callback_data:"menu:main"}]]));
   if (data === "renew:one") return beginRenew(uid, chat);
   if (data === "renew:family") return beginFamily(uid, chat);
-  if (data === "menu:main") { await reset(uid, chat); return send(chat, "القائمة الرئيسية:", mainMenu); }
+  if (data === "menu:main") { await reset(uid, chat); if (q.message?.message_id) { const edited = await tg("editMessageText", { chat_id: chat, message_id: q.message.message_id, text: "القائمة الرئيسية — اختاري عملية واحدة:", reply_markup: mainMenu }); if (edited?.ok) return; } return send(chat, "القائمة الرئيسية — اختاري عملية واحدة:", mainMenu); }
   if (data === "results") { await setState(uid, chat, "results_find", {}); return send(chat, "📚 <b>نتائج التلاميذ</b>\nللحفاظ على خصوصية النتائج، نعرض فقط التلاميذ المرتبطين بحساب تيليغرام هذا. اكتبي اسم التلميذ للبحث:"); }
   if (data === "family:addstudent") { const row=await getState(uid,chat); const s=row.conversation_data as State; if(s.mode!=="family" || !(s.items?.length)) return send(chat,"ابدئي التجديد العائلي من القائمة.",mainMenu); s.student_id=null; s.full_name=""; s.phone=""; s.level=""; await setState(uid,chat,"family_find",s); return send(chat,"ابعثي اسم التلميذ التالي أو رقم هاتفه للبحث في التلاميذ المسجلين:"); }
   if (data === "family:addnewstudent") { const row=await getState(uid,chat); const s=row.conversation_data as State; if(s.mode!=="new_family" || !(s.items?.length)) return send(chat,"ابدئي تسجيل عدة تلاميذ من قائمة التسجيل.",mainMenu); s.student_id=null; s.full_name=""; s.phone=""; s.level=""; s.pending_item={}; s.selected_months=[]; await setState(uid,chat,"new_name",s); return send(chat,"ابعثي الاسم واللقب الكامل للتلميذ الجديد التالي:"); }
