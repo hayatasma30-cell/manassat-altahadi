@@ -232,7 +232,7 @@ const MCQ=
 ];
 const questions=MCQ.map(x=>({...x,type:"mcq"})).sort((a,b)=>a.n-b.n);
 const LETTERS=["A","B","C","D"];let current=0,deadline=0,timerId=null,attemptId=null,attemptToken=null,answers={},written={},finished=false;
-async function api(payload,token=""){const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{})},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"تعذر الاتصال بالخادم.");return d}
+async function api(payload,token=""){const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",...(token?{"X-Quiz-Token":token}:{})},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"تعذر الاتصال بالخادم.");return d}
 const $=id=>document.getElementById(id);
 $("start").onclick=async()=>{const full_name=$("fullName").value.trim(),code=$("code").value.trim();$("loginError").textContent="جارٍ التحقق من البيانات…";$("start").disabled=true;try{const d=await api({action:"start",full_name,code});attemptId=d.attempt_id;attemptToken=d.attempt_token;deadline=Date.now()+2400000;$("studentLabel").textContent=d.student.full_name;$("exam").classList.remove("hidden");$("start").disabled=false;render();timerId=setInterval(tick,500);$("loginError").textContent="";window.scrollTo(0,0)}catch(e){$("loginError").textContent=e.message;$("start").disabled=false}};
 function tick(){let left=Math.max(0,Math.ceil((deadline-Date.now())/1000));$("timer").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");if(left<=0)submit()}
