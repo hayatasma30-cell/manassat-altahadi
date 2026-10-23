@@ -324,8 +324,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const levelFilters = $("studentLevelFilters");
     let selectedStudentLevel = "all";
     const normalizeStudentLevel = value => {
-      const level = String(value || "").trim().replace(/^السنة\s+/,"").replace(/\s+/g," ");
-      if (/^(الأولى|الاولى) متوسط$/.test(level)) return "الأولى متوسط";
+      const level = String(value || "").trim().replace(/^السنة\s+/,"").replace(/[إأآا]/g,"ا").replace(/\s+/g," ");
+      if (/^الاولى متوسط$/.test(level)) return "الأولى متوسط";
       if (/^الثانية متوسط$/.test(level)) return "الثانية متوسط";
       if (/^الثالثة متوسط$/.test(level)) return "الثالثة متوسط";
       if (/^الرابعة متوسط$/.test(level)) return "الرابعة متوسط";
@@ -469,7 +469,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   document.querySelectorAll("[data-lesson-page]").forEach(b=>b.addEventListener("click",()=>setLessonPage(b.dataset.lessonPage)));
   const lessonDateInput=$("lessonDate");
   if(lessonDateInput&&!lessonDateInput.value)lessonDateInput.value=new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0")+"-"+String(new Date().getDate()).padStart(2,"0");
-  function populateDailyLessonStudents(){const sel=$("lessonStudent");if(!sel)return;const current=sel.value;const level=$("lessonLevel").value;const students=(Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[]).filter(s=>!level||String(s.level||"").trim()===level);sel.innerHTML='<option value="">اختاري التلميذ</option>'+students.slice().sort((a,b)=>String(a.full_name||"").localeCompare(String(b.full_name||""),"ar")).map(s=>'<option value="'+escapeHtml(s.full_name||"")+'">'+escapeHtml(s.full_name||"تلميذ بدون اسم")+'</option>').join("");if(current&&students.some(s=>String(s.full_name||"")===current))sel.value=current;}
+  function normalizeDailyLevel(value){return String(value||"").trim().replace(/^السنة\s+/,"").replace(/[إأآا]/g,"ا").replace(/\s+/g," ");}
+   function populateDailyLessonStudents(){const sel=$("lessonStudent");if(!sel)return;const current=sel.value;const level=$("lessonLevel").value;const students=(Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[]).filter(s=>!level||normalizeDailyLevel(s.level)===normalizeDailyLevel(level));sel.innerHTML='<option value="">اختاري التلميذ</option>'+students.slice().sort((a,b)=>String(a.full_name||"").localeCompare(String(b.full_name||""),"ar")).map(s=>'<option value="'+escapeHtml(s.full_name||"")+'">'+escapeHtml(s.full_name||"تلميذ بدون اسم")+'</option>').join("");if(current&&students.some(s=>String(s.full_name||"")===current))sel.value=current;}
   function updateDailyLessonFields(){const individual=$("lessonType").value==="فردية";$("lessonStudentWrap").style.display=individual?"block":"none";if(!individual)$("lessonStudent").value="";populateDailyLessonStudents();}
   populateDailyLessonStudents();
   $("lessonRepeatWeekly").addEventListener("change",()=>{$("lessonRepeatEndWrap").hidden=!$("lessonRepeatWeekly").checked;if($("lessonRepeatWeekly").checked&&!$("lessonRepeatEnd").value){const d=new Date();d.setDate(d.getDate()+90);$("lessonRepeatEnd").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}});
