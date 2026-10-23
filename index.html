@@ -125,6 +125,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <div class="hero"><div class="eyebrow">فضاء الأستاذة</div><h1>منصة التحدي</h1><p>مرحبًا بكِ في فضائكِ التعليمي؛ اختاري القسم الذي تريدين فتحه، وستظهر معلوماته في صفحة مستقلة.</p></div>
 <div class="menu" aria-label="أقسام المنصة">
 <button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
@@ -147,6 +148,21 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <section id="studentProfileView" class="view">
 <div class="view-head"><button class="back" id="backToStudents" type="button">→ قائمة التلاميذ</button><h2>👤 ملف التلميذ</h2></div>
 <div class="panel"><h3 id="studentDetailsTitle">ملف التلميذ</h3><div id="studentDetailsBody"></div></div>
+</section>
+<section id="dailyLessonsView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🗓️ حصصي اليومية</h2></div>
+<div class="panel">
+<p class="muted">سجلي حصص الدعم الجماعية والفردية، وتابعي حالتها. تحفظ البيانات في المنصة.</p>
+<label for="lessonDate">التاريخ</label><input id="lessonDate" type="date">
+<label for="lessonTime">الوقت</label><input id="lessonTime" type="text" placeholder="مثال: 16:00 أو 16:00–17:00">
+<label for="lessonType">نوع الحصة</label><select id="lessonType"><option value="جماعية">جماعية</option><option value="فردية">فردية</option></select>
+<label for="lessonLevel">المستوى الدراسي</label><input id="lessonLevel" type="text" placeholder="مثال: السنة الثالثة متوسط">
+<label for="lessonStudent">اسم التلميذ (للفردية)</label><input id="lessonStudent" type="text" placeholder="اسم التلميذ">
+<label for="lessonSubject">المادة أو عنوان الحصة</label><input id="lessonSubject" type="text" value="علوم طبيعية">
+<label for="lessonNotes">ملاحظات</label><input id="lessonNotes" type="text" placeholder="اختياري">
+<button id="saveLessonBtn" class="primary" type="button">حفظ الحصة</button><div id="lessonStatus" class="status"></div>
+</div>
+<div class="panel" style="margin-top:14px"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap"><h3 style="margin:0">قائمة الحصص</h3><button id="refreshLessonsBtn" class="secondary" type="button">تحديث</button></div><div id="dailyLessonsList" class="list" style="margin-top:14px"></div></div>
 </section>
 <section id="subscriptionsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 الاشتراكات</h2></div><div class="panel"><p class="muted">الاشتراكات المسجلة للتلاميذ وحالتها ومبالغها.</p><div id="subscriptionsList" class="list" style="margin-top:14px"></div></div>
@@ -438,6 +454,16 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     $("paymentsList").innerHTML = payments.length ? payments.map(p=>{const state=String(p.status||"").toLowerCase();const stateClass=state==="pending"?"pending":state==="approved"?"approved":state==="rejected"?"rejected":"";return '<div class="data-item payment-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><div class="payment-meta"><span>المبلغ: <b>'+escapeHtml(p.amount_paid ?? 0)+' دج</b></span><span class="payment-status '+stateClass+'">'+escapeHtml(payStatus[state]||p.status||"غير محددة")+'</span></div><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+' · الشهر: '+escapeHtml(p.subscription_month||"غير محدد")+'</div><div class="small">طريقة الدفع: '+escapeHtml(p.payment_method||"غير محددة")+'</div><div class="payment-date">📅 تاريخ الدفع: '+formatDate(p.payment_date||p.created_at)+'</div>'+'<div class="small">🧾 مراجعة وصل الدفع تتم من البوت فقط.</div><div class="actions-row"><button class="secondary" data-edit="student_payments" data-id="'+escapeHtml(p.id)+'" type="button">تعديل</button><button class="secondary" data-delete="student_payments" data-id="'+escapeHtml(p.id)+'" type="button">حذف</button></div>'+'</div>'}).join("") : '<div class="data-item">لا توجد مدفوعات مسجلة حتى الآن.</div>';
     $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
   }
+  const lessonDateInput=$("lessonDate");
+  if(lessonDateInput&&!lessonDateInput.value)lessonDateInput.value=new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0")+"-"+String(new Date().getDate()).padStart(2,"0");
+  function lessonMessage(msg,kind="ok"){const el=$("lessonStatus");el.textContent=msg;el.className="status show "+(kind==="error"?"error":"ok");}
+  async function lessonRequest(payload){const t=localStorage.getItem("tahadi_teacher_token");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d;}
+  async function loadDailyLessons(){try{const date=lessonDateInput.value;const d=await lessonRequest({action:"daily_lessons_list",date});const rows=d.lessons||[];$("dailyLessonsList").innerHTML=rows.length?rows.map(x=>'<div class="data-item"><strong>'+escapeHtml(x.lesson_time)+' · '+escapeHtml(x.lesson_type)+' — '+escapeHtml(x.subject)+'</strong><div class="small">المستوى: '+escapeHtml(x.level||"غير محدد")+'</div>'+(x.student_name?'<div class="small">التلميذ: '+escapeHtml(x.student_name)+'</div>':'')+(x.notes?'<div class="small">ملاحظات: '+escapeHtml(x.notes)+'</div>':'')+'<div class="payment-meta"><span class="payment-status '+(x.status==="تمت"?"approved":x.status==="ألغيت"?"rejected":"pending")+'">'+escapeHtml(x.status)+'</span><button class="secondary" data-lesson-status="'+escapeHtml(x.id)+'" data-next-status="'+(x.status==="مجدولة"?"تمت":"مجدولة")+'" type="button">'+(x.status==="مجدولة"?"تحديد كحصة تمت":"إرجاع لمجدولة")+'</button><button class="secondary" data-lesson-cancel="'+escapeHtml(x.id)+'" type="button">إلغاء الحصة</button><button class="secondary" data-lesson-delete="'+escapeHtml(x.id)+'" type="button">حذف</button></div></div>').join(""):'<div class="data-item">ما كاين حتى حصة مسجلة لهذا التاريخ.</div>';}catch(e){$("dailyLessonsList").innerHTML='<div class="data-item">'+escapeHtml(e.message)+'</div>';}}
+  $("saveLessonBtn").addEventListener("click",async()=>{const lesson={lesson_date:lessonDateInput.value,lesson_time:$("lessonTime").value.trim(),lesson_type:$("lessonType").value,level:$("lessonLevel").value.trim(),student_name:$("lessonStudent").value.trim(),subject:$("lessonSubject").value.trim(),notes:$("lessonNotes").value.trim()};try{await lessonRequest({action:"daily_lessons_save",lesson});lessonMessage("تم حفظ الحصة.");$("lessonTime").value="";$("lessonStudent").value="";$("lessonNotes").value="";await loadDailyLessons();}catch(e){lessonMessage(e.message,"error");}});
+  $("refreshLessonsBtn").addEventListener("click",loadDailyLessons);
+  lessonDateInput.addEventListener("change",loadDailyLessons);
+  $("dailyLessonsList").addEventListener("click",async ev=>{const st=ev.target.closest("[data-lesson-status]"),ca=ev.target.closest("[data-lesson-cancel]"),del=ev.target.closest("[data-lesson-delete]");try{if(st){await lessonRequest({action:"daily_lessons_update",id:st.dataset.lessonStatus,status:st.dataset.nextStatus});}else if(ca){await lessonRequest({action:"daily_lessons_update",id:ca.dataset.lessonCancel,status:"ألغيت"});}else if(del){if(!confirm("تأكدي من حذف هذه الحصة نهائيًا؟"))return;await lessonRequest({action:"daily_lessons_delete",id:del.dataset.lessonDelete});}else return;await loadDailyLessons();}catch(e){lessonMessage(e.message,"error");}});
+  document.querySelector('[data-view="dailyLessonsView"]').addEventListener("click",()=>loadDailyLessons());
   async function refresh() {
     const token = localStorage.getItem("tahadi_teacher_token");
     if (!token) { showView("loginView"); showStatus("سجلي الدخول أولًا.", "error"); return; }
