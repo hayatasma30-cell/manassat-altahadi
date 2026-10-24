@@ -134,9 +134,24 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="learningResourcesView"><span class="menu-icon">📖</span><span class="menu-copy"><strong>مكتبة الدروس</strong><small>إضافة الدروس والملخصات والتمارين ونشرها للتلاميذ</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button>
 </div>
 <div class="note">تظهر بيانات التلاميذ والمدفوعات بعد دخول الأستاذة. بيانات التسجيلات والنتائج والحضور وملاحظات الأستاذة تبقى في بوت تيليغرام.</div>
+</section>
+<section id="learningResourcesView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
+<div class="panel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
+<form id="learningResourceForm">
+<input id="resourceId" type="hidden">
+<label for="resourceTitle">عنوان المورد</label><input id="resourceTitle" required maxlength="180" placeholder="مثال: ملخص الزلازل والتشوهات التكتونية">
+<label for="resourceLevel">المستوى الدراسي</label><select id="resourceLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select>
+<label for="resourceType">نوع المورد</label><select id="resourceType"><option value="lesson">درس</option><option value="summary">ملخص</option><option value="exercise">تمرين</option><option value="video">فيديو</option><option value="link">رابط تعليمي</option></select>
+<label for="resourceUrl">رابط الملف أو الفيديو (اختياري)</label><input id="resourceUrl" type="url" placeholder="https://...">
+<label for="resourceDescription">وصف مختصر (اختياري)</label><input id="resourceDescription" maxlength="1000" placeholder="محتوى المورد أو تعليمات للتلميذ">
+<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="resourcePublished" type="checkbox" style="width:auto"> نشر المورد في فضاء التلميذ فورًا</label>
+<div class="actions-row"><button class="primary" id="saveLearningResource" type="submit">حفظ المورد</button><button class="secondary" id="cancelResourceEdit" type="button">إفراغ الحقول</button></div><p id="resourceFormStatus" class="muted" role="status"></p></form></div>
+<div class="panel"><div class="section-heading"><h3>الموارد المضافة</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div>
 </section>
 <section id="loginView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ رجوع</button><h2>🔐 دخول الأستاذة</h2></div>
@@ -578,6 +593,27 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     } catch (e) { showStatus(e instanceof Error ? e.message : "تعذر الاتصال بالخدمة.", "error"); }
     finally { btn.disabled=false; btn.textContent="دخول"; }
   });
+  const resourceEndpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
+  async function resourceRequest(action, extra={}) {
+    const token=localStorage.getItem("tahadi_teacher_token");
+    const response=await fetch(resourceEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});
+    const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تنفيذ العملية.");return data;
+  }
+  const resourceTypeNames={lesson:"درس",summary:"ملخص",exercise:"تمرين",video:"فيديو",link:"رابط تعليمي"};
+  async function loadLearningResources(){
+    const list=$("learningResourcesList");if(!list)return;list.innerHTML='<p class="muted">جارٍ تحميل الموارد…</p>';
+    try{const d=await resourceRequest("teacher_list_resources");if(!d.resources.length){list.innerHTML='<div class="empty-state">لم تضيفي موارد بعد. ابدئي بإضافة أول درس أو ملخص.</div>';return;}
+      list.innerHTML=d.resources.map(r=>'<article class="data-item" style="margin:10px 0"><div class="section-heading"><strong>'+escapeHtml(r.title)+'</strong><span class="badge">'+escapeHtml(resourceTypeNames[r.resource_type]||r.resource_type)+'</span></div><p class="small">'+escapeHtml(r.level)+' • '+(r.is_published?'<span style="color:#17683a">منشور للتلاميذ</span>':'<span style="color:#946b16">مسودة — لا يظهر للتلاميذ</span>')+'</p>'+(r.description?'<p>'+escapeHtml(r.description)+'</p>':'')+(r.resource_url?'<p dir="ltr"><a href="'+escapeHtml(r.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a></p>':'<p class="small">لم يرفق رابط بالعنصر.</p>')+'<div class="actions-row"><button type="button" class="secondary" data-edit-resource="'+r.id+'">تعديل</button><button type="button" class="secondary" data-toggle-resource="'+r.id+'" data-published="'+(!r.is_published)+'">'+(r.is_published?'إلغاء النشر':'نشر للتلاميذ')+'</button><button type="button" class="danger" data-delete-resource="'+r.id+'">حذف</button></div></article>').join("");
+      list.querySelectorAll("[data-edit-resource]").forEach(btn=>btn.addEventListener("click",()=>{const r=d.resources.find(x=>x.id===btn.dataset.editResource);if(!r)return;$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=r.resource_type;$("resourceUrl").value=r.resource_url||"";$("resourceDescription").value=r.description||"";$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});}));
+      list.querySelectorAll("[data-toggle-resource]").forEach(btn=>btn.addEventListener("click",async()=>{btn.disabled=true;try{const r=d.resources.find(x=>x.id===btn.dataset.toggleResource);await resourceRequest("teacher_save_resource",{...r,is_published:btn.dataset.published==="true"});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
+      list.querySelectorAll("[data-delete-resource]").forEach(btn=>btn.addEventListener("click",async()=>{if(!confirm("هل تريدين حذف هذا المورد نهائيًا؟"))return;btn.disabled=true;try{await resourceRequest("teacher_delete_resource",{id:btn.dataset.deleteResource});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
+    }catch(e){list.innerHTML='<p class="error">'+escapeHtml(e.message)+'</p>';}
+  }
+  $("learningResourceForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveLearningResource"),status=$("resourceFormStatus");btn.disabled=true;status.textContent="جارٍ الحفظ…";try{const body={id:$("resourceId").value||undefined,title:$("resourceTitle").value,level:$("resourceLevel").value,resource_type:$("resourceType").value,resource_url:$("resourceUrl").value,description:$("resourceDescription").value,is_published:$("resourcePublished").checked};await resourceRequest("teacher_save_resource",body);status.textContent="تم الحفظ بنجاح.";resetResourceForm();await loadLearningResources();}catch(e){status.textContent=e.message}finally{btn.disabled=false;}});
+  function resetResourceForm(){$("learningResourceForm").reset();$("resourceId").value="";$("resourceFormTitle").textContent="➕ إضافة مورد تعليمي";}
+  $("cancelResourceEdit").addEventListener("click",resetResourceForm);
+  $("refreshLearningResources").addEventListener("click",loadLearningResources);
+  document.querySelectorAll('[data-view="learningResourcesView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
 })();
 </script>
 </body>
