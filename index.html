@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-10-26-student-records-v1">
+<meta name="platform-build" content="2026-10-26-student-list-3d-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -24,6 +24,23 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 @media(max-width:700px){.wrap{padding:13px}.topbar{padding:10px 12px}.brand{font-size:1rem}.teacher-chip{font-size:.75rem}.hero{padding:21px 17px;border-radius:19px}.menu{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.menu-btn{min-height:102px;padding:11px;gap:8px;align-items:flex-start}.menu-icon{width:37px;height:37px;flex-basis:37px;border-radius:11px;font-size:1.1rem}.menu-copy strong{font-size:.88rem}.menu-copy small{font-size:.7rem}.chev{display:none}.panel{padding:14px}.view-head h2{font-size:1.15rem}}
 @media(max-width:380px){.menu{grid-template-columns:1fr}.menu-btn{min-height:72px;align-items:center}.menu-copy small{font-size:.76rem}}
+
+/* تنظيم قائمة التلاميذ: صفحات واضحة وأزرار ثلاثية الأبعاد */
+.level-filters{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px!important;margin:14px 0!important}
+.level-filter{min-height:72px!important;padding:14px!important;display:flex!important;align-items:center;justify-content:space-between;gap:8px;text-align:right;background:linear-gradient(145deg,#fffef8,#eaf5e8)!important;border:1px solid #b7d2b4!important;border-bottom:5px solid #67996a!important;border-radius:17px!important;box-shadow:0 5px 0 #1b6b3520,0 10px 18px rgba(24,63,34,.13)!important;transition:transform .16s,box-shadow .16s!important}
+.level-filter:active,.student-action:active{transform:translateY(3px)!important;box-shadow:0 2px 0 rgba(20,83,45,.13),0 4px 8px rgba(20,63,34,.08)!important}
+#studentsList{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px!important;align-items:stretch}
+#studentsList>.daily-mode-switch{grid-column:1/-1}
+#studentsList>.data-item{min-width:0;margin:0!important;padding:15px!important;border-radius:18px!important;display:flex;flex-direction:column;gap:8px;background:linear-gradient(150deg,#fff,#f7fbf4)!important;box-shadow:0 5px 0 rgba(20,83,45,.09),0 10px 20px rgba(20,63,34,.08)!important}
+#studentsList>.data-item>strong{font-size:1rem!important;margin:0!important}
+#studentsList>.data-item>span{display:block;line-height:1.7}
+#studentsList .student-actions{display:grid;grid-template-columns:1fr;gap:9px;margin-top:auto;padding-top:6px}
+.student-action{width:100%!important;min-height:45px!important;display:flex!important;align-items:center;justify-content:center;gap:7px;padding:10px 12px!important;border-radius:13px!important;font-weight:800!important;border:1px solid #b8d2b5!important;border-bottom:4px solid #67996a!important;background:linear-gradient(145deg,#fff,#eaf5e8)!important;color:#14532d!important;box-shadow:0 4px 0 rgba(20,83,45,.10),0 8px 14px rgba(20,63,34,.10)!important;transition:transform .16s,box-shadow .16s!important}
+.student-action.preview{background:linear-gradient(145deg,#1d7542,#14532d)!important;color:#fff!important;border-color:#2d8751!important;border-bottom-color:#0c3f22!important;box-shadow:0 4px 0 rgba(20,83,45,.2),0 8px 14px rgba(20,63,34,.15)!important}
+.student-action.delete{background:linear-gradient(145deg,#fff8f8,#ffebeb)!important;color:#9f2431!important;border-color:#e5b8bd!important;border-bottom-color:#c46a72!important}
+#studentLevelView>.panel{padding:clamp(12px,3vw,20px)!important}
+@media(max-width:600px){.level-filters{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}.level-filter{min-height:62px!important;padding:10px!important;font-size:12px!important}#studentsList{grid-template-columns:1fr!important;gap:10px!important}#studentsList>.data-item{padding:14px!important}.student-action{min-height:46px!important}}
+@media(max-width:350px){.level-filters{grid-template-columns:1fr!important}}
 
 /* تحسين الهوية البصرية: بطاقات وأزرار منسجمة على الهاتف */
 .data-item{border:1px solid #e2e9dc;border-radius:22px;padding:18px;background:linear-gradient(145deg,#fff 0%,#fffef9 100%);box-shadow:0 7px 22px rgba(20,83,45,.07);transition:transform .18s ease,box-shadow .18s ease}
@@ -375,7 +392,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const filteredStudents = selectedStudyMode === "all" ? levelStudents : levelStudents.filter(s => (s.study_mode||"zoom") === selectedStudyMode);
       $("studentLevelTitle").textContent = selectedStudentLevel === "all" ? "🎓 جميع التلاميذ" : "🎓 "+selectedStudentLevel;
       $("studentLevelDescription").textContent = "عدد التلاميذ المعروضين: "+filteredStudents.length+" · "+(selectedStudyMode==="zoom"?"زووم":selectedStudyMode==="in_person"?"حضوري":"كل طرق الدراسة");
-      $("studentsList").innerHTML = '<div class="daily-mode-switch" role="group" aria-label="تصفية حسب طريقة الدراسة"><button type="button" class="'+(selectedStudyMode==="all"?"primary":"secondary")+'" data-study-filter="all">الكل ('+levelStudents.length+')</button><button type="button" class="'+(selectedStudyMode==="zoom"?"primary":"secondary")+'" data-study-filter="zoom">💻 زووم ('+levelStudents.filter(s=>(s.study_mode||"zoom")==="zoom").length+')</button><button type="button" class="'+(selectedStudyMode==="in_person"?"primary":"secondary")+'" data-study-filter="in_person">🏫 حضوري ('+levelStudents.filter(s=>s.study_mode==="in_person").length+')</button></div>' + (filteredStudents.length ? filteredStudents.map(s=>'<div class="data-item"><strong>'+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+' · طريقة الدراسة: '+((s.study_mode||"zoom")==="in_person"?"حضوري":"زووم")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span><button class="secondary student-detail-btn" type="button" data-student-id="'+escapeHtml(s.id)+'" style="margin-top:10px">👁 معاينة التلميذ</button><div class="actions-row"><button class="secondary" data-delete="students" data-id="'+escapeHtml(s.id)+'" type="button">حذف التلميذ</button></div></div>').join("") : '<div class="data-item">ما كاين حتى تلميذ في هذا التصنيف حاليًا.</div>');
+      $("studentsList").innerHTML = '<div class="daily-mode-switch" role="group" aria-label="تصفية حسب طريقة الدراسة"><button type="button" class="'+(selectedStudyMode==="all"?"primary":"secondary")+'" data-study-filter="all">الكل ('+levelStudents.length+')</button><button type="button" class="'+(selectedStudyMode==="zoom"?"primary":"secondary")+'" data-study-filter="zoom">💻 زووم ('+levelStudents.filter(s=>(s.study_mode||"zoom")==="zoom").length+')</button><button type="button" class="'+(selectedStudyMode==="in_person"?"primary":"secondary")+'" data-study-filter="in_person">🏫 حضوري ('+levelStudents.filter(s=>s.study_mode==="in_person").length+')</button></div>' + (filteredStudents.length ? filteredStudents.map(s=>'<div class="data-item"><strong>🎓 '+escapeHtml(s.full_name)+'</strong><span>المستوى: '+escapeHtml(s.level||"غير محدد")+'</span><span>طريقة الدراسة: '+((s.study_mode||"zoom")==="in_person"?"🏫 حضوري":"💻 زووم")+' · الحالة: '+escapeHtml(s.status||"غير محددة")+'</span><div class="student-actions"><button class="student-action preview" type="button" data-student-id="'+escapeHtml(s.id)+'">👁 معاينة التلميذ ←</button><button class="student-action delete" data-delete="students" data-id="'+escapeHtml(s.id)+'" type="button">🗑 حذف التلميذ</button></div></div>').join("") : '<div class="data-item">ما كاين حتى تلميذ في هذا التصنيف حاليًا.</div>');
       $("studentsList").querySelectorAll("[data-study-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedStudyMode=btn.dataset.studyFilter;renderStudents();}));
       $("studentsList").querySelectorAll("[data-student-id]").forEach(btn=>btn.addEventListener("click",()=>{
         const s=students.find(x=>String(x.id)===btn.dataset.studentId);if(!s)return;
