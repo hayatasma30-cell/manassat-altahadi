@@ -455,7 +455,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         const s=students.find(x=>String(x.id)===btn.dataset.studentId);if(!s)return;
         const teacherToken=localStorage.getItem("tahadi_teacher_token");
         if(!teacherToken){alert("انتهت جلسة الأستاذة. سجلي الدخول ثم حاولي مجددًا.");return;}
-        const previewUrl="student-space.html?teacher_preview="+encodeURIComponent(s.id);
+        const previewUrl="student-space.html?v=20261026fix1&teacher_preview="+encodeURIComponent(s.id);
         window.open(previewUrl,"_blank","noopener,noreferrer");
       }));
 ;
