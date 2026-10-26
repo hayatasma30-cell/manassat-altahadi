@@ -99,10 +99,10 @@ const initializeStudentSpace = async () => {
     $("dashboard").classList.remove("hidden");
     $("teacherPreviewBanner").classList.remove("hidden");
     $("logoutBtn").classList.add("hidden");
-    $("sendQuestion").classList.add("hidden");
-    $("studentQuestion").readOnly = true;
-    $("studentQuestion").placeholder = "المعاينة للقراءة فقط؛ لا يمكن إرسال سؤال من هنا.";
-    $("questionImage").disabled = true;
+    hideIfExists("sendQuestion");
+    if ($("studentQuestion")) $("studentQuestion").readOnly = true;
+    if ($("studentQuestion")) $("studentQuestion").placeholder = "المعاينة للقراءة فقط؛ لا يمكن إرسال سؤال من هنا.";
+    if ($("questionImage")) $("questionImage").disabled = true;
     $("exitTeacherPreview").onclick = () => {
       location.href = new URL("index.html?view=studentsView&return_to_students=1", location.href).href;
     };
