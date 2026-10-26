@@ -95,12 +95,12 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("studentQuestion").readOnly=true;
   $("studentQuestion").placeholder="المعاينة للقراءة فقط؛ لا يمكن إرسال سؤال من هنا.";
   $("questionImage").disabled=true;
-  $("exitTeacherPreview").addEventListener("click",()=>{location.href="index.html?view=studentsView";});
+  $("exitTeacherPreview").addEventListener("click",()=>{location.replace("index.html?view=studentsView&return_refresh=20261027a");});
   const token=localStorage.getItem("tahadi_teacher_token");
   if(!token){$("studentName").textContent="انتهت جلسة الأستاذة";$("studentLevel").textContent="سجلي الدخول إلى فضاء الأستاذة أولًا.";return;}
   $("studentName").textContent="جارٍ تحميل معاينة التلميذ…";
   try{
-   const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access?preview_refresh=20261026",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,"Cache-Control":"no-cache"},body:JSON.stringify({action:"teacher_student_preview",student_id:teacherPreviewId})});
+   const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access?preview_refresh=20261027a",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,"Cache-Control":"no-cache"},body:JSON.stringify({action:"teacher_student_preview",student_id:teacherPreviewId})});
    const d=await response.json();if(!response.ok||!d.ok)throw Error(d.error||"تعذر تحميل المعاينة.");
    if(!d.student||!d.student.id||!d.student.full_name)throw Error("لم تصل بيانات التلميذ كاملة من خدمة المعاينة. ارجعي إلى قائمة التلاميذ وافتحي المعاينة من جديد.");
    d.subscriptions=Array.isArray(d.subscriptions)?d.subscriptions:[];
