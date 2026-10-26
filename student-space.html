@@ -85,7 +85,7 @@ $("studentProfile").innerHTML='<p><b>الاسم الكامل:</b> '+safe(student
 list("quizzes",d.quiz_attempts,x=>'<strong>'+safe(x.quiz_title||"اختبار إلكتروني")+'</strong><p class="muted">تاريخ المحاولة: '+date(x.started_at)+'</p><p>'+(x.submitted_at?'<span class="tag">تم إرسال الإجابات</span>':'<span class="tag">محاولة غير مكتملة</span>')+'</p>'+(x.submitted_at?'<div class="result-score"><span>العلامة</span><strong>'+safe(x.teacher_score??x.auto_score??"قيد التصحيح")+' / '+safe(x.auto_max_score??20)+'</strong></div>':'<p class="muted">لم تُرسل الإجابات النهائية بعد.</p>')+(x.submitted_at&&Array.isArray(x.review)&&x.review.length?'<details class="quiz-review"><summary>📋 ملخص الاختبار والإجابات الصحيحة والتصحيح</summary><p class="muted">ملخص المحاولة: '+x.review.filter(q=>q.is_correct).length+' إجابة صحيحة من '+x.review.length+'، و'+x.review.filter(q=>!q.is_correct).length+' إجابة تحتاج إلى مراجعة.</p>'+x.review.map(q=>'<div class="review-question"><strong>السؤال '+safe(q.number)+' — '+(q.is_correct?'<span class="review-correct">إجابة صحيحة ✓</span>':'<span class="review-wrong">إجابة تحتاج إلى مراجعة ✗</span>')+'</strong><p>'+safe(q.question)+'</p><p><b>إجابتك:</b> '+safe(q.chosen_text)+'</p><p><b>الإجابة الصحيحة:</b> '+safe(q.correct)+'. '+safe(q.correct_text)+'</p></div>').join('')+'</details>':"")+(x.teacher_review_status?'<p class="muted">حالة التصحيح: '+safe(x.teacher_score!==null&&x.teacher_score!==undefined?"تم اعتماد علامة الأستاذة":(x.teacher_review_status==="completed"?"اكتمل التصحيح الآلي":"بانتظار المراجعة"))+'</p>':"")+(x.teacher_note?'<div class="teacher-note"><strong>ملاحظة الأستاذة</strong><p>'+safe(x.teacher_note)+'</p></div>':""), "لا توجد نتائج اختبارات محفوظة لحسابك حتى الآن.");}
 document.querySelectorAll("[data-section]").forEach(btn=>btn.addEventListener("click",()=>openStudentSection(btn.dataset.section)));$("backToStudentMenu").addEventListener("click",showStudentMenu);window.addEventListener("popstate",()=>{const key=new URL(location.href).searchParams.get("section");if(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));}else{ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));}});
 $("loginBtn").addEventListener("click",login);$("portalCode").addEventListener("keydown",e=>{if(e.key==="Enter")login()});$("fullName").addEventListener("keydown",e=>{if(e.key==="Enter")$("portalCode").focus()});$("logoutBtn").addEventListener("click",async()=>{try{if(sessionToken)await call("student_portal_logout",{session_token:sessionToken})}catch(e){}sessionToken=null;localStorage.removeItem("tahadi_student_session");$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("portalCode").value="";$("loginError").textContent="تم تسجيل الخروج."});
-window.addEventListener("DOMContentLoaded", async () => {
+const initializeStudentSpace = async () => {
   // New isolated teacher-preview flow. It never changes or deletes student records.
   if (teacherPreviewId) {
     const showPreviewError = (message) => {
@@ -165,5 +165,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     sessionToken = null;
     localStorage.removeItem("tahadi_student_session");
   }
-});
+};
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeStudentSpace, { once: true });
+} else {
+  initializeStudentSpace();
+}
 </script></body></html>
