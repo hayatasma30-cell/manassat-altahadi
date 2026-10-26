@@ -380,11 +380,12 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       if (/^الرابعة متوسط$/.test(level)) return "الرابعة متوسط";
       return level;
     };
-    const knownLevels = ["الأولى متوسط","الثانية متوسط","الثالثة متوسط","الرابعة متوسط"];
+    const knownLevels = ["الأولى متوسط","الثانية متوسط","الثالثة متوسط","الرابعة متوسط","الثانية ثانوي — علوم تجريبية"];
+    const levelDisplayNames = {"الثانية ثانوي — علوم تجريبية":"السنة الثانية ثانوي — علوم تجريبية"};
     const studentLevels = [...new Set(students.map(s => normalizeStudentLevel(s.level)).filter(Boolean))];
     const orderedLevels = [...knownLevels, ...studentLevels.filter(level => !knownLevels.includes(level)).sort((a,b) => a.localeCompare(b,"ar"))];
     const renderStudentFilters = () => {
-      const options = [{value:"all",label:"الكل"}, ...orderedLevels.map(level => ({value:level,label:level}))];
+      const options = [{value:"all",label:"الكل"}, ...orderedLevels.map(level => ({value:level,label:levelDisplayNames[level]||level}))];
       levelFilters.innerHTML = options.map(option => {
         const count = option.value === "all" ? students.length : students.filter(s => normalizeStudentLevel(s.level) === option.value).length;
         return '<button type="button" class="level-filter" data-level="'+escapeHtml(option.value)+'"><span>'+escapeHtml(option.label)+'</span><span class="level-count">'+count+'</span><span class="level-open">فتح الصفحة ←</span></button>';
