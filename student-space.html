@@ -44,7 +44,28 @@ async function call(action,extra={}){const r=await fetch(API,{method:"POST",head
 function list(container,items,render,empty){const el=$(container);el.innerHTML="";if(!items||!items.length){el.innerHTML='<div class="empty">'+empty+'</div>';return}items.forEach(x=>{const d=document.createElement("div");d.className="item";d.innerHTML=render(x);el.appendChild(d)})}
 function safe(x){return String(x??"—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function date(x){if(!x)return "—";const d=new Date(x);return isNaN(d)?safe(x):d.toLocaleDateString("ar-DZ")}
-async function loadMistakes(){let mistakes=[];const data=currentDashboardData||teacherPreviewData;if(data&&Array.isArray(data.quiz_attempts)){for(const a of data.quiz_attempts){if(!a.submitted_at)continue;for(const q of (a.review||[])){if(!q.is_correct)mistakes.push({subject:a.quiz_title||"اختبار إلكتروني",question_text:q.question,wrong_answer:q.chosen_text,correct_solution:"الإجابة الصحيحة: "+q.correct+". "+q.correct_text,created_at:a.submitted_at});}}}if(!mistakes.length&&!data){const d=await call("student_mistakes_list",{session_token:sessionToken,question_bank:QUIZ_QUESTION_BANK});mistakes=d.mistakes||[];}list("mistakesList",mistakes,x=>'<strong>'+safe(x.subject)+'</strong><p><b>السؤال:</b> '+safe(x.question_text)+'</p><p><b>إجابتي الخاطئة:</b> '+safe(x.wrong_answer)+'</p><p><b>التصحيح الصحيح:</b> '+safe(x.correct_solution)+'</p><span class="muted">'+date(x.created_at)+'</span>',"🌟 أحسنت! لا توجد أخطاء في اختباراتك المسلَّمة. واصلي هذا التميّز، فمراجعتك المستمرة تصنع نجاحًا أكبر.");}
+async function loadMistakes(){
+ let mistakes=[];
+ const data=currentDashboardData||teacherPreviewData;
+ if(data&&Array.isArray(data.quiz_attempts)){
+  const unique=new Map();
+  for(const a of data.quiz_attempts){
+   if(!a.submitted_at)continue;
+   for(const q of (a.review||[])){
+    if(!q.is_correct){
+     const key=String(q.question||"").trim();
+     if(!unique.has(key))unique.set(key,{subject:a.quiz_title||"اختبار إلكتروني",question_text:q.question,wrong_answer:q.chosen_text==="لم تتم الإجابة"?"لم تُسجَّل إجابة عن هذا السؤال":q.chosen_text,correct_solution:"الإجابة الصحيحة: "+q.correct+". "+q.correct_text,created_at:a.submitted_at,unanswered:q.chosen_text==="لم تتم الإجابة"});
+    }
+   }
+  }
+  mistakes=[...unique.values()];
+ }
+ if(!mistakes.length&&!data){
+  const d=await call("student_mistakes_list",{session_token:sessionToken,question_bank:QUIZ_QUESTION_BANK});
+  mistakes=d.mistakes||[];
+ }
+ list("mistakesList",mistakes,x=>'<strong>'+safe(x.subject)+'</strong><p><b>السؤال:</b> '+safe(x.question_text)+'</p><p><b>'+(x.unanswered?"حالة الإجابة:":"إجابتي الخاطئة:")+'</b> '+safe(x.wrong_answer)+'</p><p><b>التصحيح الصحيح:</b> '+safe(x.correct_solution)+'</p><span class="muted">'+date(x.created_at)+'</span>',"🌟 أحسنت! لا توجد إجابات خاطئة أو أسئلة متروكة في اختباراتك المسلَّمة. مبارك لك هذا الإنجاز، واصلي التميّز بالمراجعة والاجتهاد.");
+}
 async function loadMyQuestions(){const d=teacherPreviewData||await call("student_my_questions",{session_token:sessionToken});list("myQuestions",d.questions,x=>'<strong>سؤالي</strong><p>'+safe(x.question_text)+'</p>'+(x.teacher_reply?'<div class="teacher-note"><b>رد الأستاذة:</b><p>'+safe(x.teacher_reply)+'</p></div>':'<span class="tag">بانتظار رد الأستاذة</span>'),"لم ترسلي أسئلة بعد.");}
 function openStudentSection(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));if(key==="mistakes")loadMistakes().catch(e=>$("mistakeStatus").textContent=e.message);if(key==="questions")loadMyQuestions().catch(e=>$("questionStatus").textContent=e.message);const u=new URL(location.href);u.searchParams.set("section",key);history.pushState({section:key},"",u);window.scrollTo({top:0,behavior:"smooth"});}function showStudentMenu(){ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));const u=new URL(location.href);u.searchParams.delete("section");history.pushState({},"",u);window.scrollTo({top:0,behavior:"smooth"});}async function login(){const btn=$("loginBtn");btn.disabled=true;$("loginError").textContent="جارٍ التحقق…";try{const d=await call("student_portal_login",{full_name:$("fullName").value,code:$("portalCode").value});sessionToken=d.session_token;localStorage.setItem("tahadi_student_session",sessionToken);await dashboard(d.student)}catch(e){$("loginError").textContent=e.message}finally{btn.disabled=false}}
 async function dashboard(student,previewData=null){$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("studentName").textContent=student.full_name;$("studentLevel").textContent=student.level||"المستوى الدراسي";const d=previewData||await call("student_portal_dashboard",{session_token:sessionToken,question_bank:QUIZ_QUESTION_BANK});const correctKey={1:"A",2:"A",3:"A",4:"B",5:"A",6:"D",7:"C",8:"B",9:"C",10:"C",11:"B",12:"D",13:"B",14:"B",15:"C",16:"C",17:"B",18:"C",19:"D",20:"D"};d.quiz_attempts=(d.quiz_attempts||[]).map(a=>({...a,review:a.submitted_at?Object.entries(correctKey).map(([n,correct])=>{const q=QUIZ_QUESTION_BANK.find(x=>String(x.n)===n),chosen=String((a.selected_answers||{})[n]||"").toUpperCase(),letters=["A","B","C","D"],ci=letters.indexOf(correct),wi=letters.indexOf(chosen);return {number:Number(n),question:q?.q||("السؤال "+n),chosen_text:wi>=0&&q?.opts[wi]?letters[wi]+". "+q.opts[wi]:"لم تتم الإجابة",correct,correct_text:q?.opts[ci]||"",is_correct:chosen===correct};}):[]}));currentDashboardData=d;$("subCount").textContent=d.subscriptions.length;$("payCount").textContent=d.payments.length;$("quizCount").textContent=d.quiz_attempts.filter(x=>x.submitted_at).length;
