@@ -95,7 +95,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
   $("studentQuestion").readOnly=true;
   $("studentQuestion").placeholder="المعاينة للقراءة فقط؛ لا يمكن إرسال سؤال من هنا.";
   $("questionImage").disabled=true;
-  $("exitTeacherPreview").addEventListener("click",()=>{location.href="index.html";});
+  $("exitTeacherPreview").addEventListener("click",()=>{location.href="index.html?view=studentsView";});
   const token=localStorage.getItem("tahadi_teacher_token");
   if(!token){$("studentName").textContent="انتهت جلسة الأستاذة";$("studentLevel").textContent="سجلي الدخول إلى فضاء الأستاذة أولًا.";return;}
   $("studentName").textContent="جارٍ تحميل معاينة التلميذ…";
