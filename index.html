@@ -429,7 +429,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         try{
           const res=await fetch(endpointQuiz,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify(payload)});
           const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر تنفيذ العملية.");
-          if(codeEl)codeEl.textContent=data.code||(data.has_code===false?"لا يوجد كود صادر بعد":data.is_active===false?"الكود معطّل":"لا يوجد كود نشط");
+          if(codeEl)codeEl.textContent=data.code||(data.legacy_active?"يوجد كود قديم نشط — النص غير قابل للاسترجاع":data.has_code===false?"لا يوجد كود صادر بعد":data.is_active===false?"الكود معطّل":"لا يوجد كود نشط");
           if(data.code&&navigator.clipboard&&navigator.clipboard.writeText){try{await navigator.clipboard.writeText(data.code);}catch(_){}}
           if(action==="disable-quiz"||action==="disable-portal"){if(codeEl)codeEl.textContent="معطّل";}
           if((action==="get-quiz"||action==="get-portal")&&data.has_code===false)alert(data.message||"لا يوجد كود لهذا التلميذ.");
