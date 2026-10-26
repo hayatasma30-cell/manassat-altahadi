@@ -314,7 +314,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
   const requestedView=new URLSearchParams(location.search).get("view");
-  if(requestedView==="studentsView" && localStorage.getItem("tahadi_teacher_token")) showView("studentsView");
+  if(requestedView==="studentsView" && localStorage.getItem("tahadi_teacher_token")) { showView("studentsView"); setTimeout(()=>{const el=document.getElementById("studentsView");if(el){el.style.display="block";el.classList.add("active");el.setAttribute("aria-hidden","false");}},0); }
   const editFields={
     students:[["full_name","اسم التلميذ"],["level","المستوى"],["study_mode","طريقة الدراسة"],["status","الحالة"],["registration_date","تاريخ التسجيل"],["phone","رقم الهاتف"]],
     student_subscriptions:[["service_type","نوع الخدمة"],["service_name","اسم الخدمة"],["subscription_month","الشهر"],["status","حالة الاشتراك"],["amount_due","المبلغ المطلوب",1]],
