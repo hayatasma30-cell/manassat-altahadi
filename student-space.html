@@ -102,7 +102,7 @@ window.addEventListener("DOMContentLoaded",async()=>{
   try{
    const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_student_preview",student_id:teacherPreviewId})});
    const d=await response.json();if(!response.ok||!d.ok)throw Error(d.error||"تعذر تحميل المعاينة.");
-   if(!d.student||!d.student.id)throw Error("وصلت استجابة المعاينة دون بيانات التلميذ. ارجعي إلى قائمة التلاميذ وافتحي المعاينة من جديد.");
+   if(!d.student||!d.student.id||!d.student.full_name)throw Error("لم تصل بيانات التلميذ كاملة من خدمة المعاينة. ارجعي إلى قائمة التلاميذ وافتحي المعاينة من جديد.");
    d.subscriptions=Array.isArray(d.subscriptions)?d.subscriptions:[];
    d.payments=Array.isArray(d.payments)?d.payments:[];
    d.quiz_attempts=Array.isArray(d.quiz_attempts)?d.quiz_attempts:[];
