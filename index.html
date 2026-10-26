@@ -178,7 +178,11 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 </section>
 <section id="studentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div>
-<div class="panel"><h3>➕ إضافة تلميذ جديد</h3><p class="muted">اختاري طريقة الدراسة؛ التلاميذ الحاليون يبقون كما هم، ويمكن تغيير نوع الدراسة من ملف التلميذ.</p>
+<div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h3 style="margin:0">قائمة المستويات</h3><p class="muted" style="margin:6px 0 0">اختاري المستوى لفتح صفحة تلاميذه، أو افتحي صفحة مستقلة لإضافة تلميذ جديد.</p></div><button class="primary" id="openAddStudentPage" type="button">➕ إضافة تلميذ جديد</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
+</section>
+<section id="addStudentView" class="view">
+<div class="view-head"><button class="back" id="backFromAddStudent" type="button">→ قائمة التلاميذ</button><h2>➕ إضافة تلميذ جديد</h2></div>
+<div class="panel"><p class="muted">أدخلي معلومات التلميذ لإنشاء ملفه ورمز دخوله. التلاميذ الحاليون لن يتغيروا.</p>
 <form id="addStudentForm">
 <label for="newStudentName">الاسم واللقب</label><input id="newStudentName" required maxlength="180" autocomplete="off" placeholder="اسم التلميذ الكامل">
 <label for="newStudentLevel">المستوى الدراسي</label><select id="newStudentLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select>
@@ -188,7 +192,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <button class="primary" type="submit" id="addStudentSubmit">حفظ التلميذ وإنشاء رمز الدخول</button>
 <p id="addStudentStatus" class="muted" role="status"></p><div id="newStudentCodeResult" hidden></div>
 </form></div>
-<div class="panel"><p class="muted">اختاري المستوى لفتح قائمة التلاميذ، ثم فرزيهم حسب طريقة الدراسة.</p><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
 </section>
 <section id="studentLevelView" class="view">
 <div class="view-head"><button class="back" id="backToStudentLevels" type="button">→ مستويات التلاميذ</button><h2 id="studentLevelTitle">قائمة التلاميذ</h2></div><div class="panel"><p id="studentLevelDescription" class="muted"></p><div id="studentsList" class="list" style="margin-top:14px"></div></div>
@@ -414,6 +417,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       showView("studentLevelView");
     });
     $("backToStudentLevels").addEventListener("click", () => showView("studentsView"));
+    $("openAddStudentPage").addEventListener("click",()=>showView("addStudentView"));
+    $("backFromAddStudent").addEventListener("click",()=>showView("studentsView"));
     const subStatus = {active:"نشط",paid:"مدفوع",pending:"قيد المراجعة",expired:"منتهي",cancelled:"ملغى"};
     const subscriptionsByStudent = new Map();
     subscriptions.forEach(x=>{const key=String(x.student_id||("unknown:"+x.id));if(!subscriptionsByStudent.has(key))subscriptionsByStudent.set(key,[]);subscriptionsByStudent.get(key).push(x);});
