@@ -30,17 +30,26 @@ const data = [
 ];
 const form=document.getElementById('quiz'), quizArea=document.getElementById('quizArea');
 let current=0, submitted=false;
-const beeImages=[
-'https://images.unsplash.com/photo-1587049352851-8d4e89133924?auto=format&fit=crop&w=1200&q=80',
-'https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=1200&q=80',
-'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1200&q=80'
-];
+const beeImages={
+  castes:'https://wwwn.cdc.gov/phil/PHIL_Images/6341/6341_lores.jpg',
+  drone:'https://commons.wikimedia.org/wiki/Special:FilePath/Drone_-_honeybee_(8952360114).jpg',
+  hive:'https://images.unsplash.com/photo-1587049352851-8d4e89133924?auto=format&fit=crop&w=1200&q=80',
+  comb:'https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=1200&q=80',
+  flowers:'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1200&q=80'
+};
+function imageForQuestion(i){
+  if(i===0 || i===1 || i===2 || i===3 || i===4) return {src:i===1?beeImages.drone:beeImages.castes,alt:i===1?'ذكر النحل':'مقارنة بين الملكة والذكر والأنثى العاملة'};
+  if(i===7 || i===8) return {src:beeImages.castes,alt:'أفراد مجتمع النحل داخل العيون السداسية'};
+  if(i===9 || i===10 || i===11 || i===12 || i===13 || i===15 || i===16 || i===17 || i===18 || i===19) return {src:beeImages.hive,alt:'مجتمع النحل وأعماله داخل الخلية'};
+  if(i===14) return {src:beeImages.flowers,alt:'نحلة تجمع الرحيق وحبوب الطلع من الأزهار'};
+  return {src:beeImages.comb,alt:'أقراص شمعية وعيون سداسية في خلية النحل'};
+}
 const letters=['A','B','C','D'];
 // Shuffle options while preserving the correct answer for scoring.
 const shuffled=data.map(q=>{const opts=q[1].map((text,original)=>({text,correct:original===q[2]}));for(let i=opts.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]];}return {question:q[0],opts};});
 shuffled.forEach((q,i)=>{
  const box=document.createElement('section');box.className='q';box.dataset.index=i;
- box.innerHTML='<img class="beeimg" src="'+beeImages[i%beeImages.length]+'" alt="صورة توضيحية عن النحل" loading="lazy"><h3><span class="qnum">'+(i+1)+'</span><span class="qtext">'+q.question+'</span></h3>'+q.opts.map((o,j)=>'<label class="opt"><input type="radio" name="q'+i+'" value="'+j+'"><span class="letter">'+letters[j]+'.</span><span class="opttext">'+o.text+'</span></label>').join('')+'<div class="feedback hidden" id="f'+i+'"></div>';
+ const picture=imageForQuestion(i); box.innerHTML='<img class="beeimg" src="'+picture.src+'" alt="'+picture.alt+'" loading="lazy"><h3><span class="qnum">'+(i+1)+'</span><span class="qtext">'+q.question+'</span></h3>'+q.opts.map((o,j)=>'<label class="opt"><input type="radio" name="q'+i+'" value="'+j+'"><span class="letter">'+letters[j]+'.</span><span class="opttext">'+o.text+'</span></label>').join('')+'<div class="feedback hidden" id="f'+i+'"></div>';
  form.appendChild(box);
 });
 const nav=document.createElement('div');nav.className='nav';nav.innerHTML='<button type="button" class="secondary" id="prev">السابق</button><button type="button" id="next">التالي</button>';form.appendChild(nav);
