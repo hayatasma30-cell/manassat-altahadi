@@ -689,7 +689,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const response=await fetch(resourceEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});
     const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تنفيذ العملية.");return data;
   }
-  async async function loadElectronicTests(){
+  async function loadElectronicTests(){
     const list=$("electronicTestsList");if(!list)return;
     list.textContent="جارٍ تحميل الاختبارات…";
     try{
