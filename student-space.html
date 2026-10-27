@@ -34,6 +34,22 @@
  #quizProgress .progress-metrics span{flex:1 1 100px}
  #quizzes .item,#mistakesList .item{padding:10px}
 }
+
+/* عرض مضغوط للأخطاء دون تكرار اسم الاختبار */
+.mistake-compact{margin:8px 0;border:1px solid #e2e9dc;border-radius:12px;background:#fbfcf8;overflow:hidden}
+.mistake-compact summary{display:flex;align-items:center;gap:10px;justify-content:space-between;cursor:pointer;padding:11px 12px;list-style:none;color:#194e30}
+.mistake-compact summary::-webkit-details-marker{display:none}
+.mistake-compact summary:before{content:"＋";font-weight:bold;color:#287447;flex:0 0 auto}
+.mistake-compact[open] summary:before{content:"−"}
+.mistake-title{font-weight:700;line-height:1.65;flex:1;min-width:0}
+.mistake-date{font-size:.75rem;color:#7a857b;white-space:nowrap}
+.mistake-body{padding:0 13px 11px;border-top:1px solid #edf1e9;font-size:.9rem;line-height:1.8}
+.mistake-body p{margin:8px 0}
+@media(max-width:500px){.mistake-compact summary{padding:10px}.mistake-title{font-size:.9rem}.mistake-date{font-size:.7rem}.mistake-body{font-size:.88rem}}
+/* إظهار تصحيح الاختبار عند طلب التلميذ فقط */
+.quiz-review{margin-top:10px}
+.quiz-review summary{font-size:.94rem;padding:9px}
+
 </style></head>
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
@@ -91,7 +107,7 @@ async function loadMistakes(){
   const d=await call("student_mistakes_list",{session_token:sessionToken,question_bank:QUIZ_QUESTION_BANK});
   mistakes=d.mistakes||[];
  }
- list("mistakesList",mistakes,x=>'<strong>'+safe(x.subject)+'</strong><p><b>السؤال:</b> '+safe(x.question_text)+'</p><p><b>'+(x.unanswered?"حالة الإجابة:":"إجابتي الخاطئة:")+'</b> '+safe(x.wrong_answer)+'</p><p><b>التصحيح الصحيح:</b> '+safe(x.correct_solution)+'</p><span class="muted">'+date(x.created_at)+'</span>',"🌟 أحسنت! لا توجد إجابات خاطئة أو أسئلة متروكة في اختباراتك المسلَّمة. مبارك لك هذا الإنجاز، واصلي التميّز بالمراجعة والاجتهاد.");
+ list("mistakesList",mistakes,x=>'<details class="mistake-compact"><summary><span class="mistake-title">'+safe(x.question_text||"سؤال يحتاج إلى مراجعة")+'</span><span class="mistake-date">'+date(x.created_at)+'</span></summary><div class="mistake-body"><p><b>'+(x.unanswered?"حالة الإجابة:":"إجابتي الخاطئة:")+'</b> '+safe(x.wrong_answer)+'</p><p><b>التصحيح الصحيح:</b> '+safe(x.correct_solution)+'</p></div></details>',"🌟 أحسنت! لا توجد إجابات خاطئة أو أسئلة متروكة في اختباراتك المسلَّمة. مبارك لك هذا الإنجاز، واصلي التميّز بالمراجعة والاجتهاد.");
 }
 
 function openStudentSection(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",key==="quizzes"?(el.dataset.panel!=="quizzes"&&el.dataset.panel!=="mistakes"):el.dataset.panel!==key));if(key==="quizzes")loadMistakes().catch(e=>$("mistakeStatus").textContent=e.message);const u=new URL(location.href);u.searchParams.set("section",key);history.pushState({section:key},"",u);window.scrollTo({top:0,behavior:"smooth"});}function showStudentMenu(){ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));const u=new URL(location.href);u.searchParams.delete("section");history.pushState({},"",u);window.scrollTo({top:0,behavior:"smooth"});}async function login(){const btn=$("loginBtn");btn.disabled=true;$("loginError").textContent="جارٍ التحقق…";try{const d=await call("student_portal_login",{full_name:$("fullName").value,code:$("portalCode").value});sessionToken=d.session_token;localStorage.setItem("tahadi_student_session",sessionToken);await dashboard(d.student)}catch(e){$("loginError").textContent=e.message}finally{btn.disabled=false}}
