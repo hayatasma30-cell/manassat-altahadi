@@ -163,7 +163,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <a class="menu-btn" href="student-space.html" style="text-decoration:none"><span class="menu-icon">👩‍🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
 <a class="menu-btn" href="teacher-questions.html" style="text-decoration:none"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>أسئلة خاصة ومرفقات الصور — للأستاذة فقط</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-view="studentsView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات الإلكترونية</strong><small>إعدادات كل تلميذ ونتائجه ومحاولاته</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="quizManagementView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات الإلكترونية</strong><small>الإعدادات والتعديلات والنتائج</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
@@ -193,6 +193,43 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <div class="view-head"><button class="back" data-home type="button">→ رجوع</button><h2>🔐 دخول الأستاذة</h2></div>
 <div class="login"><p>أدخلي رمز الأستاذة الخاص للوصول إلى معلومات المنصة.</p><form id="loginForm"><label for="code">كود الدخول</label><input id="code" type="password" minlength="6" maxlength="64" autocomplete="current-password" required placeholder="أدخلي الكود هنا"><button class="primary" id="submitBtn" type="submit">دخول</button></form></div>
 </section>
+
+<section id="quizManagementView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📝 الاختبارات الإلكترونية</h2></div>
+<div class="panel">
+<p class="muted">إدارة محاولات الاختبارات الإلكترونية ونتائج التلاميذ من مكان واحد. تُحفظ الإعدادات في النظام.</p>
+<div class="level-filters" role="group" aria-label="أقسام إدارة الاختبارات">
+<button class="level-filter" type="button" data-quiz-tab="settings">⚙️ الإعدادات العامة</button>
+<button class="level-filter" type="button" data-quiz-tab="student">✏️ إعدادات التلميذ</button>
+<button class="level-filter" type="button" data-quiz-tab="results">📊 النتائج</button>
+</div>
+<div id="quizManagerStatus" class="status" role="status"></div>
+<section id="quizManagerSettings">
+<h3>⚙️ الإعدادات العامة</h3>
+<p class="muted">حددي الحد الأقصى لعدد المحاولات المسموح بها لكل تلميذ. يمكن تخصيص عدد مختلف لتلميذ معين من قسم إعدادات التلميذ.</p>
+<label for="quizManagerMaxAttempts">عدد المحاولات المسموح بها (1–20)</label>
+<input id="quizManagerMaxAttempts" type="number" min="1" max="20" step="1" value="2">
+<div class="actions-row"><button class="secondary" id="quizManagerLoadSettings" type="button">تحميل الإعداد الحالي</button><button class="primary" id="quizManagerSaveSettings" type="button">حفظ الإعدادات</button></div>
+</section>
+<section id="quizManagerStudent" hidden>
+<h3>✏️ إعدادات التلميذ</h3>
+<label for="quizManagerStudentSelect">اختاري التلميذ</label>
+<select id="quizManagerStudentSelect"><option value="">حمّلي قائمة التلاميذ بعد تسجيل الدخول</option></select>
+<p id="quizManagerStudentCurrent" class="muted">اختاري تلميذًا لعرض إعداداته.</p>
+<label for="quizManagerStudentAttempts">عدد المحاولات لهذا التلميذ (1–20، أو 0 لاستخدام الإعداد العام)</label>
+<input id="quizManagerStudentAttempts" type="number" min="0" max="20" step="1" value="0">
+<div class="actions-row"><button class="secondary" id="quizManagerLoadStudent" type="button">تحميل الإعداد</button><button class="primary" id="quizManagerSaveStudent" type="button">حفظ التعديل</button></div>
+</section>
+<section id="quizManagerResults" hidden>
+<h3>📊 نتائج التلاميذ</h3>
+<label for="quizManagerResultsStudent">اختاري التلميذ لعرض النتائج</label>
+<select id="quizManagerResultsStudent"><option value="">اختاري التلميذ</option></select>
+<button class="primary" id="quizManagerLoadResults" type="button">عرض النتائج والمحاولات</button>
+<div id="quizManagerResultsList" class="list" style="margin-top:12px"></div>
+</section>
+</div>
+</section>
+
 <section id="studentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div>
 <div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h3 style="margin:0">قائمة المستويات</h3><p class="muted" style="margin:6px 0 0">اختاري المستوى لفتح صفحة تلاميذه، أو افتحي صفحة مستقلة لإضافة تلميذ جديد.</p></div><button class="primary" id="openAddStudentPage" type="button">➕ إضافة تلميذ جديد</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
@@ -691,6 +728,53 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   async function loadQuizAttemptSettings(){const token=localStorage.getItem("tahadi_teacher_token"),status=$("quizAttemptSettingsStatus"),btn=$("loadQuizAttemptSettings");if(!token){status.textContent="سجلي الدخول كأستاذة أولًا.";return;}btn.disabled=true;status.textContent="جارٍ تحميل الإعداد…";try{const r=await fetch(quizSettingsEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_get_settings"})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر تحميل الإعداد.");$("quizMaxAttempts").value=String(d.max_attempts||2);status.textContent="عدد المحاولات الحالي: "+$("quizMaxAttempts").value+"."; }catch(e){status.textContent=e.message||"تعذر تحميل الإعداد.";}finally{btn.disabled=false;}}
   $("loadQuizAttemptSettings")?.addEventListener("click",loadQuizAttemptSettings);
   $("saveQuizAttemptSettings")?.addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token"),status=$("quizAttemptSettingsStatus"),btn=$("saveQuizAttemptSettings"),max_attempts=Number($("quizMaxAttempts").value);if(!token){status.textContent="سجلي الدخول كأستاذة أولًا.";return;}if(!Number.isInteger(max_attempts)||max_attempts<1||max_attempts>20){status.textContent="اختاري عددًا بين 1 و20.";return;}btn.disabled=true;status.textContent="جارٍ حفظ الإعداد…";try{const r=await fetch(quizSettingsEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_set_settings",max_attempts})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر حفظ الإعداد.");status.textContent="تم حفظ الحد الأقصى: "+d.max_attempts+" محاولة لكل تلميذ."; }catch(e){status.textContent=e.message||"تعذر حفظ الإعداد.";}finally{btn.disabled=false;}});
+
+  const quizManagerEndpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
+  function quizManagerStatus(message,kind="ok"){const el=$("quizManagerStatus");el.textContent=message;el.className="status show "+kind;}
+  function populateQuizManagerStudents(){
+    const students=Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[];
+    const options='<option value="">اختاري التلميذ</option>'+students.map(s=>'<option value="'+escapeHtml(s.id)+'">'+escapeHtml(s.full_name||s.name||"تلميذ")+' — '+escapeHtml(s.level||"")+'</option>').join("");
+    $("quizManagerStudentSelect").innerHTML=options;$("quizManagerResultsStudent").innerHTML=options;
+  }
+  async function quizManagerRequest(payload){
+    const token=localStorage.getItem("tahadi_teacher_token");if(!token)throw new Error("سجلي الدخول كأستاذة أولًا.");
+    const r=await fetch(quizManagerEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify(payload)});
+    const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر تنفيذ الطلب.");return d;
+  }
+  async function quizManagerLoadGlobal(){
+    try{const d=await quizManagerRequest({action:"teacher_get_settings"});$("quizManagerMaxAttempts").value=String(d.max_attempts||2);quizManagerStatus("الإعداد العام الحالي: "+$("quizManagerMaxAttempts").value+" محاولة.");}
+    catch(e){quizManagerStatus(e.message||"تعذر تحميل الإعدادات.","error");}
+  }
+  $("quizManagerLoadSettings").addEventListener("click",quizManagerLoadGlobal);
+  $("quizManagerSaveSettings").addEventListener("click",async()=>{
+    const n=Number($("quizManagerMaxAttempts").value);if(!Number.isInteger(n)||n<1||n>20){quizManagerStatus("اختاري عددًا صحيحًا بين 1 و20.","error");return;}
+    const b=$("quizManagerSaveSettings");b.disabled=true;try{const d=await quizManagerRequest({action:"teacher_set_settings",max_attempts:n});quizManagerStatus("تم حفظ الحد الأقصى: "+d.max_attempts+" محاولة لكل تلميذ.");}
+    catch(e){quizManagerStatus(e.message||"تعذر حفظ الإعدادات.","error");}finally{b.disabled=false;}
+  });
+  $("quizManagerStudentSelect").addEventListener("change",()=>{$("quizManagerStudentCurrent").textContent="اختاري «تحميل الإعداد» لعرض الحد الحالي لهذا التلميذ.";});
+  $("quizManagerLoadStudent").addEventListener("click",async()=>{
+    const sid=$("quizManagerStudentSelect").value;if(!sid){quizManagerStatus("اختاري التلميذ أولًا.","error");return;}
+    try{const d=await quizManagerRequest({action:"teacher_get_student_settings",student_id:sid});$("quizManagerStudentAttempts").value=String(d.max_attempts??0);$("quizManagerStudentCurrent").textContent="التلميذ: "+(d.student?.full_name||"")+" — الإعداد العام: "+d.global_max_attempts+" محاولة. اكتبي 0 للرجوع إلى الإعداد العام." ;quizManagerStatus("تم تحميل إعدادات التلميذ.");}
+    catch(e){quizManagerStatus(e.message||"تعذر تحميل إعدادات التلميذ.","error");}
+  });
+  $("quizManagerSaveStudent").addEventListener("click",async()=>{
+    const sid=$("quizManagerStudentSelect").value,n=Number($("quizManagerStudentAttempts").value);if(!sid){quizManagerStatus("اختاري التلميذ أولًا.","error");return;}if(!Number.isInteger(n)||n<0||n>20){quizManagerStatus("اكتبي 0 أو عددًا صحيحًا بين 1 و20.","error");return;}
+    const b=$("quizManagerSaveStudent");b.disabled=true;try{if(n===0){await quizManagerRequest({action:"teacher_reset_student_settings",student_id:sid});quizManagerStatus("تمت إعادة التلميذ إلى الإعداد العام.");}else{await quizManagerRequest({action:"teacher_set_student_settings",student_id:sid,max_attempts:n});quizManagerStatus("تم حفظ إعداد التلميذ: "+n+" محاولة.");}}
+    catch(e){quizManagerStatus(e.message||"تعذر حفظ إعداد التلميذ.","error");}finally{b.disabled=false;}
+  });
+  $("quizManagerLoadResults").addEventListener("click",async()=>{
+    const sid=$("quizManagerResultsStudent").value,list=$("quizManagerResultsList");if(!sid){quizManagerStatus("اختاري التلميذ أولًا.","error");return;}list.innerHTML='<p class="muted">جارٍ تحميل النتائج…</p>';
+    try{const d=await quizManagerRequest({action:"teacher_quiz_status",student_id:sid});const fmt=v=>v?new Date(v).toLocaleString("ar-DZ"):"غير متوفر";
+      list.innerHTML=d.attempts?.length?d.attempts.map((a,i)=>'<article class="data-item"><strong>المحاولة '+(i+1)+'</strong><p>تاريخ البدء: '+escapeHtml(fmt(a.started_at))+'</p><p>العلامة: <strong>'+(a.auto_score===null||a.auto_score===undefined?"قيد التصحيح":escapeHtml(a.auto_score)+" / 20")+'</strong></p><p>الحالة: '+(a.submitted_at?"تم التسليم":"محاولة غير مكتملة")+'</p><p>'+(a.has_answers?"توجد إجابات محفوظة":"لا توجد إجابات محفوظة")+'</p></article>').join(""):'<div class="data-item">لا توجد محاولات محفوظة لهذا التلميذ.</div>';
+      quizManagerStatus("تم تحميل النتائج.");
+    }catch(e){list.innerHTML='<div class="data-item">'+escapeHtml(e.message||"تعذر تحميل النتائج.")+'</div>';quizManagerStatus(e.message||"تعذر تحميل النتائج.","error");}
+  });
+  document.querySelectorAll("[data-quiz-tab]").forEach(btn=>btn.addEventListener("click",()=>{
+    const tab=btn.dataset.quizTab;$("quizManagerSettings").hidden=tab!=="settings";$("quizManagerStudent").hidden=tab!=="student";$("quizManagerResults").hidden=tab!=="results";
+    if(tab==="settings")quizManagerLoadGlobal();if(tab==="student"||tab==="results")populateQuizManagerStudents();
+  }));
+  document.querySelector('[data-view="quizManagementView"]').addEventListener("click",()=>{populateQuizManagerStudents();quizManagerLoadGlobal();});
+
   const resourceEndpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
   async function resourceRequest(action, extra={}) {
     const token=localStorage.getItem("tahadi_teacher_token");
