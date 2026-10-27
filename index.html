@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-10-27-restore-preview-link-v2">
+<meta name="platform-build" content="2026-10-27-quiz-settings-and-code-replacement-fix-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -430,7 +430,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         const endpointQuiz="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
         const askText=action==="issue-quiz"?"سيتم إصدار كود اختبار جديد لهذا التلميذ، وسيُستبدل الكود القديم. هل تريدين المتابعة؟":action==="issue-portal"?"سيتم استبدال كود دخول فضاء التلميذ القديم. هل تريدين المتابعة؟":action==="disable-quiz"?"سيتم تعطيل كود الاختبار لهذا التلميذ. هل تريدين المتابعة؟":action==="disable-portal"?"سيتم تعطيل كود دخول فضاء التلميذ. هل تريدين المتابعة؟":"";
         if(askText&&!confirm(askText))return;
-        const payload=action==="get-quiz"?{action:"get_code",student_id:sid}:action==="issue-quiz"?{action:"issue_code",student_id:sid}:action==="disable-quiz"?{action:"teacher_disable_quiz_code",student_id:sid}:action==="get-portal"?{action:"teacher_get_portal_code",student_id:sid}:action==="issue-portal"?{action:"teacher_issue_portal_code",student_id:sid}:{action:"teacher_disable_portal_code",student_id:sid};
+        const payload=action==="get-quiz"?{action:"get_code",student_id:sid}:action==="issue-quiz"?{action:"issue_code",student_id:sid,confirm_replace:true}:action==="disable-quiz"?{action:"teacher_disable_quiz_code",student_id:sid}:action==="get-portal"?{action:"teacher_get_portal_code",student_id:sid}:action==="issue-portal"?{action:"teacher_issue_portal_code",student_id:sid}:{action:"teacher_disable_portal_code",student_id:sid};
         btn.disabled=true;const oldLabel=btn.textContent;btn.textContent="لحظة...";
         try{
           const res=await fetch(endpointQuiz,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify(payload)});
