@@ -18,12 +18,16 @@ async function load(){
  const params=new URLSearchParams(location.search),previewId=params.get("teacher_preview");
  let d;
  if(previewId){
-  const token=localStorage.getItem("tahadi_teacher_token");
-  if(!token)throw Error("انتهت جلسة الأستاذة. عودي إلى فضاء الأستاذة وسجلي الدخول مجددًا.");
-  const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access?preview_rebuild=20261026",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_student_preview",student_id:previewId})});
-  try{d=await response.json()}catch(_){throw Error("خدمة المعاينة أرسلت استجابة غير مفهومة.");}
-  if(!response.ok||!d||d.ok!==true)throw Error((d&&d.error)||("تعذر تحميل بيانات المعاينة (HTTP "+response.status+")."));
-  if(!d.student||String(d.student.id)!==String(previewId))throw Error("بيانات التلميذ لا تطابق المعاينة المختارة.");
+  try{const cached=sessionStorage.getItem("tahadi_teacher_preview_data_"+previewId);if(cached)d=JSON.parse(cached);}catch(_){}
+  if(!d){
+   const token=localStorage.getItem("tahadi_teacher_token");
+   if(!token)throw Error("تعذر استرجاع بيانات المعاينة. عودي إلى قائمة التلاميذ وافتحي معاينة التلميذ من جديد، ثم افتحي القسم المطلوب.");
+   const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access?preview_rebuild=20261026",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_student_preview",student_id:previewId})});
+   try{d=await response.json()}catch(_){throw Error("خدمة المعاينة أرسلت استجابة غير مفهومة.");}
+   if(!response.ok||!d||d.ok!==true)throw Error((d&&d.error)||("تعذر تحميل بيانات المعاينة (HTTP "+response.status+")."));
+   if(!d.student||String(d.student.id)!==String(previewId))throw Error("بيانات التلميذ لا تطابق المعاينة المختارة.");
+   try{sessionStorage.setItem("tahadi_teacher_preview_data_"+previewId,JSON.stringify(d));}catch(_){}
+  }
  }else{
   const token=localStorage.getItem("tahadi_student_session");
   if(!token)throw Error("انتهت جلسة الدخول. عودي إلى فضاء التلميذ وسجّلي الدخول مجددًا.");
