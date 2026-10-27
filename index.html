@@ -491,13 +491,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         }catch(e){if(box)box.textContent=e.message||"تعذر تحميل النتائج.";}
         finally{btn.disabled=false;btn.textContent=label;}
       }));
-      $("studentsList").querySelectorAll("[data-student-id]").forEach(btn=>btn.addEventListener("click",()=>{
-        const s=students.find(x=>String(x.id)===btn.dataset.studentId);if(!s)return;
-        const teacherToken=localStorage.getItem("tahadi_teacher_token");
-        if(!teacherToken){alert("انتهت جلسة الأستاذة. سجلي الدخول ثم حاولي مجددًا.");return;}
-        const previewUrl="student-space.html?teacher_preview="+encodeURIComponent(s.id);
-        window.open(previewUrl,"_blank","noopener,noreferrer");
-      }));
 ;
     };
     renderStudentFilters();
