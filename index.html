@@ -212,7 +212,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 </form></div>
 </section>
 <section id="studentLevelView" class="view">
-<div class="view-head"><button class="back" id="backToStudentLevels" type="button">→ مستويات التلاميذ</button><h2 id="studentLevelTitle">قائمة التلاميذ</h2></div><div class="panel"><label for="studentSearchInput">🔎 البحث عن تلميذ بالاسم أو رقم الهاتف</label><input id="studentSearchInput" type="search" autocomplete="off" placeholder="اكتبي اسم التلميذ أو رقم الهاتف…"><p id="studentLevelDescription" class="muted"></p><div id="studentsList" class="list" style="margin-top:14px"></div></div>
+<div class="view-head"><button class="back" id="backToStudentLevels" type="button">→ مستويات التلاميذ</button><h2 id="studentLevelTitle">قائمة التلاميذ</h2></div><div class="panel" style="margin-bottom:14px"><h3>⚙️ التحكم في عدد محاولات الاختبار</h3><p class="muted">حددي العدد الأقصى للمحاولات المسموح بها لكل تلميذ في اختبار الزلازل والتشوهات التكتونية.</p><label for="quizMaxAttempts">الحد الأقصى للمحاولات</label><select id="quizMaxAttempts" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;margin:8px 0 12px"><option value="1">1 محاولة</option><option value="2" selected>2 محاولتان</option><option value="3">3 محاولة</option><option value="4">4 محاولة</option><option value="5">5 محاولة</option><option value="6">6 محاولة</option><option value="7">7 محاولة</option><option value="8">8 محاولة</option><option value="9">9 محاولة</option><option value="10">10 محاولة</option><option value="11">11 محاولة</option><option value="12">12 محاولة</option><option value="13">13 محاولة</option><option value="14">14 محاولة</option><option value="15">15 محاولة</option><option value="16">16 محاولة</option><option value="17">17 محاولة</option><option value="18">18 محاولة</option><option value="19">19 محاولة</option><option value="20">20 محاولة</option></select><div class="daily-mode-switch"><button class="secondary" type="button" id="loadQuizAttemptSetting">عرض العدد الحالي</button><button class="primary" type="button" id="saveQuizAttemptSetting">حفظ عدد المحاولات</button></div><p id="quizAttemptSettingStatus" class="muted" role="status"></p></div><div class="panel"><label for="studentSearchInput">🔎 البحث عن تلميذ بالاسم أو رقم الهاتف</label><input id="studentSearchInput" type="search" autocomplete="off" placeholder="اكتبي اسم التلميذ أو رقم الهاتف…"><p id="studentLevelDescription" class="muted"></p><div id="studentsList" class="list" style="margin-top:14px"></div></div>
 </section>
 <section id="studentProfileView" class="view">
 <div class="view-head"><button class="back" id="backToStudents" type="button">→ قائمة التلاميذ</button><h2>👤 ملف التلميذ</h2></div>
@@ -312,6 +312,23 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
+  const quizSettingsEndpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
+  async function requestQuizSettings(action, maxAttempts){
+    const token=localStorage.getItem("tahadi_teacher_token"),statusEl=$("quizAttemptSettingStatus"),select=$("quizMaxAttempts");
+    if(!token){if(statusEl)statusEl.textContent="انتهت جلسة الأستاذة. سجلي الدخول مجددًا.";return;}
+    const loadBtn=$("loadQuizAttemptSetting"),saveBtn=$("saveQuizAttemptSetting");if(loadBtn)loadBtn.disabled=true;if(saveBtn)saveBtn.disabled=true;
+    if(statusEl)statusEl.textContent="جارٍ تنفيذ الطلب…";
+    try{
+      const body={action};if(maxAttempts!==undefined)body.max_attempts=Number(maxAttempts);
+      const res=await fetch(quizSettingsEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify(body)});
+      const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر تحديث الإعدادات.");
+      if(select&&data.max_attempts)select.value=String(data.max_attempts);
+      if(statusEl)statusEl.textContent=action==="teacher_get_settings"?"العدد الحالي المسموح به: "+data.max_attempts+" محاولة لكل تلميذ.":"تم حفظ الحد الأقصى: "+data.max_attempts+" محاولة لكل تلميذ.";
+    }catch(e){if(statusEl)statusEl.textContent=e.message||"تعذر تحديث الإعدادات.";}
+    finally{if(loadBtn)loadBtn.disabled=false;if(saveBtn)saveBtn.disabled=false;}
+  }
+  $("loadQuizAttemptSetting")?.addEventListener("click",()=>requestQuizSettings("teacher_get_settings"));
+  $("saveQuizAttemptSetting")?.addEventListener("click",()=>{const n=Number($("quizMaxAttempts").value);if(!confirm("سيصبح الحد الأقصى لمحاولات الاختبار "+n+" لكل تلميذ. هل تريدين الحفظ؟"))return;requestQuizSettings("teacher_set_settings",n);});
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
