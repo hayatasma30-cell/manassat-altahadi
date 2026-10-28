@@ -153,8 +153,9 @@ const initializeStudentSpace = async () => {
     if ($("studentQuestion")) if ($("studentQuestion")) $("studentQuestion").readOnly = true;
     if ($("studentQuestion")) if ($("studentQuestion")) $("studentQuestion").placeholder = "المعاينة للقراءة فقط؛ لا يمكن إرسال سؤال من هنا.";
     if ($("questionImage")) if ($("questionImage")) $("questionImage").disabled = true;
+    $("exitTeacherPreview").textContent = "العودة إلى فضاء الأستاذة حياة ↗";
     $("exitTeacherPreview").onclick = () => {
-      location.href = new URL("index.html?view=studentsView&return_to_students=1", location.href).href;
+      location.href = new URL("index.html", location.href).href;
     };
 
     const token = localStorage.getItem("tahadi_teacher_token");
@@ -192,7 +193,7 @@ const initializeStudentSpace = async () => {
         if (!Array.isArray(data[key])) throw new Error("بيانات " + key + " لم تصل بصيغة صحيحة؛ لم نعرض أصفارًا مضللة.");
       }
       teacherPreviewData = data;
-      const notificationsLink=document.querySelector('a[href^="notifications.html"]');if(notificationsLink)notificationsLink.href="notifications.html?teacher_preview=1&student_id="+encodeURIComponent(teacherPreviewId)+"&level="+encodeURIComponent(data.student.level||"");
+      document.querySelectorAll('a[href^="notifications.html"]').forEach(notificationsLink=>{notificationsLink.href="notifications.html?teacher_preview=1&student_id="+encodeURIComponent(teacherPreviewId)+"&level="+encodeURIComponent(data.student.level||"")+"&v=20261028-preview2";});
       try { sessionStorage.setItem("tahadi_teacher_preview_data_" + teacherPreviewId, JSON.stringify(data)); } catch (_) {}
       await dashboard(data.student, data);
       await loadNotificationCount();
