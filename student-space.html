@@ -103,6 +103,22 @@
 
 /* إخفاء شريط المعاينة حتى يظهر فضاء التلميذ دون أي عناصر إضافية */
 #teacherPreviewBanner{display:none!important}
+
+/* توحيد شكل الأزرار الرئيسية: إزالة التسطير وتصغير الحجم قليلًا */
+#dashboard .student-home-grid .student-action,
+#dashboard .student-submenu-grid .student-action{ text-decoration:none!important; min-height:66px!important; padding:7px 8px!important; gap:6px!important; border-radius:16px!important; }
+#dashboard .student-home-grid .student-action *,
+#dashboard .student-submenu-grid .student-action *{ text-decoration:none!important; }
+#dashboard .student-home-grid .student-action strong,
+#dashboard .student-submenu-grid .student-action strong{ font-size:.82rem!important; line-height:1.35!important; }
+#dashboard .student-home-grid .student-action small,
+#dashboard .student-submenu-grid .student-action small{ font-size:.67rem!important; line-height:1.35!important; margin-top:1px!important; }
+#dashboard .student-home-grid .student-action-icon,
+#dashboard .student-submenu-grid .student-action-icon{ width:30px!important; height:30px!important; flex:0 0 30px!important; font-size:1rem!important; border-radius:10px!important; }
+#dashboard .student-home-grid .student-arrow,
+#dashboard .student-submenu-grid .student-arrow{ font-size:1rem!important; }
+#dashboard .student-home-grid,
+#dashboard .student-submenu-grid{ gap:8px!important; }
 </style></head>
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
