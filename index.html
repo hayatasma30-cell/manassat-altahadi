@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-10-27-teacher-electronic-tests-management-v1">
+<meta name="platform-build" content="2026-10-28-teacher-home-visual-cleanup-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -151,6 +151,31 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     .profile-section > summary::after { content:"＋"; flex:0 0 auto; color:#17633d; font-size:1.1em; }
     .profile-section[open] > summary::after { content:"−"; }
     .profile-section-body { padding-top:14px; display:grid; gap:12px; }
+
+/* تحسين بصري آمن للصفحة الرئيسية للأستاذة — تنسيق فقط دون تغيير الروابط أو الوظائف */
+#homeView .hero{margin-bottom:20px;padding:clamp(20px,3vw,30px);border-color:#dce8d6;box-shadow:0 7px 20px rgba(20,83,45,.06)}
+#homeView .hero .eyebrow{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border-radius:999px;background:#e8f4e5;color:#23643b;font-weight:800}
+#homeView .hero h1{margin-top:7px}
+#homeView .menu{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+#homeView .menu-btn,
+#homeView .menu-btn:nth-child(n){min-height:88px;padding:15px 16px;align-items:center;gap:13px;text-align:right;color:var(--ink);border:1px solid #c8dfc4;border-bottom:4px solid #2f8550;border-radius:17px;background:linear-gradient(145deg,#fff 0%,#f2faf0 100%);box-shadow:0 4px 0 rgba(20,83,45,.08),0 8px 16px rgba(20,63,34,.06);text-decoration:none}
+#homeView .menu-btn:hover{border-color:#8fc59a;box-shadow:0 5px 12px rgba(20,83,45,.10);transform:translateY(-1px)}
+#homeView .menu-btn:focus-visible{outline:3px solid #e4bd58;outline-offset:3px}
+#homeView .menu-icon{width:44px;height:44px;flex:0 0 44px;border-radius:13px;background:#e8f5e5;border:1px solid #d8ead3;box-shadow:none;font-size:1.3rem}
+#homeView .menu-copy{min-width:0}
+#homeView .menu-copy strong{font-size:.98rem;line-height:1.5;color:#14532d}
+#homeView .menu-copy small{font-size:.78rem;line-height:1.6;margin-top:4px}
+#homeView .chev{display:grid;place-items:center;width:27px;height:27px;flex:0 0 27px;border-radius:50%;background:#e7f3e4;color:#23643b;font-size:1.15rem}
+#homeView>.note{margin-top:20px;padding:14px 16px;border:1px solid #d9e8d5;border-right:4px solid #2f8550;background:#f2f8ee;border-radius:14px;line-height:1.8}
+@media(max-width:700px){
+ #homeView .menu{grid-template-columns:1fr;gap:11px}
+ #homeView .menu-btn,#homeView .menu-btn:nth-child(n){min-height:76px;padding:12px 13px;gap:10px;align-items:center}
+ #homeView .menu-icon{width:40px;height:40px;flex-basis:40px;font-size:1.2rem}
+ #homeView .menu-copy strong{font-size:.94rem}
+ #homeView .menu-copy small{font-size:.75rem}
+ #homeView .chev{display:grid}
+}
+
 </style>
 </head>
 <body>
