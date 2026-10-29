@@ -19,21 +19,84 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 <main class="wrap"><nav class="nav" aria-label="صفحات الأسئلة"><button class="active" data-page="newPage">🆕 الأسئلة الجديدة</button><button data-page="answeredPage">💬 تم الرد عليها</button><button data-page="libraryPage">📚 مكتبة التلاميذ</button></nav>
 <section id="newPage" class="page"><div class="card"><h2>الأسئلة الجديدة</h2><p class="muted">الأسئلة التي تنتظر إجابتك تظهر هنا. يمكنك الرد عليها كتابيًا من المنصة.</p><p id="newCount" class="muted">جارٍ التحميل…</p><div id="newQuestions"></div></div></section>
 <section id="answeredPage" class="page" hidden><div class="card"><h2>الأسئلة التي تمت الإجابة عنها</h2><p class="muted">يمكنك مراجعة الإجابات أو تعديلها، ونشر السؤال في المكتبة ليستفيد منه التلاميذ.</p><p id="answeredCount" class="muted"></p><div id="answeredQuestions"></div></div></section>
-<section id="questionDetailPage" class="page detail-page" hidden><button class="action green detail-back" type="button" onclick="backToQuestionList()">← رجوع إلى قائمة الأسئلة</button><div id="questionDetail"></div></section>
+<section id="questionDetailPage" class="page detail-page" hidden><button id="detailBack" class="action green detail-back" type="button">← رجوع إلى قائمة الأسئلة</button><div id="questionDetail"></div></section>
 <section id="libraryPage" class="page" hidden><div class="card"><h2>📚 مكتبة الأسئلة الظاهرة للتلاميذ</h2><p class="muted">لا يظهر السؤال في فضاء التلاميذ إلا بعد تحديد «نشر في مكتبة التلاميذ» من بطاقة السؤال.</p><input id="librarySearch" type="search" placeholder="ابحثي في المكتبة بالسؤال أو المستوى"><p id="libraryCount" class="muted"></p><div id="libraryQuestions"></div></div></section>
 <p><a href="index.html">← العودة إلى فضاء الأستاذة</a></p><p id="status" class="muted" role="status"></p></main>
 <script>
-const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";const $=id=>document.getElementById(id);const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-async function call(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");if(!token)throw Error("سجّلي الدخول في فضاء الأستاذة أولًا، ثم افتحي هذه الصفحة من جديد.");const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "let currentQuestionId=null,currentListPage="newPage";
-function openQuestion(id,fromPage){currentQuestionId=id;currentListPage=fromPage;const q=questions.find(x=>x.id===id);if(!q)return;$("questionDetail").innerHTML=questionDetailCard(q);document.querySelectorAll(".page").forEach(p=>p.hidden=true);$("questionDetailPage").hidden=false;window.scrollTo({top:0,behavior:"smooth"});}
-function backToQuestionList(){switchPage(currentListPage);}
-function questionDetailCard(q){const status=q.status==="answered"?"تم الرد":q.status==="closed"?"مغلق":q.status==="in_progress"?"قيد المعالجة":"جديد";return '<article class="card detail-layout"><h2 class="question-detail-title">'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h2><p class="muted">'+new Date(q.created_at).toLocaleString("ar-DZ")+' · <span class="status-pill">'+status+'</span></p><h3>سؤال التلميذ</h3><div class="question question-detail-text">'+esc(q.question_text)+'</div>'+(q.teacher_reply?'<div class="saved"><strong>إجابتك المحفوظة</strong><p style="white-space:pre-wrap">'+esc(q.teacher_reply)+'</p></div>':'')+'<label for="reply-'+esc(q.id)+'">اكتبي إجابتك للتلميذ</label><textarea id="reply-'+esc(q.id)+'" rows="7" maxlength="5000" placeholder="اكتبي إجابتك هنا…">'+esc(q.teacher_reply||"")+'</textarea><div class="detail-actions"><button class="action green" type="button" onclick="saveReply(\''+esc(q.id)+'\')">💾 حفظ الإجابة وإرسالها</button><label class="publish"><input type="checkbox" '+(q.is_published?'checked':'')+' onchange="publishQuestion(\''+esc(q.id)+'\',this.checked)"> نشر في مكتبة التلاميذ</label></div><p id="replyStatus-'+esc(q.id)+'" class="muted" role="status"></p></article>'}
-function questionCard(q,fromPage){const status=q.status==="answered"?"تم الرد":q.status==="closed"?"مغلق":q.status==="in_progress"?"قيد المعالجة":"جديد";return '<article class="card question-list-card"><div class="summary"><h3>'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h3><p class="muted">'+new Date(q.created_at).toLocaleString("ar-DZ")+' · <span class="status-pill">'+status+'</span></p><p>'+esc((q.question_text||"").slice(0,150))+(q.question_text?.length>150?"…":"")+'</p></div><button class="action green" type="button" onclick="openQuestion(\''+esc(q.id)+'\',\''+fromPage+'\')">📖 فتح السؤال</button></article>'}
-async function saveReply(id){const field=$("reply-"+id),msg=$("replyStatus-"+id),btn=field?.closest(".card")?.querySelector("button");const teacher_reply=field?.value.trim();if(!teacher_reply){msg.className="error";msg.textContent="اكتبي الإجابة قبل الحفظ.";return}if(btn)btn.disabled=true;msg.textContent="جارٍ حفظ الإجابة…";try{await call("teacher_reply_student_question",{id,teacher_reply});msg.className="success";msg.textContent="تم حفظ الإجابة وستظهر للتلميذ في فضائه.";await load()}catch(e){msg.className="error";msg.textContent=e.message}finally{if(btn)btn.disabled=false}}
-async function publishQuestion(id,is_published){const msg=$("replyStatus-"+id);try{await call("teacher_publish_student_question",{id,is_published});const q=questions.find(x=>x.id===id);if(q)q.is_published=is_published;$("status").className="success";$("status").textContent=is_published?"نُشر السؤال في مكتبة التلاميذ.":"أُخفي السؤال من المكتبة.";render()}catch(e){if(msg){msg.className="error";msg.textContent=e.message}await load()}}
-function render(){const newer=questions.filter(q=>q.status!=="answered"&&q.status!=="closed"),answered=questions.filter(q=>q.status==="answered"||q.status==="closed"),published=questions.filter(q=>q.is_published);$("newCount").textContent="عدد الأسئلة الجديدة: "+newer.length;$("answeredCount").textContent="عدد الأسئلة التي تمت الإجابة عنها: "+answered.length;$("newQuestions").innerHTML=newer.length?newer.map(q=>questionCard(q,"newPage")).join(""):'<div class="empty">لا توجد أسئلة جديدة حاليًا.</div>';$("answeredQuestions").innerHTML=answered.length?answered.map(q=>questionCard(q,"answeredPage")).join(""):'<div class="empty">لا توجد أسئلة مجاب عنها بعد.</div>';renderLibrary()}
-function renderLibrary(){const term=($("librarySearch").value||"").trim().toLowerCase(),rows=questions.filter(x=>x.is_published&&((x.question_text||"").toLowerCase().includes(term)||(x.students?.level||"").toLowerCase().includes(term)));$("libraryCount").textContent="عدد الأسئلة المنشورة: "+rows.length;$("libraryQuestions").innerHTML=rows.length?rows.map(x=>'<article class="card question-list-card"><div class="summary"><h3>'+esc(x.students?.level||"سؤال علمي")+'</h3><p>'+esc((x.question_text||"").slice(0,130))+(x.question_text?.length>130?"…":"")+'</p></div><button class="action green" onclick="openQuestion(\''+esc(x.id)+'\',\'libraryPage\')">📖 فتح السؤال</button></article>').join(""):'<div class="empty">لا توجد أسئلة منشورة تطابق البحث.</div>'}
+const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
+const $=id=>document.getElementById(id);
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let questions=[],currentListPage="newPage";
+async function call(action,extra={}) {
+ const token=localStorage.getItem("tahadi_teacher_token");
+ if(!token) throw new Error("سجّلي الدخول في فضاء الأستاذة أولًا، ثم افتحي هذه الصفحة من جديد.");
+ const response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});
+ const data=await response.json();
+ if(!response.ok||!data.ok) throw new Error(data.error||"تعذر تنفيذ الطلب.");
+ return data;
+}
+function switchPage(id) {
+ document.querySelectorAll(".page").forEach(p=>p.hidden=p.id!==id);
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
+function statusText(q){return q.status==="answered"?"تم الرد":q.status==="closed"?"مغلق":q.status==="in_progress"?"قيد المعالجة":"جديد";}
+function openQuestion(id,fromPage) {
+ currentListPage=fromPage;
+ const q=questions.find(x=>String(x.id)===String(id));
+ if(!q){$("status").textContent="لم أجد السؤال، حدّثي القائمة وحاولي مجددًا.";return;}
+ $("questionDetail").innerHTML=detailMarkup(q);
+ document.querySelectorAll(".page").forEach(p=>p.hidden=true);
+ $("questionDetailPage").hidden=false;
+ const reply=$("detailReply");
+ $("detailSave").onclick=()=>saveReply(q.id);
+ $("detailPublish").checked=!!q.is_published;
+ $("detailPublish").onchange=()=>publishQuestion(q.id,$("detailPublish").checked);
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function detailMarkup(q) {
+ return '<article class="card detail-layout"><h2 class="question-detail-title">'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h2><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span></p><h3>سؤال التلميذ</h3><div class="question question-detail-text">'+esc(q.question_text)+'</div>'+(q.teacher_reply?'<div class="saved"><strong>إجابتك المحفوظة</strong><p style="white-space:pre-wrap">'+esc(q.teacher_reply)+'</p></div>':'')+'<label for="detailReply">اكتبي إجابتك للتلميذ</label><textarea id="detailReply" rows="7" maxlength="5000" placeholder="اكتبي إجابتك هنا…">'+esc(q.teacher_reply||"")+'</textarea><div class="detail-actions"><button id="detailSave" class="action green" type="button">💾 حفظ الإجابة وإرسالها</button><label class="publish"><input id="detailPublish" type="checkbox"> نشر في مكتبة التلاميذ</label></div><p id="detailStatus" class="muted" role="status"></p></article>';
+}
+function questionCard(q,fromPage) {
+ return '<article class="card question-list-card"><div class="summary"><h3>'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h3><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span></p><p>'+esc((q.question_text||"").slice(0,150))+(String(q.question_text||"").length>150?"…":"")+'</p></div><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
+}
+async function saveReply(id) {
+ const field=$("detailReply"),msg=$("detailStatus"),btn=$("detailSave");
+ const teacher_reply=field?.value.trim();
+ if(!teacher_reply){msg.className="error";msg.textContent="اكتبي الإجابة قبل الحفظ.";return;}
+ btn.disabled=true;msg.className="muted";msg.textContent="جارٍ حفظ الإجابة…";
+ try {await call("teacher_reply_student_question",{id,teacher_reply});msg.className="success";msg.textContent="تم حفظ الإجابة وإرسالها إلى فضاء التلميذ.";await load();}
+ catch(e){msg.className="error";msg.textContent=e.message;}
+ finally{btn.disabled=false;}
+}
+async function publishQuestion(id,is_published) {
+ const msg=$("detailStatus");
+ try {await call("teacher_publish_student_question",{id,is_published});const q=questions.find(x=>String(x.id)===String(id));if(q)q.is_published=is_published;$("status").className="success";$("status").textContent=is_published?"تم نشر السؤال في مكتبة التلاميذ.":"تم إخفاء السؤال من المكتبة.";render();if($("questionDetailPage")&&!$("questionDetailPage").hidden)openQuestion(id,currentListPage);}
+ catch(e){if(msg){msg.className="error";msg.textContent=e.message;}else{$("status").className="error";$("status").textContent=e.message;}}
+}
+function bindOpenButtons(){document.querySelectorAll(".open-question").forEach(b=>b.addEventListener("click",()=>openQuestion(b.dataset.id,b.dataset.from)));}
+function render() {
+ const newer=questions.filter(q=>q.status!=="answered"&&q.status!=="closed");
+ const answered=questions.filter(q=>q.status==="answered"||q.status==="closed");
+ $("newCount").textContent="عدد الأسئلة الجديدة: "+newer.length;
+ $("answeredCount").textContent="عدد الأسئلة التي تمت الإجابة عنها: "+answered.length;
+ $("newQuestions").innerHTML=newer.length?newer.map(q=>questionCard(q,"newPage")).join(""):'<div class="empty">لا توجد أسئلة جديدة حاليًا.</div>';
+ $("answeredQuestions").innerHTML=answered.length?answered.map(q=>questionCard(q,"answeredPage")).join(""):'<div class="empty">لا توجد أسئلة مجاب عنها بعد.</div>';
+ renderLibrary();bindOpenButtons();
+}
+function renderLibrary() {
+ const term=($("librarySearch").value||"").trim().toLowerCase();
+ const rows=questions.filter(q=>q.is_published&&((q.question_text||"").toLowerCase().includes(term)||(q.students?.level||"").toLowerCase().includes(term)));
+ $("libraryCount").textContent="عدد الأسئلة المنشورة: "+rows.length;
+ $("libraryQuestions").innerHTML=rows.length?rows.map(q=>questionCard(q,"libraryPage")).join(""):'<div class="empty">لا توجد أسئلة منشورة تطابق البحث.</div>';
+ bindOpenButtons();
+}
 $("librarySearch").addEventListener("input",renderLibrary);
-async function load(){try{const d=await call("teacher_student_questions");questions=d.questions||[];render();$("status").textContent="تم تحديث الأسئلة."; }catch(e){$("status").className="error";$("status").textContent=e.message;$("newQuestions").innerHTML='<div class="empty">'+esc(e.message)+'</div>'}}
+$("detailBack").addEventListener("click",()=>switchPage(currentListPage));
+async function load() {
+ try {const data=await call("teacher_student_questions");questions=data.questions||[];render();$("status").className="muted";$("status").textContent="تم تحديث الأسئلة.";}
+ catch(e){$("status").className="error";$("status").textContent=e.message;$("newQuestions").innerHTML='<div class="empty">'+esc(e.message)+'</div>';}
+}
 load();
 </script></body></html>
