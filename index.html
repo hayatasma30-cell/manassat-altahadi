@@ -480,7 +480,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     window.scrollTo({top:0,behavior:"smooth"});
   }
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
-  document.addEventListener("click",function(event){const dailyButton=event.target.closest('[data-view="dailyLessonsView"]');if(!dailyButton)return;event.preventDefault();showView("dailyLessonsView");if(typeof setLessonPage==="function")setLessonPage("add");},true);
+  document.addEventListener("click",function(event){const dailyButton=event.target.closest('[data-view="dailyLessonsView"]');if(!dailyButton)return;event.preventDefault();showView("dailyLessonsView");if(typeof setLessonPage==="function")setLessonPage("library");},true);
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
   const requestedView=new URLSearchParams(location.search).get("view");
