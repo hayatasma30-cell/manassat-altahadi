@@ -350,6 +350,43 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 .calendar-lesson-actions{display:flex;gap:8px;margin-top:12px}
 .calendar-lesson-actions button{flex:1;min-width:0;min-height:38px;padding:6px 8px!important;font-size:.82rem!important}
 @media(max-width:480px){.calendar-lesson-entry summary{padding:12px 5px}.calendar-lesson-time{font-size:.9rem}.calendar-lesson-title{font-size:.81rem}.calendar-lesson-actions button{font-size:.76rem!important}}
+
+/* لوحة الأستاذة العامة: ساعة حيّة وتذكيرات ومنبّه */
+.teacher-command-panel{margin:18px 0 22px;padding:18px;border:1px solid #dce8d9;border-radius:24px;background:linear-gradient(145deg,#fff 0%,#f4faf3 100%);box-shadow:0 8px 22px #183d2510;color:#173f2d}
+.command-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.command-kicker{font-size:.8rem;color:#64816b;font-weight:700}
+.command-top h2{margin:5px 0;font-size:1.35rem}
+.command-top p{margin:4px 0;color:#78877c;font-size:.9rem}
+.live-clock-wrap{min-width:155px;text-align:center;padding:12px 14px;border-radius:18px;background:#e8f3e7;border:1px solid #d2e2d0;display:flex;flex-direction:column;gap:4px}
+.live-clock-wrap>span{font-size:.76rem;color:#5d7964}
+.live-clock-wrap strong{font-size:1.7rem;letter-spacing:1px;font-variant-numeric:tabular-nums;direction:ltr}
+#teacherLiveDate{font-size:.8rem}
+.command-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+.command-stats>div{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:9px;padding:12px;border-radius:15px;background:#fff;border:1px solid #e3ece0}
+.command-stats>div>span{grid-row:span 2;font-size:1.25rem}
+.command-stats strong{font-size:1.15rem}
+.command-stats small{color:#78877c;font-size:.78rem}
+.command-reminder-form{padding:14px;border:1px solid #e2eadf;border-radius:18px;background:#fff}
+.command-reminder-form h3,.command-reminders-head h3{font-size:1rem;margin:0 0 12px}
+.command-reminder-form label{display:block;font-size:.85rem;font-weight:700;margin:10px 0 6px}
+.command-reminder-form input,.command-reminder-form select{width:100%;min-width:0;box-sizing:border-box;border:1px solid #ceddca;border-radius:11px;padding:11px;background:#fff;color:#183e2d;font:inherit}
+.command-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.command-form-grid>div:first-child{grid-column:1/-1}
+.command-form-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.command-form-actions button,.command-reminders-head button{min-width:0;padding:10px 8px;font-size:.84rem}
+.command-reminder-form .muted{font-size:.8rem;margin:10px 0 0}
+.command-reminders-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:17px 0 10px}
+.command-reminders-head h3{margin:0}
+.command-reminder-list{display:flex;flex-direction:column;gap:8px}
+.command-reminder-item{display:grid;grid-template-columns:1fr auto;gap:7px;padding:12px;border:1px solid #e0e9dd;border-radius:14px;background:#fff}
+.command-reminder-item.is-done{opacity:.65}
+.command-reminder-item.is-done .command-reminder-title{text-decoration:line-through}
+.command-reminder-title{font-weight:800;overflow-wrap:anywhere}
+.command-reminder-meta{margin-top:5px;color:#718075;font-size:.79rem;line-height:1.6}
+.command-reminder-actions{display:flex;flex-direction:column;gap:5px}
+.command-reminder-actions button{padding:6px 8px;min-width:62px;font-size:.75rem}
+.command-reminder-item.is-due{border-color:#d7a33c;background:#fff9e8}
+@media(max-width:480px){.teacher-command-panel{padding:12px;border-radius:19px}.command-top{align-items:stretch}.live-clock-wrap{width:auto;flex:1;min-width:130px}.live-clock-wrap strong{font-size:1.55rem}.command-form-actions{grid-template-columns:1fr}.command-reminder-item{grid-template-columns:1fr}.command-reminder-actions{flex-direction:row}.command-reminder-actions button{flex:1}.command-stats>div{padding:10px 8px}}
 </style>
 </head>
 <body>
@@ -357,6 +394,14 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <main class="wrap">
 <section id="homeView" class="view active">
 <div class="hero"><div class="eyebrow">فضاء الأستاذة</div><h1>منصة التحدي</h1><p>مرحبًا بكِ في فضائكِ التعليمي؛ اختاري القسم الذي تريدين فتحه، وستظهر معلوماته في صفحة مستقلة.</p></div>
+<section class="teacher-command-panel" aria-label="لوحة الأستاذة والتذكيرات" dir="rtl">
+  <div class="command-top"><div><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>كل ما تريدين تذكّره في مكان واحد.</p></div><div class="live-clock-wrap"><span>الوقت الآن</span><strong id="teacherLiveClock" aria-live="off">--:--:--</strong><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
+  <div class="command-stats"><div><span>🔔</span><strong id="teacherReminderCount">0</strong><small>تذكيرات قادمة</small></div><div><span>⏰</span><strong id="teacherNextReminder">—</strong><small>أقرب تذكير</small></div></div>
+  <div class="command-reminder-form"><h3>➕ أضيفي تذكيرًا أو منبّهًا</h3><label for="teacherReminderTitle">ما الذي تريدين تذكّره؟</label><input id="teacherReminderTitle" type="text" maxlength="120" placeholder="مثال: تحضير حصة السنة الرابعة" required>
+  <div class="command-form-grid"><div><label for="teacherReminderCategory">القسم</label><select id="teacherReminderCategory"><option>عام</option><option>الحصص</option><option>الاختبارات</option><option>التلاميذ</option><option>الاشتراكات والدفع</option><option>التسجيلات</option><option>التنبيهات</option><option>الدروس والملخصات</option></select></div><div><label for="teacherReminderDate">التاريخ</label><input id="teacherReminderDate" type="date" required></div><div><label for="teacherReminderTime">الوقت</label><input id="teacherReminderTime" type="time" required></div></div>
+  <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
+  <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
+</section>
 <div class="menu" aria-label="أقسام المنصة">
 <button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="student-space.html?v=20261028-qa2" style="text-decoration:none"><span class="menu-icon">👩‍🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
@@ -986,6 +1031,30 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   $("cancelResourceEdit").addEventListener("click",resetResourceForm);
   $("refreshLearningResources").addEventListener("click",loadLearningResources);
   document.querySelectorAll('[data-view="learningResourcesView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
+})();
+
+/* ساعة المنصة والتذكيرات الشخصية */
+(function initTeacherCommandPanel(){
+ const $=id=>document.getElementById(id);
+ const key="tahadi_teacher_reminders_v1";
+ let reminders=[];
+ try{reminders=JSON.parse(localStorage.getItem(key)||"[]");if(!Array.isArray(reminders))reminders=[];}catch(_){reminders=[];}
+ const pad=n=>String(n).padStart(2,"0");
+ const dateKey=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+ const escapeText=value=>String(value??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+ function persist(){try{localStorage.setItem(key,JSON.stringify(reminders));}catch(_){if($("teacherReminderStatus"))$("teacherReminderStatus").textContent="تعذر حفظ التذكيرات في هذا المتصفح.";}renderReminders();}
+ function renderClock(){const now=new Date(),clock=$("teacherLiveClock"),date=$("teacherLiveDate");if(clock)clock.textContent=pad(now.getHours())+":"+pad(now.getMinutes())+":"+pad(now.getSeconds());if(date)date.textContent=new Intl.DateTimeFormat("ar-DZ",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(now);}
+ function renderReminders(){const list=$("teacherReminderList");if(!list)return;const now=Date.now(),pending=reminders.filter(r=>!r.done&&new Date(r.at).getTime()>=now).sort((a,b)=>new Date(a.at)-new Date(b.at));$("teacherReminderCount").textContent=String(pending.length);$("teacherNextReminder").textContent=pending.length?new Intl.DateTimeFormat("ar-DZ",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(pending[0].at)):"—";const sorted=[...reminders].sort((a,b)=>(a.done-b.done)||(new Date(a.at)-new Date(b.at)));if(!sorted.length){list.innerHTML='<p class="muted">لا توجد تذكيرات بعد. أضيفي أول منبّه من الأعلى.</p>';return;}list.innerHTML=sorted.map(r=>{const d=new Date(r.at),due=!r.done&&d.getTime()<=now;return '<article class="command-reminder-item '+(r.done?'is-done ':'')+(due?'is-due':'')+'"><div><div class="command-reminder-title">'+escapeText(r.title)+'</div><div class="command-reminder-meta">📂 '+escapeText(r.category)+' · 📅 '+escapeText(new Intl.DateTimeFormat("ar-DZ",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).format(d))+' · 🕒 '+escapeText(new Intl.DateTimeFormat("ar-DZ",{hour:"2-digit",minute:"2-digit"}).format(d))+(due?' · حان موعده':r.done?' · تم الإنجاز':'')+'</div></div><div class="command-reminder-actions">'+(!r.done?'<button type="button" class="secondary" data-reminder-done="'+escapeText(r.id)+'">تمّ</button>':'<button type="button" class="secondary" data-reminder-undo="'+escapeText(r.id)+'">استعادة</button>')+'<button type="button" class="secondary" data-reminder-delete="'+escapeText(r.id)+'">حذف</button></div></article>';}).join("");}
+ function playAlarm(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C();[0,.28,.56].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type="sine";osc.frequency.value=i===1?880:660;gain.gain.setValueAtTime(.001,ctx.currentTime+offset);gain.gain.exponentialRampToValueAtTime(.16,ctx.currentTime+offset+.03);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+offset+.22);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime+offset);osc.stop(ctx.currentTime+offset+.24);});setTimeout(()=>ctx.close(),1400);}catch(_){}}
+ function checkAlarms(){const now=Date.now();let changed=false;reminders.forEach(r=>{if(r.done||r.fired)return;const at=new Date(r.at).getTime();if(Number.isFinite(at)&&at<=now){r.fired=true;changed=true;playAlarm();if("Notification"in window&&Notification.permission==="granted"){try{new Notification("منبّه منصة التحدي",{body:r.title,tag:"tahadi-"+r.id});}catch(_){}}else if($("teacherReminderStatus"))$("teacherReminderStatus").textContent="🔔 حان موعد: "+r.title+" — افتحي الإشعارات لتلقي تنبيه النظام.";}});if(changed){try{localStorage.setItem(key,JSON.stringify(reminders));}catch(_){}renderReminders();}}
+ const title=$("teacherReminderTitle"),date=$("teacherReminderDate"),time=$("teacherReminderTime");
+ if(!title||!date||!time)return;
+ const now=new Date();date.min=dateKey(now);date.value=dateKey(now);time.value=pad(now.getHours())+":"+pad((Math.ceil(now.getMinutes()/5)*5)%60);if(Number(time.value.slice(3))===0&&now.getMinutes()>55){const later=new Date(now.getTime()+10*60000);date.value=dateKey(later);time.value=pad(later.getHours())+":"+pad(later.getMinutes());}
+ $("saveTeacherReminder").addEventListener("click",()=>{const text=title.value.trim(),at=new Date(date.value+"T"+time.value+":00");if(!text){$("teacherReminderStatus").textContent="اكتبي عنوان التذكير أولًا.";title.focus();return;}if(!date.value||!time.value||!Number.isFinite(at.getTime())){$("teacherReminderStatus").textContent="اختاري تاريخًا ووقتًا صحيحين.";return;}if(at.getTime()<=Date.now()){$("teacherReminderStatus").textContent="اختاري وقتًا في المستقبل حتى يعمل المنبّه.";return;}reminders.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),title:text,category:$("teacherReminderCategory").value,at:at.toISOString(),done:false,fired:false});persist();title.value="";$("teacherReminderStatus").textContent="تم حفظ التذكير على هذا الجهاز. اتركي المنصة مفتوحة ليعمل المنبّه.";});
+ $("enableTeacherNotifications").addEventListener("click",async()=>{if(!("Notification"in window)){$("teacherReminderStatus").textContent="هذا المتصفح لا يدعم إشعارات النظام؛ سيظهر التنبيه داخل المنصة ويصدر صوتًا عندما تكون مفتوحة.";return;}try{const p=await Notification.requestPermission();$("teacherReminderStatus").textContent=p==="granted"?"تم تفعيل إشعارات المنبّهات.":"لم تُفعّل الإشعارات؛ يمكنك السماح بها من إعدادات المتصفح.";}catch(_){$("teacherReminderStatus").textContent="تعذر تفعيل الإشعارات من هذا المتصفح."; }});
+ $("teacherReminderList").addEventListener("click",e=>{const done=e.target.closest("[data-reminder-done]"),undo=e.target.closest("[data-reminder-undo]"),del=e.target.closest("[data-reminder-delete]");if(done){const r=reminders.find(x=>x.id===done.dataset.reminderDone);if(r)r.done=true;persist();}if(undo){const r=reminders.find(x=>x.id===undo.dataset.reminderUndo);if(r){r.done=false;r.fired=false;}persist();}if(del){reminders=reminders.filter(x=>x.id!==del.dataset.reminderDelete);persist();}});
+ $("clearCompletedTeacherReminders").addEventListener("click",()=>{reminders=reminders.filter(r=>!r.done);persist();$("teacherReminderStatus").textContent="حُذفت التذكيرات المنجزة.";});
+ renderClock();renderReminders();setInterval(()=>{renderClock();checkAlarms();},1000);
 })();
 </script>
 </body>
