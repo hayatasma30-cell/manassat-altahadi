@@ -952,7 +952,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const token=localStorage.getItem("tahadi_teacher_token");
       const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"create_student",student})});
       const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذرت إضافة التلميذ.");
-      result.hidden=false;result.innerHTML='<div class="data-item"><strong>✅ تمت إضافة '+escapeHtml(data.student.full_name)+' بنجاح</strong><p>طريقة الدراسة: '+(data.student.study_mode==="in_person"?"حضوري":"زووم")+'</p><p>لا يُنشأ رمز إضافي هنا. استخدمي كود دخول فضاء التلميذ من «قائمة التلاميذ ← أكواد التلميذ ← كود دخول فضاء التلميذ».</p></div>\n      $("addStudentForm").reset();$("newStudentDate").value=new Date().toISOString().slice(0,10);
+      result.hidden=false;result.innerHTML='<div class="data-item"><strong>✅ تمت إضافة '+escapeHtml(data.student.full_name)+' بنجاح</strong><p>طريقة الدراسة: '+(data.student.study_mode==="in_person"?"حضوري":"زووم")+'</p><p>لا يُنشأ رمز إضافي هنا. استخدمي كود دخول فضاء التلميذ من «قائمة التلاميذ ← أكواد التلميذ ← كود دخول فضاء التلميذ».</p></div>';
+      $("addStudentForm").reset();$("newStudentDate").value=new Date().toISOString().slice(0,10);
       status.textContent="تم الحفظ بنجاح.";await refresh();
     }catch(err){status.textContent=err.message||"حدث خطأ أثناء الحفظ.";}finally{button.disabled=false;}
   });
