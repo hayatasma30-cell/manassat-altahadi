@@ -221,6 +221,20 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  #reviewCoursesView .section-heading button{width:auto}
  #reviewCoursesView .data-item button{width:100%}
 }
+
+/* صفحات داخلية متتابعة لدورات المراجعة بدل تكديس النماذج */
+#reviewCoursesView .course-stepper{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+#reviewCoursesView .course-step{display:block;text-align:center;padding:9px 5px;border:1px solid #dce8dc;border-radius:12px;background:#fff;color:#64756a;font-size:.82rem;font-weight:700}
+#reviewCoursesView .course-step.active{background:#eaf3ff;border-color:#80b8f2;color:#145ca8;box-shadow:inset 0 -3px #1976d2}
+#reviewCoursesView .course-subpage[hidden]{display:none!important}
+#reviewCoursesView .course-subpage>.panel{margin:0;border-radius:22px}
+#reviewCoursesView .course-page-heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+#reviewCoursesView .course-page-heading h3{flex:1;margin:0}
+#reviewCoursesView .course-nav-actions{display:flex;gap:10px;align-items:center;margin-top:18px}
+#reviewCoursesView .course-nav-actions button{flex:1;margin-top:0}
+#reviewCoursesView .course-next{width:100%;margin-top:20px}
+#reviewCoursesView .course-back{width:auto}
+@media(max-width:420px){#reviewCoursesView .course-step{font-size:.72rem;padding:8px 3px}#reviewCoursesView .course-nav-actions{flex-direction:column}#reviewCoursesView .course-nav-actions button{width:100%}}
 </style>
 </head>
 <body>
@@ -261,7 +275,28 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <div class="actions-row"><button class="primary" id="saveLearningResource" type="submit">حفظ المورد</button><button class="secondary" id="cancelResourceEdit" type="button">إفراغ الحقول</button></div><p id="resourceFormStatus" class="muted" role="status"></p></form></div>
 <div class="panel"><div class="section-heading"><h3>الموارد المضافة</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div>
 </section>
-<section id="reviewCoursesView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 إدارة دورات المراجعة</h2></div><div class="panel"><p class="muted">اختاري المستوى وطريقة الدورة، ثم أضيفي التلاميذ المسجلين فيها فقط. هذه القائمة مستقلة عن اشتراكات الحضوري وزووم العادية.</p><label for="courseLevel">المستوى الدراسي</label><select id="courseLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option selected>السنة الرابعة متوسط</option></select><label for="courseMode">طريقة الدورة</label><select id="courseMode"><option value="in_person">حضوري</option><option value="zoom">زووم</option></select><label for="courseGroupUrl">رابط مجموعة تيليغرام الخاصة بهذه الدورة (اختياري الآن)</label><input id="courseGroupUrl" type="url" placeholder="ألصقي رابط المجموعة الخاصة هنا"><button class="primary" id="loadCourseStudents" type="button">عرض تلاميذ هذا المستوى</button><p id="courseStatus" class="muted" role="status"></p></div><div class="panel"><h3>اختاري التلاميذ لإضافتهم إلى الدورة</h3><p class="muted">اختاري فقط المسجلين فعليًا في الدورة. يمكن للتلميذ أن يكون مسجلًا في أكثر من خدمة.</p><input id="courseStudentSearch" type="search" placeholder="بحث باسم التلميذ"><label for="courseBulkNames" style="display:block;margin-top:12px">أو اكتبي أسماء عدة تلاميذ، كل اسم في سطر</label><textarea id="courseBulkNames" rows="3" placeholder="اسم التلميذ الأول&#10;اسم التلميذ الثاني&#10;اسم التلميذ الثالث"></textarea><button class="secondary" id="selectCourseBulkNames" type="button" style="margin-top:8px">تحديد الأسماء المطابقة</button><p id="courseSelectedCount" class="muted">عدد التلاميذ المحددين: 0</p><div id="courseStudentsList" class="list" style="margin-top:12px">اضغطي «عرض تلاميذ هذا المستوى».</div><button class="primary" id="saveCourseEnrollments" type="button">حفظ المشاركين المحددين</button></div><div class="panel"><div class="section-heading"><h3>المشاركون في هذه الدورة</h3><button class="secondary" id="refreshCourseEnrollments" type="button">تحديث</button></div><div id="courseEnrolledList" class="list">اختاري المستوى والطريقة ثم حدّثي القائمة.</div></div></section>
+<section id="reviewCoursesView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 دورات المراجعة</h2></div>
+<div class="course-stepper" aria-label="خطوات إدارة الدورة"><span class="course-step active" data-step-label="1">١. إعداد الدورة</span><span class="course-step" data-step-label="2">٢. اختيار التلاميذ</span><span class="course-step" data-step-label="3">٣. المشاركون</span></div>
+<div id="courseSetupPage" class="course-subpage">
+<div class="panel"><h3>⚙️ إعداد الدورة</h3><p class="muted">اختاري المستوى وطريقة المراجعة. تسجيل الدورة مستقل عن اشتراكات الحضوري وزووم العادية.</p>
+<label for="courseLevel">المستوى الدراسي</label><select id="courseLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option selected>السنة الرابعة متوسط</option></select>
+<label for="courseMode">طريقة الدورة</label><select id="courseMode"><option value="in_person">حضوري</option><option value="zoom">زووم</option></select>
+<label for="courseGroupUrl">رابط مجموعة تيليغرام الخاصة بهذه الدورة</label><input id="courseGroupUrl" type="url" placeholder="ألصقي رابط المجموعة هنا">
+<button class="primary course-next" id="goCourseStudents" type="button">التالي: اختيار التلاميذ ←</button><p id="courseStatus" class="muted" role="status"></p></div>
+</div>
+<div id="courseSelectPage" class="course-subpage" hidden>
+<div class="panel"><div class="course-page-heading"><button class="secondary course-back" type="button" data-course-page="setup">→ إعداد الدورة</button><h3>👩‍🎓 اختيار التلاميذ</h3></div><p class="muted">حددي جميع التلاميذ المطلوبين. يمكنك البحث بالاسم أو لصق عدة أسماء، وسيبقى التحديد محفوظًا أثناء البحث.</p>
+<input id="courseStudentSearch" type="search" placeholder="ابحثي باسم التلميذ">
+<label for="courseBulkNames">تحديد عدة أسماء دفعة واحدة (كل اسم في سطر)</label><textarea id="courseBulkNames" rows="3" placeholder="اسم التلميذ الأول&#10;اسم التلميذ الثاني&#10;اسم التلميذ الثالث"></textarea>
+<button class="secondary" id="selectCourseBulkNames" type="button">تحديد الأسماء المطابقة</button><p id="courseSelectedCount" class="muted">عدد التلاميذ المحددين: 0</p>
+<div id="courseStudentsList" class="list">حمّلي قائمة التلاميذ أولًا.</div>
+<div class="course-nav-actions"><button class="secondary course-back" type="button" data-course-page="setup">السابق</button><button class="primary" id="saveCourseEnrollments" type="button">حفظ التلاميذ والمتابعة ←</button></div>
+</div></div>
+<div id="courseParticipantsPage" class="course-subpage" hidden>
+<div class="panel"><div class="course-page-heading"><button class="secondary course-back" type="button" data-course-page="select">→ اختيار التلاميذ</button><h3>👥 المشاركون في هذه الدورة</h3></div><p class="muted">هنا تظهر قائمة التلاميذ المحفوظين في المستوى والطريقة المختارين.</p><div id="courseEnrolledList" class="list">لم يتم تحميل المشاركين بعد.</div><div class="course-nav-actions"><button class="secondary course-back" type="button" data-course-page="setup">إعداد دورة أخرى</button><button class="primary" id="refreshCourseEnrollments" type="button">تحديث القائمة</button></div></div>
+</div>
+</section>
 
 <section id="loginView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ رجوع</button><h2>🔐 دخول الأستاذة</h2></div>
