@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-10-28-teacher-home-visual-cleanup-v1">
+<meta name="platform-build" content="2026-10-29-daily-lessons-course-category-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -235,7 +235,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #reviewCoursesView .course-next{width:100%;margin-top:20px}
 #reviewCoursesView .course-back{width:auto}
 @media(max-width:420px){#reviewCoursesView .course-step{font-size:.72rem;padding:8px 3px}#reviewCoursesView .course-nav-actions{flex-direction:column}#reviewCoursesView .course-nav-actions button{width:100%}}
-</style>
+\n#lessonCategory{border:1px solid #cbdcc8;border-radius:14px;padding:13px;background:#fff;color:var(--ink);width:100%;font:inherit;font-weight:700;box-shadow:0 3px 0 #e3e9dc}#lessonCategoryHint{background:#eef7ec;border-right:4px solid #21834c;border-radius:10px;padding:9px 12px}.daily-mode-switch button{border-radius:14px;box-shadow:0 4px 0 #0b3820,0 7px 14px #14532d18;min-height:46px}.daily-mode-switch button:active{transform:translateY(2px);box-shadow:0 2px 0 #0b3820}\n</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -336,6 +336,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <div class="daily-mode-switch" role="group" aria-label="طريقة التدريس"><button type="button" class="primary" data-lesson-mode="zoom">حصص الزووم</button><button type="button" class="secondary" data-lesson-mode="in_person">حصص الحضوري</button></div><p id="lessonModeHint" class="muted">تسجل الحصة ضمن حصص الزووم.</p>
 <label for="lessonDate">التاريخ</label><input id="lessonDate" type="date">
 <label for="lessonTime">وقت بداية الحصة</label><input id="lessonTime" type="time" step="300" aria-label="اختاري وقت بداية الحصة"><label for="lessonEndTime">وقت نهاية الحصة</label><input id="lessonEndTime" type="time" step="300" aria-label="اختاري وقت نهاية الحصة"><p class="muted">اختاري وقت البداية والنهاية من الساعة.</p>
+<label for="lessonCategory">تصنيف الحصة</label><select id="lessonCategory"><option value="عادية">حصة عادية</option><option value="دورة مراجعة">حصة دورة مراجعة</option></select><p id="lessonCategoryHint" class="muted">هذه الحصة تضاف إلى الحصص العادية.</p>
 <label for="lessonType">نوع الحصة</label><select id="lessonType"><option value="جماعية">جماعية</option><option value="فردية">فردية</option></select>
 <div id="lessonDurationWrap" hidden><label for="lessonDuration">مدة الحصة الفردية</label><select id="lessonDuration"><option value="60">ساعة واحدة</option><option value="90">ساعة ونصف</option><option value="120">ساعتان</option></select></div>
 <label for="lessonLevel">المستوى الدراسي</label><select id="lessonLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option></select>
