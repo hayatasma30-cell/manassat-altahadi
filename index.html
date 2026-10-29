@@ -280,6 +280,15 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #dailyLessonsView .data-item .payment-meta button{min-height:38px!important;padding:6px 5px!important;font-size:.8rem!important}
 @media(max-width:380px){#dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"] button{font-size:.82rem!important;min-height:46px!important}.lesson-category-filter button{font-size:.72rem!important}}
 
+/* ترتيب بطاقات الحصص على الهاتف: أزرار أصغر ومسافات متناسقة */
+#dailyLessonsView .data-item .payment-meta{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;align-items:stretch!important}
+#dailyLessonsView .data-item .payment-meta .payment-status{grid-column:1/-1!important;justify-content:center!important;min-height:32px!important}
+#dailyLessonsView .data-item .payment-meta button{min-width:0!important;width:100%!important;min-height:40px!important;height:auto!important;padding:7px 8px!important;font-size:.82rem!important;line-height:1.35!important;white-space:normal!important;border-radius:12px!important;box-shadow:0 3px 0 #174b2c14!important}
+@media(max-width:480px){
+ #dailyLessonsView .data-item .payment-meta{gap:7px!important}
+ #dailyLessonsView .data-item .payment-meta button{min-height:38px!important;padding:6px 5px!important;font-size:.77rem!important}
+}
+
 /* تقليل أزرار حصصي اليومية واستبدال الفلاتر بقوائم اختيار */
 #dailyLessonsView .lesson-main-nav{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:14px 0 18px!important}
 #dailyLessonsView .lesson-main-nav button{min-height:50px!important;margin:0!important;padding:10px!important;border-radius:13px!important;font-size:.93rem!important;box-shadow:0 4px 0 #14532d18,0 7px 12px #14532d0b!important}
