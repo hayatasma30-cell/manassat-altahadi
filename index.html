@@ -387,6 +387,28 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 .command-reminder-actions button{padding:6px 8px;min-width:62px;font-size:.75rem}
 .command-reminder-item.is-due{border-color:#d7a33c;background:#fff9e8}
 @media(max-width:480px){.teacher-command-panel{padding:12px;border-radius:19px}.command-top{align-items:stretch}.live-clock-wrap{width:auto;flex:1;min-width:130px}.live-clock-wrap strong{font-size:1.55rem}.command-form-actions{grid-template-columns:1fr}.command-reminder-item{grid-template-columns:1fr}.command-reminder-actions{flex-direction:row}.command-reminder-actions button{flex:1}.command-stats>div{padding:10px 8px}}
+
+/* لوحة التذكيرات مطوية افتراضيًا حتى لا تشغل مساحة الصفحة الرئيسية */
+.teacher-command-panel{margin:10px 0 14px;padding:12px 14px;border-radius:18px}
+.teacher-command-panel.is-collapsed{padding:10px 12px}
+.command-heading{flex:1;min-width:130px}
+.command-top h2{font-size:1.05rem;margin:3px 0}
+.command-top p{font-size:.8rem;margin:3px 0 6px}
+.command-toggle{padding:7px 10px!important;min-height:34px;font-size:.82rem!important}
+.teacher-command-panel.is-collapsed .command-stats,
+.teacher-command-panel.is-collapsed .command-reminder-form,
+.teacher-command-panel.is-collapsed .command-reminders-head,
+.teacher-command-panel.is-collapsed .command-reminder-list{display:none!important}
+.teacher-command-panel.is-collapsed .command-top{align-items:center;gap:8px}
+.teacher-command-panel.is-collapsed .command-heading{display:grid;grid-template-columns:1fr;gap:2px}
+.teacher-command-panel.is-collapsed .command-heading>p{display:none}
+.teacher-command-panel.is-collapsed .command-kicker{font-size:.7rem}
+.teacher-command-panel.is-collapsed .command-top h2{font-size:1rem}
+.teacher-command-panel.is-collapsed .live-clock-wrap{min-width:0;flex:0 0 auto;padding:6px 9px;border-radius:12px;gap:1px}
+.teacher-command-panel.is-collapsed .live-clock-wrap>span:first-child{display:none}
+.teacher-command-panel.is-collapsed .live-clock-wrap strong{font-size:1.12rem;letter-spacing:0}
+.teacher-command-panel.is-collapsed #teacherLiveDate{font-size:.66rem;max-width:150px}
+@media(max-width:480px){.teacher-command-panel.is-collapsed{padding:9px}.teacher-command-panel.is-collapsed .command-top{flex-wrap:nowrap}.teacher-command-panel.is-collapsed .command-heading{min-width:0}.teacher-command-panel.is-collapsed .command-top h2{font-size:.94rem}.teacher-command-panel.is-collapsed .live-clock-wrap strong{font-size:1rem}.teacher-command-panel.is-collapsed #teacherLiveDate{max-width:118px;font-size:.62rem}.teacher-command-panel.is-collapsed .command-toggle{padding:5px 7px!important;font-size:.73rem!important}}
 </style>
 </head>
 <body>
@@ -394,8 +416,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <main class="wrap">
 <section id="homeView" class="view active">
 <div class="hero"><div class="eyebrow">فضاء الأستاذة</div><h1>منصة التحدي</h1><p>مرحبًا بكِ في فضائكِ التعليمي؛ اختاري القسم الذي تريدين فتحه، وستظهر معلوماته في صفحة مستقلة.</p></div>
-<section class="teacher-command-panel" aria-label="لوحة الأستاذة والتذكيرات" dir="rtl">
-  <div class="command-top"><div><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>كل ما تريدين تذكّره في مكان واحد.</p></div><div class="live-clock-wrap"><span>الوقت الآن</span><strong id="teacherLiveClock" aria-live="off">--:--:--</strong><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
+<section class="teacher-command-panel is-collapsed" aria-label="لوحة الأستاذة والتذكيرات" dir="rtl">
+  <div class="command-top"><div class="command-heading"><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>تذكيراتك في مكان واحد.</p><button type="button" id="toggleTeacherCommandPanel" class="secondary command-toggle" aria-expanded="false">＋ فتح لوحة التذكيرات</button></div><div class="live-clock-wrap"><span>الوقت الآن</span><strong id="teacherLiveClock" aria-live="off">--:--:--</strong><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
   <div class="command-stats"><div><span>🔔</span><strong id="teacherReminderCount">0</strong><small>تذكيرات قادمة</small></div><div><span>⏰</span><strong id="teacherNextReminder">—</strong><small>أقرب تذكير</small></div></div>
   <div class="command-reminder-form"><h3>➕ أضيفي تذكيرًا أو منبّهًا</h3><label for="teacherReminderTitle">ما الذي تريدين تذكّره؟</label><input id="teacherReminderTitle" type="text" maxlength="120" placeholder="مثال: تحضير حصة السنة الرابعة" required>
   <div class="command-form-grid"><div><label for="teacherReminderCategory">القسم</label><select id="teacherReminderCategory"><option>عام</option><option>الحصص</option><option>الاختبارات</option><option>التلاميذ</option><option>الاشتراكات والدفع</option><option>التسجيلات</option><option>التنبيهات</option><option>الدروس والملخصات</option></select></div><div><label for="teacherReminderDate">التاريخ</label><input id="teacherReminderDate" type="date" required></div><div><label for="teacherReminderTime">الوقت</label><input id="teacherReminderTime" type="time" required></div></div>
@@ -1047,6 +1069,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  function renderReminders(){const list=$("teacherReminderList");if(!list)return;const now=Date.now(),pending=reminders.filter(r=>!r.done&&new Date(r.at).getTime()>=now).sort((a,b)=>new Date(a.at)-new Date(b.at));$("teacherReminderCount").textContent=String(pending.length);$("teacherNextReminder").textContent=pending.length?new Intl.DateTimeFormat("ar-DZ",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(pending[0].at)):"—";const sorted=[...reminders].sort((a,b)=>(a.done-b.done)||(new Date(a.at)-new Date(b.at)));if(!sorted.length){list.innerHTML='<p class="muted">لا توجد تذكيرات بعد. أضيفي أول منبّه من الأعلى.</p>';return;}list.innerHTML=sorted.map(r=>{const d=new Date(r.at),due=!r.done&&d.getTime()<=now;return '<article class="command-reminder-item '+(r.done?'is-done ':'')+(due?'is-due':'')+'"><div><div class="command-reminder-title">'+escapeText(r.title)+'</div><div class="command-reminder-meta">📂 '+escapeText(r.category)+' · 📅 '+escapeText(new Intl.DateTimeFormat("ar-DZ",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).format(d))+' · 🕒 '+escapeText(new Intl.DateTimeFormat("ar-DZ",{hour:"2-digit",minute:"2-digit"}).format(d))+(due?' · حان موعده':r.done?' · تم الإنجاز':'')+'</div></div><div class="command-reminder-actions">'+(!r.done?'<button type="button" class="secondary" data-reminder-done="'+escapeText(r.id)+'">تمّ</button>':'<button type="button" class="secondary" data-reminder-undo="'+escapeText(r.id)+'">استعادة</button>')+'<button type="button" class="secondary" data-reminder-delete="'+escapeText(r.id)+'">حذف</button></div></article>';}).join("");}
  function playAlarm(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C();[0,.28,.56].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type="sine";osc.frequency.value=i===1?880:660;gain.gain.setValueAtTime(.001,ctx.currentTime+offset);gain.gain.exponentialRampToValueAtTime(.16,ctx.currentTime+offset+.03);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+offset+.22);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime+offset);osc.stop(ctx.currentTime+offset+.24);});setTimeout(()=>ctx.close(),1400);}catch(_){}}
  function checkAlarms(){const now=Date.now();let changed=false;reminders.forEach(r=>{if(r.done||r.fired)return;const at=new Date(r.at).getTime();if(Number.isFinite(at)&&at<=now){r.fired=true;changed=true;playAlarm();if("Notification"in window&&Notification.permission==="granted"){try{new Notification("منبّه منصة التحدي",{body:r.title,tag:"tahadi-"+r.id});}catch(_){}}else if($("teacherReminderStatus"))$("teacherReminderStatus").textContent="🔔 حان موعد: "+r.title+" — افتحي الإشعارات لتلقي تنبيه النظام.";}});if(changed){try{localStorage.setItem(key,JSON.stringify(reminders));}catch(_){}renderReminders();}}
+ const panel=document.querySelector(".teacher-command-panel"),toggle=$("toggleTeacherCommandPanel");if(panel&&toggle){toggle.addEventListener("click",()=>{const collapsed=panel.classList.toggle("is-collapsed");toggle.setAttribute("aria-expanded",String(!collapsed));toggle.textContent=collapsed?"＋ فتح لوحة التذكيرات":"− إخفاء لوحة التذكيرات";});}
  const title=$("teacherReminderTitle"),date=$("teacherReminderDate"),time=$("teacherReminderTime");
  if(!title||!date||!time)return;
  const now=new Date();date.min=dateKey(now);date.value=dateKey(now);time.value=pad(now.getHours())+":"+pad((Math.ceil(now.getMinutes()/5)*5)%60);if(Number(time.value.slice(3))===0&&now.getMinutes()>55){const later=new Date(now.getTime()+10*60000);date.value=dateKey(later);time.value=pad(later.getHours())+":"+pad(later.getMinutes());}
