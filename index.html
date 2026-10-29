@@ -773,7 +773,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   $("lessonModeSelect").addEventListener("change",()=>setLessonMode($("lessonModeSelect").value,"form"));
   $("lessonListModeSelect").addEventListener("change",()=>setLessonMode($("lessonListModeSelect").value,"list"));
   function setLessonPage(page){if(page!=="add"&&page!=="scheduled"&&page!=="cancelled")page="library";selectedLessonPage=page;$("lessonAddPanel").hidden=page!=="add";$("lessonListPanel").hidden=page==="add";const titles={library:"📚 إدارة الحصص",scheduled:"🗓️ الحصص المسجلة",cancelled:"🚫 الحصص الملغاة"};$("lessonListTitle").textContent=titles[page]||"إدارة الحصص";if($("lessonListScopeSelect"))$("lessonListScopeSelect").value=page==="add"?"library":page;document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.dataset.lessonPage==="add"?page==="add":page!=="add";b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});if(page!=="add")loadDailyLessons();}
-  document.querySelectorAll("[data-lesson-page]").forEach(b=>b.addEventListener("click",()=>setLessonPage(b.dataset.lessonPage)));\n  $("lessonListScopeSelect").addEventListener("change",()=>setLessonPage($("lessonListScopeSelect").value));
+  document.querySelectorAll("[data-lesson-page]").forEach(b=>b.addEventListener("click",()=>setLessonPage(b.dataset.lessonPage)));
+  $("lessonListScopeSelect").addEventListener("change",()=>setLessonPage($("lessonListScopeSelect").value));
   const lessonDateInput=$("lessonDate");
   if(lessonDateInput&&!lessonDateInput.value)lessonDateInput.value=new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0")+"-"+String(new Date().getDate()).padStart(2,"0");
   function normalizeDailyLevel(value){return String(value||"").trim().replace(/^السنة\s+/,"").replace(/[إأآا]/g,"ا").replace(/\s+/g," ");}
