@@ -1,4 +1,4 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#14532d"><title>مكتبة الأسئلة | فضاء الأستاذة</title><style>
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><meta name="theme-color" content="#14532d"><title>مكتبة الأسئلة | فضاء الأستاذة</title><style>
 :root{--green:#14532d;--green2:#1f7747;--blue:#1976d2;--blueDark:#0d47a1;--cream:#f4f7ec;--ink:#18382a}
 *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
 header{background:linear-gradient(135deg,#14532d,#1c6540);color:white;padding:20px 16px}header h1{margin:0;color:white;font-size:clamp(1.35rem,4.5vw,2rem)}header p{margin:6px 0 0}.wrap{max-width:980px;margin:auto;padding:16px}
@@ -29,11 +29,18 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 let questions=[],currentListPage="newPage";
 async function call(action,extra={}) {
  const token=localStorage.getItem("tahadi_teacher_token");
- if(!token) throw new Error("سجّلي الدخول في فضاء الأستاذة أولًا، ثم افتحي هذه الصفحة من جديد.");
- const response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});
- const data=await response.json();
- if(!response.ok||!data.ok) throw new Error(data.error||"تعذر تنفيذ الطلب.");
- return data;
+ if(!token) throw new Error("جلسة الأستاذة غير موجودة في هذه الصفحة. ادخلي إلى فضاء الأستاذة أولًا ثم افتحي الأسئلة من داخله.");
+ const controller=new AbortController();
+ const timeout=setTimeout(()=>controller.abort(),15000);
+ try {
+  const response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra}),signal:controller.signal,cache:"no-store"});
+  const data=await response.json();
+  if(!response.ok||!data.ok) throw new Error(data.error||"تعذر تحميل الأسئلة. جرّبي تحديث الصفحة.");
+  return data;
+ } catch(e) {
+  if(e.name==="AbortError") throw new Error("تأخر تحميل الأسئلة أكثر من 15 ثانية. تحققي من الإنترنت ثم حدّثي الصفحة.");
+  throw e;
+ } finally {clearTimeout(timeout);}
 }
 function switchPage(id) {
  document.querySelectorAll(".page").forEach(p=>p.hidden=p.id!==id);
