@@ -606,6 +606,16 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     window.scrollTo({top:0,behavior:"smooth"});
   }
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
+  // تأمين فتح قائمة التلاميذ: تحميل البيانات عند فتح القسم وإظهار الخطأ بدل الفشل الصامت.
+  document.querySelectorAll('[data-view="studentsView"]').forEach(btn=>btn.addEventListener("click",async()=>{
+    const token=localStorage.getItem("tahadi_teacher_token");
+    if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
+    showView("studentsView");
+    const filters=$("studentLevelFilters");
+    if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">جارٍ تحميل قائمة التلاميذ من قاعدة البيانات…</div>';
+    try{await loadDashboard(token);showView("studentsView");}
+    catch(err){showView("studentsView");showStatus("تعذر تحميل قائمة التلاميذ: "+(err&&err.message?err.message:"خطأ غير معروف")+". اضغطي على «تحديث البيانات» للمحاولة مجددًا.","error");if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">تعذر تحميل المستويات. راجعي رسالة الخطأ أعلى الصفحة ثم حاولي التحديث.</div>';console.error("studentsView load failed",err);}
+  },true));
   document.addEventListener("click",function(event){const dailyButton=event.target.closest('[data-view="dailyLessonsView"]');if(!dailyButton)return;event.preventDefault();showView("dailyLessonsView");if(typeof setLessonPage==="function")setLessonPage("library");},true);
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
@@ -978,7 +988,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   $("logoutBtn").addEventListener("click", logout); $("topLogout").addEventListener("click", logout);
   const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
   if (savedToken && expiry && new Date(expiry).getTime() > Date.now()) {
-    loadDashboard(savedToken).then(()=>{}).catch(()=>{localStorage.removeItem("tahadi_teacher_token");localStorage.removeItem("tahadi_teacher_expires");});
+    loadDashboard(savedToken).then(()=>{}).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم أو اضغطي تحديث البيانات.","error");console.error("initial dashboard load failed",err);});
   } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
   form.addEventListener("submit", async event => {
     event.preventDefault();
