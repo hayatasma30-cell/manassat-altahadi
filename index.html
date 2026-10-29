@@ -188,6 +188,39 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   box-shadow:0 4px 0 #0d47a1,0 7px 14px rgba(25,118,210,.16)!important;
 }
 #reviewCoursesView button:disabled{opacity:.6;box-shadow:none!important}
+
+/* تنسيق موحد لقسم دورات المراجعة مع هوية منصة التحدي */
+#reviewCoursesView{max-width:100%;color:var(--ink)}
+#reviewCoursesView .view-head{margin-bottom:16px;align-items:center;gap:12px;flex-wrap:wrap}
+#reviewCoursesView .view-head h2{color:var(--g);font-size:clamp(1.25rem,4.5vw,1.7rem);margin:0}
+#reviewCoursesView>.panel{margin:0 0 14px;padding:clamp(14px,3.5vw,22px);border:1px solid #e3e9dc;border-radius:22px;background:linear-gradient(155deg,#fff 0%,#fffef9 100%);box-shadow:0 7px 22px rgba(24,56,42,.07)}
+#reviewCoursesView .panel h3{font-size:1.12rem;color:var(--g);line-height:1.5;margin:0 0 8px}
+#reviewCoursesView .panel p{line-height:1.85}
+#reviewCoursesView label{margin:12px 0 6px;color:#244c35;font-size:.96rem}
+#reviewCoursesView input:not([type=checkbox]),#reviewCoursesView select,#reviewCoursesView textarea{width:100%;max-width:100%;min-width:0;border:1px solid #d4dfd2!important;border-radius:13px!important;background:#fff!important;color:var(--ink)!important;padding:12px 13px!important;box-shadow:inset 0 1px 2px rgba(20,83,45,.03)}
+#reviewCoursesView input:focus,#reviewCoursesView select:focus,#reviewCoursesView textarea:focus{outline:2px solid #93c5fd;outline-offset:1px;border-color:#1976d2!important}
+#reviewCoursesView textarea{min-height:90px;resize:vertical}
+#reviewCoursesView .primary,#reviewCoursesView button.primary,#reviewCoursesView .secondary,#reviewCoursesView button.secondary{width:auto;max-width:100%;min-height:44px;padding:10px 16px!important;border-radius:14px!important;background:linear-gradient(145deg,#2b83df,#1769bd)!important;border:1px solid #1769bd!important;border-bottom:4px solid #0d4f96!important;color:#fff!important;font-weight:700;box-shadow:0 5px 12px rgba(25,118,210,.15)!important;margin-top:10px;white-space:normal}
+#reviewCoursesView .primary:active,#reviewCoursesView .secondary:active{transform:translateY(2px);box-shadow:0 2px 5px rgba(25,118,210,.15)!important}
+#reviewCoursesView #loadCourseStudents,#reviewCoursesView #saveCourseEnrollments{width:100%}
+#reviewCoursesView #courseStudentsList,#reviewCoursesView #courseEnrolledList{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;margin-top:12px}
+#reviewCoursesView .data-item{min-width:0;border:1px solid #e0e8dc;border-radius:17px;background:#fff;padding:14px;box-shadow:0 3px 12px rgba(24,56,42,.045);overflow-wrap:anywhere}
+#reviewCoursesView .data-item strong{font-size:1rem;color:#183f2b}
+#reviewCoursesView .data-item .small{display:block;line-height:1.7;margin-top:4px}
+#reviewCoursesView .data-item input[type=checkbox]{width:21px;height:21px;flex:0 0 21px;accent-color:#1976d2}
+#reviewCoursesView .data-item a{display:inline-block;max-width:100%;overflow-wrap:anywhere;color:#1769bd;font-weight:700}
+#reviewCoursesView .data-item button{width:auto;min-height:40px;margin-top:8px}
+#reviewCoursesView #courseSelectedCount{background:#eff7ff;border:1px solid #d5e8ff;border-radius:12px;padding:8px 12px;color:#175a9e;font-weight:700}
+#reviewCoursesView #courseStatus{padding:8px 0;font-weight:700}
+#reviewCoursesView .section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#reviewCoursesView .section-heading h3{margin:0}
+@media(max-width:480px){
+ #reviewCoursesView .view-head{align-items:flex-start}
+ #reviewCoursesView>.panel{padding:14px;border-radius:18px}
+ #reviewCoursesView .data-item{padding:12px}
+ #reviewCoursesView .section-heading button{width:auto}
+ #reviewCoursesView .data-item button{width:100%}
+}
 </style>
 </head>
 <body>
