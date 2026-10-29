@@ -256,6 +256,29 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #dailyLessonsView .data-item .payment-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:center}
 #dailyLessonsView .data-item .payment-meta button{width:100%!important;min-width:0!important;padding:9px 7px!important;font-size:.85rem!important;line-height:1.4!important}
 @media(max-width:380px){#dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"]{gap:7px!important}#dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"] button{font-size:.86rem!important}#lessonAddPanel>.daily-mode-switch[aria-label="طريقة التدريس"]{gap:7px!important}.lesson-category-filter button{font-size:.76rem!important}}
+
+/* ضبط نهائي متوازن لواجهة حصصي اليومية */
+#dailyLessonsView>.panel{padding:14px!important;border-radius:22px!important}
+#dailyLessonsView>.panel>p.muted:first-child{margin:2px 0 14px!important;line-height:1.8!important}
+#dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:12px 0 18px!important}
+#dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"] button{min-height:50px!important;height:auto!important;padding:8px 6px!important;margin:0!important;border-radius:13px!important;border-bottom-width:3px!important;font-size:.88rem!important;line-height:1.45!important;box-shadow:0 3px 0 #174b2c16,0 5px 9px #174b2c0d!important}
+#lessonAddPanel>.daily-mode-switch[aria-label="طريقة التدريس"],#lessonListPanel>.daily-mode-switch[aria-label="طريقة عرض الحصص"]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;margin:10px 0!important}
+#lessonAddPanel>.daily-mode-switch[aria-label="طريقة التدريس"] button,#lessonListPanel>.daily-mode-switch[aria-label="طريقة عرض الحصص"] button{min-height:43px!important;padding:7px 5px!important;margin:0!important;font-size:.88rem!important}
+#lessonAddPanel>label{margin:12px 0 5px!important;font-size:.95rem!important}
+#lessonAddPanel>input,#lessonAddPanel>select,#lessonAddPanel>div>select,#lessonAddPanel input[type="text"],#lessonAddPanel input[type="date"],#lessonAddPanel input[type="time"]{width:100%!important;min-height:44px!important;padding:8px 11px!important;border-radius:12px!important;box-shadow:none!important}
+#lessonCategoryHint,#lessonModeHint{padding:8px 10px!important;margin:6px 0 10px!important;border-radius:10px!important;font-size:.87rem!important;line-height:1.65!important}
+#lessonAddPanel #saveLessonBtn{min-height:48px!important;margin-top:14px!important;padding:9px 12px!important;border-radius:13px!important}
+#lessonAddPanel #lessonStudentWrap,#lessonAddPanel #lessonRepeatWrap{margin-top:10px!important;padding:9px 11px!important;border-radius:12px!important}
+#lessonAddPanel #lessonRepeatWrap label{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:10px!important;margin:0!important;padding:2px 0!important;font-size:.91rem!important}
+#lessonAddPanel #lessonRepeatWrap input[type="checkbox"]{width:20px!important;height:20px!important;min-width:20px!important;margin:0!important;accent-color:#176b3a}
+#lessonAddPanel #lessonRepeatEndWrap{margin-top:8px!important}
+#lessonAddPanel #lessonStudentWrap label{margin:5px 0!important}
+.lesson-category-filter{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+.lesson-category-filter button{min-width:0!important;min-height:40px!important;padding:6px 3px!important;margin:0!important;font-size:.78rem!important;line-height:1.35!important}
+#dailyLessonsView .data-item{padding:12px!important;border-radius:15px!important;box-shadow:0 3px 0 #174b2c0c,0 6px 12px #174b2c08!important}
+#dailyLessonsView .data-item .payment-meta{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+#dailyLessonsView .data-item .payment-meta button{min-height:38px!important;padding:6px 5px!important;font-size:.8rem!important}
+@media(max-width:380px){#dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"] button{font-size:.82rem!important;min-height:46px!important}.lesson-category-filter button{font-size:.72rem!important}}
 </style>
 </head>
 <body>
