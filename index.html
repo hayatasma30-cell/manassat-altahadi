@@ -1021,7 +1021,16 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
           lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"})
         ]);
         (dailyResponse.entries||[]).forEach(x=>incomeCalendarRows.push({date:x.work_date,title:x.description||"عمل مسجل يدويًا",amount:Number(x.amount)||0,kind:"عمل يومي",note:x.notes||""}));
-        const calendarLessons=(lessonData.lessons||[]).filter(x=>["مجدولة","تمت"].includes(x.status)&&String(x.lesson_date||"").startsWith(selectedMonth+"-"));
+        const rawCalendarLessons=(lessonData.lessons||[]).filter(x=>["مجدولة","تمت"].includes(x.status)&&String(x.lesson_date||"").startsWith(selectedMonth+"-"));
+        // منع تكرار الحصة نفسها في العرض مع إبقاء كل السجلات محفوظة في قاعدة البيانات.
+        const lessonKey=x=>[x.lesson_date,x.lesson_time,x.lesson_type,x.lesson_category,x.level,String(x.student_name||"").trim(),x.delivery_mode].join("|");
+        const uniqueLessons=new Map();
+        for(const lesson of rawCalendarLessons){
+          const key=lessonKey(lesson),previous=uniqueLessons.get(key);
+          const score=x=>(x.status==="تمت"?4:0)+(x.recurrence_group_id?2:0)+(x.student_id?1:0);
+          if(!previous||score(lesson)>score(previous))uniqueLessons.set(key,lesson);
+        }
+        const calendarLessons=[...uniqueLessons.values()].sort((a,b)=>String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
         for(const x of calendarLessons){
           let count=0;
           if(x.lesson_type==="جماعية"&&x.lesson_category!=="دورة مراجعة"){
