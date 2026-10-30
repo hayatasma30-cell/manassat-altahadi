@@ -1018,7 +1018,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const x=incomeCalendarRows.find(row=>row.lessonId===id);if(!x)return;
       calendarCurrentLessonId=id;
       $("calendarLessonPageTitle").textContent=x.lessonType==="فردية"?"تفاصيل الحصة الفردية":"إدارة الحصة الجماعية";
-      $("calendarLessonPageMeta").textContent=(x.level||x.studentName||"")+(x.note?" · "+x.note:"")+" · "+(x.status||"مجدولة");
+      $("calendarLessonPageMeta").textContent=(x.level||x.studentName||"")+(x.note?" · "+x.note:"")+" · "+(x.status||"مجدولة");$("calendarLessonUnitPrice").value=String(x.unitPrice||0);$("calendarLessonPriceStatus").textContent=x.unitPrice>0?"السعر محفوظ لهذه الحصة.":"لم يُحدد سعر هذه الحصة بعد.";$("calendarLessonTotal").textContent="المبلغ المحسوب: "+(Number(x.unitPrice||0)*Number(x.count||0)).toLocaleString("ar-DZ")+" دج · عدد الحاضرين: "+Number(x.count||0);
       const group=x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة",completed=x.status==="تمت";
       $("calendarLessonCompleteButton").hidden=completed||!group;
       $("calendarLessonRosterButton").hidden=!completed||!group;
@@ -1060,7 +1060,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
               }
             }catch(e){console.warn("تعذر تحميل عدد التلاميذ",e);}
           }
-          incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:0,estimate:0,kind:x.status==="تمت"?"حصة مكتملة — السعر يحدد لاحقًا":"حصة مجدولة",status:x.status,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
+          incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:0,estimate:0,unitPrice:Number(x.unit_price||0),kind:x.status==="تمت"?"حصة مكتملة":"حصة مجدولة",status:x.status,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
         renderIncomeCalendar();
       }catch(e){grid.innerHTML='<p class="error">تعذر تحميل التقويم: '+escapeHtml(e.message)+'</p>';}
@@ -1087,6 +1087,14 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       }catch(err){list.innerHTML='<div class="data-item">تعذر تحميل القائمة: '+escapeHtml(err.message||"خطأ غير معروف")+'</div>';save.disabled=true;}
     }
     const handleIncomeCalendarClick=async e=>{
+      if(e.target.closest("#saveCalendarLessonUnitPrice")){
+        const btn=$("saveCalendarLessonUnitPrice"),input=$("calendarLessonUnitPrice"),status=$("calendarLessonPriceStatus"),value=Number(input.value);
+        if(input.value.trim()===""||!Number.isFinite(value)||value<0||value>10000000){status.textContent="أدخلي سعرًا صحيحًا غير سالب.";return;}
+        btn.disabled=true;status.textContent="جارٍ حفظ السعر…";
+        try{const saved=await lessonRequest({action:"daily_lesson_unit_price_update",id:calendarCurrentLessonId,unit_price:value});incomeCalendarRows.filter(x=>x.lessonId===calendarCurrentLessonId||([x.date,x.note,x.lessonType,x.level,x.studentName,x.deliveryMode].join("|")===[incomeCalendarRows.find(y=>y.lessonId===calendarCurrentLessonId)?.date,incomeCalendarRows.find(y=>y.lessonId===calendarCurrentLessonId)?.note,incomeCalendarRows.find(y=>y.lessonId===calendarCurrentLessonId)?.lessonType,incomeCalendarRows.find(y=>y.lessonId===calendarCurrentLessonId)?.level,incomeCalendarRows.find(y=>y.lessonId===calendarCurrentLessonId)?.studentName,incomeCalendarRows.find(y=>y.lessonId===calendarCurrentLessonId)?.deliveryMode].join("|"))).forEach(x=>x.unitPrice=value);const current=incomeCalendarRows.find(x=>x.lessonId===calendarCurrentLessonId);$("calendarLessonTotal").textContent="المبلغ المحسوب: "+(value*Number(current?.count||0)).toLocaleString("ar-DZ")+" دج · عدد الحاضرين: "+Number(current?.count||0);status.textContent="تم حفظ السعر للحصة والحصص المطابقة ("+saved.updated+").";await loadIncomeCalendar();}catch(err){status.textContent="تعذر حفظ السعر: "+err.message;}finally{btn.disabled=false;}
+        return;
+      }
+
       if(e.target.closest("[data-calendar-day-back]")){closeCalendarPage("calendarDayPage");return;}
       if(e.target.closest("[data-calendar-lesson-back]")){closeCalendarPage("calendarLessonPage");return;}
       const openLesson=e.target.closest("[data-calendar-open-lesson]");
