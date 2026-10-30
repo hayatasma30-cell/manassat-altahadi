@@ -764,6 +764,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       $("studentsList").querySelectorAll("[data-study-filter]").forEach(btn=>btn.addEventListener("click",()=>{selectedStudyMode=btn.dataset.studyFilter;renderStudents();}));
       $("studentsList").querySelectorAll("[data-code-action]").forEach(btn=>btn.addEventListener("click",async()=>{
         const action=btn.dataset.codeAction,sid=btn.dataset.id,token=localStorage.getItem("tahadi_teacher_token");
+        if(action==="get-results"||action==="student-attempt-settings")return;
         if(!token){alert("انتهت جلسة الأستاذة. سجلي الدخول ثم حاولي مجددًا.");return;}
         const isQuiz=action.endsWith("quiz"),codeEl=document.querySelector((isQuiz?'[data-quiz-code="':'[data-portal-code="')+sid+'"]');
         const endpointQuiz="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
