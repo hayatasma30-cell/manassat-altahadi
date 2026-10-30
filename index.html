@@ -971,6 +971,30 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   function lessonMessage(msg,kind="ok"){const el=$("lessonStatus");el.textContent=msg;el.className="status show "+(kind==="error"?"error":"ok");}
   async function lessonRequest(payload){const t=localStorage.getItem("tahadi_teacher_token");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d;}
   let lessonCalendarCursor=new Date();let lessonCalendarSelectedDate="";
+  function renderLessonsCalendar(rows){
+    const grid=document.getElementById("lessonCalendarGrid");
+    const monthLabel=document.getElementById("lessonCalendarMonth");
+    const details=document.getElementById("lessonCalendarDayDetails");
+    if(!grid||!monthLabel||!details)return;
+    const year=lessonCalendarCursor.getFullYear(),month=lessonCalendarCursor.getMonth();
+    const first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay();
+    monthLabel.textContent=new Intl.DateTimeFormat("ar-DZ",{month:"long",year:"numeric"}).format(first);
+    const counts={};
+    (rows||[]).forEach(x=>{const key=String(x.lesson_date||"").slice(0,10);if(key)counts[key]=(counts[key]||0)+1;});
+    const now=new Date(),todayKey=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+    const names=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+    let html=names.map(n=>'<div class="lesson-calendar-dayname">'+n+'</div>').join("");
+    for(let i=0;i<offset;i++)html+='<div class="lesson-calendar-day empty" aria-hidden="true"></div>';
+    for(let day=1;day<=days;day++){
+      const date=year+"-"+String(month+1).padStart(2,"0")+"-"+String(day).padStart(2,"0"),count=counts[date]||0;
+      html+='<button type="button" class="lesson-calendar-day '+(count?'has-lessons ':'')+(date===todayKey?'today ':'')+(lessonCalendarSelectedDate===date?'selected':'')+'" data-calendar-date="'+date+'"><span>'+day+'</span>'+(count?'<span class="lesson-calendar-count">'+count+' حصة</span>':'')+'</button>';
+    }
+    grid.innerHTML=html;
+    const selected=String(lessonCalendarSelectedDate||"").slice(0,10);
+    if(!selected){details.innerHTML='<div class="data-item"><strong>اختاري يومًا من التقويم لعرض حصصه.</strong></div>';return;}
+    const dayRows=(rows||[]).filter(x=>String(x.lesson_date||"").slice(0,10)===selected).sort((a,b)=>String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
+    details.innerHTML='<section class="calendar-lessons-day"><h3>حصص يوم '+escapeHtml(selected)+'</h3><p>عدد الحصص: '+dayRows.length+'</p>'+(dayRows.length?dayRows.map(x=>'<details class="calendar-lesson-entry"><summary><span class="calendar-lesson-time">'+escapeHtml(x.lesson_time||"الوقت غير محدد")+'</span><span class="calendar-lesson-title">'+escapeHtml(x.level||"المستوى غير محدد")+' — '+escapeHtml(x.lesson_type||"جماعية")+'</span><span class="calendar-lesson-state">'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+' · '+escapeHtml(x.status||"مجدولة")+'</span><span class="calendar-lesson-chevron">⌄</span></summary><div class="calendar-lesson-content"><p><strong>التصنيف:</strong> '+escapeHtml(x.lesson_category||"عادية")+'</p><p><strong>المادة:</strong> '+escapeHtml(x.subject||"علوم الطبيعة والحياة")+'</p>'+(x.student_name?'<p><strong>التلميذ:</strong> '+escapeHtml(x.student_name)+'</p>':'')+(x.notes?'<p><strong>ملاحظات:</strong> '+escapeHtml(x.notes)+'</p>':'')+'<p><strong>الحالة:</strong> '+escapeHtml(x.status||"مجدولة")+'</p><div class="calendar-lesson-actions"><button type="button" class="secondary" data-calendar-status="'+escapeHtml(x.id)+'" data-next-status="'+(x.status==="مجدولة"?"تمت":"مجدولة")+'">'+(x.status==="مجدولة"?"تحديد كحصة تمت":"إرجاع لمجدولة")+'</button><button type="button" class="secondary" data-calendar-edit="'+escapeHtml(x.id)+'">تعديل / تغيير الموعد</button>'+(x.status!=="ألغيت"?'<button type="button" class="secondary" data-calendar-cancel="'+escapeHtml(x.id)+'">إلغاء الحصة</button>':'')+'<button type="button" class="secondary" data-calendar-delete="'+escapeHtml(x.id)+'">حذف نهائي</button></div></div></details>').join(""):'<p class="muted">ما كاين حتى حصة في هذا اليوم.</p>')+'</section>';
+  }
   window.tahadiSelectLessonDate=function(date){
     lessonCalendarSelectedDate=String(date||"").slice(0,10);
     renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
