@@ -1004,9 +1004,9 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       else {$("incomeCalendarDayTitle").textContent="تفاصيل اليوم";$("incomeCalendarDayDetails").innerHTML='<p class="muted">اختاري يومًا من التقويم.</p>';}
     }
     function showIncomeCalendarDay(date){
-      incomeCalendarSelected=date;$("incomeCalendarRosterEditor").innerHTML="";const rows=incomeCalendarRows.filter(x=>x.date===date),sum=rows.filter(x=>x.kind!=="مبلغ مقبوض").reduce((n,x)=>n+(Number(x.amount)||0),0);
-      $("incomeCalendarDayTitle").textContent="تفاصيل يوم "+date+" — "+calendarMoney(sum)+" دج";
-      $("incomeCalendarDayDetails").innerHTML=rows.length?rows.map(x=>'<article class="data-item"><strong>'+escapeHtml(x.title)+'</strong><div class="payment-meta"><b>'+calendarMoney(x.amount)+' دج</b><span>'+escapeHtml(x.kind)+'</span></div>'+(x.note?'<div class="small">'+escapeHtml(x.note)+'</div>':'')+'</article>').join(""):'<p class="muted">لا توجد أعمال أو حصص أو دفعات مسجلة في هذا اليوم.</p>';
+      incomeCalendarSelected=date;
+      $("incomeCalendarRosterEditor").innerHTML="";
+      renderIncomeCalendar();
       document.querySelectorAll("[data-income-calendar-day]").forEach(b=>b.classList.toggle("selected",b.dataset.incomeCalendarDay===date));
     }
     async function loadIncomeCalendar(){
