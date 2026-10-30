@@ -580,6 +580,29 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <script>
 (() => {
   const endpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
+  const pushEndpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/tahadi-push";
+  function b64ToBytes(value){const pad="=".repeat((4-value.length%4)%4);const raw=atob((value+pad).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(raw,c=>c.charCodeAt(0));}
+  function ensureTeacherPushButton(){
+    const host=$("sessionActions");if(!host||$("teacherPushEnable"))return;
+    const b=document.createElement("button");b.type="button";b.id="teacherPushEnable";b.className="secondary";b.textContent="🔔 تفعيل إشعارات الهاتف";
+    b.addEventListener("click",async()=>{
+      b.disabled=true;b.textContent="جارٍ تفعيل الإشعارات…";
+      try{
+        if(!("serviceWorker" in navigator)||!("PushManager" in window))throw new Error("هذا المتصفح لا يدعم إشعارات الويب.");
+        const permission=await Notification.requestPermission();if(permission!=="granted")throw new Error("اسمحي بالإشعارات من إعدادات المتصفح.");
+        const reg=await navigator.serviceWorker.register("./sw.js");
+        const keyRes=await fetch(pushEndpoint,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"public_key"})});
+        const keyData=await keyRes.json();if(!keyRes.ok||!keyData.ok)throw new Error(keyData.error||"تعذر تحميل مفتاح الإشعارات.");
+        let sub=await reg.pushManager.getSubscription();
+        if(!sub)sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:b64ToBytes(keyData.public_key)});
+        const token=localStorage.getItem("tahadi_teacher_token");
+        const saved=await fetch(pushEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"register_teacher",subscription:sub.toJSON(),user_agent:navigator.userAgent})});
+        const result=await saved.json();if(!saved.ok||!result.ok)throw new Error(result.error||"تعذر حفظ الاشتراك.");
+        b.textContent="✓ إشعارات الهاتف مفعّلة";b.disabled=false;
+      }catch(e){b.textContent="🔔 إعادة تفعيل إشعارات الهاتف";b.disabled=false;alert(e.message||"تعذر تفعيل الإشعارات.");}
+    });
+    host.appendChild(b);
+  }
   const $ = (id) => document.getElementById(id);
   const status = $("status"), form = $("loginForm"), loginView = $("loginView");
   let activeView = "homeView";
@@ -913,6 +936,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     renderPayments();
     $("refreshPaymentsBtn")?.addEventListener("click",async()=>{const b=$("refreshPaymentsBtn"),s=$("paymentsRefreshStatus");b.disabled=true;s.textContent="جارٍ تحديث إشعارات الدفع…";try{await refresh();s.textContent="تم تحديث إشعارات الدفع."; }catch(e){s.textContent="تعذر تحديث إشعارات الدفع: "+(e.message||"خطأ غير معروف");}finally{b.disabled=false;}});
     $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
+    ensureTeacherPushButton();
   }
   let selectedLessonMode="in_person";
   let selectedLessonPage="add"; let selectedLessonCategoryFilter="all"; function setLessonCategoryFilter(value){selectedLessonCategoryFilter=value;if($("lessonCategoryFilterSelect"))$("lessonCategoryFilterSelect").value=value;const labels={all:"عرض كل التصنيفات.","عادية":"عرض الحصص العادية فقط.","دورة مراجعة":"عرض حصص دورات المراجعة فقط."};if($("lessonCategoryFilterHint"))$("lessonCategoryFilterHint").textContent=labels[value]||labels.all;if(selectedLessonPage!=="add")loadDailyLessons();} $("lessonCategoryFilterSelect").addEventListener("change",()=>setLessonCategoryFilter($("lessonCategoryFilterSelect").value));
