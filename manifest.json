@@ -1,0 +1,11 @@
+{
+  "name": "منصة التحدي",
+  "short_name": "التحدي",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8ee",
+  "theme_color": "#14532d",
+  "lang": "ar",
+  "dir": "rtl"
+}
