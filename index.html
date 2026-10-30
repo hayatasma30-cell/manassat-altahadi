@@ -1013,7 +1013,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     async function loadIncomeCalendar(){
       const grid=$("incomeCalendarGrid");if(!grid)return;grid.innerHTML='<p class="muted">جارٍ تحميل التقويم…</p>';
       const input=$("incomeCalendarMonth");if(!input.value)input.value=new Date().toISOString().slice(0,7);
-      const year=Number(input.value.slice(0,4));incomeCalendarRows=[];
+      const year=Number(input.value.slice(0,4)),selectedMonth=String(input.value);incomeCalendarRows=[];
       try{
         const token=localStorage.getItem("tahadi_teacher_token");
         const [dailyResponse,lessonData]=await Promise.all([
@@ -1022,11 +1022,11 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         ]);
         (dailyResponse.entries||[]).forEach(x=>incomeCalendarRows.push({date:x.work_date,title:x.description||"عمل مسجل يدويًا",amount:Number(x.amount)||0,kind:"عمل يومي",note:x.notes||""}));
         const rateForLesson=x=>{const level=String(x.level||"").replace(/[إأآا]/g,"ا"),parts=String(x.lesson_time||"").split(/[–-]/).map(v=>v.trim()),mins=v=>{const a=v.split(":").map(Number);return a.length===2?a[0]*60+a[1]:NaN;},duration=mins(parts[1])-mins(parts[0]);if(x.lesson_type==="فردية"){if(level.includes("الثانية ثانوي"))return 1200;if(x.delivery_mode==="zoom"&&duration===120)return 1500;if(x.delivery_mode==="in_person"&&duration===90)return 1000;if(x.delivery_mode==="in_person"&&duration===120)return 1200;}return 0;};
-        const calendarLessons=(lessonData.lessons||[]).filter(x=>["مجدولة","تمت"].includes(x.status)&&String(x.lesson_date||"").startsWith(String(year)+"-"));
+        const calendarLessons=(lessonData.lessons||[]).filter(x=>["مجدولة","تمت"].includes(x.status)&&String(x.lesson_date||"").startsWith(selectedMonth+"-"));
         for(const x of calendarLessons){let amount=rateForLesson(x),count=0;if(x.lesson_type==="جماعية"&&x.lesson_category!=="دورة مراجعة"){const level=String(x.level||"").replace(/[إأآا]/g,"ا");let rate=0;if(x.delivery_mode==="zoom"){if(level.includes("الاولى متوسط")||level.includes("الثانية متوسط"))rate=1000;else if(level.includes("الثالثة متوسط"))rate=1600;}else if(x.delivery_mode==="in_person"){if(level.includes("الرابعة متوسط"))rate=1200;else if(level.includes("الاولى متوسط")||level.includes("الثانية متوسط")||level.includes("الثالثة متوسط"))rate=1000;}if(rate){try{if(x.delivery_mode==="zoom"){const d=await lessonRequest({action:"lesson_roster_list",lesson_id:x.id});count=(d.student_ids||[]).length;amount=count*rate;}else{const d=await lessonRequest({action:"lesson_attendance_list",lesson_id:x.id});count=(d.attendance||[]).filter(a=>a.status==="present").length;amount=count*rate;}}catch(e){console.warn("تعذر احتساب تفاصيل الحصة",e);amount=0;}}}
           incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:x.status==="تمت"?amount:0,estimate:amount,kind:x.status==="تمت"?"مستحق حصة":"حصة مجدولة",status:x.status,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد التلاميذ: "+count:"")});
         }
-        (payments||[]).filter(p=>String(p.status||"").toLowerCase()==="approved").forEach(p=>{const date=String(p.payment_date||p.created_at||"").slice(0,10);if(date.startsWith(String(year)+"-"))incomeCalendarRows.push({date,title:"دفعة مقبوضة — "+(p.student_name||"تلميذ"),amount:Number(p.amount_paid)||0,kind:"مبلغ مقبوض",note:p.service_name||p.service_type||""});});
+        (payments||[]).filter(p=>String(p.status||"").toLowerCase()==="approved").forEach(p=>{const date=String(p.payment_date||p.created_at||"").slice(0,10);if(date.startsWith(selectedMonth+"-"))incomeCalendarRows.push({date,title:"دفعة مقبوضة — "+(p.student_name||"تلميذ"),amount:Number(p.amount_paid)||0,kind:"مبلغ مقبوض",note:p.service_name||p.service_type||""});});
         renderIncomeCalendar();
       }catch(e){grid.innerHTML='<p class="error">تعذر تحميل التقويم: '+escapeHtml(e.message)+'</p>';}
     }
