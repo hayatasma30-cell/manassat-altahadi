@@ -488,7 +488,23 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <div class="course-nav-actions"><button class="secondary course-back" type="button" data-course-page="setup">السابق</button><button class="primary" id="saveCourseEnrollments" type="button">حفظ التلاميذ والمتابعة ←</button></div>
 </div></div>
 <div id="courseParticipantsPage" class="course-subpage" hidden>
-<div class="panel"><div class="course-page-heading"><button class="secondary course-back" type="button" data-course-page="select">→ اختيار التلاميذ</button><h3>👥 المشاركون في هذه الدورة</h3></div><p class="muted">هنا تظهر قائمة التلاميذ المحفوظين في المستوى والطريقة المختارين.</p><div id="courseEnrolledList" class="list">لم يتم تحميل المشاركين بعد.</div><div class="course-nav-actions"><button class="secondary course-back" type="button" data-course-page="setup">إعداد دورة أخرى</button><button class="primary" id="refreshCourseEnrollments" type="button">تحديث القائمة</button></div></div>
+<div class="panel"><div class="course-page-heading"><button class="secondary course-back" type="button" data-course-page="select">→ اختيار التلاميذ</button><h3>👥 المشاركون في هذه الدورة</h3></div><p class="muted">هنا تظهر قائمة التلاميذ المحفوظين في المستوى والطريقة المختارين.</p><div id="courseEnrolledList" class="list">لم يتم تحميل المشاركين بعد.</div>
+<div class="panel" style="margin-top:18px">
+ <h3>📚 مكتبة هذه الدورة</h3>
+ <p class="muted">أضيفي ملخصات وتمارين وحلولًا وروابط خاصة بهذه الدورة فقط. سيظهر للتلاميذ المسجلين فيها بعد النشر.</p>
+ <form id="courseResourceForm">
+  <input type="hidden" id="courseResourceId">
+  <label for="courseResourceTitle">عنوان المورد</label><input id="courseResourceTitle" required maxlength="200" placeholder="مثال: ملخص الوحدة الأولى">
+  <label for="courseResourceType">نوع المورد</label><select id="courseResourceType" required><option value="summary">ملخص</option><option value="exercise">تمرين</option><option value="solution">حل تمرين</option><option value="lesson">درس</option><option value="video">فيديو أو تسجيل</option><option value="link">رابط تعليمي</option></select>
+  <label for="courseResourceUrl">رابط المورد</label><input id="courseResourceUrl" type="url" required placeholder="https://...">
+  <label for="courseResourceDescription">وصف مختصر (اختياري)</label><textarea id="courseResourceDescription" rows="2" maxlength="2000" placeholder="اكتبي توضيحًا قصيرًا للتلميذ"></textarea>
+  <label style="display:flex;align-items:center;gap:8px"><input id="courseResourcePublished" type="checkbox" checked style="width:auto"> نشر المورد للمشاركين</label>
+  <div class="actions-row"><button class="primary" id="saveCourseResource" type="submit">حفظ المورد</button><button class="secondary" id="resetCourseResource" type="button">مورد جديد</button></div>
+  <p id="courseResourceStatus" class="muted" role="status"></p>
+ </form>
+ <div id="courseResourcesList" class="list"><p class="muted">جارٍ تحميل موارد الدورة…</p></div>
+</div>
+<div class="course-nav-actions"><button class="secondary course-back" type="button" data-course-page="setup">إعداد دورة أخرى</button><button class="primary" id="refreshCourseEnrollments" type="button">تحديث القائمة</button></div></div>
 </div>
 </section>
 
