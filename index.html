@@ -745,6 +745,62 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 }
 </style>
 
+
+<style id="home-3d-buttons-no-welcome-v4">
+/* حذف الترحيب بالكامل */
+#homeView>.hero{display:none!important}
+/* أزرار ثلاثية الأبعاد موحّدة */
+#homeView .command-toggle,
+#homeView .platform-sections-entry,
+#homeView .category-buttons .menu-btn,
+#homeView .command-form-actions button,
+#homeView .command-reminders-head button,
+#sessionActions #logoutBtn,
+#sessionActions #teacherPushEnable,
+.topbar .logout{
+ border:1px solid #c9ddc6!important;
+ border-bottom:5px solid #79a982!important;
+ border-radius:13px!important;
+ background:linear-gradient(180deg,#ffffff 0%,#edf6e9 100%)!important;
+ color:#174b30!important;
+ box-shadow:0 3px 0 rgba(28,91,49,.12),0 7px 12px rgba(24,63,34,.10)!important;
+ transform:translateY(0);
+ transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;
+ font-weight:800!important;
+}
+#homeView .command-toggle{padding:7px 12px!important;min-height:37px!important}
+#homeView .platform-sections-entry{border-bottom-width:5px!important}
+#homeView .category-buttons .menu-btn{min-height:66px!important;padding:10px 12px!important}
+#homeView .category-buttons .menu-btn:active,
+#homeView .command-toggle:active,
+#homeView .platform-sections-entry:active,
+#sessionActions button:active,
+.topbar .logout:active{transform:translateY(3px)!important;box-shadow:0 1px 0 rgba(28,91,49,.12),0 3px 6px rgba(24,63,34,.08)!important}
+#sessionActions #logoutBtn,
+.topbar .logout{
+ background:linear-gradient(180deg,#23834a 0%,#14532d 100%)!important;
+ color:#fff!important;border-color:#2d8b50!important;border-bottom-color:#0c3e23!important;
+ box-shadow:0 3px 0 #0b3b22,0 8px 13px rgba(12,62,35,.2)!important;
+}
+#sessionActions #teacherPushEnable{
+ background:linear-gradient(180deg,#fffdf2 0%,#f0f7df 100%)!important;
+ color:#315d37!important;border-color:#d6dfae!important;border-bottom-color:#8ea85d!important;
+}
+#homeView .command-next-lesson{
+ border:1px solid #c9dfc8!important;border-bottom:4px solid #a6c6a5!important;
+ border-radius:15px!important;background:linear-gradient(180deg,#fff 0%,#f4faf1 100%)!important;
+ box-shadow:0 5px 10px rgba(24,63,34,.08)!important;
+}
+#homeView .platform-sections-entry .entry-icon,
+#homeView .category-buttons .menu-btn .menu-icon{
+ box-shadow:inset 0 1px 2px #fff,0 2px 4px rgba(24,63,34,.10)!important;
+}
+@media(max-width:480px){
+ #homeView .platform-sections-entry{min-height:67px!important}
+ #homeView .category-buttons .menu-btn{min-height:62px!important}
+ #sessionActions #logoutBtn,#sessionActions #teacherPushEnable{min-height:49px!important}
+}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
