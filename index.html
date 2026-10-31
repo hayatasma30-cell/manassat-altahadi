@@ -989,37 +989,40 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     $("incomeCalendar2025Month").addEventListener("change",()=>{incomeCalendar2025Selected="";renderIncomeCalendar2025();});
     $("incomeCalendar2025Grid").addEventListener("click",e=>{const b=e.target.closest("[data-income-calendar-2025-day]");if(!b)return;incomeCalendar2025Selected=b.dataset.incomeCalendar2025Day;renderIncomeCalendar2025();});
     $("refreshIncomeCalendar2025").addEventListener("click",loadIncomeCalendar2025);
-    let incomeCompare2025Entries=[],incomeCompare2026Entries=[],incomeCompareLessons=[];
+    let incomeCompare2025Entries=[],incomeCompare2026Entries=[],incomeCompare2027Entries=[],incomeCompareLessons=[];
     const incomeCompareMonths=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     const compareClass=(a,b)=>a>b?"زيادة":a<b?"نقصان":"ثابت";
     const compareRow=(label,a,b)=>{const delta=b-a;return '<div class="data-item"><strong>'+label+'</strong><div class="payment-meta"><span>2025: '+calendarMoney(a)+' دج</span><span>2026: '+calendarMoney(b)+' دج</span></div><div class="payment-meta"><b>'+compareClass(a,b)+' · '+(delta>0?"+":"")+calendarMoney(delta)+' دج</b></div></div>';};
     function renderIncomeCompare(){
-      const monthly25=Array(12).fill(0),monthly26=Array(12).fill(0),daily25={},daily26={};
-      incomeCompare2025Entries.forEach(x=>{const d=String(x.work_date||"");if(!/^2025-\d{2}-\d{2}$/.test(d))return;const m=Number(d.slice(5,7))-1;if(m<0||m>11)return;const v=Number(x.amount)||0;monthly25[m]+=v;daily25[d]=(daily25[d]||0)+v;});
-      incomeCompare2026Entries.forEach(x=>{const d=String(x.work_date||"");if(!/^2026-\d{2}-\d{2}$/.test(d))return;const m=Number(d.slice(5,7))-1;if(m<0||m>11)return;const v=Number(x.amount)||0;monthly26[m]+=v;daily26[d]=(daily26[d]||0)+v;});
-      incomeCompareLessons.forEach(x=>{if(x.status!=="تمت")return;const d=String(x.lesson_date||"");if(!/^2026-\d{2}-\d{2}$/.test(d))return;const m=Number(d.slice(5,7))-1;const count=x.lesson_type==="فردية"?(x.student_id?1:0):Number(x._presentCount||0);const v=(Number(x.unit_price)||0)*count;monthly26[m]+=v;daily26[d]=(daily26[d]||0)+v;});
-      const total25=monthly25.reduce((a,b)=>a+b,0),total26=monthly26.reduce((a,b)=>a+b,0),totalDiff=total26-total25;
-      $("incomeCompareSummary").innerHTML='<div class="stat"><strong>'+calendarMoney(total25)+' دج</strong><span>إجمالي 2025</span></div><div class="stat"><strong>'+calendarMoney(total26)+' دج</strong><span>إجمالي 2026</span></div><div class="stat" style="grid-column:1/-1"><strong>'+compareClass(total25,total26)+' · '+(totalDiff>0?"+":"")+calendarMoney(totalDiff)+' دج</strong><span>الفرق بين السنتين</span></div>';
-      $("incomeCompareMonthly").innerHTML=incomeCompareMonths.map((name,i)=>compareRow(name,monthly25[i],monthly26[i])).join("");
-      const month=Number($("incomeCompareMonth").value||"1"),days=Math.max(new Date(2025,month,0).getDate(),new Date(2026,month,0).getDate());
-      $("incomeCompareDaily").innerHTML=Array.from({length:days},(_,i)=>{const day=i+1,key25="2025-"+String(month).padStart(2,"0")+"-"+String(day).padStart(2,"0"),key26="2026-"+String(month).padStart(2,"0")+"-"+String(day).padStart(2,"0");return compareRow("اليوم "+day,daily25[key25]||0,daily26[key26]||0);}).join("");
-      $("incomeCompareStatus").textContent="تمت المقارنة اعتمادًا على الأعمال المسجلة والحصص المكتملة فقط. الدفعات الشهرية لا تدخل في هذا الحساب.";
+      const academicMonths=[9,10,11,12,1,2,3,4,5],monthNames={1:"جانفي",2:"فيفري",3:"مارس",4:"أفريل",5:"ماي",9:"سبتمبر",10:"أكتوبر",11:"نوفمبر",12:"ديسمبر"};
+      const totalsA={},totalsB={},dailyA={},dailyB={};const add=(map,key,value)=>map[key]=(map[key]||0)+value;
+      const academicKey=date=>{const y=Number(date.slice(0,4)),m=Number(date.slice(5,7));if(m>=9&&m<=12&&y===2025)return "A";if(m>=1&&m<=5&&y===2026)return "A";if(m>=9&&m<=12&&y===2026)return "B";if(m>=1&&m<=5&&y===2027)return "B";return "";};
+      const addDate=(date,value)=>{const season=academicKey(date);if(!season)return;const m=Number(date.slice(5,7)),d=Number(date.slice(8,10)),key=m+"-"+d;if(season==="A"){add(totalsA,m,value);add(dailyA,key,value);}else{add(totalsB,m,value);add(dailyB,key,value);}};
+      [...incomeCompare2025Entries,...incomeCompare2026Entries,...incomeCompare2027Entries].forEach(x=>{const d=String(x.work_date||"");if(/^202[567]-\d{2}-\d{2}$/.test(d))addDate(d,Number(x.amount)||0);});
+      incomeCompareLessons.forEach(x=>{if(x.status!=="تمت")return;const d=String(x.lesson_date||"");if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;const count=Number(x._presentCount||0)||(x.lesson_type==="فردية"&&x.student_id?1:0);addDate(d,(Number(x.unit_price)||0)*count);});
+      const months=academicMonths.map(m=>({month:m,name:monthNames[m],a:totalsA[m]||0,b:totalsB[m]||0}));
+      const totalA=months.reduce((n,x)=>n+x.a,0),totalB=months.reduce((n,x)=>n+x.b,0),diff=totalB-totalA;
+      $("incomeCompareSummary").innerHTML='<div class="stat"><strong>'+calendarMoney(totalA)+' دج</strong><span>السنة الدراسية 2025/2026</span></div><div class="stat"><strong>'+calendarMoney(totalB)+' دج</strong><span>السنة الدراسية 2026/2027</span></div><div class="stat" style="grid-column:1/-1"><strong>'+compareClass(totalA,totalB)+' · '+(diff>0?"+":"")+calendarMoney(diff)+' دج</strong><span>الفرق بين السنتين الدراسيتين</span></div>';
+      $("incomeCompareMonthly").innerHTML=months.map(x=>compareRow(x.name,x.a,x.b)).join("");
+      const month=Number($("incomeCompareMonth").value||"9"),days=new Date(2026,month,0).getDate();
+      $("incomeCompareDaily").innerHTML=Array.from({length:days},(_,i)=>{const day=i+1,key=month+"-"+day;return compareRow("اليوم "+day,dailyA[key]||0,dailyB[key]||0);}).join("");
+      $("incomeCompareStatus").textContent="المقارنة من سبتمبر إلى ماي: 2025/2026 مقابل 2026/2027. تُحتسب الحصص المنجزة والأعمال المسجلة فقط، ولا تدخل دفعات الاشتراكات.";
     }
     async function loadIncomeCompare(){
-      const box=$("incomeCompareStatus");box.textContent="جارٍ تحميل سجلات السنتين والحصص المنجزة…";
+      const box=$("incomeCompareStatus");box.textContent="جارٍ تحميل بيانات السنتين الدراسيتين…";
       try{
         const token=localStorage.getItem("tahadi_teacher_token");
         const getYear=async year=>{const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_income_data",year})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل سجل "+year);return d.entries||[];};
-        const [e25,e26,lessonData]=await Promise.all([getYear(2025),getYear(2026),lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"})]);
-        incomeCompare2025Entries=e25;incomeCompare2026Entries=e26;
-        incomeCompareLessons=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&String(x.lesson_date||"").startsWith("2026-"));
-        const group=incomeCompareLessons.filter(x=>x.lesson_type==="جماعية"&&x.lesson_category!=="دورة مراجعة");
-        if(group.length){const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:group.map(x=>x.id)});const counts=countData.counts||{};incomeCompareLessons=incomeCompareLessons.map(x=>({...x,_presentCount:counts[x.id]?.present||0}));}
-        $("incomeCompareMonth").innerHTML=incomeCompareMonths.map((m,i)=>'<option value="'+(i+1)+'">'+m+'</option>').join("");
-        renderIncomeCompare();
+        const [e25,e26,e27,lessonData]=await Promise.all([getYear(2025),getYear(2026),getYear(2027),lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"})]);
+        incomeCompare2025Entries=e25;incomeCompare2026Entries=e26;incomeCompare2027Entries=e27;
+        const relevant=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&x.lesson_date>="2025-09-01"&&x.lesson_date<="2027-05-31");
+        const ids=relevant.map(x=>x.id);let counts={};if(ids.length){const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:ids});counts=countData.counts||{};}
+        incomeCompareLessons=relevant.map(x=>({...x,_presentCount:counts[x.id]?.present||0}));
+        $("incomeCompareMonth").innerHTML=academicMonthsOptions();renderIncomeCompare();
       }catch(e){box.textContent="تعذر تحميل المقارنة: "+e.message;}
     }
-    $("incomeCompareMonth").innerHTML=incomeCompareMonths.map((m,i)=>'<option value="'+(i+1)+'">'+m+'</option>').join("");
+    function academicMonthsOptions(){return [9,10,11,12,1,2,3,4,5].map(m=>'<option value="'+m+'">'+({9:"سبتمبر",10:"أكتوبر",11:"نوفمبر",12:"ديسمبر",1:"جانفي",2:"فيفري",3:"مارس",4:"أفريل",5:"ماي"}[m])+'</option>').join("");}
+    $("incomeCompareMonth").innerHTML=academicMonthsOptions();
     $("incomeCompareMonth").addEventListener("change",renderIncomeCompare);
     $("refreshIncomeCompare").addEventListener("click",loadIncomeCompare);
     let incomeCalendarRows=[],incomeCalendarSelected="";
