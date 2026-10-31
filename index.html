@@ -496,9 +496,9 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 
 
 /* Show only the chosen category; tapping its heading returns to the category list. */
-.category-back-hint{display:none;padding:2px 12px 10px;color:var(--muted);font-size:.78rem;text-align:right}
-.section-category[open] .category-back-hint{display:block}
 
+.category-back-button{display:none;margin:0 12px 10px auto;padding:7px 13px;border:1px solid #c9ddc8;border-radius:10px;background:#edf5eb;color:var(--g);font:inherit;font-size:.82rem;cursor:pointer}
+.section-category[open] .category-back-button{display:block}
 </style>
 </head>
 <body>
@@ -517,18 +517,18 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <details class="platform-sections">
 <summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></summary>
 <div class="platform-sections-content">
-<details class="section-category"><summary><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></summary><div class="category-back-hint">اضغطي على عنوان المجموعة للعودة إلى الأقسام</div><div class="category-buttons"><button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
+<details class="section-category"><summary><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="student-space.html?v=20261030-stars2" style="text-decoration:none"><span class="menu-icon">👩‍🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
 <a class="menu-btn" href="teacher-questions.html" style="text-decoration:none"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>الأسئلة والأجوبة الكتابية — للأستاذة فقط</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="electronicTestsView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات الإلكترونية</strong><small>إضافة اختبار ونشر رابطه وإدارة النتائج</small></span><span class="chev">‹</span></button></div></details>
-<details class="section-category"><summary><span class="category-title">💳 الاشتراكات والمداخيل</span><small>الاشتراكات، المدفوعات، المداخيل والتسجيلات</small><span class="category-arrow">＋</span></summary><div class="category-back-hint">اضغطي على عنوان المجموعة للعودة إلى الأقسام</div><div class="category-buttons"><a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
+<details class="section-category"><summary><span class="category-title">💳 الاشتراكات والمداخيل</span><small>الاشتراكات، المدفوعات، المداخيل والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span><span class="chev">‹</span></button></div></details>
-<details class="section-category"><summary><span class="category-title">📘 الموارد والمراجعة</span><small>التعلّم اليومي، دورات المراجعة والمساعدة</small><span class="category-arrow">＋</span></summary><div class="category-back-hint">اضغطي على عنوان المجموعة للعودة إلى الأقسام</div><div class="category-buttons"><a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة تعلّم اليوم</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
+<details class="section-category"><summary><span class="category-title">📘 الموارد والمراجعة</span><small>التعلّم اليومي، دورات المراجعة والمساعدة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة تعلّم اليوم</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button></div></details>
 </div>
@@ -1533,6 +1533,12 @@ document.querySelectorAll(".section-category").forEach(function(group){
     var siblings=Array.from(group.parentElement.querySelectorAll(":scope > .section-category"));
     siblings.forEach(function(item){if(item!==group)item.hidden=group.open;});
     if(!group.open)siblings.forEach(function(item){item.hidden=false;});
+  });
+});
+document.querySelectorAll(".category-back-button").forEach(function(button){
+  button.addEventListener("click",function(){
+    var group=button.closest(".section-category");
+    if(group)group.open=false;
   });
 });
 </script>
