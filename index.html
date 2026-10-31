@@ -472,18 +472,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 .income-compare-choice>span{grid-row:1/3;font-size:2rem;width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#e3f1df}
 .income-compare-choice strong{font-size:1.08rem}.income-compare-choice small{font-size:.82rem;color:#6a786d;margin-top:3px}
 .income-compare-choice:active{transform:translateY(2px)}
-
-/* Safe navigation grouping: visual-only, keeps existing links and data-view actions intact. */
-.menu-groups{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 18px}
-.menu-group{border:1px solid #c9ddc8;border-radius:16px;background:#fff;box-shadow:0 4px 12px #173f2210;overflow:hidden}
-.menu-group>summary{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:3px;padding:14px 16px;color:var(--g);font-weight:800;position:relative}
-.menu-group>summary::-webkit-details-marker{display:none}
-.menu-group>summary:after{content:'＋';position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:1.15rem;color:var(--g2)}
-.menu-group[open]>summary:after{content:'−'}
-.menu-group>summary small{font-weight:500;color:var(--muted);font-size:.78rem;padding-left:28px}
-.menu-group-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 10px 12px}
-.menu-group-items .menu-btn{min-height:72px!important}
-@media(max-width:380px){.menu-group-items{grid-template-columns:1fr}.menu-group-items .menu-btn{min-height:60px!important}}
 </style>
 </head>
 <body>
@@ -499,27 +487,23 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
   <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
 </section>
-<div class="menu menu-groups" aria-label="أقسام المنصة">
-<details class="menu-group"><summary><span>🎓 إدارة التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small></summary><div class="menu-group-items">
+<div class="menu" aria-label="أقسام المنصة">
 <button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="student-space.html?v=20261030-stars2" style="text-decoration:none"><span class="menu-icon">👩‍🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
 <a class="menu-btn" href="teacher-questions.html" style="text-decoration:none"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>الأسئلة والأجوبة الكتابية — للأستاذة فقط</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
+<a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة تعلّم اليوم</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="electronicTestsView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات الإلكترونية</strong><small>إضافة اختبار ونشر رابطه وإدارة النتائج</small></span><span class="chev">‹</span></button>
-</div></details>
-<details class="menu-group"><summary><span>💳 الاشتراكات والمداخيل والمتابعة</span><small>المدفوعات، التنبيهات، الملخص والتسجيلات</small></summary><div class="menu-group-items">
 <a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span><span class="chev">‹</span></button>
-</div></details>
-<details class="menu-group"><summary><span>📘 الموارد ودورات المراجعة</span><small>التعلّم اليومي، الدورات والمساعدة</small></summary><div class="menu-group-items">
-<a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة تعلّم اليوم</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
+
+
 <button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button>
-</div></details>
 </div>
 <div class="note">تظهر بيانات التلاميذ والمدفوعات بعد دخول الأستاذة. ويمكن إضافة النتائج والحضور وملاحظات الأستاذة وتعديلها من ملف كل تلميذ.</div>
 </section>
