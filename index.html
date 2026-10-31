@@ -1025,10 +1025,11 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       $("calendarLessonPageTitle").textContent=x.lessonType==="فردية"?"تفاصيل الحصة الفردية":"إدارة الحصة الجماعية";
       $("calendarLessonPageMeta").textContent=(x.level||x.studentName||"")+(x.note?" · "+x.note:"")+" · "+(x.status||"مجدولة");$("calendarLessonUnitPrice").value=String(x.unitPrice||0);$("calendarLessonPriceStatus").textContent=x.unitPrice>0?"السعر محفوظ لهذه الحصة.":"لم يُحدد سعر هذه الحصة بعد.";$("calendarLessonTotal").textContent="المبلغ المحسوب: "+(Number(x.unitPrice||0)*Number(x.count||0)).toLocaleString("ar-DZ")+" دج · عدد الحاضرين: "+Number(x.count||0);
       const group=x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة",completed=x.status==="تمت";
-      $("calendarLessonCompleteButton").hidden=completed||!group;
+      $("calendarLessonCompleteButton").hidden=completed;
+      $("calendarLessonCompleteButton").textContent=x.lessonType==="فردية"?"تحديد الحصة الفردية «تمت»":"1️⃣ تحديد الحصة «تمت»";
       $("calendarLessonRosterButton").hidden=!completed||!group;
       $("calendarLessonAttendanceButton").hidden=!completed||!group;
-      $("calendarLessonWorkflowNote").textContent=!group?"إدارة الحضور متاحة للحصص الجماعية العادية فقط.":!completed?"الخطوة 1: حدّدي الحصة «تمت» أولًا، وبعدها ستظهر إضافة التلاميذ ثم تسجيل الحضور.":"الخطوة 2: أضيفي التلاميذ واحفظي القائمة، ثم انتقلي إلى الخطوة 3 لتسجيل الحضور والغياب.";
+      $("calendarLessonWorkflowNote").textContent=!completed?"حدّدي الحصة «تمت» بعد انتهائها. تُحسب الحصة الفردية كتلميذ واحد، أما الجماعية فتُحسب حسب الحاضرين المسجلين.":!group?"تم إنجاز الحصة الفردية؛ سيُحتسب سعرها كتلميذ واحد.":"الخطوة 2: أضيفي التلاميذ واحفظي القائمة، ثم انتقلي إلى الخطوة 3 لتسجيل الحضور والغياب.";
       $("calendarLessonPage").hidden=false;
     }
     function showIncomeCalendarDay(date){openCalendarDayPage(date);}
