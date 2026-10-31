@@ -1021,7 +1021,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const incomePageIds=["incomeTotalsPage","daily2025Page","daily2026Page","manual2025Page","incomeComparePage","incomeCompareMonthlyPage","incomeCompareDailyPage","incomeMonthlyPage","incomePaymentsPage","incomeCalendarPage","incomeCalendar2025Page"];
     function showIncomePage(id){$("incomeHomePage").hidden=id!=="home";incomePageIds.forEach(pid=>$(pid).hidden=pid!==id);}
     document.querySelectorAll("[data-income-page]").forEach(btn=>btn.addEventListener("click",()=>{showIncomePage(btn.dataset.incomePage);if(btn.dataset.incomePage==="incomeCalendarPage")loadIncomeCalendar();if(btn.dataset.incomePage==="incomeCalendar2025Page")loadIncomeCalendar2025();if(btn.dataset.incomePage==="incomeComparePage")loadIncomeCompare();if(btn.dataset.incomePage==="manual2025Page")loadDailyWork25();}));
-    document.querySelectorAll("[data-income-home]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("home")));\n    document.querySelectorAll("[data-compare-open]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage(btn.dataset.compareOpen)));\n    document.querySelectorAll("[data-compare-back]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("incomeComparePage")));
+    document.querySelectorAll("[data-income-home]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("home")));
+    document.querySelectorAll("[data-compare-open]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage(btn.dataset.compareOpen)));\n    document.querySelectorAll("[data-compare-back]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("incomeComparePage")));
     let incomeCalendar2025Entries=[],incomeCalendar2025Selected="";
     function renderIncomeCalendar2025(){
       const input=$("incomeCalendar2025Month"),grid=$("incomeCalendar2025Grid");if(!input||!grid)return;
