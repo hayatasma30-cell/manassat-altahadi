@@ -1023,9 +1023,10 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const x=incomeCalendarRows.find(row=>row.lessonId===id);if(!x)return;
       calendarCurrentLessonId=id;
       $("calendarLessonPageTitle").textContent=x.lessonType==="فردية"?"تفاصيل الحصة الفردية":"إدارة الحصة الجماعية";
-      $("calendarLessonPageMeta").textContent=(x.level||x.studentName||"")+(x.note?" · "+x.note:"")+" · "+(x.status||"مجدولة");$("calendarLessonUnitPrice").value=String(x.unitPrice||0);$("calendarLessonPriceStatus").textContent=x.unitPrice>0?"السعر محفوظ لهذه الحصة.":"لم يُحدد سعر هذه الحصة بعد.";$("calendarLessonTotal").textContent="المبلغ المحسوب: "+(Number(x.unitPrice||0)*Number(x.count||0)).toLocaleString("ar-DZ")+" دج · عدد الحاضرين: "+Number(x.count||0);
-      const group=x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة",individual=x.lessonType==="فردية",completed=x.status==="تمت";
+      $("calendarLessonPageMeta").textContent=(x.level||"")+(x.studentName?" · التلميذ: "+x.studentName:"")+(x.note?" · "+x.note:"")+" · "+(x.status||"مجدولة");$("calendarLessonUnitPrice").value=String(x.unitPrice||0);$("calendarLessonPriceStatus").textContent=x.unitPrice>0?"السعر محفوظ لهذه الحصة.":"لم يُحدد سعر هذه الحصة بعد.";$("calendarLessonTotal").textContent="المبلغ المحسوب: "+(Number(x.unitPrice||0)*Number(x.count||0)).toLocaleString("ar-DZ")+" دج · عدد الحاضرين: "+Number(x.count||0);
+      const group=x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة",individual=String(x.lessonType||"").includes("فرد"),completed=x.status==="تمت";
       $("individualStudentPanel").hidden=!individual;
+      $("individualStudentPanel").style.display=individual?"block":"none";
       $("calendarLessonCompleteButton").hidden=completed|| (individual&&!x.studentId);
       $("calendarLessonCompleteButton").textContent=individual?"تحديد الحصة الفردية «تمت»":"1️⃣ تحديد الحصة «تمت»";
       $("calendarLessonRosterButton").hidden=!completed||!group;
