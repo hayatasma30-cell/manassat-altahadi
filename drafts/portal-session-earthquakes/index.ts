@@ -64,8 +64,11 @@ if((!latest||!!latest.submitted_at)&&submittedCount>=maxAttempts)return out({err
 const token=crypto.randomUUID()+"."+crypto.randomUUID();
 let a:any=null;
 if(latest&&!latest.submitted_at){
-  const {data:updated,error:ue}=await db.from("quiz_attempts").update({attempt_token_hash:await hash(token)}).eq("id",latest.id).eq("student_id",s.id).eq("quiz_slug",slug).is("submitted_at",null).select("id,started_at").maybeSingle();
-  if(ue||!updated)return out({error:"تعذر استرجاع المحاولة غير المكتملة بأمان. لم تُحذف أي إجابات."},500);
+  const hasSavedAnswers=Object.keys(latest.selected_answers||{}).length>0||Object.keys(latest.written_answers||{}).length>0;
+  if(hasSavedAnswers)return out({error:"توجد إجابات محفوظة في محاولة غير مكتملة. لم نغيّرها حفاظًا عليها؛ تواصلي مع الأستاذة لاسترجاع المحاولة."},409);
+  const now=new Date().toISOString();
+  const {data:updated,error:ue}=await db.from("quiz_attempts").update({started_at:now,submitted_at:null,duration_seconds:0,auto_score:null,auto_max_score:20,selected_answers:{},written_answers:{},attempt_token_hash:await hash(token)}).eq("id",latest.id).eq("student_id",s.id).eq("quiz_slug",slug).is("submitted_at",null).select("id,started_at").maybeSingle();
+  if(ue||!updated)return out({error:"تعذر إعادة بدء المحاولة الفارغة بأمان."},500);
   a=updated;
 }else{
   const now=new Date().toISOString();
