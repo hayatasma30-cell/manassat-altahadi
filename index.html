@@ -569,14 +569,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 </section>
 <section id="manualInPersonPaymentView" class="view"><div class="view-head"><button class="back" id="backToPayments" type="button">→ إشعارات الدفع</button><h2>🏫 تسجيل دفعة حضورية</h2></div><div class="panel"><p class="muted">هذه الصفحة مخصّصة لدفعات التلاميذ الحضوريين فقط. دفعات الزووم تُدار عبر البوت.</p><form id="manualInPersonPaymentForm" style="display:grid;gap:14px"><label>التلميذ الحضوري<select id="manualPaymentStudent" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري التلميذ</option></select></label><label>نوع الحصة<select id="manualPaymentServiceType" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="individual_session">حصة فردية</option><option value="group_lesson">حصة جماعية</option></select></label><label>الخدمة<input id="manualPaymentService" required maxlength="180" placeholder="تُملأ تلقائيًا" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px" readonly></label><label>الشهر (اختياري)<input id="manualPaymentMonth" maxlength="80" placeholder="يُملأ تلقائيًا" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><label>المبلغ المدفوع بالدينار<input id="manualPaymentAmount" type="number" min="1" step="1" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><input id="manualPaymentMethod" type="hidden" value="نقدًا"><label>تاريخ الدفع<input id="manualPaymentDate" type="date" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><button class="primary" id="saveManualInPersonPayment" type="submit">حفظ الدفعة</button><p id="manualPaymentStatus" class="muted" aria-live="polite"></p></form></div></section>
 <section id="incomeView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💰 مداخيلي</h2></div>
-<div id="incomeHomePage" class="panel"><p class="muted">اختاري الخدمة؛ كل زر يفتح صفحة مستقلة.</p><div class="income-nav-grid">
-<button class="menu-btn" data-income-page="incomeTotalsPage" type="button"><span class="menu-icon">💰</span><span class="menu-copy"><strong>المداخيل الحالية</strong><small>الإجمالي والشهر المختار</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-income-page="daily2025Page" type="button"><span class="menu-icon">📒</span><span class="menu-copy"><strong>سجل 2025 اليومي</strong><small>كل يوم: ماذا عملتِ والمبلغ</small></span><span class="chev">‹</span></button><button class="menu-btn" data-income-page="daily2026Page" type="button"><span class="menu-icon">📘</span><span class="menu-copy"><strong>سجل 2026 اليومي</strong><small>كل يوم: ماذا عملتِ والمبلغ</small></span><span class="chev">‹</span></button><button class="menu-btn" data-income-page="manual2025Page" type="button"><span class="menu-icon">📝</span><span class="menu-copy"><strong>إدخال مداخيل 2025</strong><small>إدخال الأرقام يدويًا</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-income-page="incomeComparePage" type="button"><span class="menu-icon">📊</span><span class="menu-copy"><strong>مقارنة 2025 و2026</strong><small>الفرق شهرًا بشهر</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-income-page="incomeMonthlyPage" type="button"><span class="menu-icon">📅</span><span class="menu-copy"><strong>تفصيل المداخيل الشهرية</strong><small>مراجعة مداخيل كل شهر</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-income-page="incomePaymentsPage" type="button"><span class="menu-icon">🧾</span><span class="menu-copy"><strong>دفعات الشهر</strong><small>عرض تفاصيل المدفوعات</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-income-page="incomeCalendarPage" type="button"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>تقويم المداخيل</strong><small>مجموع كل يوم وتفاصيله</small></span><span class="chev">‹</span></button></div></div>
-<div id="incomeTotalsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>💰 المداخيل الحالية</h3></div><label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomeStats" class="stats"></div><button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button></div>
+<div id="incomeHomePage" class="panel"><h3>💰 ملخص المداخيل</h3><p class="muted">الحسابات الإجمالية فقط، دون تقسيم شهري.</p><div id="incomeStats" class="stats"><div class="stat">جارٍ تحميل الحسابات…</div></div><p id="incomeSummaryNote" class="note">يُحسب مستحق الحصص المنجزة فقط، وتُعرض الدفعات المقبوضة بشكل منفصل.</p><button class="primary" id="refreshIncomeBtn" type="button">تحديث المبالغ</button></div>
+<div id="incomeTotalsPage" class="panel income-subpage" hidden></div>
 <div id="daily2025Page" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>📒 سجل المداخيل اليومي لعام 2025</h3></div>
 <p class="muted">سجلي مداخيل كل يوم. اختاري الإدخال الفردي لتسجيل عمل واحد، أو الإدخال الجماعي لتسجيل عدة مستويات وأعمال في نفس اليوم.</p>
 <div class="daily-mode-switch"><button class="primary" id="showDailySingleBtn" type="button">إدخال فردي</button><button class="secondary" id="showDailyGroupBtn" type="button">إدخال جماعي لليوم</button></div>
@@ -901,45 +895,44 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const incomeMonthInput=$("incomeMonth");
     if(!incomeMonthInput.value)incomeMonthInput.value=currentMonth;
     const renderIncome=async()=>{
-      const month=incomeMonthInput.value||currentMonth;
       const approved=payments.filter(p=>String(p.status||"").toLowerCase()==="approved");
-      const pending=payments.filter(p=>String(p.status||"").toLowerCase()==="pending");
-      const thisMonth=approved.filter(p=>dateKey(p)===month);
-      const monthPending=pending.filter(p=>dateKey(p)===month);
-      const allTotal=approved.reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
-      const monthTotal=thisMonth.reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
-      const pendingTotal=pending.reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
-      const monthly={};
-      approved.forEach(p=>{const k=dateKey(p);if(k)monthly[k]=(monthly[k]||0)+(Number(p.amount_paid)||0);});
-      const zoomIncome=approved.filter(p=>(p.study_mode||"unknown")==="zoom").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);const inPersonIncome=approved.filter(p=>p.study_mode==="in_person").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);const monthZoom=thisMonth.filter(p=>(p.study_mode||"unknown")==="zoom").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);const monthInPerson=thisMonth.filter(p=>p.study_mode==="in_person").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);let completedLessons=[];try{const lessonData=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});completedLessons=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&String(x.lesson_date||"").startsWith(month));}catch(e){console.warn("تعذر تحميل الحصص المنجزة",e);}
-      let dueZoom=0,dueInPerson=0,presentZoom=0,presentInPerson=0,pricedLessons=0,unpricedLessons=0,attendanceMissing=0;
-      const seenLessonKeys=new Set();
-      for(const lesson of completedLessons){
-        const uniqueKey=[lesson.lesson_date,lesson.lesson_time,lesson.lesson_type,lesson.level,lesson.delivery_mode,lesson.lesson_category,lesson.subject,lesson.student_name].join("|");
-        if(seenLessonKeys.has(uniqueKey))continue;seenLessonKeys.add(uniqueKey);
-        const unitPrice=Math.max(0,Number(lesson.unit_price)||0);
-        if(unitPrice>0)pricedLessons++;else unpricedLessons++;
+      const zoomPayments=approved.filter(p=>p.study_mode==="zoom").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
+      const inPersonPayments=approved.filter(p=>p.study_mode==="in_person").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
+      let lessons=[];
+      try{
+        const data=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
+        const raw=(data.lessons||[]).filter(x=>x.status==="تمت");
+        const unique=new Map();
+        for(const lesson of raw){
+          const key=[lesson.lesson_date,lesson.lesson_time,lesson.lesson_type,lesson.level,lesson.delivery_mode,lesson.lesson_category,lesson.subject,lesson.student_name].join("|");
+          const old=unique.get(key);
+          if(!old||(lesson.student_id&&!old.student_id))unique.set(key,lesson);
+        }
+        lessons=[...unique.values()];
+      }catch(e){console.warn("تعذر تحميل الحصص المنجزة",e);}
+      let zoomLessons=0,inPersonLessons=0,attendanceMissing=0;
+      for(const lesson of lessons){
+        const unit=Math.max(0,Number(lesson.unit_price)||0);
         try{
-          let presentCount=0;
-          if(lesson.lesson_type==="فردية"){
-            presentCount=lesson.student_id?1:0;
-          }else{
-            const attendanceData=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
-            const presentIds=[...new Set((attendanceData.attendance||[]).filter(a=>a.status==="present").map(a=>String(a.student_id)))];
-            presentCount=presentIds.length;
+          let count=0;
+          if(lesson.lesson_type==="فردية") count=lesson.student_id?1:0;
+          else{
+            const data=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
+            count=[...new Set((data.attendance||[]).filter(a=>a.status==="present").map(a=>String(a.student_id)))].length;
           }
-          const amount=unitPrice*presentCount;
-          if(lesson.delivery_mode==="zoom"){dueZoom+=amount;presentZoom+=presentCount;}
-          else if(lesson.delivery_mode==="in_person"){dueInPerson+=amount;presentInPerson+=presentCount;}
-        }catch(e){attendanceMissing++;console.warn("تعذر تحميل حضور الحصة لحساب المستحقات",lesson.id,e);}
+          const amount=unit*count;
+          if(lesson.delivery_mode==="zoom")zoomLessons+=amount;
+          else if(lesson.delivery_mode==="in_person")inPersonLessons+=amount;
+        }catch(e){attendanceMissing++;console.warn("تعذر حساب مستحقات الحصة",lesson.id,e);}
       }
-      const dueTotal=dueZoom+dueInPerson;
-      $("incomeStats").innerHTML=[["إجمالي المداخيل المقبوضة والمؤكدة",money(allTotal)],["💻 المبالغ المقبوضة — زووم",money(zoomIncome)],["🏫 المبالغ المقبوضة — حضوري",money(inPersonIncome)],["مقبوضات الشهر المختار",money(monthTotal)],["💻 المقبوض — زووم هذا الشهر",money(monthZoom)],["🏫 المقبوض — حضوري هذا الشهر",money(monthInPerson)],["💰 مستحقات الحصص الحضورية (سعر الوحدة × الحاضرين)",money(dueInPerson)],["💻 مستحقات حصص Zoom (سعر الوحدة × الحاضرين)",money(dueZoom)],["إجمالي مستحقات الحصص",money(dueTotal)],["عدد الحاضرين — حضوري / Zoom",String(presentInPerson)+" / "+String(presentZoom)],["حصص بسعر محدد / دون سعر",String(pricedLessons)+" / "+String(unpricedLessons)],["تعذر تحميل حضورها",String(attendanceMissing)],["عدد الدفعات المقبولة",approved.length],["مدفوعات قيد المراجعة",money(pendingTotal)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
-      const monthNames=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
-      const keys=Object.keys(monthly).sort((a,b)=>b.localeCompare(a));
-      $("incomeMonthly").innerHTML=keys.length?keys.map(k=>{const [y,m]=k.split("-");return '<div class="data-item"><strong>'+monthNames[Number(m)-1]+' '+y+'</strong><div class="payment-meta"><span>المداخيل المؤكدة</span><b>'+escapeHtml(money(monthly[k]))+'</b></div></div>';}).join(""):'<div class="data-item">لا توجد مداخيل مؤكدة بعد.</div>';
-      const rows=payments.filter(p=>dateKey(p)===month).sort((a,b)=>new Date(b.payment_date||b.created_at)-new Date(a.payment_date||a.created_at));
-      $("incomePayments").innerHTML=rows.length?rows.map(p=>{const state=String(p.status||"").toLowerCase();return '<div class="data-item"><strong>'+escapeHtml(p.student_name||"تلميذ غير محدد")+'</strong><div class="payment-meta"><span>'+escapeHtml(money(p.amount_paid))+'</span><span class="payment-status '+(state==="approved"?"approved":state==="pending"?"pending":"rejected")+'">'+escapeHtml(payStatus[state]||p.status||"غير محددة")+'</span></div><div class="small">'+escapeHtml(p.service_name||p.service_type||"خدمة غير محددة")+' · '+escapeHtml(p.payment_method||"طريقة غير محددة")+'</div><div class="payment-date">تاريخ الدفع: '+formatDate(p.payment_date||p.created_at)+'</div></div>';}).join(""):'<div class="data-item">لا توجد دفعات في هذا الشهر.</div>';
+      $("incomeStats").innerHTML=[
+        ["💻 إجمالي مستحقات حصص Zoom المنجزة",money(zoomLessons)],
+        ["🏫 إجمالي مستحقات الحصص الحضورية المنجزة",money(inPersonLessons)],
+        ["💻 إجمالي الدفعات المقبوضة — Zoom",money(zoomPayments)],
+        ["🏫 إجمالي الدفعات المقبوضة — حضوري",money(inPersonPayments)]
+      ].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
+      const note=$("incomeSummaryNote");
+      if(note)note.textContent=attendanceMissing?"تعذر قراءة حضور "+attendanceMissing+" حصة؛ لم تُضف إلى إجمالي المستحقات.":"يُحسب مستحق الحصص المنجزة فقط: سعر التلميذ × عدد الحاضرين. الدفعات المقبوضة تُعرض منفصلة حسب طريقة الدراسة.";
     };
     const monthLabels=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     let manual2025={};
@@ -1150,10 +1143,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     $("incomeCalendarGrid").addEventListener("click",handleIncomeCalendarClick);$("incomeCalendarDayDetails").addEventListener("click",handleIncomeCalendarClick);$("incomeCalendarRosterEditor").addEventListener("click",handleIncomeCalendarClick);$("calendarRosterPage").addEventListener("click",handleIncomeCalendarClick);$("calendarDayPage").addEventListener("click",handleIncomeCalendarClick);$("calendarLessonPage").addEventListener("click",handleIncomeCalendarClick);
     $("refreshIncomeCalendar").addEventListener("click",loadIncomeCalendar);
 
-    $("incomeMonthPayments").value=incomeMonthInput.value;
-    $("incomeMonthPayments").addEventListener("change",()=>{incomeMonthInput.value=$("incomeMonthPayments").value;renderIncome();});
-    incomeMonthInput.onchange=()=>{$("incomeMonthPayments").value=incomeMonthInput.value;renderIncome();};
-    $("refreshIncomeBtn").onclick=()=>refresh();
+    if($("refreshIncomeBtn"))$("refreshIncomeBtn").onclick=()=>renderIncome();
     renderIncome();
     loadManual2025();
     loadDaily2025();
