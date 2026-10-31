@@ -510,6 +510,14 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #teacherPushEnable:disabled{opacity:.8}
 @media(min-width:760px){.level-filters{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:380px){.level-filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}.level-filter{padding:10px!important;min-height:88px!important}}
+
+/* وضع زر الإشعارات بجانب تسجيل الخروج بنفس نمط الأزرار */
+#sessionActions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px!important;align-items:stretch;margin-top:22px!important}
+#sessionActions #logoutBtn,#sessionActions #teacherPushEnable{position:static!important;inset:auto!important;transform:none!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:48px!important;margin:0!important;padding:10px 8px!important;border-radius:13px!important;font-size:clamp(12px,2.5vw,15px)!important;font-weight:800!important;white-space:normal!important;box-shadow:0 5px 0 rgba(20,83,45,.15),0 8px 14px rgba(20,63,34,.10)!important}
+#sessionActions #logoutBtn{background:linear-gradient(135deg,#1c7440,#14532d)!important;color:#fff!important;border:1px solid #1b6a3c!important;border-bottom:4px solid #0d4223!important}
+#sessionActions #teacherPushEnable{background:linear-gradient(145deg,#f5fbf1,#e3f1df)!important;color:#14532d!important;border:1px solid #b8d5b5!important;border-bottom:4px solid #6b9b68!important;cursor:pointer!important}
+#sessionActions #logoutBtn:active,#sessionActions #teacherPushEnable:active{transform:translateY(2px)!important;box-shadow:0 2px 0 rgba(20,83,45,.10),0 4px 7px rgba(20,63,34,.08)!important}
+@media(max-width:380px){#sessionActions{gap:7px!important}#sessionActions #logoutBtn,#sessionActions #teacherPushEnable{font-size:11px!important;padding:8px 5px!important}}
 </style>
 </head>
 <body>
