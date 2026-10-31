@@ -790,7 +790,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
-  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
+  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => { const view=btn.dataset.view; showView(view); if(view==="dailyLessonsView") setLessonPage("library"); }));
   // تأمين فتح قائمة التلاميذ: تحميل البيانات عند فتح القسم وإظهار الخطأ بدل الفشل الصامت.
   document.querySelectorAll('[data-view="studentsView"]').forEach(btn=>btn.addEventListener("click",async()=>{
     const token=localStorage.getItem("tahadi_teacher_token");
@@ -799,41 +799,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const filters=$("studentLevelFilters");
     if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">جارٍ تحميل قائمة التلاميذ من قاعدة البيانات…</div>';
     try{await loadDashboard(token);showView("studentsView");}
-    catch(err){showView("studentsView");showStatus("تعذر تحميل قائمة التلاميذ: "+(err&&err.message?err.message:"خطأ غير معروف")+". اضغطي على «تحديث البيانات» للمحاولة مجددًا.","error");if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">تعذر تحميل المستويات. راجعي رسالة الخطأ أعلى الصفحة ثم حاولي التحديث.</div>';console.error("studentsView load failed",err);}
-  },true));
-  // إصلاح مباشر للتنقل إلى صفحة الحصص من زر القائمة على الهاتف.
-  document.querySelectorAll('[data-view="dailyLessonsView"]').forEach(function(button){
-    button.addEventListener("click",function(event){
-      event.preventDefault();
-      event.stopPropagation();
-      const target=document.getElementById("dailyLessonsView");
-      if(!target)return;
-      document.querySelectorAll(".view").forEach(function(view){
-        const active=view===target;
-        view.style.display=active?"block":"none";
-        view.classList.toggle("active",active);
-        view.setAttribute("aria-hidden",active?"false":"true");
-      });
-      activeView="dailyLessonsView";
-      window.scrollTo({top:0,behavior:"instant"});
-      try{setLessonPage("library");}catch(error){console.error("daily lessons navigation",error);}
-    },true);
-  });
-  document.addEventListener("click",function(event){
-    const node=event.target instanceof Element?event.target:null;
-    const dailyButton=node?.closest('[data-view="dailyLessonsView"]');
-    if(!dailyButton)return;
-    event.preventDefault();
-    const target=document.getElementById("dailyLessonsView");
-    if(!target)return;
-    document.querySelectorAll(".view").forEach(function(view){
-      const active=view===target;
-      view.style.display=active?"block":"none";
-      view.classList.toggle("active",active);
-      view.setAttribute("aria-hidden",active?"false":"true");
-    });
-    activeView="dailyLessonsView";
-    try{setLessonPage("library");}catch(error){console.error("daily lessons navigation fallback",error);}
+    catch(err){showView("studentsView");showStatus("تعذر تحميل قائمة التلاميذ: "+(err&&err.message?err.message:"خطأ غير معروف")+". اضغطي على «تحديث البيانات» للمحاولة مجددًا.","error");if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">تعذر تحميل المستويات. راجعي رسالة الخطأ أعلى الصفحة ثم حاول(error){console.error("daily lessons navigation fallback",error);}
   },true);
   document.addEventListener("click",async function(event){const paymentsButton=event.target.closest('[data-view="paymentsView"]');if(!paymentsButton)return;const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث إشعارات الدفع: "+(err.message||"خطأ غير معروف"),"error");console.error("paymentsView load failed",err);}},true);
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
@@ -1566,7 +1532,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     }
   },true);
   $("dailyLessonsList").addEventListener("click",async ev=>{const roster=ev.target.closest("[data-daily-roster]"),attendance=ev.target.closest("[data-daily-attendance]");if(roster){try{const card=roster.closest(".data-item"),d=await lessonRequest({action:"lesson_roster_list",lesson_id:roster.dataset.dailyRoster});card.querySelector(".lesson-roster-panel")?.remove();const chosen=new Set((d.student_ids||[]).map(String));const panel=document.createElement("div");panel.className="lesson-roster-panel data-item";panel.innerHTML='<h4>قائمة تلاميذ الحصة</h4><p class="muted">حددي التلاميذ المرتبطين بهذه الحصة فقط.</p>'+((d.students||[]).length?d.students.map(st=>'<label style="display:flex;gap:10px;align-items:center;padding:7px 0"><input type="checkbox" data-daily-roster-student="'+escapeHtml(st.id)+'" '+(chosen.has(String(st.id))?'checked':'')+'><span>'+escapeHtml(st.full_name)+'</span></label>').join(""):'<p>لا يوجد تلاميذ نشطون في هذا المستوى.</p>')+'<button type="button" class="primary" data-daily-roster-save="'+escapeHtml(roster.dataset.dailyRoster)+'">حفظ قائمة التلاميذ</button>';card.appendChild(panel);}catch(err){lessonMessage(err.message,"error");}return;}const rosterSave=ev.target.closest("[data-daily-roster-save]");if(rosterSave){try{const panel=rosterSave.closest(".lesson-roster-panel"),ids=[...panel.querySelectorAll("[data-daily-roster-student]:checked")].map(x=>x.dataset.dailyRosterStudent);const result=await lessonRequest({action:"lesson_roster_save",lesson_id:rosterSave.dataset.dailyRosterSave,student_ids:ids});rosterSave.textContent="تم الحفظ ("+result.saved+")";lessonMessage("تم حفظ قائمة التلاميذ المرتبطين بالحصة.");}catch(err){lessonMessage(err.message,"error");}return;}const edit=ev.target.closest("[data-lesson-edit]"),st=ev.target.closest("[data-lesson-status]"),ca=ev.target.closest("[data-lesson-cancel]"),del=ev.target.closest("[data-lesson-delete]");try{if(edit){const row=await lessonRequest({action:"daily_lessons_get",id:edit.dataset.lessonEdit});const x=row.lesson;if(!x)throw Error("ما لقيناش معلومات الحصة.");const isRecurring=!!(x.recurrence_group_id||row.recurrence?.enabled);let scopeChoice="1";if(isRecurring){scopeChoice=prompt("هذه الحصة مرتبطة بتكرار أسبوعي. اختاري نطاق التعديل:\\n1 = هذه الحصة فقط\\n2 = هذه الحصة والحصص المكررة بعدها\\n3 = كامل الحصص المكررة","1");if(scopeChoice===null)return;}else{lessonMessage("هذه حصة مستقلة؛ يمكن تعديلها وحدها فقط، ولا توجد سلسلة تكرار مرتبطة بها.");}const scopeMap={"1":"this","2":"future","3":"all"};if(!scopeMap[scopeChoice]||(scopeChoice!=="1"&&!isRecurring)){lessonMessage("اختاري نطاقًا صحيحًا للتعديل.","error");return;}window.tahadiEditingScope=scopeMap[scopeChoice];window.tahadiEditingLessonId=String(x.id);$("lessonAddPanel").hidden=false;$("lessonListPanel").hidden=true;const date=String(x.lesson_date||"");const times=String(x.lesson_time||"").split(/[–-]/);$("lessonDate").value=date;$("lessonTime").value=(times[0]||"").trim();$("lessonEndTime").value=(times[1]||"").trim();$("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.lesson_category||"عادية";$("lessonCourseKind").value=x.course_kind||"فرض";$("lessonCourseNumber").value=String(x.course_number||1);$("lessonCourseTerm").value=x.course_term||"الفصل الأول";updateLessonCourseFields();$("lessonLevel").value=x.level||"";selectedLessonMode=x.delivery_mode||"zoom";setLessonMode(selectedLessonMode);updateDailyLessonFields();const studentOption=Array.from($("lessonStudent").options).find(o=>String(o.dataset.studentId||"")===String(x.student_id||""));if(studentOption)$("lessonStudent").value=studentOption.value;else $("lessonStudent").value=x.student_name||"";if(x.lesson_type==="فردية"){const st=String(times[0]||"").trim().split(":").map(Number),et=String(times[1]||"").trim().split(":").map(Number),mins=(et[0]*60+et[1])-(st[0]*60+st[1]);$("lessonDuration").value=[60,90,120].includes(mins)?String(mins):"60";$("lessonEndTime").value=(times[1]||"").trim();}$("lessonNotes").value=x.notes||"";$("lessonUnitPrice").value=String(x.unit_price??0);const recurrence=row.recurrence||{};const canEditSeries=scopeMap[scopeChoice]!=="this";$("lessonRepeatWeekly").disabled=!canEditSeries;$("lessonRepeatWeekly").checked=!!(canEditSeries&&recurrence.enabled);$("lessonRepeatEndWrap").hidden=!$("lessonRepeatWeekly").checked;$("lessonRepeatStart").value=recurrence.start||date;$("lessonRepeatEnd").value=recurrence.end||date;$("saveLessonBtn").textContent="حفظ التعديلات";lessonMessage("تم فتح بيانات الحصة. عدّلي المعلومات ثم اضغطي حفظ التعديلات.");setLessonPage("add");$("lessonAddPanel").scrollIntoView({behavior:"smooth",block:"start"});return;}if(st){await lessonRequest({action:"daily_lessons_update",id:st.dataset.lessonStatus,status:st.dataset.nextStatus});}else if(ca){await lessonRequest({action:"daily_lessons_update",id:ca.dataset.lessonCancel,status:"ألغيت"});}else if(del){const scopeChoice=prompt("اختاري نطاق الحذف:\n1 = هذه الحصة فقط\n2 = هذه الحصة والحصص المكررة بعدها\n3 = كامل الحصص المكررة","1");if(scopeChoice===null)return;const scopeMap={"1":"this","2":"future","3":"all"};if(!scopeMap[scopeChoice]){lessonMessage("اختاري 1 أو 2 أو 3.","error");return;}const scopeLabel={"this":"هذه الحصة فقط","future":"هذه الحصة والحصص المكررة بعدها","all":"كامل الحصص المكررة"}[scopeMap[scopeChoice]];if(!confirm("تأكيد حذف "+scopeLabel+" نهائيًا؟"))return;const result=await lessonRequest({action:"daily_lessons_series_mutation",operation:"delete",scope:scopeMap[scopeChoice],id:del.dataset.lessonDelete});lessonMessage("تم حذف "+(result.affected||1)+" حصة.");}else return;await loadDailyLessons();}catch(e){lessonMessage(e.message,"error");}});
-  document.querySelector('[data-view="dailyLessonsView"]').addEventListener("click",()=>loadDailyLessons());
   $("newStudentDate").value=new Date().toISOString().slice(0,10);
   $("addStudentForm").addEventListener("submit",async event=>{
     event.preventDefault();
