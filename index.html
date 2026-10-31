@@ -799,8 +799,9 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const filters=$("studentLevelFilters");
     if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">جارٍ تحميل قائمة التلاميذ من قاعدة البيانات…</div>';
     try{await loadDashboard(token);showView("studentsView");}
-    catch(err){showView("studentsView");showStatus("تعذر تحميل قائمة التلاميذ: "+(err&&err.message?err.message:"خطأ غير معروف")+". اضغطي على «تحديث البيانات» للمحاولة مجددًا.","error");if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">تعذر تحميل المستويات. راجعي رسالة الخطأ أعلى الصفحة ثم حاول(error){console.error("daily lessons navigation fallback",error);}
-  },true);
+    catch(err){showView("studentsView");showStatus("تعذر تحميل قائمة التلاميذ: "+(err&&err.message?err.message:"خطأ غير معروف")+". اضغطي على «تحديث البيانات» للمحاولة مجددًا.","error");if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">تعذر تحميل المستويات. راجعي رسالة الخطأ أعلى الصفحة ثم حاولي التحديث.</div>';console.error("studentsView load failed",err);}
+  },true));
+  document.addEventListener("click",function(event){const dailyButton=event.target.closest('[data-view="dailyLessonsView"]');if(!dailyButton)return;event.preventDefault();showView("dailyLessonsView");if(typeof setLessonPage==="function")setLessonPage("library");},true);
   document.addEventListener("click",async function(event){const paymentsButton=event.target.closest('[data-view="paymentsView"]');if(!paymentsButton)return;const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث إشعارات الدفع: "+(err.message||"خطأ غير معروف"),"error");console.error("paymentsView load failed",err);}},true);
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
