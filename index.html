@@ -533,7 +533,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button></div></details>
 </div>
 </details>
-<div class="note">تظهر بيانات التلاميذ والمدفوعات بعد دخول الأستاذة. ويمكن إضافة النتائج والحضور وملاحظات الأستاذة وتعديلها من ملف كل تلميذ.</div>
+
 </section>
 <section id="learningResourcesView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
@@ -1541,6 +1541,21 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
     if(group)group.open=false;
   });
 });
+</script>
+<script>
+/* Independent display clock/date fallback for the teacher home panel. */
+(function(){
+  function updateTeacherDateTime(){
+    var clock=document.getElementById("teacherLiveClock");
+    var date=document.getElementById("teacherLiveDate");
+    if(!clock&&!date)return;
+    var now=new Date();
+    if(clock)clock.textContent=new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Algiers",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).format(now);
+    if(date)date.textContent=new Intl.DateTimeFormat("ar-DZ",{timeZone:"Africa/Algiers",weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(now);
+  }
+  updateTeacherDateTime();
+  window.setInterval(updateTeacherDateTime,1000);
+})();
 </script>
 </body>
 </html>
