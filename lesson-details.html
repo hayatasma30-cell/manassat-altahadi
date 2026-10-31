@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>تفاصيل الحصة | منصة التحدي</title>
+<style>
+:root{--g:#14532d;--g2:#1d7045;--cream:#faf8ee;--ink:#18382a;--muted:#718075;--line:#e1e9dc;--pale:#f0f7ee}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.8}
+header{background:linear-gradient(120deg,#103f28,var(--g2));color:#fff;padding:17px 18px}
+header .inner,main{max-width:760px;margin:auto}header strong{font-size:1.05rem}
+main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px;color:var(--g);text-decoration:none;font-weight:700;margin:3px 0 16px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 7px 22px #173d250d}
+.eyebrow{font-size:.8rem;color:#6a866f;font-weight:700}.title{font-size:1.35rem;color:var(--g);margin:5px 0 14px}
+.status{display:inline-block;background:#eaf5e8;color:#246342;border-radius:20px;padding:4px 11px;font-size:.78rem;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.item{padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#fbfdf9;min-width:0}
+.item.wide{grid-column:1/-1}.label{display:block;color:var(--muted);font-size:.75rem;margin-bottom:3px}.value{font-weight:700;overflow-wrap:anywhere}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.btn{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;border:0;border-radius:12px;padding:11px 15px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+.primary{background:var(--g);color:#fff}.secondary{background:#edf5eb;color:var(--g);border:1px solid #d4e4d1}
+.notice{padding:13px;background:#fff8e8;border:1px solid #efdfb8;border-radius:13px;color:#725b25;font-size:.87rem}
+@media(max-width:480px){main{padding:14px 12px}.panel{padding:14px}.grid{gap:8px}.item{padding:9px}.title{font-size:1.18rem}}
+</style>
+</head>
+<body>
+<header><div class="inner"><strong>منصة التحدي التعليمية · فضاء الأستاذة</strong></div></header>
+<main>
+<a class="back" href="index.html">→ العودة إلى فضاء الأستاذة</a>
+<section class="panel" id="lessonPanel">
+<div class="eyebrow">إدارة الحصص</div>
+<h1 class="title">تفاصيل الحصة</h1>
+<p class="notice" id="loadMessage">جارٍ تحميل تفاصيل الحصة…</p>
+<div class="grid" id="lessonDetails" hidden></div>
+<div class="actions" id="lessonActions" hidden>
+<a class="btn primary" href="index.html">العودة إلى لوحة الأستاذة</a>
+<a class="btn secondary" href="index.html#dailyLessonsView">إدارة الحصص</a>
+</div>
+</section>
+</main>
+<script>
+(function(){
+ const box=document.getElementById("lessonDetails"),msg=document.getElementById("loadMessage"),actions=document.getElementById("lessonActions");
+ const esc=s=>String(s??"—").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ let lesson=null;
+ try{lesson=JSON.parse(sessionStorage.getItem("tahadi_selected_lesson")||"null");}catch(_){}
+ const id=new URLSearchParams(location.search).get("id");
+ if(!lesson||(id&&String(lesson.id||"")!==id)){
+   msg.textContent="لم نعثر على بيانات الحصة في هذه الجلسة. عودي إلى فضاء الأستاذة وافتحي بطاقة الحصة القادمة من جديد.";
+   return;
+ }
+ const date=lesson.lesson_date||"غير محدد",time=lesson.lesson_time||"غير محدد";
+ const type=lesson.lesson_type==="فردية"?"حصة فردية":lesson.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية";
+ const mode=lesson.delivery_mode==="in_person"?"حضوري":lesson.delivery_mode==="zoom"?"عن بُعد (Zoom)":lesson.delivery_mode||"غير محدد";
+ const fields=[
+  ["نوع الحصة",type],["القسم / المستوى",lesson.level],["التاريخ",date],["التوقيت",time],
+  ["طريقة التقديم",mode],["حالة الحصة",lesson.status],["التلميذ",lesson.student_name],
+  ["المادة",lesson.subject],["التصنيف",lesson.lesson_category],["السعر",lesson.unit_price!=null?Number(lesson.unit_price).toLocaleString("fr-FR")+" دج":null],
+  ["مدة الحصة",lesson.duration],["معرّف الحصة",lesson.id]
+ ];
+ if(lesson.notes)fields.push(["ملاحظات",lesson.notes,true]);
+ if(lesson.meeting_url)fields.push(["رابط اللقاء",lesson.meeting_url,true]);
+ if(lesson.zoom_link)fields.push(["رابط Zoom",lesson.zoom_link,true]);
+ box.innerHTML=fields.filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="").map(x=>'<div class="item '+(x[2]?"wide":"")+'"><span class="label">'+esc(x[0])+'</span><div class="value">'+esc(x[1])+'</div></div>').join("");
+ msg.hidden=true;box.hidden=false;actions.hidden=false;
+ document.querySelector(".title").textContent=type+" — "+(lesson.level||lesson.student_name||"تفاصيل الحصة");
+})();
+</script>
+</body>
+</html>
