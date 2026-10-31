@@ -891,9 +891,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 
     const money = value => (Number(value)||0).toLocaleString("fr-FR",{maximumFractionDigits:2})+" دج";
     const dateKey = p => {const raw=p.payment_date||p.created_at;if(!raw)return "";const dt=new Date(raw);return Number.isNaN(dt.getTime())?"":dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0");};
-    const currentMonth = new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0");
-    const incomeMonthInput=$("incomeMonth");
-    if(!incomeMonthInput.value)incomeMonthInput.value=currentMonth;
     const renderIncome=async()=>{
       const approved=payments.filter(p=>String(p.status||"").toLowerCase()==="approved");
       const zoomPayments=approved.filter(p=>p.study_mode==="zoom").reduce((sum,p)=>sum+(Number(p.amount_paid)||0),0);
