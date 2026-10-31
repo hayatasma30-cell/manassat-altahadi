@@ -1059,12 +1059,12 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       return data;
     }
     function renderDailyIncome(year){
-      const rows=dailyIncomeEntries[year]||[],list=$(year===2025?"dailyWorkList":year===2026?"dailyWork26List":"dailyWork25List"),total=$(year===2025?"dailyWorkTotal":year===2026?"dailyWork26Total":"dailyWork25Total");
-      if(!list||!total)return;
-      const sum=rows.reduce((n,x)=>n+(Number(x.amount)||0),0);
-      list.innerHTML=rows.length?rows.slice().sort((a,b)=>String(b.work_date).localeCompare(String(a.work_date))).map(x=>'<article class="data-item"><strong>'+escapeHtml(x.description||"عمل مسجل")+'</strong><div class="payment-meta"><span>'+escapeHtml(x.work_date||"")+'</span><b>'+calendarMoney(x.amount)+' دج</b></div>'+(x.notes?'<p class="small">'+escapeHtml(x.notes)+'</p>':'')+'</article>').join(""):'<p class="muted">لا توجد أعمال مسجلة لهذه السنة بعد.</p>';
-      total.textContent="إجمالي السجل: "+calendarMoney(sum)+" دج · عدد الأعمال: "+rows.length;
+      const rows=dailyIncomeEntries[year]||[],listIds=year===2025?["dailyWorkList","dailyWork25List"]:["dailyWork26List"],totalIds=year===2025?["dailyWorkTotal","dailyWork25Total"]:["dailyWork26Total"];
+      const sum=rows.reduce((n,x)=>n+(Number(x.amount)||0),0),markup=rows.length?rows.slice().sort((a,b)=>String(b.work_date).localeCompare(String(a.work_date))).map(x=>'<article class="data-item"><strong>'+escapeHtml(x.description||"عمل مسجل")+'</strong><div class="payment-meta"><span>'+escapeHtml(x.work_date||"")+'</span><b>'+calendarMoney(x.amount)+' دج</b></div>'+(x.notes?'<p class="small">'+escapeHtml(x.notes)+'</p>':'')+'</article>').join(""):'<p class="muted">لا توجد أعمال مسجلة لهذه السنة بعد.</p>';
+      listIds.forEach(id=>{if($(id))$(id).innerHTML=markup;});
+      totalIds.forEach(id=>{if($(id))$(id).textContent="إجمالي السجل: "+calendarMoney(sum)+" دج · عدد الأعمال: "+rows.length;});
     }
+    async function loadDailyWork25(){return loadDailyIncome(2025);}
     async function loadDailyIncome(year){
       const target=year===2025?"dailyWorkList":"dailyWork26List";
       if($(target))$(target).innerHTML='<p class="muted">جارٍ تحميل السجل…</p>';
