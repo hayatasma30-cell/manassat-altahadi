@@ -1035,16 +1035,16 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       $("calendarLessonPage").hidden=false;
       if(individual)loadIndividualLessonStudents(x);
     }
-    async function loadIndividualLessonStudents(lesson){
+    function loadIndividualLessonStudents(lesson){
       const select=$("individualLessonStudent"),status=$("individualLessonStudentStatus");
-      select.innerHTML='<option value="">جارٍ تحميل التلاميذ…</option>';
-      try{
-        const d=await lessonRequest({action:"lesson_roster_list",lesson_id:lesson.lessonId});
-        const options=(d.students||[]).filter(st=>st.status==="active");
-        select.innerHTML='<option value="">اختاري التلميذ</option>'+options.map(st=>'<option value="'+escapeHtml(st.id)+'">'+escapeHtml(st.full_name)+'</option>').join("");
-        select.value=lesson.studentId||"";
-        status.textContent=lesson.studentId?"التلميذ المرتبط حاليًا: "+(lesson.studentName||""):"اختاري تلميذًا نشطًا من القائمة.";
-      }catch(err){select.innerHTML='<option value="">تعذر تحميل القائمة</option>';status.textContent=err.message||"تعذر تحميل التلاميذ.";}
+      const normalize=value=>String(value||"").trim().replace(/^السنة\\s+/,"").replace(/[إأآا]/g,"ا").replace(/\\s+/g," ");
+      const all=Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[];
+      const options=all.filter(st=>(!st.status||st.status==="active")&&normalize(st.level)===normalize(lesson.level)&&st.study_mode===lesson.deliveryMode);
+      select.innerHTML='<option value="">اختاري التلميذ</option>'+options.map(st=>'<option value="'+escapeHtml(st.id)+'">'+escapeHtml(st.full_name)+'</option>').join("");
+      select.value=lesson.studentId||"";
+      if(lesson.studentId)status.textContent="التلميذ المرتبط حاليًا: "+(lesson.studentName||"");
+      else if(!options.length)status.textContent="لا يوجد تلاميذ نشطون مطابقون للمستوى وطريقة الدراسة. تحققي من بيانات التلميذ في قائمة التلاميذ.";
+      else status.textContent="اختاري تلميذًا من القائمة ("+options.length+" تلميذًا).";
     }
     function showIncomeCalendarDay(date){openCalendarDayPage(date);}
     async function loadIncomeCalendar(){
