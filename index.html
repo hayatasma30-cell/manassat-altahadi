@@ -668,6 +668,83 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #dailyLessonsView #lessonCalendarGrid.view-month,#dailyLessonsView #lessonCalendarGrid.view-week{grid-template-columns:repeat(7,minmax(0,1fr))!important}
 #dailyLessonsView #lessonCalendarGrid.view-day{grid-template-columns:1fr!important}
 </style>
+
+<style id="home-redesign-clean-v3">
+/* الصفحة الرئيسية: تصميم هادئ ومتماسك للهاتف */
+body{background:#f6f7f2!important;color:#203b2c}
+.topbar{padding:8px 14px!important;background:#14532d!important;box-shadow:none!important}
+.top-inner{min-height:54px}
+.brand{font-size:1rem!important;gap:8px}
+.brand-logo{width:40px!important;height:40px!important;flex-basis:40px!important}
+.teacher-chip{font-size:.78rem!important}
+.wrap{max-width:900px!important;padding:14px!important}
+#homeView .hero{padding:17px 18px!important;margin:3px 0 12px!important;border:1px solid #e2e9dc!important;border-radius:17px!important;background:#fff!important;box-shadow:0 2px 8px #203b2c08!important;min-height:0!important}
+#homeView .hero:after{display:none!important}
+#homeView .hero .eyebrow{font-size:.73rem!important;color:#728675!important;margin-bottom:2px!important}
+#homeView .hero h1{font-size:1.55rem!important;line-height:1.35!important;margin:0 0 4px!important;color:#174b30!important}
+#homeView .hero p{font-size:.83rem!important;line-height:1.65!important;color:#718075!important;max-width:100%!important}
+#homeView .teacher-command-panel{margin:0 0 13px!important;padding:13px!important;border:1px solid #e0e8dd!important;border-radius:17px!important;background:#fff!important;box-shadow:0 2px 9px #203b2c08!important}
+#homeView .teacher-command-panel.is-collapsed{padding:12px!important}
+#homeView .command-top{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important}
+#homeView .command-heading{min-width:0!important;flex:1!important}
+#homeView .command-kicker{font-size:.7rem!important;color:#7a8c7e!important}
+#homeView .command-top h2{font-size:1rem!important;margin:2px 0!important;color:#234b34!important}
+#homeView .command-top p{display:none!important}
+#homeView .command-toggle{padding:6px 10px!important;min-height:32px!important;border:1px solid #dce8d9!important;border-radius:9px!important;background:#f4f8f1!important;color:#315d3f!important;font-size:.76rem!important;box-shadow:none!important}
+#homeView .live-clock-wrap{display:flex!important;min-width:0!important;flex:0 1 auto!important;width:auto!important;padding:6px 9px!important;border:1px solid #e3eadf!important;border-radius:9px!important;background:#f7faf5!important;text-align:center!important}
+#homeView .live-clock-wrap>span:first-child{display:block!important}
+#homeView #teacherLiveDate{display:block!important;max-width:140px!important;font-size:.68rem!important;color:#637968!important}
+#homeView .command-next-lesson{margin:11px 0 0!important;padding:12px 13px!important;border:1px solid #dce8d9!important;border-radius:13px!important;background:#f8fbf7!important;box-shadow:none!important}
+#homeView .command-next-lesson:after{left:9px!important;font-size:1.4rem!important}
+#homeView .command-next-lesson-head{font-size:.82rem!important}
+#homeView .command-next-lesson-head span:last-child{font-size:.68rem!important}
+#homeView .command-next-lesson>strong{font-size:.94rem!important;margin:5px 0 2px!important}
+#homeView .command-next-lesson>p{font-size:.75rem!important;line-height:1.6!important}
+#homeView .command-next-lesson-countdown{font-size:1.1rem!important;margin:5px 0 0!important;color:#286342!important}
+#homeView .command-next-lesson>small{font-size:.68rem!important}
+#homeView .command-next-lesson .lesson-open-hint{font-size:.72rem!important;margin-top:4px!important}
+#homeView .platform-sections{margin:0 0 13px!important}
+#homeView .platform-sections-entry{padding:12px 13px!important;gap:10px!important;border:1px solid #dfe7db!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important}
+#homeView .platform-sections-entry .entry-icon{width:38px!important;height:38px!important;border-radius:10px!important;background:#edf4ea!important;font-size:1.1rem!important}
+#homeView .platform-sections-entry strong{font-size:.95rem!important}
+#homeView .platform-sections-entry small{font-size:.73rem!important}
+#homeView .platform-sections-entry .entry-arrow{font-size:1rem!important}
+#homeView .platform-sections-content{gap:8px!important;margin-top:8px!important}
+#homeView .section-category{border-color:#e1e8de!important;border-radius:12px!important;box-shadow:none!important}
+#homeView .section-category>summary{padding:12px 42px 12px 12px!important}
+#homeView .section-category>summary .category-title{font-size:.9rem!important}
+#homeView .section-category>summary small{font-size:.72rem!important}
+#homeView .category-buttons{gap:8px!important}
+#homeView .category-buttons .menu-btn{min-height:62px!important;padding:9px 11px!important;border:1px solid #e1e9df!important;border-radius:12px!important;background:#fff!important;box-shadow:none!important}
+#homeView .category-buttons .menu-btn:before{display:none!important}
+#homeView .category-buttons .menu-btn .menu-icon{width:34px!important;height:34px!important;border-radius:9px!important;background:#f0f6ed!important}
+#homeView .category-buttons .menu-btn .menu-copy strong{font-size:.84rem!important}
+#homeView .category-buttons .menu-btn .menu-copy small{font-size:.7rem!important}
+#homeView .category-buttons .menu-btn .chev{font-size:1rem!important}
+#homeView .command-stats{gap:8px!important;margin:10px 0!important}
+#homeView .command-stats>div{padding:9px!important;border-radius:11px!important;background:#f8fbf7!important;border-color:#e6ede3!important}
+#homeView .command-reminder-form{border-radius:13px!important;box-shadow:none!important}
+#sessionActions{gap:9px!important;display:flex!important;flex-wrap:wrap!important}
+#sessionActions button,#logoutBtn,#teacherPushEnable{flex:1 1 145px!important;min-height:42px!important;border-radius:11px!important;box-shadow:none!important;font-size:.82rem!important}
+footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!important}
+@media(min-width:700px){
+ #homeView .hero{padding:20px 22px!important}
+ #homeView .teacher-command-panel{padding:16px!important}
+ #homeView .category-buttons{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:480px){
+ .wrap{padding:11px!important}
+ #homeView .hero h1{font-size:1.35rem!important}
+ #homeView .hero p{font-size:.78rem!important}
+ #homeView .teacher-command-panel{padding:10px!important}
+ #homeView .live-clock-wrap{max-width:118px!important}
+ #homeView #teacherLiveDate{font-size:.63rem!important;max-width:100px!important}
+ #homeView .command-next-lesson{padding:10px 11px!important}
+ #homeView .platform-sections-entry{padding:11px!important}
+ #sessionActions{display:grid!important;grid-template-columns:1fr 1fr!important}
+}
+</style>
+
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
