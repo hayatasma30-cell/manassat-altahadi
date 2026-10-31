@@ -1585,6 +1585,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     $("lessonCourseKind").value=x.course_kind||"فرض";$("lessonCourseNumber").value=String(x.course_number||1);$("lessonCourseTerm").value=x.course_term||"الفصل الأول";
     updateLessonCourseFields();$("lessonLevel").value=x.level||"";
     selectedLessonMode=x.delivery_mode||"zoom";setLessonMode(selectedLessonMode);updateDailyLessonFields();
+    if(x.lesson_type==="جماعية"&&!duplicate){try{const roster=await lessonRequest({action:"lesson_roster_list",lesson_id:lessonId});const ids=new Set((roster.student_ids||[]).map(String));$("lessonGroupStudents").querySelectorAll('input[type="checkbox"]').forEach(input=>{input.checked=ids.has(String(input.value));});}catch(_){lessonMessage("تعذر تحميل قائمة تلاميذ الحصة؛ يمكنك إعادة تحديدهم.","error");}}
     const studentOption=Array.from($("lessonStudent").options).find(o=>String(o.dataset.studentId||"")===String(x.student_id||""));
     if(studentOption)$("lessonStudent").value=studentOption.value;else $("lessonStudent").value=x.student_name||"";
     if(x.lesson_type==="فردية"){
