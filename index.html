@@ -652,7 +652,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <div id="incomeCompareMonthlyPage" class="panel income-subpage income-compare-compact" hidden>
 <div class="view-head"><button class="back" data-compare-back type="button">→ المقارنة</button><h2>📅 المقارنة الشهرية</h2></div>
 <div class="income-compare-season-head"><div><span>الموسم السابق</span><strong>2025/2026</strong></div><div><span>الموسم الحالي</span><strong>2026/2027</strong></div></div>
-<div id="incomeCompareSummary" class="income-compare-kpis"></div>
+<div id="incomeCompareSummary" class="income-compare-kpis"></div><div id="incomeCompareWarnings" class="income-compare-warnings" aria-live="polite"></div>
 <label for="incomeCompareMonthSelect">اختاري الشهر</label><select id="incomeCompareMonthSelect" class="income-compare-month-select"></select>
 <div id="incomeCompareMonthly" class="income-compare-months"></div>
 </div>
@@ -1059,11 +1059,20 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const compareRow=(label,a,b)=>{const delta=b-a,pct=a>0?(delta/a)*100:null,pctText=pct===null?(b>0?"لا تُحسب النسبة لأن مداخيل الموسم السابق صفر":"لا تُحسب النسبة لأن مداخيل الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";const trend=delta>0?"up":delta<0?"down":"same";return '<article class="income-compare-month"><h4>'+label+'</h4><div class="income-compare-values"><div><span>2025/2026</span><strong>'+money(a)+'</strong></div><div><span>2026/2027</span><strong>'+money(b)+'</strong></div></div><div class="income-compare-delta '+trend+'"><strong>'+(delta>0?"+":"")+money(delta)+'</strong><span>'+compareClass(a,b)+' · '+pctText+'</span></div></article>';};
     function renderIncomeCompare(){
       const academicMonths=[9,10,11,12,1,2,3,4,5],monthNames={1:"جانفي",2:"فيفري",3:"مارس",4:"أفريل",5:"ماي",9:"سبتمبر",10:"أكتوبر",11:"نوفمبر",12:"ديسمبر"};
-      const totalsA={},totalsB={},dailyA={},dailyB={};const add=(map,key,value)=>map[key]=(map[key]||0)+value;
+      const totalsA={},totalsB={},dailyA={},dailyB={},reviewRows=[];const add=(map,key,value)=>map[key]=(map[key]||0)+value;
       const academicKey=date=>{const y=Number(date.slice(0,4)),m=Number(date.slice(5,7));if(m>=9&&m<=12&&y===2025)return "A";if(m>=1&&m<=5&&y===2026)return "A";if(m>=9&&m<=12&&y===2026)return "B";if(m>=1&&m<=5&&y===2027)return "B";return "";};
       const addDate=(date,value)=>{const season=academicKey(date);if(!season)return;const m=Number(date.slice(5,7)),d=Number(date.slice(8,10)),key=m+"-"+d;if(season==="A"){add(totalsA,m,value);add(dailyA,key,value);}else{add(totalsB,m,value);add(dailyB,key,value);}};
-      [...incomeCompare2025Entries,...incomeCompare2026Entries,...incomeCompare2027Entries].forEach(x=>{const d=String(x.work_date||"");if(/^202[567]-\d{2}-\d{2}$/.test(d))addDate(d,Number(x.amount)||0);});
-      incomeCompareLessons.forEach(x=>{if(x.status!=="تمت")return;const d=String(x.lesson_date||"");if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;const count=Number(x._presentCount||0)||(x.lesson_type==="فردية"&&x.student_id?1:0);addDate(d,(Number(x.unit_price)||0)*count);});
+      incomeCompareLessons.forEach(x=>{
+        if(x.status!=="تمت")return;
+        const d=String(x.lesson_date||"");if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;
+        const unitPrice=Number(x.unit_price)||0;
+        const count=x.lesson_type==="فردية"?(x.student_id?1:0):Number(x._presentCount||0);
+        if(unitPrice<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:"سعر الحصة غير محدد"});
+        else if(count<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:x.lesson_type==="فردية"?"لم يُربط التلميذ بالحصة":"لا يوجد حضور مسجل"});
+        addDate(d,unitPrice>0&&count>0?unitPrice*count:0);
+      });
+      const warningBox=$("incomeCompareWarnings");
+      if(warningBox)warningBox.innerHTML=reviewRows.length?'<div class="note"><strong>حصص تحتاج مراجعة ولا تدخل في المجموع:</strong>'+reviewRows.map(x=>'<div class="small">• '+escapeHtml(x.date)+' — '+escapeHtml(x.title)+' — '+escapeHtml(x.reason)+'</div>').join("")+'</div>':'<p class="muted">لا توجد حصص تحتاج مراجعة في البيانات المحمّلة.</p>';
       const months=academicMonths.map(m=>({month:m,name:monthNames[m],a:totalsA[m]||0,b:totalsB[m]||0}));
       const totalA=months.reduce((n,x)=>n+x.a,0),totalB=months.reduce((n,x)=>n+x.b,0),diff=totalB-totalA;
       const pct=totalA>0?(diff/totalA)*100:null,pctText=pct===null?(totalB>0?"لا تُحسب النسبة لأن مداخيل الموسم السابق صفر":"لا تُحسب النسبة لأن مداخيل الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";$("incomeCompareSummary").innerHTML='<div class="income-compare-kpi"><span>إجمالي الموسم السابق</span><strong>'+money(totalA)+'</strong></div><div class="income-compare-kpi"><span>إجمالي الموسم الحالي</span><strong>'+money(totalB)+'</strong></div><div class="income-compare-kpi highlight"><span>الفرق بين الموسمين</span><strong>'+(diff>0?"+":"")+money(diff)+'</strong><small>'+compareClass(totalA,totalB)+' · نسبة التغير: '+pctText+'</small></div>';
@@ -1077,16 +1086,14 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     function populateIncomeCompareDays(){const month=Number($("incomeCompareDailyMonth").value||9),days=new Date(2026,month,0).getDate(),day=$("incomeCompareDailyDay"),prior=Number(day.value||1);day.innerHTML=Array.from({length:days},(_,i)=>'<option value="'+(i+1)+'">اليوم '+(i+1)+'</option>').join("");day.value=String(Math.min(prior,days));}
     function renderIncomeCompareDaily(){if(!incomeCompareData)return;populateIncomeCompareDays();const month=Number($("incomeCompareDailyMonth").value||9),day=Number($("incomeCompareDailyDay").value||1),key=month+"-"+day,a=incomeCompareData.dailyA[key]||0,b=incomeCompareData.dailyB[key]||0;const label=incomeCompareData.monthNames[month]+" · اليوم "+day;$("incomeCompareDailyResult").innerHTML=compareRow(label,a,b);}
     async function loadIncomeCompare(){
-      const box=$("incomeCompareStatus");box.textContent="جارٍ تحميل بيانات السنتين الدراسيتين…";
+      const box=$("incomeCompareStatus");box.textContent="جارٍ تحميل مستحقات الحصص للموسمين…";
       try{
-        const token=localStorage.getItem("tahadi_teacher_token");
-        const getYear=async year=>{const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_income_data",year})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل سجل "+year);return d.entries||[];};
-        const [e25,e26,e27,lessonData]=await Promise.all([getYear(2025),getYear(2026),getYear(2027),lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"})]);
-        incomeCompare2025Entries=e25;incomeCompare2026Entries=e26;incomeCompare2027Entries=e27;
+        const lessonData=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
         const relevant=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&x.lesson_date>="2025-09-01"&&x.lesson_date<="2027-05-31");
-        const ids=relevant.map(x=>x.id);let counts={};if(ids.length){const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:ids});counts=countData.counts||{};}
+        const ids=relevant.filter(x=>x.lesson_type==="جماعية").map(x=>x.id);let counts={};
+        if(ids.length){const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:ids});counts=countData.counts||{};}
         incomeCompareLessons=relevant.map(x=>({...x,_presentCount:counts[x.id]?.present||0}));
-        renderIncomeCompare();
+        renderIncomeCompare();box.textContent="تم تحديث المقارنة من الحصص المنجزة فقط.";
       }catch(e){box.textContent="تعذر تحميل المقارنة: "+e.message;}
     }
     function academicMonthsOptions(){return [9,10,11,12,1,2,3,4,5].map(m=>'<option value="'+m+'">'+({9:"سبتمبر",10:"أكتوبر",11:"نوفمبر",12:"ديسمبر",1:"جانفي",2:"فيفري",3:"مارس",4:"أفريل",5:"ماي"}[m])+'</option>').join("");}
@@ -1099,7 +1106,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const byDay={};incomeCalendarRows.forEach(row=>{const d=String(row.date||"");if(!d.startsWith(month))return;(byDay[d]||(byDay[d]=[])).push(row);});
       const totals=Object.fromEntries(Object.entries(byDay).map(([d,rows])=>[d,rows.filter(x=>x.kind!=="مبلغ مقبوض").reduce((n,x)=>n+(Number(x.amount)||0),0)]));
       const total=Object.values(totals).reduce((a,b)=>a+b,0);
-      summary.textContent="إجمالي مستحقات الحصص والأعمال المسجلة: "+calendarMoney(total)+" دج. تُحسب الحصص المنجزة من سعر الوحدة وعدد الحاضرين، والدفعات مستقلة عن هذا التقويم.";
+      summary.textContent="إجمالي مستحقات الحصص المنجزة فقط: "+calendarMoney(total)+" دج. لا تدخل دفعات الاشتراكات ولا الأعمال اليدوية في هذا التقويم.";
       const heads=["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"];
       grid.innerHTML=heads.map(x=>'<div class="income-calendar-weekday">'+x+'</div>').join("")+Array.from({length:offset},()=>'<div class="income-calendar-day empty"></div>').join("")+Array.from({length:days},(_,i)=>{const day=i+1,key=month+"-"+String(day).padStart(2,"0"),amount=totals[key]||0;return '<button type="button" class="income-calendar-day '+(amount?'has-income ':'')+(incomeCalendarSelected===key?'selected':'')+'" data-income-calendar-day="'+key+'"><span class="day-number">'+day+'</span><span class="day-amount">'+(amount?calendarMoney(amount):'—')+'</span></button>';}).join("");
       if(incomeCalendarSelected&&incomeCalendarSelected.startsWith(month)){const selectedRows=incomeCalendarRows.filter(x=>x.date===incomeCalendarSelected);const normalizedTime=v=>String(v||"").replace(/[–—−]/g,"-").replace(/\s+/g,"").trim();const displaySeen=new Map();for(const row of selectedRows){if(!row.lessonId){displaySeen.set("manual:"+displaySeen.size,row);continue;}const key=[row.date,normalizedTime(row.note),row.lessonType,row.level,String(row.studentName||"").trim(),row.deliveryMode].join("|");const prev=displaySeen.get(key);const rank=x=>(x.status==="تمت"?4:0)+(x.lessonCategory==="دورة مراجعة"?0:1);if(!prev||rank(row)>rank(prev))displaySeen.set(key,row);}const rows=[...displaySeen.values()],sum=rows.reduce((n,x)=>n+(Number(x.amount)||0),0);$("incomeCalendarDayTitle").textContent="تفاصيل يوم "+incomeCalendarSelected+" — "+calendarMoney(sum)+" دج";$("incomeCalendarDayDetails").innerHTML=rows.length?rows.map(x=>'<article class="data-item"><strong>'+escapeHtml(x.title)+'</strong><div class="payment-meta"><b>'+(x.lessonId?("المستحق: "+calendarMoney(x.amount)+" دج · "+(x.status==="تمت"?"سعر الوحدة "+calendarMoney(x.unitPrice)+" × "+x.count+" حاضر":"حصة غير منجزة")):calendarMoney(x.amount)+" دج")+'</b><span>'+escapeHtml(x.kind)+'</span></div>'+(x.note?'<div class="small">'+escapeHtml(x.note)+'</div>':'')+(x.lessonId&&x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة"?'<button class="secondary" type="button" data-calendar-roster="'+escapeHtml(x.lessonId)+'">إضافة / تعديل التلاميذ</button>':'')+(x.lessonId&&x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة"&&x.status==="تمت"?'<button class="secondary" type="button" data-calendar-attendance="'+escapeHtml(x.lessonId)+'">تسجيل الحضور</button>':'')+(x.lessonId&&x.status==="مجدولة"?'<button class="primary" type="button" data-calendar-complete="'+escapeHtml(x.lessonId)+'">تحديد الحصة «تمت»</button>':'')+'</article>').join(""):'<p class="muted">لا توجد أعمال مسجلة.</p>';$("incomeCalendarRosterEditor").innerHTML="";}
@@ -1149,12 +1156,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
       const input=$("incomeCalendarMonth");if(!input.value||!input.value.startsWith("2026-"))input.value="2026-10";
       const year=Number(input.value.slice(0,4)),selectedMonth=String(input.value);incomeCalendarRows=[];
       try{
-        const token=localStorage.getItem("tahadi_teacher_token");
-        const [dailyResponse,lessonData]=await Promise.all([
-          fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_income_data",year})}).then(async r=>{const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل السجل اليومي");return d;}),
-          lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"})
-        ]);
-        (dailyResponse.entries||[]).forEach(x=>incomeCalendarRows.push({date:x.work_date,title:x.description||"عمل مسجل يدويًا",amount:Number(x.amount)||0,kind:"عمل يومي",note:x.notes||""}));
+        const lessonData=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
         const rawCalendarLessons=(lessonData.lessons||[]).filter(x=>["مجدولة","تمت"].includes(x.status)&&String(x.lesson_date||"").startsWith(selectedMonth+"-"));
         // منع تكرار الحصة نفسها في العرض مع إبقاء كل السجلات محفوظة في قاعدة البيانات.
         const lessonKey=x=>[x.lesson_date,x.lesson_time,x.lesson_type,x.lesson_category,x.level,String(x.student_name||"").trim(),x.delivery_mode].join("|");
@@ -1174,7 +1176,8 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         for(const x of calendarLessons){
           const counts=countMap[x.id]||{present:0,roster:0};
           const count=x.lesson_type==="فردية"?(x.status==="تمت"&&x.student_id?1:0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));
-          incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:x.status==="تمت"?Number(x.unit_price||0)*count:0,estimate:0,unitPrice:Number(x.unit_price||0),kind:x.status==="تمت"?"حصة مكتملة":"حصة مجدولة",status:x.status,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
+          const unitPrice=Number(x.unit_price||0),completed=x.status==="تمت",needsReview=completed&&(unitPrice<=0||count<=0);
+          incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:completed&&unitPrice>0&&count>0?unitPrice*count:0,estimate:0,unitPrice,kind:needsReview?"حصة تحتاج مراجعة":completed?"حصة مكتملة":"حصة مجدولة",status:x.status,needsReview,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
         renderIncomeCalendar();if(calendarCurrentLessonId&&!$("calendarLessonPage").hidden)openCalendarLessonPage(calendarCurrentLessonId);
       }catch(e){grid.innerHTML='<p class="error">تعذر تحميل التقويم: '+escapeHtml(e.message)+'</p>';}
