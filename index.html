@@ -496,7 +496,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 
 
 /* Show only the chosen category; tapping its heading returns to the category list. */
-.platform-sections-content:has(.section-category[open]) .section-category:not([open]){display:none}
 .category-back-hint{display:none;padding:2px 12px 10px;color:var(--muted);font-size:.78rem;text-align:right}
 .section-category[open] .category-back-hint{display:block}
 
@@ -1526,6 +1525,16 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  $("clearCompletedTeacherReminders").addEventListener("click",()=>{reminders=reminders.filter(r=>!r.done);persist();$("teacherReminderStatus").textContent="حُذفت التذكيرات المنجزة.";});
  renderClock();renderReminders();setInterval(()=>{renderClock();checkAlarms();},1000);
 })();
+</script>
+<script>
+/* Keep the category chooser compact: show one selected category at a time. */
+document.querySelectorAll(".section-category").forEach(function(group){
+  group.addEventListener("toggle",function(){
+    var siblings=Array.from(group.parentElement.querySelectorAll(":scope > .section-category"));
+    siblings.forEach(function(item){if(item!==group)item.hidden=group.open;});
+    if(!group.open)siblings.forEach(function(item){item.hidden=false;});
+  });
+});
 </script>
 </body>
 </html>
