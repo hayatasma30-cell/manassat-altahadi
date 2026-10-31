@@ -1047,9 +1047,53 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     const monthLabels=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     let manual2025={};
     const incomePageIds=["incomeTotalsPage","daily2025Page","daily2026Page","manual2025Page","incomeComparePage","incomeCompareMonthlyPage","incomeCompareDailyPage","incomeMonthlyPage","incomePaymentsPage","incomeCalendarPage","incomeCalendar2025Page"];
-    function showIncomePage(id){$("incomeHomePage").hidden=id!=="home";incomePageIds.forEach(pid=>$(pid).hidden=pid!==id);}
-    document.querySelectorAll("[data-income-page]").forEach(btn=>btn.addEventListener("click",()=>{showIncomePage(btn.dataset.incomePage);if(btn.dataset.incomePage==="incomeCalendarPage")loadIncomeCalendar();if(btn.dataset.incomePage==="incomeCalendar2025Page")loadIncomeCalendar2025();if(btn.dataset.incomePage==="incomeComparePage")loadIncomeCompare();if(btn.dataset.incomePage==="manual2025Page")loadDailyWork25();}));
-    document.querySelectorAll("[data-income-home]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("home")));\n    document.querySelectorAll("[data-compare-open]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage(btn.dataset.compareOpen)));\n    document.querySelectorAll("[data-compare-back]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("incomeComparePage")));
+    function showIncomePage(id){$("incomeHomePage").hidden=id!=="home";incomePageIds.forEach(pid=>$(pid).hidden=pid!==id);} 
+    // Daily manual income entries use the existing authenticated Supabase function.
+    let dailyIncomeEntries={2025:[],2026:[]};
+    const dailyIncomeLabels={g1:"السنة الأولى متوسط",g2:"السنة الثانية متوسط",g3:"السنة الثالثة متوسط",g4:"السنة الرابعة متوسط"};
+    async function dailyIncomeRequest(action,payload={}){
+      const token=localStorage.getItem("tahadi_teacher_token");
+      if(!token)throw Error("انتهت جلسة الدخول. سجّلي الدخول من جديد.");
+      const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...payload})});
+      const data=await response.json();if(!response.ok||!data.ok)throw Error(data.error||"تعذر تنفيذ العملية.");
+      return data;
+    }
+    function renderDailyIncome(year){
+      const rows=dailyIncomeEntries[year]||[],listIds=year===2025?["dailyWorkList","dailyWork25List"]:["dailyWork26List"],totalIds=year===2025?["dailyWorkTotal","dailyWork25Total"]:["dailyWork26Total"];
+      const sum=rows.reduce((n,x)=>n+(Number(x.amount)||0),0),markup=rows.length?rows.slice().sort((a,b)=>String(b.work_date).localeCompare(String(a.work_date))).map(x=>'<article class="data-item"><strong>'+escapeHtml(x.description||"عمل مسجل")+'</strong><div class="payment-meta"><span>'+escapeHtml(x.work_date||"")+'</span><b>'+calendarMoney(x.amount)+' دج</b></div>'+(x.notes?'<p class="small">'+escapeHtml(x.notes)+'</p>':'')+'</article>').join(""):'<p class="muted">لا توجد أعمال مسجلة لهذه السنة بعد.</p>';
+      listIds.forEach(id=>{if($(id))$(id).innerHTML=markup;});
+      totalIds.forEach(id=>{if($(id))$(id).textContent="إجمالي السجل: "+calendarMoney(sum)+" دج · عدد الأعمال: "+rows.length;});
+    }
+    async function loadDailyWork25(){return loadDailyIncome(2025);}
+    async function loadDailyIncome(year){
+      const target=year===2025?"dailyWorkList":"dailyWork26List";
+      if($(target))$(target).innerHTML='<p class="muted">جارٍ تحميل السجل…</p>';
+      try{const data=await dailyIncomeRequest("daily_income_data",{year});dailyIncomeEntries[year]=Array.isArray(data.entries)?data.entries:[];renderDailyIncome(year);}
+      catch(error){if($(target))$(target).innerHTML='<p class="error">'+escapeHtml(error.message)+'</p>';}
+    }
+    async function saveDailyIncomeEntry(year,entry,status,button){
+      if(!entry.work_date||!entry.work_date.startsWith(String(year)+"-"))throw Error("اختاري تاريخًا صحيحًا للسنة "+year+".");
+      if(!entry.description.trim())throw Error("اكتبي وصف العمل أولًا.");
+      if(!Number.isFinite(entry.amount)||entry.amount<=0)throw Error("أدخلي مبلغًا أكبر من صفر.");
+      button.disabled=true;status.textContent="جارٍ حفظ العمل…";
+      try{const data=await dailyIncomeRequest("daily_income_save",{entry});if(data.entry)dailyIncomeEntries[year].unshift(data.entry);else await loadDailyIncome(year);renderDailyIncome(year);status.textContent="تم حفظ العمل بنجاح.";return true;}
+      catch(error){status.textContent="لم يتم الحفظ: "+error.message;return false;}
+      finally{button.disabled=false;}
+    }
+    $("showDailySingleBtn").addEventListener("click",()=>{$("dailySingleForm").hidden=false;$("dailyGroupForm").hidden=true;$("showDailySingleBtn").className="primary";$("showDailyGroupBtn").className="secondary";});
+    $("showDailyGroupBtn").addEventListener("click",()=>{$("dailySingleForm").hidden=true;$("dailyGroupForm").hidden=false;$("showDailySingleBtn").className="secondary";$("showDailyGroupBtn").className="primary";});
+    $("saveDailyWorkBtn").addEventListener("click",async()=>{const status=$("dailyWorkStatus"),btn=$("saveDailyWorkBtn");const ok=await saveDailyIncomeEntry(2025,{work_date:$("dailyWorkDate").value,description:$("dailyWorkDescription").value.trim(),amount:Number($("dailyWorkAmount").value),notes:$("dailyWorkNotes").value.trim()},status,btn);if(ok){$("dailyWorkDescription").value="";$("dailyWorkAmount").value="";$("dailyWorkNotes").value="";}});
+    function updateDailyGroupPreview(){let sum=0;Object.keys(dailyIncomeLabels).forEach(k=>sum+=Math.max(0,Number($(k+"Amount").value)||0));sum+=Math.max(0,Number($("gOtherAmount").value)||0);$("dailyGroupPreview").textContent="مجموع اليوم: "+calendarMoney(sum)+" دج";}
+    ["g1Amount","g2Amount","g3Amount","g4Amount","gOtherAmount"].forEach(id=>$(id).addEventListener("input",updateDailyGroupPreview));
+    $("saveDailyGroupBtn").addEventListener("click",async()=>{const btn=$("saveDailyGroupBtn"),status=$("dailyGroupStatus"),date=$("dailyGroupDate").value,entries=[];Object.keys(dailyIncomeLabels).forEach(k=>{const amount=Number($(k+"Amount").value)||0,count=Number($(k+"Count").value)||0;if(amount>0)entries.push({work_date:date,description:dailyIncomeLabels[k],amount,notes:count>0?"عدد التلاميذ: "+count:""});});const otherAmount=Number($("gOtherAmount").value)||0,otherDesc=$("gOtherDesc").value.trim();if(otherAmount>0)entries.push({work_date:date,description:otherDesc||"تلميذ فردي أو عمل آخر",amount:otherAmount,notes:""});if(!date||!date.startsWith("2025-")){status.textContent="اختاري تاريخًا صحيحًا لعام 2025.";return;}if(!entries.length){status.textContent="أدخلي مبلغًا واحدًا على الأقل قبل الحفظ.";return;}btn.disabled=true;let saved=0;try{for(const entry of entries){await dailyIncomeRequest("daily_income_save",{entry});saved++;}status.textContent="تم حفظ "+saved+" أعمال لهذا اليوم.";await loadDailyIncome(2025);["g1Count","g1Amount","g2Count","g2Amount","g3Count","g3Amount","g4Count","g4Amount","gOtherAmount"].forEach(id=>$(id).value="0");$("gOtherDesc").value="";updateDailyGroupPreview();}catch(error){status.textContent="حُفظ "+saved+" من "+entries.length+" أعمال. تعذر إكمال الباقي: "+error.message+" — حدّثي السجل قبل إعادة المحاولة لتجنب التكرار.";}finally{btn.disabled=false;}});
+    $("saveDailyWork26Btn").addEventListener("click",async()=>{const status=$("dailyWork26Status"),btn=$("saveDailyWork26Btn");const ok=await saveDailyIncomeEntry(2026,{work_date:$("dailyWork26Date").value,description:$("dailyWork26Description").value.trim(),amount:Number($("dailyWork26Amount").value),notes:$("dailyWork26Notes").value.trim()},status,btn);if(ok){$("dailyWork26Description").value="";$("dailyWork26Amount").value="";$("dailyWork26Notes").value="";}});
+    $("saveDailyWork25Btn").addEventListener("click",async()=>{const status=$("dailyWork25Status"),btn=$("saveDailyWork25Btn");const ok=await saveDailyIncomeEntry(2025,{work_date:$("dailyWork25Date").value,description:$("dailyWork25Description").value.trim(),amount:Number($("dailyWork25Amount").value),notes:$("dailyWork25Notes").value.trim()},status,btn);if(ok){$("dailyWork25Description").value="";$("dailyWork25Amount").value="";$("dailyWork25Notes").value="";}});
+    $("dailyWorkDate").addEventListener("change",()=>{if($("dailyGroupDate"))$("dailyGroupDate").value=$("dailyWorkDate").value;});
+
+    document.querySelectorAll("[data-income-page]").forEach(btn=>btn.addEventListener("click",()=>{showIncomePage(btn.dataset.incomePage);if(btn.dataset.incomePage==="incomeCalendarPage")loadIncomeCalendar();if(btn.dataset.incomePage==="incomeCalendar2025Page")loadIncomeCalendar2025();if(btn.dataset.incomePage==="incomeComparePage")loadIncomeCompare();if(btn.dataset.incomePage==="manual2025Page")loadDailyWork25();if(btn.dataset.incomePage==="daily2025Page")loadDailyIncome(2025);if(btn.dataset.incomePage==="daily2026Page")loadDailyIncome(2026);}));
+    document.querySelectorAll("[data-income-home]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("home")));
+    document.querySelectorAll("[data-compare-open]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage(btn.dataset.compareOpen)));
+    document.querySelectorAll("[data-compare-back]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("incomeComparePage")));
     let incomeCalendar2025Entries=[],incomeCalendar2025Selected="";
     function renderIncomeCalendar2025(){
       const input=$("incomeCalendar2025Month"),grid=$("incomeCalendar2025Grid");if(!input||!grid)return;
@@ -1362,6 +1406,25 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
   };
   $("lessonCalendarPrev").addEventListener("click",()=>{lessonCalendarCursor.setMonth(lessonCalendarCursor.getMonth()-1);renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);});
   $("lessonCalendarNext").addEventListener("click",()=>{lessonCalendarCursor.setMonth(lessonCalendarCursor.getMonth()+1);renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);});
+  let lessonAlarmTimer=null,lessonAlarmTarget="";
+  $("armLessonAlarmBtn").addEventListener("click",async()=>{
+    const status=$("lessonNextCountdown");
+    if(!("Notification"in window)){status.querySelector("p").textContent="المتصفح لا يدعم إشعارات النظام. افتحي التقويم لمتابعة موعد الحصة.";return;}
+    try{
+      const permission=Notification.permission==="granted"?"granted":await Notification.requestPermission();
+      if(permission!=="granted"){status.querySelector("p").textContent="لم تُفعّل الإشعارات. اسمحي بها من إعدادات Chrome ثم أعيدي المحاولة.";return;}
+      const now=new Date(),rows=(window.tahadiLoadedLessonRows||[]).filter(x=>x.status==="مجدولة"&&x.lesson_date&&x.lesson_time);
+      const upcoming=rows.map(x=>({row:x,at:new Date(String(x.lesson_date).slice(0,10)+"T"+String(x.lesson_time).slice(0,5)+":00")})).filter(x=>Number.isFinite(x.at.getTime())&&x.at>now).sort((a,b)=>a.at-b.at)[0];
+      if(!upcoming){status.querySelector("p").textContent="لا توجد حصة مجدولة قادمة في القائمة المحمّلة. حدّثي قائمة الحصص أولًا.";return;}
+      if(lessonAlarmTimer)clearTimeout(lessonAlarmTimer);
+      lessonAlarmTarget=upcoming.row.id||upcoming.at.toISOString();
+      const delay=upcoming.at.getTime()-Date.now();
+      lessonAlarmTimer=setTimeout(()=>{try{new Notification("موعد الحصة القادمة",{body:(upcoming.row.level||"حصة")+" · "+(upcoming.row.lesson_time||"")});}catch(_){}status.querySelector("p").textContent="🔔 حان موعد الحصة: "+(upcoming.row.level||"حصة")+".";lessonAlarmTimer=null;},Math.min(delay,2147483647));
+      status.querySelector("p").textContent="تم تفعيل التنبيه للحصة القادمة: "+upcoming.row.lesson_date+" على "+upcoming.row.lesson_time+". اتركي صفحة المنصة مفتوحة حتى يصلك التنبيه.";
+      $("armLessonAlarmBtn").textContent="🔔 المنبّه مفعّل";
+    }catch(error){status.querySelector("p").textContent="تعذر تفعيل المنبّه: "+error.message;}
+  });
+
   $("lessonCalendarGrid").addEventListener("click",e=>{const b=e.target.closest("[data-calendar-date]");if(!b)return;e.preventDefault();window.tahadiSelectLessonDate(b.dataset.calendarDate);});
   $("lessonCalendarDayDetails").addEventListener("click",e=>{
     const rosterBtn=e.target.closest("[data-roster-open]");
