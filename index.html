@@ -801,7 +801,40 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     try{await loadDashboard(token);showView("studentsView");}
     catch(err){showView("studentsView");showStatus("تعذر تحميل قائمة التلاميذ: "+(err&&err.message?err.message:"خطأ غير معروف")+". اضغطي على «تحديث البيانات» للمحاولة مجددًا.","error");if(filters&&!filters.children.length)filters.innerHTML='<div class="data-item">تعذر تحميل المستويات. راجعي رسالة الخطأ أعلى الصفحة ثم حاولي التحديث.</div>';console.error("studentsView load failed",err);}
   },true));
-  document.addEventListener("click",function(event){const dailyButton=event.target.closest('[data-view="dailyLessonsView"]');if(!dailyButton)return;event.preventDefault();showView("dailyLessonsView");if(typeof setLessonPage==="function")setLessonPage("library");},true);
+  // إصلاح مباشر للتنقل إلى صفحة الحصص من زر القائمة على الهاتف.
+  document.querySelectorAll('[data-view="dailyLessonsView"]').forEach(function(button){
+    button.addEventListener("click",function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      const target=document.getElementById("dailyLessonsView");
+      if(!target)return;
+      document.querySelectorAll(".view").forEach(function(view){
+        const active=view===target;
+        view.style.display=active?"block":"none";
+        view.classList.toggle("active",active);
+        view.setAttribute("aria-hidden",active?"false":"true");
+      });
+      activeView="dailyLessonsView";
+      window.scrollTo({top:0,behavior:"instant"});
+      try{setLessonPage("library");}catch(error){console.error("daily lessons navigation",error);}
+    },true);
+  });
+  document.addEventListener("click",function(event){
+    const node=event.target instanceof Element?event.target:null;
+    const dailyButton=node?.closest('[data-view="dailyLessonsView"]');
+    if(!dailyButton)return;
+    event.preventDefault();
+    const target=document.getElementById("dailyLessonsView");
+    if(!target)return;
+    document.querySelectorAll(".view").forEach(function(view){
+      const active=view===target;
+      view.style.display=active?"block":"none";
+      view.classList.toggle("active",active);
+      view.setAttribute("aria-hidden",active?"false":"true");
+    });
+    activeView="dailyLessonsView";
+    try{setLessonPage("library");}catch(error){console.error("daily lessons navigation fallback",error);}
+  },true);
   document.addEventListener("click",async function(event){const paymentsButton=event.target.closest('[data-view="paymentsView"]');if(!paymentsButton)return;const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث إشعارات الدفع: "+(err.message||"خطأ غير معروف"),"error");console.error("paymentsView load failed",err);}},true);
   document.querySelectorAll(".view").forEach(v => { const active = v.id === "homeView"; v.style.display = active ? "block" : "none"; v.setAttribute("aria-hidden", active ? "false" : "true"); });
   document.querySelectorAll("[data-home]").forEach(btn => btn.addEventListener("click", () => showView("homeView")));
