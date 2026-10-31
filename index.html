@@ -603,6 +603,13 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #lessonListPanel.calendar-mode #lessonsCalendarPanel:not([hidden]){display:block!important}
 #lessonListPanel .lesson-list-heading{position:relative}
 #lessonListPanel #toggleLessonsCalendarBtn{min-width:145px}
+
+/* ضمان عدم ظهور مكتبة الحصص أسفل تقويم اليوم المختار */
+#lessonListPanel:has(#lessonsCalendarPanel:not([hidden])) .lesson-filters-grid,
+#lessonListPanel:has(#lessonsCalendarPanel:not([hidden])) #lessonListModeHint,
+#lessonListPanel:has(#lessonsCalendarPanel:not([hidden])) #lessonCategoryFilterHint,
+#lessonListPanel:has(#lessonsCalendarPanel:not([hidden])) #dailyLessonsList{display:none!important}
+#lessonListPanel:has(#lessonsCalendarPanel:not([hidden])) #lessonsCalendarPanel{display:block!important}
 </style>
 </head>
 <body>
