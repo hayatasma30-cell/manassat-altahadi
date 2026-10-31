@@ -1019,6 +1019,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         renderIncomeCompare();
       }catch(e){box.textContent="تعذر تحميل المقارنة: "+e.message;}
     }
+    $("incomeCompareMonth").innerHTML=incomeCompareMonths.map((m,i)=>'<option value="'+(i+1)+'">'+m+'</option>').join("");
     $("incomeCompareMonth").addEventListener("change",renderIncomeCompare);
     $("refreshIncomeCompare").addEventListener("click",loadIncomeCompare);
     let incomeCalendarRows=[],incomeCalendarSelected="";
