@@ -577,7 +577,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 <button class="menu-btn" data-income-page="incomePaymentsPage" type="button"><span class="menu-icon">🧾</span><span class="menu-copy"><strong>دفعات الشهر</strong><small>عرض تفاصيل المدفوعات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-income-page="incomeCalendarPage" type="button"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>تقويم المداخيل</strong><small>مجموع كل يوم وتفاصيله</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-income-page="incomeCalendar2025Page" type="button"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>تقويم مداخيل 2025</strong><small>عدد الحاضرين × سعر الوحدة</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-income-page="incomeCalendar2025Page" type="button"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>تقويم مداخيل 2025</strong><small>مجموع كل يوم وتفاصيله لعام 2025</small></span><span class="chev">‹</span></button></div></div>
+</div></div>
 <div id="incomeTotalsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>💰 المداخيل الحالية</h3></div><label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomeStats" class="stats"></div><button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button></div>
 <div id="daily2025Page" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-home type="button">→ مداخيلي</button><h3>📒 سجل المداخيل اليومي لعام 2025</h3></div>
 <p class="muted">سجلي مداخيل كل يوم. اختاري الإدخال الفردي لتسجيل عمل واحد، أو الإدخال الجماعي لتسجيل عدة مستويات وأعمال في نفس اليوم.</p>
@@ -1143,9 +1143,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
     incomeMonthInput.onchange=()=>{$("incomeMonthPayments").value=incomeMonthInput.value;renderIncome();};
     $("refreshIncomeBtn").onclick=()=>refresh();
     renderIncome();
-    loadManual2025();
-    loadDaily2025();
-    loadDaily2026();
     const manualPaymentDate=$("manualPaymentDate");if(manualPaymentDate&&!manualPaymentDate.value){const now=new Date();manualPaymentDate.value=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");}const initialMonth=$("manualPaymentMonth");if(initialMonth&&!initialMonth.value){const now=new Date();initialMonth.value=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"][now.getMonth()]+" "+now.getFullYear();}
     const manualPaymentStudent=$("manualPaymentStudent");
     if(manualPaymentStudent)manualPaymentStudent.innerHTML='<option value="">اختاري التلميذ</option>'+students.filter(st=>st.study_mode==="in_person").slice().sort((a,b)=>String(a.full_name||"").localeCompare(String(b.full_name||""),"ar")).map(st=>'<option value="'+escapeHtml(st.id)+'" data-name="'+escapeHtml(st.full_name||"") +'" data-level="'+escapeHtml(st.level||"") +'">'+escapeHtml(st.full_name)+' — '+escapeHtml(st.level||"") +'</option>').join("");
