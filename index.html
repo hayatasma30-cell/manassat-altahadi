@@ -565,6 +565,13 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #lessonAddPanel .lesson-wizard-actions{display:flex;gap:9px;margin-top:15px}#lessonAddPanel .lesson-wizard-actions button{flex:1;min-height:46px!important;margin:0!important}
 #lessonAddPanel #lessonWizardPrev[hidden],#lessonAddPanel #lessonWizardNext[hidden],#lessonAddPanel #saveLessonBtn[hidden]{display:none!important}
 @media(max-width:380px){#lessonAddPanel .lesson-wizard-step{font-size:.61rem}#lessonAddPanel .lesson-wizard-progress{padding:8px 5px;gap:3px}}
+
+/* إصلاح انتقال صفحات إدارة الحصص: إخفاء الأقسام غير النشطة مهما كانت قواعد display */
+#dailyLessonsView #lessonAddPanel[hidden],
+#dailyLessonsView #lessonListPanel[hidden],
+#dailyLessonsView #lessonsCalendarPanel[hidden]{display:none!important}
+#dailyLessonsView #lessonAddPanel:not([hidden]){display:block!important}
+#dailyLessonsView #lessonListPanel:not([hidden]){display:block!important}
 </style>
 </head>
 <body>
