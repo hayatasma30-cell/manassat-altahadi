@@ -2084,7 +2084,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
      if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الحصص.");
      const now=new Date();
      const rows=(data.lessons||[]).filter(x=>x.status!=="ألغيت"&&/^\d{4}-\d{2}-\d{2}$/.test(String(x.lesson_date||""))&&String(x.lesson_time||"").match(/\d{1,2}:\d{2}/));
-     const parsed=rows.map(x=>{const m=String(x.lesson_time).match(/(\d{1,2}:\d{2})/);const [hh,mm]=m[1].split(":").map(Number);const start=new Date(x.lesson_date+"T"+String(hh).padStart(2,"0")+":"+String(mm).padStart(2,"0")+":00");const endMatch=String(x.lesson_time).match(/[–-]\s*(\d{1,2}:\d{2})/);let end=null;if(endMatch){const [eh,em]=endMatch[1].split(":").map(Number);end=new Date(x.lesson_date+"T"+String(eh).padStart(2,"0")+":"+String(em).padStart(2,"0")+":00");}return {...x,_start:start,_end:end};}).filter(x=>Number.isFinite(x._start.getTime())&&(x._end&&x._end>now?true:x._start>now)).sort((a,b)=>a._start-b._start);
+     const parsed=rows.map(x=>{const m=String(x.lesson_time).match(/(\d{1,2}):(\d{2})/);if(!m)return null;const hh=Number(m[1]),mm=Number(m[2]),[yy,mo,dd]=x.lesson_date.split("-").map(Number);if(hh>23||mm>59||mo<1||mo>12||dd<1||dd>31)return null;const start=new Date(yy,mo-1,dd,hh,mm,0,0);const endMatch=String(x.lesson_time).match(/[–—-]\s*(\d{1,2}):(\d{2})/);let end=null;if(endMatch){let eh=Number(endMatch[1]),em=Number(endMatch[2]);end=new Date(yy,mo-1,dd,eh,em,0,0);if(end<=start)end.setDate(end.getDate()+1);}return {...x,_start:start,_end:end};}).filter(x=>x&&Number.isFinite(x._start.getTime())&&(x._end?x._end>now:x._start>now)).sort((a,b)=>{const at=a._start<=now&&a._end?a._end:a._start;const bt=b._start<=now&&b._end?b._end:b._start;return at-bt;});
      if(!parsed.length){titleEl.textContent="لا توجد حصة قادمة مسجّلة";metaEl.textContent="عند إضافة حصة جديدة ستظهر هنا تلقائيًا.";countEl.textContent="—";statusEl.textContent="لا توجد مواعيد قادمة";hintEl.textContent="";window.tahadiNextTeacherLesson=null;return;}
      window.tahadiNextTeacherLesson=parsed[0];
      const nextCard=$("teacherNextLessonCard");
@@ -2097,18 +2097,18 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
      const x=parsed[0],fmt=(d,opts)=>new Intl.DateTimeFormat("ar-DZ",{timeZone:"Africa/Algiers",...opts}).format(d);
      titleEl.textContent=(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+(x.level?" — "+x.level:"");
      metaEl.textContent=fmt(x._start,{weekday:"long",day:"numeric",month:"long"})+" · "+fmt(x._start,{hour:"2-digit",minute:"2-digit"})+" · "+(x.delivery_mode==="in_person"?"حضوري":"زووم")+(x.student_name?" · "+x.student_name:"");
-     statusEl.textContent=x._start<=now?"الحصة جارية الآن":"موعدها القادم";
+     statusEl.textContent=x._start<=now?"جارية الآن":"قادمة";
      hintEl.textContent=x._start<=now?"الوقت المتبقي لنهاية الحصة":"الوقت المتبقي لبداية الحصة";
      function tick(){
-       const target=x._start<=new Date()&&x._end?x._end:x._start,ms=target-Date.now();
-       if(ms<=0){countEl.textContent=x._end&&x._end>Date.now()?"الحصة جارية الآن":"حان موعد الحصة";return;}
-       const total=Math.floor(ms/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
+       const current=Date.now(),target=x._start.getTime()<=current&&x._end?x._end.getTime():x._start.getTime(),remaining=target-current;
+       if(remaining<=0){countEl.textContent=x._end?"انتهت الحصة":"حان موعد الحصة";statusEl.textContent=x._end?"انتهت":"حان موعدها";return;}
+       const total=Math.ceil(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
        countEl.textContent=(days?days+" يوم · ":"")+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
      }
      tick();if(window.tahadiNextLessonTicker)clearInterval(window.tahadiNextLessonTicker);window.tahadiNextLessonTicker=setInterval(tick,1000);
    }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";metaEl.textContent=error.message||"تحققي من الاتصال.";countEl.textContent="—";statusEl.textContent="";hintEl.textContent="";console.warn("next teacher lesson",error);}
  }
- loadNextTeacherLesson();setInterval(loadNextTeacherLesson,5*60*1000);
+ loadNextTeacherLesson();setInterval(loadNextTeacherLesson,60*1000);
 
  renderClock();renderReminders();setInterval(()=>{renderClock();checkAlarms();},1000);
 })();
