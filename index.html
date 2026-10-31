@@ -1711,5 +1711,43 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   window.setInterval(updateTeacherDateTime,1000);
 })();
 </script>
+
+<script>
+/* Isolated navigation for the two main lesson panels; does not depend on app handlers. */
+(function(){
+  document.addEventListener("click",function(event){
+    var el=event.target;
+    if(!(el instanceof Element))return;
+    var button=el.closest("#dailyLessonsView [data-lesson-page]");
+    if(!button)return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    var page=button.getAttribute("data-lesson-page")==="add"?"add":"library";
+    var add=document.getElementById("lessonAddPanel");
+    var list=document.getElementById("lessonListPanel");
+    var calendar=document.getElementById("lessonsCalendarPanel");
+    if(!add||!list)return;
+    add.hidden=page!=="add";
+    add.style.setProperty("display",page==="add"?"block":"none","important");
+    list.hidden=page==="add";
+    list.style.setProperty("display",page==="add"?"none":"block","important");
+    if(calendar){
+      calendar.hidden=page!=="library";
+      calendar.style.setProperty("display",page==="library"?"block":"none","important");
+    }
+    document.querySelectorAll("#dailyLessonsView [data-lesson-page]").forEach(function(btn){
+      var active=(btn.getAttribute("data-lesson-page")==="add")=== (page==="add");
+      btn.classList.toggle("primary",active);
+      btn.classList.toggle("secondary",!active);
+      btn.setAttribute("aria-pressed",active?"true":"false");
+    });
+    if(page==="library"){
+      var refresh=document.getElementById("refreshLessonsBtn");
+      if(refresh)refresh.click();
+    }
+  },true);
+})();
+</script>
 </body>
 </html>
