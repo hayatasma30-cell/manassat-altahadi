@@ -922,7 +922,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         try{
           let presentCount=0;
           if(lesson.lesson_type==="فردية"){
-            presentCount=1;
+            presentCount=lesson.student_id?1:0;
           }else{
             const attendanceData=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
             const presentIds=[...new Set((attendanceData.attendance||[]).filter(a=>a.status==="present").map(a=>String(a.student_id)))];
@@ -1075,7 +1075,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
         }
         for(const x of calendarLessons){
           const counts=countMap[x.id]||{present:0,roster:0};
-          const count=x.lesson_type==="فردية"?(x.status==="تمت"?1:0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));
+          const count=x.lesson_type==="فردية"?(x.status==="تمت"&&x.student_id?1:0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));
           incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:0,estimate:0,unitPrice:Number(x.unit_price||0),kind:x.status==="تمت"?"حصة مكتملة":"حصة مجدولة",status:x.status,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
         renderIncomeCalendar();if(calendarCurrentLessonId&&!$("calendarLessonPage").hidden)openCalendarLessonPage(calendarCurrentLessonId);
