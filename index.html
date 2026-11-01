@@ -927,6 +927,36 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
  #homeView .platform-sections-entry small{font-size:15px!important}
 }
 </style>
+<style id="teacher-dashboard-compact-countdown-v2">
+@media screen and (max-width:760px){
+ #homeView .teacher-command-panel{padding:10px!important;border-radius:15px!important}
+ #homeView .command-top{align-items:center!important;gap:8px!important}
+ #homeView .command-kicker{font-size:11px!important}
+ #homeView .command-top h2{font-size:17px!important;line-height:1.35!important}
+ #homeView .command-toggle{font-size:12px!important;min-height:36px!important;padding:7px 10px!important}
+ #homeView .live-clock-wrap{padding:6px 8px!important}
+ #homeView #teacherLiveDate{font-size:10px!important}
+ #homeView .command-next-lesson{padding:10px 11px!important;border-radius:14px!important;gap:6px!important}
+ #homeView .command-next-lesson-head{font-size:13px!important;padding-bottom:5px!important}
+ #homeView #teacherNextLessonTitle{font-size:16px!important;line-height:1.45!important}
+ #homeView #teacherNextLessonMeta{font-size:12px!important;line-height:1.45!important}
+ #homeView .lesson-countdown-frame{padding:8px 10px!important;gap:8px!important}
+ #homeView .lesson-alarm-icon{display:none!important}
+ #homeView .lesson-countdown-copy small{font-size:11px!important}
+ #homeView .command-next-lesson-countdown{font-size:18px!important;line-height:1.3!important;letter-spacing:0!important}
+ #homeView .teacher-countdown-days{display:block!important;direction:rtl!important;text-align:right!important;font-size:17px!important;line-height:1.4!important}
+ #homeView .teacher-countdown-time{display:block!important;direction:ltr!important;text-align:right!important;font-size:18px!important;font-variant-numeric:tabular-nums!important}
+ #homeView .lesson-content-button{min-height:46px!important;font-size:14px!important;margin-top:2px!important}
+ #homeView .platform-sections-entry{min-height:66px!important;padding:9px 11px!important;gap:8px!important}
+ #homeView .platform-sections-entry strong{font-size:15px!important}
+ #homeView .platform-sections-entry small{font-size:11px!important}
+ #homeView .platform-sections-entry .entry-icon{width:34px!important;height:34px!important;flex-basis:34px!important;font-size:16px!important}
+ #homeView .category-buttons .menu-btn{min-height:54px!important;padding:8px 10px!important}
+ #homeView .category-buttons .menu-btn .menu-copy strong{font-size:13px!important}
+ #homeView .category-buttons .menu-btn .menu-copy small{font-size:10px!important}
+ #sessionActions #logoutBtn{min-height:43px!important;font-size:13px!important}
+}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2230,7 +2260,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
        const current=Date.now(),target=x._start.getTime()<=current&&x._end?x._end.getTime():x._start.getTime(),remaining=target-current;
        if(remaining<=0){countEl.textContent=x._end?"انتهت الحصة":"حان موعد الحصة";statusEl.textContent=x._end?"انتهت":"حان موعدها";return;}
        const total=Math.ceil(remaining/1000),days=Math.floor(total/86400),hours=Math.floor(total%86400/3600),minutes=Math.floor(total%3600/60),seconds=total%60;
-       countEl.textContent=(days?days+" يوم · ":"")+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0");
+       countEl.innerHTML=(days?'<span class="teacher-countdown-days">'+days+' '+(days===1?'يوم':days===2?'يومان':'أيام')+'</span>':'')+'<span class="teacher-countdown-time">'+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0")+'</span>';
      }
      tick();if(window.tahadiNextLessonTicker)clearInterval(window.tahadiNextLessonTicker);window.tahadiNextLessonTicker=setInterval(tick,1000);
    }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";metaEl.textContent=error.message||"تحققي من الاتصال.";countEl.textContent="—";statusEl.textContent="";hintEl.textContent="";console.warn("next teacher lesson",error);}
