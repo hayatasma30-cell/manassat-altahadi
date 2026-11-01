@@ -1,0 +1,39 @@
+name: Recover stuck GitHub Pages deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/recover-stuck-pages.yml"
+
+permissions:
+  pages: write
+  contents: write
+
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel the orphaned Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BLOCKED_SHA: 2b843f2e099a6294bcb16a26e88c914ed30df4e4
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${BLOCKED_SHA}/cancel"
+          echo "Cancelled the stale Pages deployment."
+
+      - name: Remove the one-time recovery workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          path=".github/workflows/recover-stuck-pages.yml"
+          file_sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}" --jq .sha)"
+          gh api --method DELETE "repos/${GITHUB_REPOSITORY}/contents/${path}" \
+            -f message="Remove one-time Pages recovery workflow" \
+            -f sha="${file_sha}"
+          echo "Removed the temporary recovery workflow.";
