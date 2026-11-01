@@ -899,45 +899,32 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 #teacherNextLessonCard .lesson-open-hint{display:block!important;text-align:center!important;color:#66806c!important;font-size:.76rem!important;padding-top:2px}
 @media(max-width:480px){#teacherNextLessonCard .lesson-countdown-frame{padding:8px 10px!important;gap:10px!important}#teacherNextLessonCard .lesson-bell-button{flex-basis:36px!important;width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important}#teacherNextLessonCard .command-next-lesson-countdown{font-size:1.12rem!important}}
 </style>
-<style id="teacher-dashboard-rebuild-v1">
-#homeView{max-width:none;width:100%}#homeView .td-home{max-width:1440px;margin:auto;display:grid;grid-template-columns:225px minmax(0,1fr);gap:20px}
-#homeView .td-side{position:sticky;top:12px;min-height:calc(100vh - 24px);padding:15px 12px;background:#f3f7ef;border:1px solid #dce7d8;border-radius:20px;display:flex;flex-direction:column;gap:16px}
-#homeView .td-profile{display:flex;align-items:center;gap:10px;padding:7px 5px 15px;border-bottom:1px solid #dce7d8;color:#174b30}#homeView .td-profile>span{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#e1f0df;font-size:23px}#homeView .td-profile small{display:block;color:#718074}
-#homeView .td-nav{display:grid;gap:6px}#homeView .td-nav button,#homeView .td-nav a{display:block;text-align:right;text-decoration:none;color:#244d32;background:transparent;border:0!important;box-shadow:none!important;border-radius:11px!important;padding:11px 10px!important;font-weight:700}#homeView .td-nav button:hover,#homeView .td-nav a:hover,#homeView .td-nav .td-nav-active{background:#17683a!important;color:#fff!important}
-#homeView .td-side-foot{margin-top:auto;padding:12px 6px 3px;border-top:1px solid #dce7d8;color:#376046;font-weight:800}#homeView .td-side-foot small{display:block;color:#829083;font-weight:400;font-size:11px}
-#homeView .td-main{min-width:0}#homeView .td-welcome{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:2px 0 16px;padding:19px 21px;border:1px solid #e1e9dc;border-radius:19px;background:linear-gradient(110deg,#fffdf6,#edf7e9)}#homeView .td-welcome>div>small{color:#a17b2d;font-weight:800}#homeView .td-welcome h1{font-size:clamp(1.3rem,3vw,2rem);color:#174b30;margin:3px 0}#homeView .td-welcome p{margin:0;color:#718074;font-size:14px}#homeView .td-welcome>span{padding:8px 12px;background:#fff;border:1px solid #d8e5d4;border-radius:12px;color:#315b3e;font-size:13px}
-#homeView .td-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}#homeView .td-shortcuts button{min-width:0;min-height:105px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:right;padding:13px!important;border:1px solid #dce8d8!important;border-bottom:3px solid #8dbb91!important;border-radius:15px!important;background:linear-gradient(145deg,#fff,#f5faf2)!important;color:#214b31!important;box-shadow:0 5px 14px #173f2210!important}#homeView .td-shortcuts i{font-style:normal;font-size:22px}#homeView .td-shortcuts b{font-size:14px}#homeView .td-shortcuts small{font-size:11px;color:#718074}
-#homeView .teacher-command-panel{display:block!important;margin:0 0 16px;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
-#homeView #teacherNextLessonCard{display:block;margin:0;padding:19px 21px;border:2px solid #23844a;border-radius:21px;background:linear-gradient(115deg,#fff,#f0f9ed);box-shadow:0 7px 18px #14532d18!important;cursor:pointer}
-#homeView #teacherNextLessonCard .command-next-lesson-head{display:flex;align-items:center;justify-content:flex-start!important;gap:10px;margin-bottom:13px}#homeView .td-next-label{color:#17683a;font-size:17px}
-#homeView #teacherNextLessonCard #teacherPushEnable{position:static!important;inset:auto!important;display:inline-grid!important;place-items:center;flex:0 0 36px!important;width:36px!important;min-width:36px!important;max-width:36px!important;height:36px!important;min-height:36px!important;margin:0!important;padding:0!important;border:1px solid #c9ddc6!important;border-bottom:3px solid #79a982!important;border-radius:10px!important;background:#fff!important;color:#174b30!important;font-size:17px!important;box-shadow:0 2px 5px #174b3018!important}
-#homeView .td-status{margin-inline-start:auto;padding:5px 10px;border-radius:30px;background:#e6f5e6;color:#17683a;font-size:12px;font-weight:800}#homeView #teacherNextLessonTitle{display:block;margin:0;color:#183c29;font-size:clamp(18px,2.4vw,24px)}#homeView #teacherNextLessonMeta{margin:5px 0 13px;color:#65766a}
-#homeView .lesson-countdown-frame{display:flex!important;justify-content:center!important;padding:13px!important;border:1px solid #d4e4d0;border-radius:14px;background:#fff}#homeView .lesson-countdown-copy{width:100%;text-align:center}#homeView .lesson-countdown-copy small{color:#6d7d70;font-size:13px}#homeView .command-next-lesson-countdown{margin-top:3px;text-align:center!important;color:#174b30;font-size:clamp(25px,4vw,36px)!important;font-weight:900;letter-spacing:1px;font-variant-numeric:tabular-nums}#homeView .lesson-open-hint{display:block;margin-top:8px;text-align:center;color:#718174;font-size:12px}
-#homeView .td-reminder-toggle{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;padding:12px 15px;border:1px solid #e0e8dc;border-radius:14px;background:#fff}#homeView .td-reminder-toggle small{display:block;color:#788579;font-size:12px}#homeView .td-reminder-content{display:none;margin-top:10px;padding:15px;border:1px solid #e0e8dc;border-radius:16px;background:#fff}#homeView .teacher-command-panel:not(.is-collapsed) .td-reminder-content{display:block}#homeView .teacher-command-panel.is-collapsed .td-reminder-content{display:none}
-#homeView .command-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:0 0 12px}#homeView .command-stats>div{padding:10px;border-radius:12px;background:#f0f7ed;border:1px solid #e0eadb}#homeView .command-stats strong,#homeView .command-stats small{display:block}#homeView .command-stats strong{color:#17683a}#homeView .command-stats small{color:#738074;font-size:12px}
-#homeView .command-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}#homeView .command-form-actions{display:flex;gap:8px;flex-wrap:wrap}#homeView .command-form-actions button{flex:1}#homeView .command-reminders-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px}#homeView .command-reminders-head h3{margin:0}
-#homeView .platform-sections{margin-top:16px;border:1px solid #dce7d8;border-radius:16px;background:#fff;overflow:hidden}#homeView .platform-sections-entry{display:flex;align-items:center;gap:11px;padding:14px;cursor:pointer;list-style:none;color:#174b30}#homeView .platform-sections-entry::-webkit-details-marker{display:none}#homeView .platform-sections-entry strong,#homeView .platform-sections-entry small{display:block}#homeView .platform-sections-entry small{color:#788579;font-size:12px}#homeView .entry-icon{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:#edf6e9}#homeView .entry-arrow{margin-inline-start:auto}#homeView .platform-sections-content{padding:0 12px 12px}#homeView .platform-sections-content .section-category{margin-top:8px;border:1px solid #e1e9dd;border-radius:12px;overflow:hidden}#homeView .platform-sections-content .section-category>summary{padding:11px;background:#f7faf4;cursor:pointer;list-style:none;color:#214b31;font-weight:800}#homeView .platform-sections-content .section-category>summary small{display:block;color:#788579;font-size:12px;font-weight:400}#homeView .platform-sections-content .category-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:9px}#homeView .platform-sections-content .menu-btn{min-height:55px!important;box-shadow:none!important}
-@media(max-width:850px){#homeView .td-home{grid-template-columns:1fr;gap:10px}#homeView .td-side{position:static;min-height:0;padding:9px;border-radius:15px}#homeView .td-profile{padding:2px 4px 8px}#homeView .td-profile>span{width:36px;height:36px;font-size:19px}#homeView .td-nav{display:flex;overflow-x:auto;gap:4px}#homeView .td-nav button,#homeView .td-nav a{white-space:nowrap;flex:0 0 auto;padding:8px!important;font-size:12px!important}#homeView .td-side-foot{display:none}}
-@media(max-width:600px){#homeView .td-welcome{align-items:flex-start;flex-direction:column;padding:14px}#homeView .td-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#homeView .td-shortcuts button{min-height:88px;padding:10px!important}#homeView #teacherNextLessonCard{padding:14px}#homeView .command-form-grid{grid-template-columns:1fr}#homeView .platform-sections-content .category-buttons{grid-template-columns:1fr}#homeView .td-reminder-toggle{align-items:flex-start;flex-direction:column}}
-</style>
 
-<style id="teacher-dashboard-mobile-type-v2">
-@media screen and (max-width:850px){
- #homeView .td-profile b{font-size:16px!important}
- #homeView .td-profile small{font-size:12px!important}
- #homeView .td-nav button,#homeView .td-nav a{font-size:14px!important;min-height:42px!important}
- #homeView .td-welcome h1{font-size:clamp(19px,3vw,25px)!important}
- #homeView .td-welcome p{font-size:14px!important}
- #homeView .td-welcome>div>small{font-size:12px!important}
- #homeView .td-shortcuts b{font-size:15px!important}
- #homeView .td-shortcuts small{font-size:12px!important}
- #homeView #teacherNextLessonTitle{font-size:16px!important}
- #homeView #teacherNextLessonMeta,#homeView .lesson-open-hint{font-size:12px!important}
- #homeView .command-next-lesson-countdown{font-size:clamp(24px,4vw,34px)!important}
- #homeView .td-reminder-toggle b{font-size:15px!important}
- #homeView .td-reminder-toggle small{font-size:12px!important}
- #homeView .platform-sections-entry strong{font-size:15px!important}
- #homeView .platform-sections-entry small{font-size:12px!important}
+
+
+<style id="teacher-dashboard-mobile-reference-v1">
+@media screen and (max-width:760px){
+ #homeView .command-top{align-items:flex-start!important;gap:12px!important}
+ #homeView .command-heading{min-width:0!important;flex:1!important}
+ #homeView .command-kicker{font-size:15px!important}
+ #homeView .command-top h2{font-size:clamp(22px,5vw,28px)!important;line-height:1.5!important}
+ #homeView .command-top p{font-size:14px!important}
+ #homeView .command-toggle{font-size:16px!important;min-height:48px!important;padding:10px 14px!important}
+ #homeView .live-clock-wrap{min-width:0!important;padding:9px 11px!important}
+ #homeView #teacherLiveDate{font-size:13px!important}
+ #homeView .command-next-lesson{padding:16px!important;border-radius:20px!important}
+ #homeView .command-next-lesson-head{font-size:17px!important}
+ #homeView #teacherNextLessonTitle{font-size:clamp(19px,4.8vw,24px)!important;line-height:1.6!important}
+ #homeView #teacherNextLessonMeta{font-size:15px!important;line-height:1.6!important}
+ #homeView .lesson-countdown-frame{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:12px!important}
+ #homeView .lesson-alarm-icon{display:grid!important;place-items:center!important;flex:0 0 48px!important;width:48px!important;height:48px!important;border-radius:14px!important;background:#eaf4e8!important;font-size:30px!important}
+ #homeView .lesson-countdown-copy{flex:1!important;min-width:0!important}
+ #homeView .lesson-countdown-copy small{font-size:14px!important}
+ #homeView .command-next-lesson-countdown{font-size:clamp(27px,7vw,36px)!important;letter-spacing:0!important}
+ #homeView .lesson-content-button{min-height:58px!important;font-size:18px!important;margin-top:12px!important}
+ #homeView .platform-sections-entry{min-height:100px!important}
+ #homeView .platform-sections-entry strong{font-size:21px!important}
+ #homeView .platform-sections-entry small{font-size:15px!important}
 }
 </style>
 </head>
@@ -945,71 +932,37 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
 <main class="wrap">
 <section id="homeView" class="view active">
-<div class="td-home" dir="rtl">
-<aside class="td-side">
- <div class="td-profile"><span>👩‍🏫</span><div><b>فضاء الأستاذة</b><small>حياة أسماء</small></div></div>
- <nav class="td-nav">
-  <button class="td-nav-active" data-home type="button">⌂　لوحة التحكم</button>
-  <button data-view="studentsView" type="button">👥　التلاميذ</button>
-  <button data-view="dailyLessonsView" type="button">▦　الحصص</button>
-  <button data-view="electronicTestsView" type="button">✓　الاختبارات الإلكترونية</button>
-  <button data-view="overviewView" type="button">▥　النتائج والتقييم</button>
-  <button data-view="incomeView" type="button">◉　المداخيل والاشتراكات</button>
-  <a href="notifications.html?source=teacher">♧　الإشعارات</a>
-  <button data-view="helpView" type="button">⚙　المساعدة</button>
- </nav>
- <div class="td-side-foot">منصة التحدي<small>التعليم • التميز • المتابعة</small></div>
-</aside>
-<div class="td-main">
- <header class="td-welcome"><div><small>لوحة الأستاذة</small><h1>مرحبًا بكِ في فضائكِ التعليمي</h1><p>إدارة دروسكِ وتلاميذكِ من مكان واحد.</p></div><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></header>
- <div class="td-shortcuts">
-  <button data-view="studentsView" type="button"><i>👥</i><b>قائمة التلاميذ</b><small>ملفات التلاميذ ومتابعتهم</small></button>
-  <button data-view="dailyLessonsView" type="button"><i>🗓️</i><b>إدارة الحصص</b><small>الحصص الجماعية والفردية</small></button>
-  <button data-view="electronicTestsView" type="button"><i>📝</i><b>الاختبارات</b><small>الاختبارات الإلكترونية</small></button>
-  <button data-view="incomeView" type="button"><i>💰</i><b>المداخيل</b><small>الدفعات والاشتراكات</small></button>
- </div>
- <section class="teacher-command-panel is-collapsed" aria-label="الحصة القادمة والتذكيرات">
-  <section class="command-next-lesson lesson-card-clickable" id="teacherNextLessonCard" aria-label="الحصة القادمة" role="button" tabindex="0">
-   <div class="command-next-lesson-head"><b class="td-next-label">🎓 الحصة القادمة</b><button id="teacherPushEnable" class="lesson-bell-button" type="button" title="تفعيل إشعارات الحصص" aria-label="تفعيل إشعارات الحصص">🔔</button><span id="teacherNextLessonStatus" class="td-status">جارٍ تحميل المواعيد…</span></div>
-   <strong id="teacherNextLessonTitle">جارٍ البحث عن الحصة القادمة</strong><p id="teacherNextLessonMeta" class="muted">سيظهر موعد الحصة هنا.</p>
-   <div class="lesson-countdown-frame"><div class="lesson-countdown-copy"><small id="teacherNextLessonHint">الوقت المتبقي لبداية الحصة</small><div id="teacherNextLessonCountdown" class="command-next-lesson-countdown">—</div></div></div>
-   <small class="lesson-open-hint">اضغطي على البطاقة لفتح تفاصيل الحصة وتعديلها ←</small>
-  </section>
-  <div class="td-reminder-toggle"><div><b>وقتي ومهامي</b><small>تذكيراتكِ الشخصية في مكان واحد</small></div><button type="button" id="toggleTeacherCommandPanel" class="secondary command-toggle" aria-expanded="false">＋ فتح التذكيرات</button></div>
-  <div class="td-reminder-content">
-   <div class="command-stats"><div><span>🔔</span><strong id="teacherReminderCount">0</strong><small>تذكيرات قادمة</small></div><div><span>⏰</span><strong id="teacherNextReminder">—</strong><small>أقرب تذكير</small></div></div>
-   <div class="command-reminder-form"><h3>➕ أضيفي تذكيرًا أو منبّهًا</h3><label for="teacherReminderTitle">ما الذي تريدين تذكّره؟</label><input id="teacherReminderTitle" type="text" maxlength="120" placeholder="مثال: تحضير حصة السنة الرابعة" required>
-    <div class="command-form-grid"><div><label for="teacherReminderCategory">القسم</label><select id="teacherReminderCategory"><option>عام</option><option>الحصص</option><option>الاختبارات</option><option>التلاميذ</option><option>الاشتراكات والدفع</option><option>التسجيلات</option><option>التنبيهات</option><option>الدروس والملخصات</option></select></div><div><label for="teacherReminderDate">التاريخ</label><input id="teacherReminderDate" type="date" required></div><div><label for="teacherReminderTime">الوقت</label><input id="teacherReminderTime" type="time" required></div></div>
-    <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p>
-   </div>
-   <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
-  </div>
- </section>
- <details class="platform-sections"><summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>جميع أقسام المنصة</strong><small>الخدمات والأقسام الإضافية</small></span><span class="entry-arrow">＋</span></summary>
-  <div class="platform-sections-content">
-   <details class="section-category"><summary><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons">
-    <button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span></button>
-    <a class="menu-btn" href="student-space.html?v=20261030-stars2"><span class="menu-icon">👩‍🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ</small></span></a>
-    <a class="menu-btn" href="teacher-questions.html"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>الأسئلة والأجوبة الكتابية</small></span></a>
-    <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص</small></span></button>
-   </div></details>
-   <details class="section-category"><summary><span class="category-title">💳 الاشتراكات والمداخيل</span><small>الاشتراكات والمدفوعات والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons">
-    <a class="menu-btn" href="notifications.html?source=teacher"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات</small></span></a>
-    <button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>حالات الاشتراكات</small></span></button>
-    <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات</small></span></button>
-    <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>المداخيل حسب الشهر والتاريخ</small></span></button>
-    <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span></button>
-    <button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span></button>
-   </div></details>
-   <details class="section-category"><summary><span class="category-title">📘 الموارد والمراجعة</span><small>التعلّم اليومي ودورات المراجعة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons">
-    <a class="menu-btn" href="daily-science-admin.html"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة تعلّم اليوم</strong><small>المعلومات العلمية</small></span></a>
-    <button class="menu-btn" data-view="electronicTestsView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات الإلكترونية</strong><small>إدارة الاختبارات</small></span></button>
-    <button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>المشاركون والمحتوى</small></span></button>
-    <button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span></button>
-   </div></details>
-  </div>
- </details>
-</div></div></section>
+<section class="teacher-command-panel is-collapsed" aria-label="لوحة الأستاذة والتذكيرات" dir="rtl">
+  <div class="command-top"><div class="command-heading"><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>تذكيراتك في مكان واحد.</p><button type="button" id="toggleTeacherCommandPanel" class="secondary command-toggle" aria-expanded="false">＋ فتح لوحة التذكيرات</button></div><div class="live-clock-wrap"><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
+  <div class="command-stats"><div><span>🔔</span><strong id="teacherReminderCount">0</strong><small>تذكيرات قادمة</small></div><div><span>⏰</span><strong id="teacherNextReminder">—</strong><small>أقرب تذكير</small></div></div>
+  <section class="command-next-lesson lesson-card-clickable" id="teacherNextLessonCard" aria-label="الحصة القادمة"><div class="command-next-lesson-head"><span>🎓 الحصة القادمة</span><button type="button" id="teacherPushEnable" class="lesson-bell-button" title="تفعيل إشعارات الحصص" aria-label="تفعيل إشعارات الحصص">🔔</button><span id="teacherNextLessonStatus">جارٍ تحميل المواعيد…</span></div><strong id="teacherNextLessonTitle">جارٍ البحث عن الحصة القادمة</strong><p id="teacherNextLessonMeta" class="muted">سيظهر موعد الحصة هنا.</p><div class="lesson-countdown-frame"><span class="lesson-alarm-icon" aria-hidden="true">⏰</span><div class="lesson-countdown-copy"><small id="teacherNextLessonHint">الوقت المتبقي لبداية الحصة</small><div id="teacherNextLessonCountdown" class="command-next-lesson-countdown">—</div></div></div><button type="button" class="lesson-content-button" id="teacherNextLessonOpen">📚 محتويات الحصة <span aria-hidden="true">←</span></button></section>
+  <div class="command-reminder-form"><h3>➕ أضيفي تذكيرًا أو منبّهًا</h3><label for="teacherReminderTitle">ما الذي تريدين تذكّره؟</label><input id="teacherReminderTitle" type="text" maxlength="120" placeholder="مثال: تحضير حصة السنة الرابعة" required>
+  <div class="command-form-grid"><div><label for="teacherReminderCategory">القسم</label><select id="teacherReminderCategory"><option>عام</option><option>الحصص</option><option>الاختبارات</option><option>التلاميذ</option><option>الاشتراكات والدفع</option><option>التسجيلات</option><option>التنبيهات</option><option>الدروس والملخصات</option></select></div><div><label for="teacherReminderDate">التاريخ</label><input id="teacherReminderDate" type="date" required></div><div><label for="teacherReminderTime">الوقت</label><input id="teacherReminderTime" type="time" required></div></div>
+  <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
+  <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
+</section>
+<details class="platform-sections">
+<summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></summary>
+<div class="platform-sections-content">
+<details class="section-category"><summary><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
+<a class="menu-btn" href="student-space.html?v=20261030-stars2" style="text-decoration:none"><span class="menu-icon">👩‍🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
+<a class="menu-btn" href="teacher-questions.html" style="text-decoration:none"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>الأسئلة والأجوبة الكتابية — للأستاذة فقط</small></span><span class="chev">‹</span></a>
+<button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
+</div></details>
+<details class="section-category"><summary><span class="category-title">💳 الاشتراكات والمداخيل</span><small>الاشتراكات، المدفوعات، المداخيل والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
+<button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>المدفوعات والاشتراكات</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>حساب المداخيل حسب الشهر والتاريخ</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="telegramView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>التسجيلات والنتائج</strong><small>تنظيم العمل في تيليغرام</small></span><span class="chev">‹</span></button></div></details>
+<details class="section-category"><summary><span class="category-title">📘 الموارد والمراجعة</span><small>التعلّم اليومي، دورات المراجعة والمساعدة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة تعلّم اليوم</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
+<button class="menu-btn" data-view="electronicTestsView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات الإلكترونية</strong><small>فتح الاختبارات وعرض الإجابات الصحيحة للأستاذة</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="helpView"><span class="menu-icon">❔</span><span class="menu-copy"><strong>المساعدة</strong><small>طريقة استعمال المنصة</small></span><span class="chev">‹</span></button></div></details>
+</div>
+</details>
+
+</section>
 <section id="learningResourcesView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
 <div class="panel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
