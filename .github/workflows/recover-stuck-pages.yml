@@ -9,31 +9,32 @@ on:
 
 permissions:
   pages: write
+  deployments: write
   contents: write
 
 jobs:
-  recover:
+  inspect:
     runs-on: ubuntu-latest
     steps:
-      - name: Cancel the orphaned Pages deployment
+      - name: Inspect the blocked deployment record
         env:
           GH_TOKEN: ${{ github.token }}
           BLOCKED_SHA: 2b843f2e099a6294bcb16a26e88c914ed30df4e4
         shell: bash
         run: |
           set -euo pipefail
-          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/${BLOCKED_SHA}/cancel"
-          echo "Cancelled the stale Pages deployment."
-
-      - name: Remove the one-time recovery workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          path=".github/workflows/recover-stuck-pages.yml"
-          file_sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}" --jq .sha)"
-          gh api --method DELETE "repos/${GITHUB_REPOSITORY}/contents/${path}" \
-            -f message="Remove one-time Pages recovery workflow" \
-            -f sha="${file_sha}"
-          echo "Removed the temporary recovery workflow.";
+          echo "Pages deployment status:"
+          gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${BLOCKED_SHA}" || true
+          echo "Generic deployment records for the blocked SHA:"
+          ids="$(gh api "repos/${GITHUB_REPOSITORY}/deployments?sha=${BLOCKED_SHA}&per_page=100" --jq '.[].id')"
+          if [[ -z "${ids}" ]]; then
+            echo "No generic deployment records found for this SHA."
+            exit 0
+          fi
+          while IFS= read -r id; do
+            [[ -z "${id}" ]] && continue
+            echo "Deployment ID: ${id}"
+            gh api "repos/${GITHUB_REPOSITORY}/deployments/${id}" --jq '[.id,.sha,.environment,.created_at,.updated_at] | @tsv'
+            echo "Statuses:"
+            gh api "repos/${GITHUB_REPOSITORY}/deployments/${id}/statuses?per_page=10" --jq '.[] | [.id,.state,.created_at,.description] | @tsv'
+          done <<< "${ids}"
