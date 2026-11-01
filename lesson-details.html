@@ -65,7 +65,7 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
  try{lesson=JSON.parse(sessionStorage.getItem("tahadi_selected_lesson")||"null");}catch(_){}
  const id=new URLSearchParams(location.search).get("id");
  const editButton=document.getElementById("editLessonButton");
- if(editButton)editButton.addEventListener("click",()=>{if(!lesson?.id)return;location.href="index.html?edit_lesson="+encodeURIComponent(lesson.id);});
+ if(editButton)editButton.addEventListener("click",()=>{if(!lesson?.id){alert("تعذر تحديد رقم الحصة. عودي إلى بطاقة الحصة القادمة وافتحيها من جديد.");return;}location.href="index.html?edit_lesson="+encodeURIComponent(lesson.id);});
  if(!lesson||(id&&String(lesson.id||"")!==id)){
    msg.textContent="لم نعثر على بيانات الحصة في هذه الجلسة. عودي إلى فضاء الأستاذة وافتحي بطاقة الحصة القادمة من جديد.";
    return;
