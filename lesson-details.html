@@ -77,7 +77,6 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
   ["مدة الحصة",lesson.duration]
  ];
  if(lesson.notes)fields.push(["ملاحظات",lesson.notes,true]);
- if(lesson.notes)fields.push(["ملاحظات",lesson.notes,true]);
  box.innerHTML=fields.filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="").map(x=>'<div class="item '+(x[2]?"wide":"")+'"><span class="label">'+esc(x[0])+'</span><div class="value">'+esc(x[1])+'</div></div>').join("");
  msg.hidden=true;box.hidden=false;actions.hidden=false;
  if(lesson.delivery_mode==="zoom"){
