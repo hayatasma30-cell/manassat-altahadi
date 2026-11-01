@@ -200,8 +200,8 @@ function renderStudentLessons(items){
  const currentMonthRows=inMonth.slice().sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
  const preferred=byDay[todayKey]?.length?todayKey:(currentMonthRows[0]?.lesson_date||null);if(preferred)showDay(preferred);
 }
-function loadStudentLessons(){renderStudentLessons((currentDashboardData||teacherPreviewData||{}).lessons||[]);} $("refreshStudentLessons")?.addEventListener("click",loadStudentLessons);
-function loadStudentLessons(){renderStudentLessons((currentDashboardData||teacherPreviewData||{}).lessons||[]);} $("refreshStudentLessons")?.addEventListener("click",loadStudentLessons);
+async function loadStudentLessons(){const root=$("studentLessonsList");try{let data=currentDashboardData||teacherPreviewData||{};if(!teacherPreviewId&&sessionToken){const fresh=await call("student_portal_dashboard",{session_token:sessionToken});if(!fresh||fresh.ok===false)throw new Error(fresh?.error||"تعذر تحديث الحصص.");currentDashboardData={...data,...fresh};data=currentDashboardData;}renderStudentLessons(Array.isArray(data.lessons)?data.lessons:[]);}catch(error){if(root)root.innerHTML='<p class="error">تعذر تحميل الحصص: '+safe(error?.message||"خطأ في الاتصال")+'</p>';}}
+$("refreshStudentLessons")?.addEventListener("click",loadStudentLessons);
 function loadTeacherNotes(){const data=currentDashboardData||teacherPreviewData;const el=$("teacherNotesList");if(!el)return;let items=[];const notes=data&&(data.teacher_notes||data.notes||data.observations);if(Array.isArray(notes))items.push(...notes);else if(notes)items.push(notes);for(const a of (data?.quiz_attempts||[])){if(a.teacher_note)items.push({title:a.quiz_title||"ملاحظة على الاختبار",note:a.teacher_note,created_at:a.submitted_at});}list("teacherNotesList",items,x=>'<strong>'+safe(x.title||x.subject||x.quiz_title||"ملاحظة الأستاذة")+'</strong><p>'+safe(x.note||x.message||x.content||x.text||x)+'</p>'+(x.created_at?'<small class="muted">'+date(x.created_at)+'</small>':''),"لا توجد ملاحظات من الأستاذة مسجّلة حاليًا.");}
 async function loadMistakes(){
  let mistakes=[];
