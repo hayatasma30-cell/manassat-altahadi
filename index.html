@@ -1846,14 +1846,17 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
     const date=String(x.lesson_date||"");
     const times=String(x.lesson_time||"").split(/[–-]/);
     $("lessonDate").value=date;$("lessonTime").value=(times[0]||"").trim();$("lessonEndTime").value=(times[1]||"").trim();
+    $("lessonLevel").value=x.level||"";
     $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.lesson_category||"عادية";
     $("lessonCourseKind").value=x.course_kind||"فرض";$("lessonCourseNumber").value=String(x.course_number||1);$("lessonCourseTerm").value=x.course_term||"الفصل الأول";
-    updateLessonCourseFields();$("lessonLevel").value=x.level||"";
-    selectedLessonMode=x.delivery_mode||"zoom";setLessonMode(selectedLessonMode);$("lessonZoomLink").value=x.zoom_link||"";updateDailyLessonFields();
+    updateLessonCourseFields();
+    selectedLessonMode=x.delivery_mode||"zoom";setLessonMode(selectedLessonMode);$("lessonZoomLink").value=x.zoom_link||"";
+    updateDailyLessonFields();
     if(x.lesson_type==="جماعية"&&!duplicate){try{const roster=await lessonRequest({action:"lesson_roster_list",lesson_id:lessonId});const ids=new Set((roster.student_ids||[]).map(String));$("lessonGroupStudents").querySelectorAll('input[type="checkbox"]').forEach(input=>{input.checked=ids.has(String(input.value));});}catch(_){lessonMessage("تعذر تحميل قائمة تلاميذ الحصة؛ يمكنك إعادة تحديدهم.","error");}}
-    const studentOption=Array.from($("lessonStudent").options).find(o=>String(o.dataset.studentId||"")===String(x.student_id||""));
-    if(studentOption)$("lessonStudent").value=studentOption.value;else $("lessonStudent").value=x.student_name||"";
     if(x.lesson_type==="فردية"){
+      const studentOption=Array.from($("lessonStudent").options).find(o=>String(o.dataset.studentId||"")===String(x.student_id||""));
+      if(studentOption)$("lessonStudent").value=studentOption.value;
+      else if(x.student_id)throw Error("لم يتم تحميل التلميذ المرتبط بالحصة. تحققي من قائمة التلاميذ ثم أعيدي فتح التعديل.");
       const st=String(times[0]||"").trim().split(":").map(Number),et=String(times[1]||"").trim().split(":").map(Number),mins=(et[0]*60+et[1])-(st[0]*60+st[1]);
       $("lessonDuration").value=[60,90,120].includes(mins)?String(mins):"60";$("lessonEndTime").value=(times[1]||"").trim();
     }
