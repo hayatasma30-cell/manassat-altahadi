@@ -1,0 +1,49 @@
+name: Remove old failed Pages deployment records
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/remove-old-failed-pages-records.yml"
+
+permissions:
+  deployments: write
+  contents: write
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove the two failed deployment attempts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for id in 7470512696 7470486160; do
+            state="$(gh api "repos/${GITHUB_REPOSITORY}/deployments/${id}/statuses?per_page=1" --jq '.[0].state')"
+            echo "Deployment ${id} latest state: ${state}"
+            case "${state}" in
+              failure|error|inactive)
+                gh api --method DELETE "repos/${GITHUB_REPOSITORY}/deployments/${id}"
+                echo "Removed inactive failed deployment ${id}."
+                ;;
+              *)
+                echo "Refusing to remove deployment ${id} because its latest state is ${state}."
+                exit 1
+                ;;
+            esac
+          done
+
+      - name: Remove this one-time cleanup workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          path=".github/workflows/remove-old-failed-pages-records.yml"
+          file_sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}" --jq .sha)"
+          gh api --method DELETE "repos/${GITHUB_REPOSITORY}/contents/${path}" \
+            -f message="Remove one-time cleanup workflow for old failed Pages deployments" \
+            -f sha="${file_sha}"
