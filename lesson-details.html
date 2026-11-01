@@ -51,6 +51,7 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
 <p class="notice" id="loadMessage">جارٍ تحميل تفاصيل الحصة…</p>
 <div class="grid" id="lessonDetails" hidden></div>
 <div class="actions" id="lessonActions" hidden>
+<button class="btn secondary" type="button" id="editLessonButton">✏️ تعديل الحصة</button>
 <a class="btn primary" href="index.html">العودة إلى لوحة الأستاذة</a>
 
 </div>
@@ -63,6 +64,8 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
  let lesson=null;
  try{lesson=JSON.parse(sessionStorage.getItem("tahadi_selected_lesson")||"null");}catch(_){}
  const id=new URLSearchParams(location.search).get("id");
+ const editButton=document.getElementById("editLessonButton");
+ if(editButton)editButton.addEventListener("click",()=>{if(!lesson?.id)return;location.href="index.html?edit_lesson="+encodeURIComponent(lesson.id);});
  if(!lesson||(id&&String(lesson.id||"")!==id)){
    msg.textContent="لم نعثر على بيانات الحصة في هذه الجلسة. عودي إلى فضاء الأستاذة وافتحي بطاقة الحصة القادمة من جديد.";
    return;
