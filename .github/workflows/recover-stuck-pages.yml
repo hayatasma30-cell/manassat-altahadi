@@ -13,28 +13,32 @@ permissions:
   contents: write
 
 jobs:
-  inspect:
+  recover:
     runs-on: ubuntu-latest
     steps:
-      - name: Inspect the blocked deployment record
+      - name: Mark the stale Pages deployment inactive
         env:
           GH_TOKEN: ${{ github.token }}
-          BLOCKED_SHA: 2b843f2e099a6294bcb16a26e88c914ed30df4e4
+          STALE_DEPLOYMENT_ID: "7470675311"
         shell: bash
         run: |
           set -euo pipefail
-          echo "Pages deployment status:"
-          gh api "repos/${GITHUB_REPOSITORY}/pages/deployments/${BLOCKED_SHA}" || true
-          echo "Generic deployment records for the blocked SHA:"
-          ids="$(gh api "repos/${GITHUB_REPOSITORY}/deployments?sha=${BLOCKED_SHA}&per_page=100" --jq '.[].id')"
-          if [[ -z "${ids}" ]]; then
-            echo "No generic deployment records found for this SHA."
-            exit 0
-          fi
-          while IFS= read -r id; do
-            [[ -z "${id}" ]] && continue
-            echo "Deployment ID: ${id}"
-            gh api "repos/${GITHUB_REPOSITORY}/deployments/${id}" --jq '[.id,.sha,.environment,.created_at,.updated_at] | @tsv'
-            echo "Statuses:"
-            gh api "repos/${GITHUB_REPOSITORY}/deployments/${id}/statuses?per_page=10" --jq '.[] | [.id,.state,.created_at,.description] | @tsv'
-          done <<< "${ids}"
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/deployments/${STALE_DEPLOYMENT_ID}/statuses" \
+            -f state=inactive \
+            -f description="Release stale GitHub Pages deployment lock"
+          echo "Marked stale Pages deployment inactive."
+          gh api "repos/${GITHUB_REPOSITORY}/deployments/${STALE_DEPLOYMENT_ID}/statuses?per_page=1" \
+            --jq '.[] | [.id,.state,.created_at,.description] | @tsv'
+
+      - name: Remove the one-time recovery workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          path=".github/workflows/recover-stuck-pages.yml"
+          file_sha="$(gh api "repos/${GITHUB_REPOSITORY}/contents/${path}" --jq .sha)"
+          gh api --method DELETE "repos/${GITHUB_REPOSITORY}/contents/${path}" \
+            -f message="Remove one-time Pages recovery workflow" \
+            -f sha="${file_sha}"
+          echo "Removed the temporary recovery workflow.";
