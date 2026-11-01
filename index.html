@@ -886,6 +886,19 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 #sessionActions #teacherPushEnable{display:none!important}
 #teacherNextLessonCard .lesson-alarm-icon{display:none!important}
 </style>
+<style id="teacher-upcoming-lesson-card-v8">
+#teacherNextLessonCard.lesson-card-clickable{cursor:pointer;user-select:none;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}
+#teacherNextLessonCard.lesson-card-clickable:active{transform:translateY(2px);box-shadow:0 2px 0 #a6c6a5,0 4px 10px #244d2b10!important}
+#teacherNextLessonCard.lesson-card-clickable:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
+#teacherNextLessonCard .command-next-lesson-head{justify-content:space-between!important}
+#teacherNextLessonCard .lesson-countdown-frame{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:12px!important;padding:10px 12px!important}
+#teacherNextLessonCard .lesson-bell-button{flex:0 0 38px!important;width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important}
+#teacherNextLessonCard .lesson-countdown-copy{flex:1;min-width:0}
+#teacherNextLessonCard .lesson-countdown-copy small{font-size:.75rem!important}
+#teacherNextLessonCard .command-next-lesson-countdown{text-align:right!important;font-size:1.22rem!important;letter-spacing:.5px}
+#teacherNextLessonCard .lesson-open-hint{display:block!important;text-align:center!important;color:#66806c!important;font-size:.76rem!important;padding-top:2px}
+@media(max-width:480px){#teacherNextLessonCard .lesson-countdown-frame{padding:8px 10px!important;gap:10px!important}#teacherNextLessonCard .lesson-bell-button{flex-basis:36px!important;width:36px!important;min-width:36px!important;height:36px!important;min-height:36px!important}#teacherNextLessonCard .command-next-lesson-countdown{font-size:1.12rem!important}}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -895,7 +908,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 <section class="teacher-command-panel is-collapsed" aria-label="لوحة الأستاذة والتذكيرات" dir="rtl">
   <div class="command-top"><div class="command-heading"><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>تذكيراتك في مكان واحد.</p><button type="button" id="toggleTeacherCommandPanel" class="secondary command-toggle" aria-expanded="false">＋ فتح لوحة التذكيرات</button></div><div class="live-clock-wrap"><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
   <div class="command-stats"><div><span>🔔</span><strong id="teacherReminderCount">0</strong><small>تذكيرات قادمة</small></div><div><span>⏰</span><strong id="teacherNextReminder">—</strong><small>أقرب تذكير</small></div></div>
-  <section class="command-next-lesson" id="teacherNextLessonCard" aria-label="الحصة القادمة"><div class="command-next-lesson-head"><span>🎓 الحصة القادمة</span><button type="button" id="teacherPushEnable" class="lesson-bell-button" title="تفعيل إشعارات الحصص" aria-label="تفعيل إشعارات الحصص">🔔</button><span id="teacherNextLessonStatus">جارٍ تحميل المواعيد…</span></div><strong id="teacherNextLessonTitle">جارٍ البحث عن الحصة القادمة</strong><p id="teacherNextLessonMeta" class="muted">سيظهر موعد الحصة هنا.</p><div class="lesson-countdown-frame"><span class="lesson-alarm-icon" aria-hidden="true">⏰</span><div class="lesson-countdown-copy"><small id="teacherNextLessonHint">الوقت المتبقي لبداية الحصة</small><div id="teacherNextLessonCountdown" class="command-next-lesson-countdown">—</div></div></div><button type="button" class="lesson-content-button" id="teacherNextLessonOpen">📚 محتويات الحصة <span aria-hidden="true">←</span></button></section>
+  <section class="command-next-lesson lesson-card-clickable" id="teacherNextLessonCard" aria-label="الحصة القادمة" role="button" tabindex="0"><div class="command-next-lesson-head"><span>🎓 الحصة القادمة</span><span id="teacherNextLessonStatus">جارٍ تحميل المواعيد…</span></div><strong id="teacherNextLessonTitle">جارٍ البحث عن الحصة القادمة</strong><p id="teacherNextLessonMeta" class="muted">سيظهر موعد الحصة هنا.</p><div class="lesson-countdown-frame"><button type="button" id="teacherPushEnable" class="lesson-bell-button" title="تفعيل إشعارات الحصص" aria-label="تفعيل إشعارات الحصص">🔔</button><div class="lesson-countdown-copy"><small id="teacherNextLessonHint">الوقت المتبقي لبداية الحصة</small><div id="teacherNextLessonCountdown" class="command-next-lesson-countdown">—</div></div></div><small class="lesson-open-hint">اضغطي على إطار الحصة لفتح معلوماتها وتعديلها ←</small></section>
   <div class="command-reminder-form"><h3>➕ أضيفي تذكيرًا أو منبّهًا</h3><label for="teacherReminderTitle">ما الذي تريدين تذكّره؟</label><input id="teacherReminderTitle" type="text" maxlength="120" placeholder="مثال: تحضير حصة السنة الرابعة" required>
   <div class="command-form-grid"><div><label for="teacherReminderCategory">القسم</label><select id="teacherReminderCategory"><option>عام</option><option>الحصص</option><option>الاختبارات</option><option>التلاميذ</option><option>الاشتراكات والدفع</option><option>التسجيلات</option><option>التنبيهات</option><option>الدروس والملخصات</option></select></div><div><label for="teacherReminderDate">التاريخ</label><input id="teacherReminderDate" type="date" required></div><div><label for="teacherReminderTime">الوقت</label><input id="teacherReminderTime" type="time" required></div></div>
   <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
@@ -1836,6 +1849,16 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
     $("lessonListTitle").textContent=duplicate?"📋 نسخ الحصة":"✏️ تعديل الحصة";
     lessonMessage(duplicate?"تم تحميل بيانات الحصة. عدّلي التاريخ أو الوقت ثم احفظي كحصة جديدة.":"تم تحميل بيانات الحصة الأصلية. عدّلي المعلومات خطوة بخطوة ثم راجعيها واحفظي.");
     requestAnimationFrame(()=>{editor?.scrollIntoView({behavior:"smooth",block:"start"});});
+  }
+  const requestedLessonEditId=new URLSearchParams(location.search).get("edit_lesson");
+  if(requestedLessonEditId){
+    const token=localStorage.getItem("tahadi_teacher_token");
+    if(token){
+      setTimeout(()=>openDailyLessonEditor(requestedLessonEditId,false).catch(err=>{showView("homeView");showStatus("تعذر فتح تعديل الحصة: "+(err.message||"خطأ غير معروف"),"error");}),250);
+    }else{
+      sessionStorage.setItem("tahadi_pending_lesson_edit",requestedLessonEditId);
+      showView("loginView");
+    }
   }
   function renderLessonsCalendar(rows){
     const grid=document.getElementById("lessonCalendarGrid"),monthLabel=document.getElementById("lessonCalendarMonth"),details=document.getElementById("lessonCalendarDayDetails");
