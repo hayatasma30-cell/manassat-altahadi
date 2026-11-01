@@ -14,10 +14,11 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
 .panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 7px 22px #173d250d}
 .eyebrow{font-size:.8rem;color:#6a866f;font-weight:700}.title{font-size:1.35rem;color:var(--g);margin:5px 0 14px}
 .status{display:inline-block;background:#eaf5e8;color:#246342;border-radius:20px;padding:4px 11px;font-size:.78rem;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
-.item{padding:11px 12px;border:1px solid var(--line);border-radius:13px;background:#fbfdf9;min-width:0}
-.item.wide{grid-column:1/-1}.label{display:block;color:var(--muted);font-size:.75rem;margin-bottom:3px}.value{font-weight:700;overflow-wrap:anywhere}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:14px}
+.item{padding:10px 12px;border:1px solid #e4ebe0;border-radius:11px;background:#fbfdf9;min-width:0}
+.item.wide{grid-column:1/-1}.label{display:block;color:#7a897d;font-size:.72rem;margin-bottom:2px}.value{font-weight:700;font-size:.94rem;overflow-wrap:anywhere}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+@media(max-width:480px){.grid{grid-template-columns:1fr 1fr;gap:7px}.item{padding:9px}.value{font-size:.87rem}}
 .btn{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;border:0;border-radius:12px;padding:11px 15px;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
 .primary{background:var(--g);color:#fff}.secondary{background:#edf5eb;color:var(--g);border:1px solid #d4e4d1}
 .notice{padding:13px;background:#fff8e8;border:1px solid #efdfb8;border-radius:13px;color:#725b25;font-size:.87rem}
@@ -27,6 +28,17 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
 .zoom-entry{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:50px;margin-top:12px;padding:11px 15px;border:1px solid #2d8050;border-bottom:5px solid #0c482b;border-radius:13px;background:linear-gradient(180deg,#27834e,#14532d);color:#fff;text-decoration:none;font-weight:800;box-shadow:0 3px 0 #0c482b,0 7px 12px #174b3020}
 .zoom-entry:active{transform:translateY(3px);border-bottom-width:2px}
 .zoom-missing{margin-top:12px;padding:11px 13px;border:1px solid #eadfbf;border-radius:12px;background:#fff9e9;color:#755d27;font-size:.84rem}
+</style>
+<style id="lesson-details-clean-v3">
+#lessonPanel{border-radius:17px;padding:16px}
+#lessonPanel .title{margin-bottom:8px}
+#lessonPanel .eyebrow{margin-bottom:2px}
+#lessonDetails .item{box-shadow:none}
+#lessonDetails .item.wide{background:#f7faf5}
+.zoom-entry{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:53px;margin:0 0 10px;padding:12px 15px;border:1px solid #2c8050;border-bottom:5px solid #0b4529;border-radius:13px;background:linear-gradient(180deg,#27834e,#14532d);color:#fff;text-decoration:none;font-size:.95rem;font-weight:800;box-shadow:0 3px 0 #0c482b,0 7px 12px #174b3020}
+.zoom-entry:active{transform:translateY(3px);border-bottom-width:2px}
+.zoom-missing{margin:12px 0;padding:10px 12px;border:1px solid #eadfbf;border-radius:11px;background:#fff9e9;color:#755d27;font-size:.82rem}
+#lessonActions .btn{min-height:45px;box-shadow:0 3px 0 #d6e5d2}
 </style>
 </head>
 <body>
@@ -62,18 +74,20 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
   ["نوع الحصة",type],["القسم / المستوى",lesson.level],["التاريخ",date],["التوقيت",time],
   ["طريقة التقديم",mode],["حالة الحصة",lesson.status],["التلميذ",lesson.student_name],
   ["المادة",lesson.subject],["التصنيف",lesson.lesson_category],["السعر",lesson.unit_price!=null?Number(lesson.unit_price).toLocaleString("fr-FR")+" دج":null],
-  ["مدة الحصة",lesson.duration],["معرّف الحصة",lesson.id]
+  ["مدة الحصة",lesson.duration]
  ];
  if(lesson.notes)fields.push(["ملاحظات",lesson.notes,true]);
- if(lesson.meeting_url)fields.push(["رابط اللقاء",lesson.meeting_url,true]);
- if(lesson.zoom_link)fields.push(["رابط Zoom",lesson.zoom_link,true]);
+ if(lesson.notes)fields.push(["ملاحظات",lesson.notes,true]);
  box.innerHTML=fields.filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="").map(x=>'<div class="item '+(x[2]?"wide":"")+'"><span class="label">'+esc(x[0])+'</span><div class="value">'+esc(x[1])+'</div></div>').join("");
  msg.hidden=true;box.hidden=false;actions.hidden=false;
  if(lesson.delivery_mode==="zoom"){
    const raw=String(lesson.zoom_link||"").trim();
-   let safeUrl="";try{const parsedUrl=new URL(raw);if(parsedUrl.protocol==="https:"||parsedUrl.protocol==="http:")safeUrl=parsedUrl.href;}catch(_){}
-   if(safeUrl){const zoom=document.createElement("a");zoom.className="zoom-entry";zoom.href=safeUrl;zoom.target="_blank";zoom.rel="noopener noreferrer";zoom.textContent="🎥 الدخول إلى الحصة عبر Zoom";actions.insertBefore(zoom,actions.firstChild);}
-   else{const missing=document.createElement("p");missing.className="zoom-missing";missing.textContent="لم يُسجَّل رابط Zoom لهذه الحصة بعد. يمكنك إضافته من إدارة الحصص.";actions.parentNode.insertBefore(missing,actions);}
+   let safeUrl="";try{const parsedUrl=new URL(raw);if(parsedUrl.protocol==="https:")safeUrl=parsedUrl.href;}catch(_){}
+   if(safeUrl){
+     const zoom=document.createElement("a");zoom.className="zoom-entry";zoom.href=safeUrl;zoom.target="_blank";zoom.rel="noopener noreferrer";zoom.setAttribute("aria-label","الدخول إلى الحصة عبر Zoom");zoom.innerHTML='<span aria-hidden="true">🎥</span><span>الدخول إلى الحصة عبر Zoom</span><span aria-hidden="true">←</span>';actions.insertBefore(zoom,actions.firstChild);
+   }else{
+     const missing=document.createElement("p");missing.className="zoom-missing";missing.textContent="أضيفي رابط Zoom للحصة من إدارة الحصص ليظهر زر الدخول هنا.";actions.parentNode.insertBefore(missing,actions);
+   }
  }
  document.querySelector(".title").textContent=type+" — "+(lesson.level||lesson.student_name||"تفاصيل الحصة");
 })();
