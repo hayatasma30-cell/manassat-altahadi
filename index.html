@@ -2254,7 +2254,8 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
      const x=parsed[0],fmt=(d,opts)=>new Intl.DateTimeFormat("ar-DZ",{timeZone:"Africa/Algiers",...opts}).format(d);
      titleEl.textContent=(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+(x.level?" — "+x.level:"");
      dayEl.textContent=fmt(x._start,{weekday:"long",day:"numeric",month:"long"});
-     timeEl.textContent=fmt(x._start,{hour:"2-digit",minute:"2-digit"});
+     const lessonHour=Number(new Intl.DateTimeFormat("en-GB",{timeZone:"Africa/Algiers",hour:"2-digit",hourCycle:"h23"}).format(x._start));
+     timeEl.textContent=fmt(x._start,{hour:"2-digit",minute:"2-digit",hourCycle:"h23"})+(lessonHour<12?" صباحًا":"");
      modeEl.textContent=x.delivery_mode==="in_person"?"حضوري":"زووم";
      if(statusEl)statusEl.textContent="";
      function tick(){
