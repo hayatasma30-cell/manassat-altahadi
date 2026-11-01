@@ -876,6 +876,16 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 #teacherNextLessonCard .lesson-alarm-icon{display:none!important}
 #teacherNextLessonCard .lesson-bell-button{display:inline-grid!important;place-items:center;flex:0 0 34px;width:34px!important;min-width:34px!important;height:34px;min-height:34px!important;margin:0!important;padding:0!important;border:1px solid #c9ddc6!important;border-bottom:3px solid #79a982!important;border-radius:10px!important;background:linear-gradient(180deg,#fff,#edf6e9)!important;color:#174b30!important;font-size:17px!important;line-height:1;box-shadow:0 2px 5px #174b3018!important;cursor:pointer}
 </style>
+<style id="teacher-bell-final-placement-v3">
+/* تثبيت جرس التنبيه بجانب عنوان الحصة، وإخفاء الزر القديم أينما أُنشئ */
+#teacherNextLessonCard .command-next-lesson-head{display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:8px!important}
+#teacherNextLessonCard .command-next-lesson-head>span:first-child{margin-inline-end:0!important}
+#teacherNextLessonCard #teacherPushEnable{display:inline-grid!important;position:static!important;inset:auto!important;transform:none!important;place-items:center!important;flex:0 0 32px!important;width:32px!important;min-width:32px!important;max-width:32px!important;height:32px!important;min-height:32px!important;margin:0!important;padding:0!important;border:1px solid #c9ddc6!important;border-bottom:3px solid #79a982!important;border-radius:9px!important;background:linear-gradient(180deg,#fff,#edf6e9)!important;color:#174b30!important;font-size:16px!important;line-height:1!important;box-shadow:0 2px 5px #174b3018!important;cursor:pointer!important}
+#teacherNextLessonCard #teacherPushEnable:active{transform:translateY(2px)!important}
+#teacherNextLessonCard #teacherPushEnable.is-enabled{background:#e5f4e5!important}
+#sessionActions #teacherPushEnable{display:none!important}
+#teacherNextLessonCard .lesson-alarm-icon{display:none!important}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2235,5 +2245,31 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 </script>
 
 
+<script id="teacher-bell-relocation-v3">
+(function(){
+ function placeBell(){
+  const head=document.querySelector("#teacherNextLessonCard .command-next-lesson-head");
+  if(!head)return;
+  const all=Array.from(document.querySelectorAll("#teacherPushEnable"));
+  let bell=all.find(x=>head.contains(x))||all[0];
+  if(!bell){
+   bell=document.createElement("button");
+   bell.type="button";bell.id="teacherPushEnable";bell.className="lesson-bell-button";bell.textContent="🔔";
+   bell.title="تفعيل إشعارات الحصص";bell.setAttribute("aria-label","تفعيل إشعارات الحصص");
+  }
+  if(bell.parentElement!==head)head.insertBefore(bell,head.children[1]||null);
+  bell.classList.add("lesson-bell-button");
+  bell.style.display="inline-grid";
+  bell.style.position="static";
+  bell.style.inset="auto";
+  all.forEach(x=>{if(x!==bell)x.remove();});
+  document.querySelectorAll("#teacherNextLessonCard .lesson-alarm-icon").forEach(x=>x.remove());
+ }
+ placeBell();
+ const observer=new MutationObserver(()=>placeBell());
+ observer.observe(document.body,{childList:true,subtree:true});
+ document.addEventListener("DOMContentLoaded",placeBell);
+})();
+</script>
 </body>
 </html>
