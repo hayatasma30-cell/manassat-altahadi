@@ -23,6 +23,11 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
 .notice{padding:13px;background:#fff8e8;border:1px solid #efdfb8;border-radius:13px;color:#725b25;font-size:.87rem}
 @media(max-width:480px){main{padding:14px 12px}.panel{padding:14px}.grid{gap:8px}.item{padding:9px}.title{font-size:1.18rem}}
 </style>
+<style id="lesson-zoom-entry-v2">
+.zoom-entry{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:50px;margin-top:12px;padding:11px 15px;border:1px solid #2d8050;border-bottom:5px solid #0c482b;border-radius:13px;background:linear-gradient(180deg,#27834e,#14532d);color:#fff;text-decoration:none;font-weight:800;box-shadow:0 3px 0 #0c482b,0 7px 12px #174b3020}
+.zoom-entry:active{transform:translateY(3px);border-bottom-width:2px}
+.zoom-missing{margin-top:12px;padding:11px 13px;border:1px solid #eadfbf;border-radius:12px;background:#fff9e9;color:#755d27;font-size:.84rem}
+</style>
 </head>
 <body>
 <header><div class="inner"><strong>منصة التحدي التعليمية · فضاء الأستاذة</strong></div></header>
@@ -64,6 +69,12 @@ main{padding:18px 15px 36px}.back{display:inline-flex;align-items:center;gap:7px
  if(lesson.zoom_link)fields.push(["رابط Zoom",lesson.zoom_link,true]);
  box.innerHTML=fields.filter(x=>x[1]!==undefined&&x[1]!==null&&String(x[1]).trim()!=="").map(x=>'<div class="item '+(x[2]?"wide":"")+'"><span class="label">'+esc(x[0])+'</span><div class="value">'+esc(x[1])+'</div></div>').join("");
  msg.hidden=true;box.hidden=false;actions.hidden=false;
+ if(lesson.delivery_mode==="zoom"){
+   const raw=String(lesson.zoom_link||"").trim();
+   let safeUrl="";try{const parsedUrl=new URL(raw);if(parsedUrl.protocol==="https:"||parsedUrl.protocol==="http:")safeUrl=parsedUrl.href;}catch(_){}
+   if(safeUrl){const zoom=document.createElement("a");zoom.className="zoom-entry";zoom.href=safeUrl;zoom.target="_blank";zoom.rel="noopener noreferrer";zoom.textContent="🎥 الدخول إلى الحصة عبر Zoom";actions.insertBefore(zoom,actions.firstChild);}
+   else{const missing=document.createElement("p");missing.className="zoom-missing";missing.textContent="لم يُسجَّل رابط Zoom لهذه الحصة بعد. يمكنك إضافته من إدارة الحصص.";actions.parentNode.insertBefore(missing,actions);}
+ }
  document.querySelector(".title").textContent=type+" — "+(lesson.level||lesson.student_name||"تفاصيل الحصة");
 })();
 </script>
