@@ -2346,32 +2346,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 </script>
 
 
-<script id="teacher-bell-relocation-v3">
-(function(){
- function placeBell(){
-  const head=document.querySelector("#teacherNextLessonCard .command-next-lesson-head");
-  if(!head)return;
-  const all=Array.from(document.querySelectorAll("#teacherPushEnable"));
-  let bell=all.find(x=>head.contains(x))||all[0];
-  if(!bell){
-   bell=document.createElement("button");
-   bell.type="button";bell.id="teacherPushEnable";bell.className="lesson-bell-button";bell.textContent="🔔";
-   bell.title="تفعيل إشعارات الحصص";bell.setAttribute("aria-label","تفعيل إشعارات الحصص");
-  }
-  if(bell.parentElement!==head)head.insertBefore(bell,head.children[1]||null);
-  bell.classList.add("lesson-bell-button");
-  bell.style.display="inline-grid";
-  bell.style.position="static";
-  bell.style.inset="auto";
-  all.forEach(x=>{if(x!==bell)x.remove();});
-  document.querySelectorAll("#teacherNextLessonCard .lesson-alarm-icon").forEach(x=>x.remove());
- }
- placeBell();
- const observer=new MutationObserver(()=>placeBell());
- observer.observe(document.body,{childList:true,subtree:true});
- document.addEventListener("DOMContentLoaded",placeBell);
-})();
-</script>
+
 <style id="teacher-mobile-compact-final-v3">
 /* الهاتف: الإبقاء على الهوية والتصميم الحاليين مع تصغير المسافات والأحجام فقط */
 @media screen and (max-width:600px){
