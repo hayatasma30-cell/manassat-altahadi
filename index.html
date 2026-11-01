@@ -1514,8 +1514,8 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
             presentCount=lesson.student_id?1:0;
           }else{
             const attendanceData=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
-            const presentIds=[...new Set((attendanceData.attendance||[]).filter(a=>a.status==="present").map(a=>String(a.student_id)))];
-            presentCount=presentIds.length;
+            const attendanceRows=attendanceData.attendance||[];const presentIds=[...new Set(attendanceRows.filter(a=>a.status==="present").map(a=>String(a.student_id)))];const chargeableIds=[...new Set(attendanceRows.filter(a=>a.is_chargeable===true).map(a=>String(a.student_id)))];
+            presentCount=attendanceRows.some(a=>a.is_chargeable===true)?chargeableIds.length:presentIds.length;
           }
           const amount=unitPrice*presentCount;
           if(lesson.delivery_mode==="zoom"){dueZoom+=amount;presentZoom+=presentCount;}
@@ -1523,7 +1523,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
         }catch(e){attendanceMissing++;console.warn("تعذر تحميل حضور الحصة لحساب المستحقات",lesson.id,e);}
       }
       const dueTotal=dueZoom+dueInPerson;
-      $("incomeStats").innerHTML=[["إجمالي المداخيل المقبوضة والمؤكدة",money(allTotal)],["💻 المبالغ المقبوضة — زووم",money(zoomIncome)],["🏫 المبالغ المقبوضة — حضوري",money(inPersonIncome)],["مقبوضات الشهر المختار",money(monthTotal)],["💻 المقبوض — زووم هذا الشهر",money(monthZoom)],["🏫 المقبوض — حضوري هذا الشهر",money(monthInPerson)],["💰 مستحقات الحصص الحضورية (سعر الوحدة × الحاضرين)",money(dueInPerson)],["💻 مستحقات حصص Zoom (سعر الوحدة × الحاضرين)",money(dueZoom)],["إجمالي مستحقات الحصص",money(dueTotal)],["عدد الحاضرين — حضوري / Zoom",String(presentInPerson)+" / "+String(presentZoom)],["حصص بسعر محدد / دون سعر",String(pricedLessons)+" / "+String(unpricedLessons)],["تعذر تحميل حضورها",String(attendanceMissing)],["عدد الدفعات المقبولة",approved.length],["مدفوعات قيد المراجعة",money(pendingTotal)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
+      $("incomeStats").innerHTML=[["إجمالي المداخيل المقبوضة والمؤكدة",money(allTotal)],["💻 المبالغ المقبوضة — زووم",money(zoomIncome)],["🏫 المبالغ المقبوضة — حضوري",money(inPersonIncome)],["مقبوضات الشهر المختار",money(monthTotal)],["💻 المقبوض — زووم هذا الشهر",money(monthZoom)],["🏫 المقبوض — حضوري هذا الشهر",money(monthInPerson)],["💰 مستحقات الحصص الحضورية (سعر الوحدة × الحاضرين)",money(dueInPerson)],["💻 مستحقات حصص Zoom (سعر الوحدة × الحاضرين)",money(dueZoom)],["إجمالي مستحقات الحصص",money(dueTotal)],["عدد الحصص المحتسبة — حضوري / Zoom",String(presentInPerson)+" / "+String(presentZoom)],["حصص بسعر محدد / دون سعر",String(pricedLessons)+" / "+String(unpricedLessons)],["تعذر تحميل حضورها",String(attendanceMissing)],["عدد الدفعات المقبولة",approved.length],["مدفوعات قيد المراجعة",money(pendingTotal)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
       const monthNames=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
       const keys=Object.keys(monthly).sort((a,b)=>b.localeCompare(a));
       $("incomeMonthly").innerHTML=keys.length?keys.map(k=>{const [y,m]=k.split("-");return '<div class="data-item"><strong>'+monthNames[Number(m)-1]+' '+y+'</strong><div class="payment-meta"><span>المداخيل المؤكدة</span><b>'+escapeHtml(money(monthly[k]))+'</b></div></div>';}).join(""):'<div class="data-item">لا توجد مداخيل مؤكدة بعد.</div>';
@@ -1624,7 +1624,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
         if(x.status!=="تمت")return;
         const d=String(x.lesson_date||"");if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;
         const unitPrice=Number(x.unit_price)||0;
-        const count=x.lesson_type==="فردية"?(x.student_id?1:0):Number(x._presentCount||0);
+        const count=x.lesson_type==="فردية"?(x.student_id?1:0):Number(x._chargeableCount??x._presentCount??0);
         if(unitPrice<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:"سعر الحصة غير محدد"});
         else if(count<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:x.lesson_type==="فردية"?"لم يُربط التلميذ بالحصة":"لا يوجد حضور مسجل"});
         addDate(d,unitPrice>0&&count>0?unitPrice*count:0);
