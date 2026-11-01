@@ -2027,6 +2027,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
           (students.length?students.map(st=>{const id=String(st.id),member=members.has(id),present=saved.get(id)==="present";return '<div class="lesson-roster-row"><span class="lesson-roster-name">'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</span><label><input type="checkbox" data-roster-student="'+escapeHtml(id)+'" '+(member?'checked':'')+'> إضافة</label><label><input type="checkbox" data-present-student="'+escapeHtml(id)+'" '+(present?'checked':'')+(member?'':' disabled')+'> حاضر</label></div>';}).join(""):'<p>لا يوجد تلاميذ نشطون في هذا المستوى.</p>')+
           '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'">حفظ التلاميذ والحضور</button>';
       }
+      panel.insertAdjacentHTML("afterbegin",'<button type="button" class="back" data-lesson-action-back>→ العودة إلى التقويم</button>');
       box.appendChild(panel);
     }catch(err){lessonMessage(err.message,"error");}})();return;}
     const combinedPanel=e.target.closest(".lesson-roster-panel");
