@@ -1091,10 +1091,11 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
   const pushEndpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/tahadi-push";
   function b64ToBytes(value){const pad="=".repeat((4-value.length%4)%4);const raw=atob((value+pad).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(raw,c=>c.charCodeAt(0));}
   function ensureTeacherPushButton(){
-    const host=$("sessionActions");if(!host||$("teacherPushEnable"))return;
-    const b=document.createElement("button");b.type="button";b.id="teacherPushEnable";b.className="secondary";b.textContent="🔔 تفعيل إشعارات الهاتف";
+    const host=document.querySelector("#teacherNextLessonCard .command-next-lesson-head");
+    if(!host||$("teacherPushEnable"))return;
+    const b=document.createElement("button");b.type="button";b.id="teacherPushEnable";b.className="lesson-bell-button";b.textContent="🔔";b.title="تفعيل إشعارات الحصص";b.setAttribute("aria-label","تفعيل إشعارات الحصص");
     b.addEventListener("click",async()=>{
-      b.disabled=true;b.textContent="جارٍ تفعيل الإشعارات…";
+      b.disabled=true;b.textContent="…";b.title="جارٍ تفعيل الإشعارات";
       try{
         if(!("serviceWorker" in navigator)||!("PushManager" in window))throw new Error("هذا المتصفح لا يدعم إشعارات الويب.");
         const permission=await Notification.requestPermission();if(permission!=="granted")throw new Error("اسمحي بالإشعارات من إعدادات المتصفح.");
@@ -1106,8 +1107,8 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
         const token=localStorage.getItem("tahadi_teacher_token");
         const saved=await fetch(pushEndpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"register_teacher",subscription:sub.toJSON(),user_agent:navigator.userAgent})});
         const result=await saved.json();if(!saved.ok||!result.ok)throw new Error(result.error||"تعذر حفظ الاشتراك.");
-        b.textContent="✓ إشعارات الهاتف مفعّلة";b.disabled=false;
-      }catch(e){b.textContent="🔔 إعادة تفعيل إشعارات الهاتف";b.disabled=false;alert(e.message||"تعذر تفعيل الإشعارات.");}
+        b.textContent="✓";b.title="إشعارات الهاتف مفعّلة";b.setAttribute("aria-label","إشعارات الهاتف مفعّلة");b.disabled=false;b.classList.add("is-enabled");
+      }catch(e){b.textContent="🔔";b.title="إعادة تفعيل إشعارات الحصص";b.disabled=false;alert(e.message||"تعذر تفعيل الإشعارات.");}
     });
     host.appendChild(b);
   }
@@ -2211,5 +2212,18 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   },true);
 })();
 </script>
+
+<style id="teacher-lesson-bell-compact-v1">
+/* منبّه صغير بجانب عنوان الحصة القادمة */
+#teacherNextLessonCard .command-next-lesson-head{justify-content:flex-start;gap:9px}
+#teacherNextLessonCard .command-next-lesson-head>span:first-child{margin-inline-end:auto}
+#teacherNextLessonCard .lesson-bell-button{display:inline-grid;place-items:center;flex:0 0 34px;width:34px!important;min-width:34px!important;height:34px;min-height:34px!important;margin:0!important;padding:0!important;border:1px solid #c9ddc6!important;border-bottom:3px solid #79a982!important;border-radius:10px!important;background:linear-gradient(180deg,#fff,#edf6e9)!important;color:#174b30!important;font-size:17px!important;line-height:1;box-shadow:0 2px 5px #174b3018!important;cursor:pointer}
+#teacherNextLessonCard .lesson-bell-button:active{transform:translateY(2px)}
+#teacherNextLessonCard .lesson-bell-button:disabled{opacity:.75}
+#teacherNextLessonCard .lesson-bell-button.is-enabled{background:#e5f4e5!important;color:#17613c!important}
+#sessionActions #teacherPushEnable{display:none!important}
+#teacherNextLessonCard .lesson-countdown-frame{display:flex;align-items:center;justify-content:flex-end}
+#teacherNextLessonCard .lesson-alarm-icon{display:none!important}
+</style>
 </body>
 </html>
