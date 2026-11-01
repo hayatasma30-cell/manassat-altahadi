@@ -352,8 +352,8 @@ const initializeStudentSpace = async () => {
 
   if (!sessionToken) return;
   try {
-    const data = await call("student_portal_dashboard", { session_token: sessionToken });
-    await dashboard(data.student);
+    const data = await call("student_portal_dashboard", { session_token: sessionToken, question_bank: QUIZ_QUESTION_BANK });
+    await dashboard(data.student, data);
     await loadStudentCourses();
     await loadNotificationCount();
   } catch (_) {
