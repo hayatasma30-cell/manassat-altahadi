@@ -920,6 +920,40 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 @media(max-width:850px){#homeView .td-home{grid-template-columns:1fr;gap:10px}#homeView .td-side{position:static;min-height:0;padding:9px;border-radius:15px}#homeView .td-profile{padding:2px 4px 8px}#homeView .td-profile>span{width:36px;height:36px;font-size:19px}#homeView .td-nav{display:flex;overflow-x:auto;gap:4px}#homeView .td-nav button,#homeView .td-nav a{white-space:nowrap;flex:0 0 auto;padding:8px!important;font-size:12px!important}#homeView .td-side-foot{display:none}}
 @media(max-width:600px){#homeView .td-welcome{align-items:flex-start;flex-direction:column;padding:14px}#homeView .td-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#homeView .td-shortcuts button{min-height:88px;padding:10px!important}#homeView #teacherNextLessonCard{padding:14px}#homeView .command-form-grid{grid-template-columns:1fr}#homeView .platform-sections-content .category-buttons{grid-template-columns:1fr}#homeView .td-reminder-toggle{align-items:flex-start;flex-direction:column}}
 </style>
+<style id="teacher-dashboard-mobile-v2">
+/* Phone/tablet layout: force a single-column dashboard even when Chrome requests desktop layout */
+@media screen and (max-width:1024px){
+  #homeView .td-home{display:flex!important;flex-direction:column!important;gap:12px!important;width:100%!important;max-width:100%!important}
+  #homeView .td-side{position:relative!important;top:auto!important;min-height:0!important;width:100%!important;padding:10px 12px!important;border-radius:15px!important;gap:8px!important}
+  #homeView .td-profile{padding:2px 4px 8px!important;border-bottom:1px solid #dce7d8!important}
+  #homeView .td-profile>span{width:38px!important;height:38px!important;font-size:20px!important}
+  #homeView .td-nav{display:flex!important;flex-direction:row!important;gap:6px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:2px 0 7px!important;scrollbar-width:thin!important;-webkit-overflow-scrolling:touch}
+  #homeView .td-nav button,#homeView .td-nav a{flex:0 0 auto!important;white-space:nowrap!important;min-height:40px!important;padding:8px 12px!important;font-size:13px!important;border-radius:10px!important}
+  #homeView .td-side-foot{display:none!important}
+  #homeView .td-main{width:100%!important;min-width:0!important}
+  #homeView .td-welcome{width:100%!important;margin:0 0 12px!important;padding:16px!important}
+  #homeView .td-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  #homeView .td-shortcuts button{min-height:100px!important;padding:12px!important}
+  #homeView #teacherNextLessonCard{width:100%!important;padding:16px!important}
+  #homeView .td-reminder-toggle{width:100%!important;flex-direction:row!important;align-items:center!important}
+  #homeView .platform-sections{width:100%!important}
+  #homeView .platform-sections-content .category-buttons{grid-template-columns:1fr!important}
+  #homeView .command-form-grid{grid-template-columns:1fr!important}
+}
+@media screen and (max-width:520px){
+  #homeView .td-welcome h1{font-size:20px!important;line-height:1.5!important}
+  #homeView .td-welcome p{font-size:13px!important}
+  #homeView .td-welcome>span{font-size:12px!important}
+  #homeView .td-shortcuts button{min-height:92px!important}
+  #homeView .td-shortcuts b{font-size:13px!important}
+  #homeView .td-shortcuts small{font-size:11px!important}
+  #homeView #teacherNextLessonCard .command-next-lesson-head{flex-wrap:wrap!important}
+  #homeView .td-status{margin-inline-start:auto!important}
+  #homeView .command-next-lesson-countdown{font-size:clamp(23px,7vw,32px)!important;letter-spacing:0!important}
+  #homeView .td-reminder-toggle{align-items:flex-start!important;flex-direction:column!important}
+  #homeView .td-reminder-toggle button{width:100%!important}
+}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
