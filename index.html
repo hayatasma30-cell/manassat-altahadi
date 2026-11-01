@@ -1650,7 +1650,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
         const relevant=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&x.lesson_date>="2025-09-01"&&x.lesson_date<="2027-05-31");
         const ids=relevant.filter(x=>x.lesson_type==="جماعية").map(x=>x.id);let counts={};
         if(ids.length){const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:ids});counts=countData.counts||{};}
-        incomeCompareLessons=relevant.map(x=>({...x,_presentCount:counts[x.id]?.present||0}));
+        incomeCompareLessons=relevant.map(x=>({...x,_presentCount:counts[x.id]?.present||0,_chargeableCount:counts[x.id]?.chargeable??counts[x.id]?.present??0}));
         renderIncomeCompare();box.textContent="تم تحديث المقارنة من الحصص المنجزة فقط.";
       }catch(e){box.textContent="تعذر تحميل المقارنة: "+e.message;}
     }
@@ -1733,7 +1733,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
         }
         for(const x of calendarLessons){
           const counts=countMap[x.id]||{present:0,roster:0};
-          const count=x.lesson_type==="فردية"?(x.status==="تمت"&&x.student_id?1:0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));
+          const presentCount=x.lesson_type==="فردية"?(x.status==="تمت"&&x.student_id?1:0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));const count=x.lesson_type==="فردية"?presentCount:(x.status==="تمت"?Number(counts.chargeable??counts.present??0):Number(counts.roster||0));
           const unitPrice=Number(x.unit_price||0),completed=x.status==="تمت",needsReview=completed&&(unitPrice<=0||count<=0);
           incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:completed&&unitPrice>0&&count>0?unitPrice*count:0,estimate:0,unitPrice,kind:needsReview?"حصة تحتاج مراجعة":completed?"حصة مكتملة":"حصة مجدولة",status:x.status,needsReview,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
