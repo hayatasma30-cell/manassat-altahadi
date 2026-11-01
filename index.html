@@ -2264,7 +2264,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
        countEl.innerHTML=(days?'<span class="teacher-countdown-days">'+days+' '+(days===1?'يوم':days===2?'يومان':'أيام')+'</span>':'')+'<span class="teacher-countdown-time">'+String(hours).padStart(2,"0")+":"+String(minutes).padStart(2,"0")+":"+String(seconds).padStart(2,"0")+'</span>';
      }
      tick();if(window.tahadiNextLessonTicker)clearInterval(window.tahadiNextLessonTicker);window.tahadiNextLessonTicker=setInterval(tick,1000);
-   }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";metaEl.textContent=error.message||"تحققي من الاتصال.";countEl.textContent="—";statusEl.textContent="";hintEl.textContent="";console.warn("next teacher lesson",error);}
+   }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";dayEl.textContent="—";timeEl.textContent="—";modeEl.textContent="—";countEl.textContent="—";statusEl.textContent="";console.warn("next teacher lesson",error);}
  }
  loadNextTeacherLesson();setInterval(loadNextTeacherLesson,60*1000);
 
