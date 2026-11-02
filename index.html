@@ -2065,7 +2065,7 @@ input,select,textarea{min-height:40px!important;padding:8px 10px!important;borde
     const dateKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
     const now=new Date(),todayKey=dateKey(now),selected=String(lessonCalendarSelectedDate||todayKey).slice(0,10);
     const selectedDate=new Date(selected+"T12:00:00");
-    const cell=(date)=>{const key=dateKey(date),count=counts[key]||0;return '<button type="button" class="lesson-calendar-day '+(count?'has-lessons ':'')+(key===todayKey?'today ':'')+(key===selected?'selected':'')+'" data-calendar-date="'+key+'"><span>'+date.getDate()+'</span>'+(count?'<span class="lesson-calendar-count">'+count+' حصة</span>':'')+'</button>';};
+    const cell=(date)=>{const key=dateKey(date),count=counts[key]||0;const countLabel=count===1?'1 حصة':count===2?'2 حصتان':count+' حصص';return '<button type="button" class="lesson-calendar-day '+(count?'has-lessons ':'')+(key===todayKey?'today ':'')+(key===selected?'selected':'')+'" data-calendar-date="'+key+'"><span>'+date.getDate()+'</span>'+(count?'<span class="lesson-calendar-count">'+countLabel+'</span>':'')+'</button>';};
     let html="";
     if(lessonCalendarView==="month"){
       monthLabel.textContent=new Intl.DateTimeFormat("ar-DZ",{month:"long",year:"numeric"}).format(first);
