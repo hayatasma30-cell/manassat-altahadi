@@ -189,7 +189,28 @@
 .student-guide-day{padding:7px 9px;border-radius:8px;background:#dff0d9;color:#14532d;font-weight:900}
 .student-guide-step>p{font-size:.82rem!important;line-height:1.75!important;margin:7px 0 0!important}
 
-</style></head>
+</style>
+<style id="student-calendar-match-teacher-v1">
+/* تقويم التلميذ بنفس مظهر تقويم الأستاذة */
+.student-calendar{border:1px solid #dce5d9!important;border-radius:20px!important;padding:16px!important;background:#fff!important;margin:14px 0!important}
+.student-calendar .cal-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:0 0 16px!important;direction:ltr!important}
+.student-calendar .cal-head strong{direction:rtl!important;text-align:center!important;font-size:clamp(1rem,4vw,1.35rem)!important;color:#183f2b!important}
+.student-calendar .cal-head button{min-width:44px!important;min-height:48px!important;border-radius:15px!important;padding:7px 13px!important;background:#edf7eb!important;color:#14532d!important;border:1px solid #dcebd8!important;box-shadow:none!important;font-size:1.2rem!important}
+.student-calendar .cal-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:6px!important;direction:ltr!important;text-align:center!important}
+.student-calendar .cal-grid>small{font-size:clamp(.65rem,2.6vw,.82rem)!important;font-weight:700!important;color:#185b38!important;padding:6px 0!important}
+.student-calendar .cal-day{min-height:62px!important;margin:0!important;padding:7px 2px!important;border:1px solid #d8e4d6!important;border-radius:12px!important;background:#fbfcf8!important;color:#204d35!important;box-shadow:none!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;font-size:clamp(.82rem,3vw,1rem)!important}
+.student-calendar .cal-day.has-lesson{background:#e5f4e8!important;border-color:#73a77e!important;font-weight:800!important}
+.student-calendar .cal-day.selected{outline:2px solid #216c43!important;background:#d0ead6!important}
+.student-calendar .cal-day.today{border:3px solid #d59b28!important;background:#fff1c2!important;box-shadow:0 0 0 3px #d59b2833!important}
+.student-calendar .cal-day.today:after{content:"اليوم";display:block;font-size:.58rem;font-weight:800;color:#805400;background:#ffe3a0;border-radius:8px;padding:1px 4px;margin-top:1px}
+.student-calendar .cal-day i{display:block;width:6px;height:6px;background:#23834b;border-radius:50%;margin:1px auto 0}
+.student-calendar .cal-legend{font-size:.8rem!important;margin:14px 0 0!important;padding-top:10px!important;border-top:1px solid #edf1e9!important}
+#selectedLessonDay{border:1px solid #dce5d9!important;border-radius:18px!important;padding:16px!important;margin-top:14px!important;background:#fff!important}
+#selectedLessonDay>strong{display:block;color:#174b30;font-size:1.05rem;margin-bottom:9px}
+#selectedLessonDay p{line-height:1.8}
+@media(max-width:420px){.student-calendar{padding:12px!important}.student-calendar .cal-grid{gap:4px!important}.student-calendar .cal-day{min-height:55px!important;border-radius:10px!important;padding:5px 1px!important}.student-calendar .cal-grid>small{font-size:9px!important}}
+</style>
+</head>
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
 <main class="wrap">
@@ -307,7 +328,7 @@ function renderStudentLessons(items){
  const attByDay={};for(const x of attendance){attByDay[x.attendance_date]=x;}
  const monthName=studentCalendarMonth.toLocaleDateString("ar-DZ",{month:"long",year:"numeric"});let cells="";
  for(let n=0;n<offset;n++)cells+='<span class="cal-blank"></span>';
- for(let d=1;d<=days;d++){const dateStr=month+"-"+String(d).padStart(2,"0"),has=(byDay[dateStr]||[]).length,at=attByDay[dateStr];cells+='<button type="button" class="cal-day'+(has?" has-lesson":"")+(dateStr===getStudentTodayKey()?" today":"")+(at?' has-attendance':'')+'" data-cal-date="'+dateStr+'">'+d+(has?'<i></i>':'')+'</button>';}
+ for(let d=1;d<=days;d++){const dateStr=month+"-"+String(d).padStart(2,"0"),has=(byDay[dateStr]||[]).length,at=attByDay[dateStr];cells+='<button type="button" class="cal-day'+(has?" has-lesson":"")+(dateStr===getStudentTodayKey()?" today":"")+(dateStr===(window.tahadiStudentSelectedDate||"")?" selected":"")+(at?' has-attendance':'')+'" data-cal-date="'+dateStr+'"><span>'+d+'</span>'+(has?'<i></i>':'')+'</button>';}
  const attendanceHtml=attendance.length?attendance.slice(0,60).map(x=>{const status=String(x.status||"");const label=({present:"حاضر",late:"متأخر",absent:"غائب",excused_absence:"غائب بعذر",excused:"غائب بعذر"})[status.toLowerCase()]||status;return '<div class="item"><strong>'+safe(x.attendance_date||"—")+'</strong><p><span class="tag">'+safe(label)+'</span>'+(x.note?' · '+safe(x.note):"")+'</p></div>';}).join(""):'<div class="empty">لم تسجل الأستاذة حضورًا أو غيابًا بعد.</div>';
  const statsHtml='<div class="lesson-stats"><div><small>حصص مجدولة</small><b>'+visibleRows.filter(x=>x.status==="مجدولة").length+'</b></div><div><small>حصص منجزة</small><b>'+visibleRows.filter(x=>x.status==="تمت").length+'</b></div><div><small>حضور مسجل</small><b>'+attended+'</b></div><div><small>غياب مسجل</small><b>'+absent+'</b></div></div>';
  const activePage=window.tahadiStudentLessonPage||"upcoming";
@@ -315,7 +336,7 @@ function renderStudentLessons(items){
  const showPage=key=>{window.tahadiStudentLessonPage=key;root.querySelectorAll("[data-student-lesson-panel]").forEach(el=>el.classList.toggle("hidden",el.dataset.studentLessonPanel!==key));root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.classList.toggle("active",btn.dataset.studentLessonPage===key));};
  root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.addEventListener("click",()=>{showPage(btn.dataset.studentLessonPage);window.scrollTo({top:root.getBoundingClientRect().top+window.scrollY-12,behavior:"smooth"});}));
  showPage(activePage);
- const showDay=dateStr=>{const dayRows=byDay[dateStr]||[],at=attByDay[dateStr],el=$("selectedLessonDay");el.innerHTML='<strong>حصص يوم '+safe(dateStr)+'</strong>'+(at?'<p><span class="tag">'+safe(({present:"حاضر",late:"متأخر",absent:"غائب",excused_absence:"غائب بعذر",excused:"غائب بعذر"})[String(at.status||"").toLowerCase()]||at.status)+'</span>'+(at.note?' '+safe(at.note):"")+'</p>':'<p class="muted">لم يُسجل حضور هذا اليوم بعد.</p>')+(dayRows.length?dayRows.map(x=>'<p><b>'+safe(x.lesson_time)+' — '+safe(x.lesson_type==="فردية"?"فردية":"جماعية")+'</b> · '+safe(x.subject||"علوم الطبيعة والحياة")+' · '+safe(x.status)+(lessonCounters.has(x.id)?" · "+safe(lessonCounters.get(x.id)):"")+(joinButton(x)||"")+'</p>').join(""):'<p class="muted">لا توجد حصة مسجلة في هذا اليوم.</p>');};
+ const showDay=dateStr=>{window.tahadiStudentSelectedDate=dateStr;root.querySelectorAll("[data-cal-date]").forEach(btn=>btn.classList.toggle("selected",btn.dataset.calDate===dateStr));const dayRows=byDay[dateStr]||[],at=attByDay[dateStr],el=$("selectedLessonDay");el.innerHTML='<strong>حصص يوم '+safe(dateStr)+'</strong>'+(at?'<p><span class="tag">'+safe(({present:"حاضر",late:"متأخر",absent:"غائب",excused_absence:"غائب بعذر",excused:"غائب بعذر"})[String(at.status||"").toLowerCase()]||at.status)+'</span>'+(at.note?' '+safe(at.note):"")+'</p>':'<p class="muted">لم يُسجل حضور هذا اليوم بعد.</p>')+(dayRows.length?dayRows.map(x=>'<p><b>'+safe(x.lesson_time)+' — '+safe(x.lesson_type==="فردية"?"فردية":"جماعية")+'</b> · '+safe(x.subject||"علوم الطبيعة والحياة")+' · '+safe(x.status)+(lessonCounters.has(x.id)?" · "+safe(lessonCounters.get(x.id)):"")+(joinButton(x)||"")+'</p>').join(""):'<p class="muted">لا توجد حصة مسجلة في هذا اليوم.</p>');};
  root.querySelectorAll("[data-cal-date]").forEach(b=>b.addEventListener("click",()=>showDay(b.dataset.calDate)));
  $("calPrev")?.addEventListener("click",()=>{studentCalendarMonth=new Date(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()-1,1);renderStudentLessons(rows);});
  $("calNext")?.addEventListener("click",()=>{studentCalendarMonth=new Date(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()+1,1);renderStudentLessons(rows);});
