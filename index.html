@@ -3091,5 +3091,51 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #lessonCalendarDayDetails .lesson-income-row{background:#f0f7ed}.lesson-income-row strong{color:#17633b!important;font-size:.88rem}
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
-</style></body>
+</style>
+<script id="teacher-income-navigation-recovery-v1">
+(function(){
+  if(window.tahadiNavigationRecoveryInstalled)return;
+  window.tahadiNavigationRecoveryInstalled=true;
+  document.addEventListener("click",function(event){
+    const target=event.target instanceof Element?event.target:null;
+    if(!target)return;
+    const incomeButton=target.closest('[data-view="incomeView"]');
+    if(incomeButton){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      try{
+        if(typeof showView==="function")showView("incomeView");
+        else{
+          document.querySelectorAll(".view").forEach(view=>{
+            const active=view.id==="incomeView";
+            view.classList.toggle("active",active);
+            view.style.display=active?"block":"none";
+            view.setAttribute("aria-hidden",active?"false":"true");
+          });
+        }
+        if(typeof openIncomePage==="function")openIncomePage("incomeCalendarPage");
+        else{
+          document.querySelectorAll("#incomeView .income-subpage").forEach(page=>{
+            const active=page.id==="incomeCalendarPage";
+            page.hidden=!active;
+            page.style.setProperty("display",active?"block":"none","important");
+          });
+          if(typeof loadIncomeCalendar==="function")loadIncomeCalendar();
+        }
+      }catch(error){console.error("Income navigation recovery failed",error);}
+      return;
+    }
+    const toggle=target.closest("#toggleTeacherCommandPanel");
+    if(toggle){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const panel=toggle.closest(".teacher-command-panel");
+      if(!panel)return;
+      const collapsed=panel.classList.toggle("is-collapsed");
+      toggle.setAttribute("aria-expanded",String(!collapsed));
+      toggle.textContent=collapsed?"＋ فتح لوحة التذكيرات":"− إخفاء لوحة التذكيرات";
+    }
+  },true);
+})();
+</script></body>
 </html>
