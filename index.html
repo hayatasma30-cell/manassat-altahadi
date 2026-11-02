@@ -2153,10 +2153,10 @@ window.addEventListener("unhandledrejection",function(e){
     }
     function showIncomeCalendarDay(date){openCalendarDayPage(date);}
     async function loadIncomeCalendar(){
-      // لا نسمح بتداخل طلبات التقويم؛ نعيد التحميل مرة واحدة بعد انتهاء الطلب الجاري عند الحاجة.
-      if(window.tahadiIncomeCalendarLoading){window.tahadiIncomeCalendarPending=true;return;}
+      // كل طلب جديد يصبح الأحدث؛ تُهمل نتائج الطلبات الأقدم دون تعطيل التقويم.
       const requestId=window.tahadiIncomeCalendarRequestId=(window.tahadiIncomeCalendarRequestId||0)+1;
       window.tahadiIncomeCalendarLoading=true;
+      window.tahadiIncomeCalendarPending=false;
       const grid=$("incomeCalendarGrid");if(!grid){window.tahadiIncomeCalendarLoading=false;return;}grid.innerHTML='<p class="muted">جارٍ تحميل التقويم…</p>';
       const input=$("incomeCalendarMonth");
       const currentMonth=new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0");
@@ -2194,11 +2194,11 @@ window.addEventListener("unhandledrejection",function(e){
       finally{
         if(requestId===window.tahadiIncomeCalendarRequestId){
           window.tahadiIncomeCalendarLoading=false;
-          if(window.tahadiIncomeCalendarPending){window.tahadiIncomeCalendarPending=false;loadIncomeCalendar();}
+          window.tahadiIncomeCalendarPending=false;
         }
       }
     }
-    $("incomeCalendarMonth").addEventListener("change",()=>{incomeCalendarSelected="";window.tahadiIncomeCalendarPending=true;loadIncomeCalendar();});
+    $("incomeCalendarMonth").addEventListener("change",()=>{incomeCalendarSelected="";loadIncomeCalendar();});
     // إعادة التحميل عند عودة التطبيق إلى الواجهة فقط، مع منع تداخل الطلبات.
     document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!$("incomeCalendarPage").hidden)loadIncomeCalendar();});
     let calendarRosterLessonId=null;
