@@ -2629,15 +2629,21 @@ const handleIncomeCalendarClick=async e=>{
       ]);
       const members=new Set((roster.student_ids||[]).map(String)),saved=new Map((attendance.attendance||[]).map(a=>[String(a.student_id),a.status]));
       const students=roster.students||attendance.students||[];
+      const lesson=(window.tahadiLoadedLessonRows||[]).find(x=>String(x.id)===String(lessonId))||{};
+      const counterRows=window.tahadiLessonCounterRows||window.tahadiLoadedLessonRows||[];
+      const sameSeries=lesson.recurrence_group_id?counterRows.filter(x=>String(x.recurrence_group_id)===String(lesson.recurrence_group_id)).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||""))):[];
+      const seriesIndex=sameSeries.findIndex(x=>String(x.id)===String(lessonId));
+      const lessonNumber=seriesIndex<0?"—":lesson.lesson_type==="فردية"?"الحصة رقم "+(seriesIndex+1):"الحصة "+((seriesIndex%4)+1)+"/4 · الشهر "+(Math.floor(seriesIndex/4)+1);
+      const info='<div class="lesson-roster-info" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 16px"><div><small>التاريخ</small><strong>'+escapeHtml(lesson.lesson_date||"—")+'</strong></div><div><small>رقم الحصة</small><strong>'+escapeHtml(lessonNumber)+'</strong></div><div style="grid-column:1/-1"><small>المستوى</small><strong>'+escapeHtml(lesson.level||"—")+'</strong></div></div>';
       const panel=document.createElement("div");panel.className="lesson-roster-panel data-item";
       if(individual){
         const selected=Array.from(members)[0]||"",present=selected&&saved.get(selected)==="present";
-        panel.innerHTML='<h4>تحديد التلميذ والحضور</h4><p class="muted">هذه حصة فردية: اختاري تلميذًا واحدًا فقط، ثم حددي هل حضر أم لم يحضر.</p>'+
+        panel.innerHTML='<h4>تحديد التلميذ والحضور</h4>'+info+
           '<label class="lesson-roster-field">التلميذ<select data-individual-student><option value="">اختاري التلميذ</option>'+students.map(st=>'<option value="'+escapeHtml(st.id)+'" '+(String(st.id)===selected?'selected':'')+'>'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</option>').join("")+'</select></label>'+
           '<div class="lesson-individual-attendance"><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="present" '+(present?'checked':'')+'> حضر الحصة</label><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="absent" '+(selected&&!present?'checked':'')+'> لم يحضر الحصة</label></div>'+
           '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'" data-individual="1">حفظ التلميذ والحضور</button>';
       }else{
-        panel.innerHTML='<h4>قائمة التلاميذ والحضور</h4><p class="muted">اختاري التلاميذ المسجلين في هذه الحصة، ثم حددي الحاضرين. من أُضيف ولم يُحدد حضوره يُسجل غائبًا.</p>'+
+        panel.innerHTML='<h4>قائمة التلاميذ والحضور</h4>'+info+
           '<div class="lesson-roster-head"><span>اسم التلميذ</span><span>في الحصة</span><span>حاضر</span></div>'+
           (students.length?students.map(st=>{const id=String(st.id),member=members.has(id),present=saved.get(id)==="present";return '<div class="lesson-roster-row"><span class="lesson-roster-name">'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</span><label><input type="checkbox" data-roster-student="'+escapeHtml(id)+'" '+(member?'checked':'')+'> إضافة</label><label><input type="checkbox" data-present-student="'+escapeHtml(id)+'" '+(present?'checked':'')+(member?'':' disabled')+'> حاضر</label></div>';}).join(""):'<p>لا يوجد تلاميذ نشطون في هذا المستوى.</p>')+
           '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'">حفظ التلاميذ والحضور</button>';
