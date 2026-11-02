@@ -431,7 +431,7 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"&&studentHelpOverlay&
 const originalOpenStudentSection=openStudentSection;openStudentSection=function(key){originalOpenStudentSection(key);if(key==="studentQuestions"){loadStudentQuestions();loadQuestionLibrary();}};$("backToStudentMenu").addEventListener("click",showStudentMenu);window.addEventListener("popstate",()=>{const key=new URL(location.href).searchParams.get("section");if(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));if(key==="quizzes")refreshQuizResults().catch(()=>{});if(key==="teacherNotes")loadTeacherNotes();}else{ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));}});
 window.addEventListener("focus",()=>{const key=new URL(location.href).searchParams.get("section");if(key==="quizzes"&&!document.hidden)refreshQuizResults().catch(()=>{});});
 document.addEventListener("visibilitychange",()=>{const key=new URL(location.href).searchParams.get("section");if(!document.hidden&&key==="quizzes")refreshQuizResults().catch(()=>{});});
-$("loginBtn").addEventListener("click",login);$("portalCode").addEventListener("keydown",e=>{if(e.key==="Enter")login()});$("fullName").addEventListener("keydown",e=>{if(e.key==="Enter")$("portalCode").focus()});$("logoutBtn").addEventListener("click",async()=>{try{if(sessionToken)await call("student_portal_logout",{session_token:sessionToken})}catch(e){}sessionToken=null;localStorage.removeItem("tahadi_student_session");$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("portalCode").value="";$("loginError").textContent="تم تسجيل الخروج."});
+$("loginBtn").addEventListener("click",login);$("portalCode").addEventListener("keydown",e=>{if(e.key==="Enter")login()});$("fullName").addEventListener("keydown",e=>{if(e.key==="Enter")$("portalCode").focus()});$("logoutBtn").addEventListener("click",async()=>{if(teacherPreviewId){location.href=new URL("index.html",location.href).href;return;}try{if(sessionToken)await call("student_portal_logout",{session_token:sessionToken})}catch(e){}sessionToken=null;localStorage.removeItem("tahadi_student_session");$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("portalCode").value="";$("loginError").textContent="تم تسجيل الخروج."});
 const initializeStudentSpace = async () => {
   // New isolated teacher-preview flow. It never changes or deletes student records.
   if (teacherPreviewId) {
@@ -445,7 +445,7 @@ const initializeStudentSpace = async () => {
     $("loginPanel").classList.add("hidden");
     $("dashboard").classList.remove("hidden");
     $("teacherPreviewBanner").classList.toggle("hidden",teacherAccessMode);
-    $("logoutBtn").classList.add("hidden");
+
     hideIfExists("sendQuestion");
     if ($("studentQuestion")) if ($("studentQuestion")) $("studentQuestion").readOnly = true;
     if ($("studentQuestion")) if ($("studentQuestion")) $("studentQuestion").placeholder = "المعاينة للقراءة فقط؛ لا يمكن إرسال سؤال من هنا.";
@@ -496,7 +496,7 @@ const initializeStudentSpace = async () => {
       await loadStudentCourses();
       await loadNotificationCount();
       $("teacherPreviewBanner").classList.toggle("hidden",teacherAccessMode);
-      $("logoutBtn").classList.add("hidden");
+
       hideIfExists("sendQuestion");
       if ($("studentQuestion")) $("studentQuestion").readOnly = true;
       if ($("questionImage")) $("questionImage").disabled = true;
