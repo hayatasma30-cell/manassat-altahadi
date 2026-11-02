@@ -1546,11 +1546,12 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
       v.setAttribute("aria-hidden", active ? "false" : "true");
     });
     activeView = id;
+    if(id==="incomeView"&&typeof openIncomePage==="function")openIncomePage("incomeCalendarPage");
     if(id!=="loginView")sessionStorage.setItem("tahadi_last_view",id);
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
-  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => {showView(btn.dataset.view);if(btn.dataset.view==="incomeView")openIncomePage("incomeCalendarPage");}));
+  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
   // معالجان موحدان للقسمين: منع تكرار المعالجات القديمة وضمان فتح الصفحة وتحميل بياناتها.
   document.addEventListener("click",async function(event){
     const studentsButton=event.target.closest('[data-view="studentsView"]');
