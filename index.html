@@ -2372,7 +2372,8 @@ const handleIncomeCalendarClick=async e=>{
   async function lessonRequest(payload){const t=localStorage.getItem("tahadi_teacher_token");if(!t)throw Error("انتهت جلسة الأستاذة. سجلي الدخول مجددًا.");const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),25000);try{const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify(payload),signal:controller.signal});let d;try{d=await r.json();}catch(_){throw Error("استجابة غير صالحة من خدمة الحصص.");}if(!r.ok||!d.ok)throw Error(d.error||("تعذر تنفيذ العملية (HTTP "+r.status+")."));return d;}catch(e){if(e.name==="AbortError")throw Error("انتهت مهلة الاتصال بخدمة الحصص. تحققي من الاتصال ثم أعيدي المحاولة.");throw e;}finally{clearTimeout(timer);}}
   let lessonCalendarCursor=new Date();let lessonCalendarSelectedDate="";let lessonCalendarView="month";let lessonCalendarDayPageOpen=false;
   function lessonCalendarDateKey(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
-  async function openDailyLessonEditor(lessonId,duplicate=false){\n    window.tahadiLessonEditSaved=false;
+  async function openDailyLessonEditor(lessonId,duplicate=false){
+    window.tahadiLessonEditSaved=false;
     const row=await lessonRequest({action:"daily_lessons_get",id:lessonId});
     const x=row.lesson;if(!x)throw Error("لم نعثر على بيانات الحصة.");
     const isRecurring=!!(x.recurrence_group_id||row.recurrence?.enabled);
