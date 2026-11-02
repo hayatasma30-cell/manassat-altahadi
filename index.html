@@ -87,6 +87,15 @@ button,.primary,.secondary,.back,.menu-btn,.level-filter,.logout{box-sizing:bord
 .menu-copy small{font-size:10px!important;line-height:1.3!important}
 .chev{font-size:15px!important}
 .income-nav-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+.income-nav-grid .section-category{min-width:0;border:1px solid #dce6d8;border-radius:14px;background:#fff;box-shadow:0 3px 9px rgba(20,63,34,.05)}
+.income-nav-grid .section-category>summary{min-height:58px;box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:7px;padding:10px 12px;color:var(--g)}
+.income-nav-grid .section-category>summary .category-title{font-size:clamp(12px,3.4vw,15px);line-height:1.35;font-weight:800;flex:1}
+.income-nav-grid .section-category>summary small{display:none!important}
+.income-nav-grid .section-category>summary .category-arrow{position:static;transform:none!important;font-size:16px;flex:0 0 auto}
+.income-nav-grid .section-category[open]>summary .category-arrow{transform:rotate(45deg)!important}
+.income-nav-grid .category-buttons{grid-template-columns:1fr;padding:0 8px 8px;gap:7px}
+.income-nav-grid .category-buttons .menu-btn{min-height:54px!important}
+
 .income-nav-grid .menu-btn{min-height:62px!important}
 .level-filters{gap:6px!important;margin:10px 0!important}
 .level-filter{min-height:32px!important;padding:5px 8px!important}
@@ -1393,7 +1402,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 </section>
 <section id="manualInPersonPaymentView" class="view"><div class="view-head"><button class="back" id="backToPayments" type="button">→ إشعارات الدفع</button><h2>🏫 تسجيل دفعة حضورية</h2></div><div class="panel"><p class="muted">هذه الصفحة مخصّصة لدفعات التلاميذ الحضوريين فقط. دفعات الزووم تُدار عبر البوت.</p><form id="manualInPersonPaymentForm" style="display:grid;gap:14px"><label>التلميذ الحضوري<select id="manualPaymentStudent" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري التلميذ</option></select></label><label>نوع الحصة<select id="manualPaymentServiceType" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="individual_session">حصة فردية</option><option value="group_lesson">حصة جماعية</option></select></label><label>الخدمة<input id="manualPaymentService" required maxlength="180" placeholder="تُملأ تلقائيًا" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px" readonly></label><label>الشهر (اختياري)<input id="manualPaymentMonth" maxlength="80" placeholder="يُملأ تلقائيًا" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><label>المبلغ المدفوع بالدينار<input id="manualPaymentAmount" type="number" min="1" step="1" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><input id="manualPaymentMethod" type="hidden" value="نقدًا"><label>تاريخ الدفع<input id="manualPaymentDate" type="date" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><button class="primary" id="saveManualInPersonPayment" type="submit">حفظ الدفعة</button><p id="manualPaymentStatus" class="muted" aria-live="polite"></p></form></div></section>
 <section id="incomeView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💰 مداخيلي</h2></div>
-<div id="incomeHomePage" class="panel"><p class="muted">اختاري القسم؛ ثم افتحي الخدمة المطلوبة. كل خدمة تفتح صفحة مستقلة.</p><div class="income-nav-grid">
+<div id="incomeHomePage" class="panel"><div class="income-nav-grid">
 <details class="section-category"><summary><span class="category-title">💰 المداخيل والتفصيل</span><small>الإجمالي ومراجعة المداخيل حسب الشهر</small><span class="category-arrow">＋</span></summary><div class="category-buttons">
 <button class="menu-btn" data-income-page="incomeTotalsPage" type="button"><span class="menu-icon">💰</span><span class="menu-copy"><strong>المداخيل الحالية</strong><small>الإجمالي والشهر المختار</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-income-page="incomeMonthlyPage" type="button"><span class="menu-icon">📅</span><span class="menu-copy"><strong>تفصيل المداخيل الشهرية</strong><small>مراجعة مداخيل كل شهر</small></span><span class="chev">‹</span></button>
