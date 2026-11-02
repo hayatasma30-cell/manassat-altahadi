@@ -3104,7 +3104,8 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
       event.preventDefault();
       event.stopImmediatePropagation();
       try{
-        if(typeof showView==="function")showView("incomeView");
+        const hasShowView=typeof showView==="function";
+        if(hasShowView)showView("incomeView");
         else{
           document.querySelectorAll(".view").forEach(view=>{
             const active=view.id==="incomeView";
@@ -3113,8 +3114,8 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
             view.setAttribute("aria-hidden",active?"false":"true");
           });
         }
-        if(typeof openIncomePage==="function")openIncomePage("incomeCalendarPage");
-        else{
+        if(!hasShowView&&typeof openIncomePage==="function")openIncomePage("incomeCalendarPage");
+        else if(!hasShowView){
           document.querySelectorAll("#incomeView .income-subpage").forEach(page=>{
             const active=page.id==="incomeCalendarPage";
             page.hidden=!active;
