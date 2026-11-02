@@ -1537,6 +1537,16 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 <footer>© منصة التحدي التعليمية</footer>
 <div id="lessonFeedbackModal" class="editor-overlay" hidden><section class="editor-panel lesson-feedback-panel" role="dialog" aria-modal="true" aria-labelledby="lessonFeedbackTitle"><div class="editor-head"><h2 id="lessonFeedbackTitle">تأكيد العملية</h2><button type="button" id="closeLessonFeedback" class="secondary">إغلاق ✕</button></div><p id="lessonFeedbackText" class="muted" style="font-size:1rem;line-height:1.8;margin:12px 0"></p><button type="button" id="confirmLessonFeedback" class="primary" style="width:100%">حسنًا</button></section></div>
 <div id="recordEditorModal" class="editor-overlay" hidden><section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="recordEditorTitle"><div class="editor-head"><h2 id="recordEditorTitle">تعديل المعلومات</h2><button type="button" id="closeRecordEditor" class="secondary">إغلاق ✕</button></div><p class="muted">تظهر هنا جميع الحقول المتاحة لهذا السجل. عدّلي ما تحتاجينه ثم احفظي.</p><form id="recordEditorForm"><div id="recordEditorFields" class="editor-fields"></div><div class="editor-actions"><button class="primary" type="submit">حفظ كل التعديلات</button><button class="secondary" type="button" id="cancelRecordEditor">إلغاء</button></div></form></section></div>
+<script id="tahadi-boot-error-capture">
+window.__tahadiBootErrors=window.__tahadiBootErrors||[];
+window.addEventListener("error",function(e){
+  window.__tahadiBootErrors.push({message:e.message||"خطأ JavaScript",file:e.filename||"",line:e.lineno||0,column:e.colno||0});
+});
+window.addEventListener("unhandledrejection",function(e){
+  var reason=e.reason;
+  window.__tahadiBootErrors.push({message:reason&&reason.message?reason.message:String(reason||"Promise rejection"),file:"Promise",line:0,column:0});
+});
+</script>
 <script>
 (() => {
   const endpoint = "https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
@@ -3195,7 +3205,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
       if(list)list.hidden=false;
       if(calendar)calendar.hidden=false;
       const status=document.getElementById("status");
-      if(status){status.textContent="تم فتح قسم الحصص، لكن تعذر تشغيل محمّل البيانات. أعيدي تحميل الصفحة.";status.className="status show error";}
+      if(status){var boot=(window.__tahadiBootErrors||[])[0];status.textContent=boot?"توقف تشغيل وظائف المنصة بسبب خطأ: "+boot.message+" ("+boot.file.split("/").pop()+":"+boot.line+")":"لم يتم تحميل وظائف إدارة الحصص. لم يصل البرنامج إلى تهيئة الحصص؛ أغلقي الصفحة وافتحي الرابط من جديد.";status.className="status show error";}
     }
   },true);
 })();
