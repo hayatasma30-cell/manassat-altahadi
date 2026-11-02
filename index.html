@@ -1309,6 +1309,8 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 .lesson-calendar-count.count-done{background:#216c43!important;color:#fff!important}
 .lesson-calendar-count.count-not-done{background:#bd4038!important;color:#fff!important}
 .lesson-calendar-count.count-overdue{background:#c47a17!important;color:#fff!important}
+.lesson-calendar-day.state-deferred{background:linear-gradient(160deg,#f6f6f4 0%,#e9ece8 75%,#dfe4df 100%)!important;border-color:#bfc9bf!important;border-bottom:5px solid #9eaa9e!important;box-shadow:0 4px 0 #aeb9ae,0 7px 12px #52605218!important}
+.lesson-calendar-count.count-deferred{background:#68796b!important;color:#fff!important}
 .lesson-calendar-day.today{outline-offset:2px}
 .lesson-calendar-day.today.state-done{border-top:3px solid #d59b28!important}
 .lesson-calendar-day.today.state-not-done{border-top:3px solid #d59b28!important}
@@ -2457,15 +2459,18 @@ const handleIncomeCalendarClick=async e=>{
     (rows||[]).forEach(x=>{
       const key=String(x.lesson_date||"").slice(0,10);if(!key)return;
       counts[key]=(counts[key]||0)+1;
-      const state=dayStates[key]||(dayStates[key]={done:0,notDone:0,overdue:0});
-      if(x.status==="تمت")state.done++;
-      else if(x.status==="لم تتم")state.notDone++;
+      const state=dayStates[key]||(dayStates[key]={done:0,notDone:0,overdue:0,deferred:0});
+      const status=String(x.status||"").trim();
+      if(status==="تمت"||status==="تمت من قبل")state.done++;
+      else if(["لم تتم","ألغيت","ملغاة","ملغية","ملغى","ملغي"].includes(status))state.notDone++;
+      else if(status==="مؤجلة")state.deferred++;
       else if(isOverdueScheduled(x))state.overdue++;
     });
     const dayColorClass=key=>{
       const state=dayStates[key];if(!state)return "";
       if(state.notDone)return " state-not-done";
       if(state.overdue)return " state-overdue";
+      if(state.deferred)return " state-deferred";
       if(state.done)return " state-done";
       return "";
     };
@@ -2473,6 +2478,7 @@ const handleIncomeCalendarClick=async e=>{
       const state=dayStates[key];if(!state)return "";
       if(state.notDone)return " count-not-done";
       if(state.overdue)return " count-overdue";
+      if(state.deferred)return " count-deferred";
       if(state.done)return " count-done";
       return "";
     };
