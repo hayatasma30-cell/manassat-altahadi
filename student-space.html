@@ -191,24 +191,26 @@
 
 </style>
 <style id="student-calendar-match-teacher-v1">
-/* تقويم التلميذ بنفس مظهر تقويم الأستاذة */
+/* تقويم التلميذ: أزرار ثلاثية الأبعاد مثل تقويم الأستاذة */
 .student-calendar{border:1px solid #dce5d9!important;border-radius:20px!important;padding:16px!important;background:#fff!important;margin:14px 0!important}
 .student-calendar .cal-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:0 0 16px!important;direction:ltr!important}
 .student-calendar .cal-head strong{direction:rtl!important;text-align:center!important;font-size:clamp(1rem,4vw,1.35rem)!important;color:#183f2b!important}
-.student-calendar .cal-head button{min-width:44px!important;min-height:48px!important;border-radius:15px!important;padding:7px 13px!important;background:#edf7eb!important;color:#14532d!important;border:1px solid #dcebd8!important;box-shadow:none!important;font-size:1.2rem!important}
-.student-calendar .cal-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:6px!important;direction:ltr!important;text-align:center!important}
+.student-calendar .cal-head button{min-width:48px!important;min-height:48px!important;border-radius:15px!important;padding:7px 13px!important;background:linear-gradient(160deg,#fff 0%,#eef7ec 75%,#e3f0e1 100%)!important;color:#174b2c!important;border:1px solid #bfd4bd!important;box-shadow:0 4px 0 #91b493,0 7px 12px #174b2c20!important;font-size:1.2rem!important;transition:transform .12s ease,box-shadow .12s ease!important}
+.student-calendar .cal-head button:active{transform:translateY(3px)!important;box-shadow:0 1px 0 #91b493,0 3px 6px #174b2c18!important}
+.student-calendar .cal-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;gap:7px!important;direction:ltr!important;text-align:center!important}
 .student-calendar .cal-grid>small{font-size:clamp(.65rem,2.6vw,.82rem)!important;font-weight:700!important;color:#185b38!important;padding:6px 0!important}
-.student-calendar .cal-day{min-height:62px!important;margin:0!important;padding:7px 2px!important;border:1px solid #d8e4d6!important;border-radius:12px!important;background:#fbfcf8!important;color:#204d35!important;box-shadow:none!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;font-size:clamp(.82rem,3vw,1rem)!important}
-.student-calendar .cal-day.has-lesson{background:#e5f4e8!important;border-color:#73a77e!important;font-weight:800!important}
-.student-calendar .cal-day.selected{outline:2px solid #216c43!important;background:#d0ead6!important}
-.student-calendar .cal-day.today{border:3px solid #d59b28!important;background:#fff1c2!important;box-shadow:0 0 0 3px #d59b2833!important}
+.student-calendar .cal-day{min-height:62px!important;margin:0 0 4px!important;padding:7px 2px!important;border:1px solid #d8e4d6!important;border-bottom:4px solid #d2dfd0!important;border-radius:15px!important;background:linear-gradient(160deg,#fff 0%,#f8faf6 75%,#eef4eb 100%)!important;color:#204d35!important;box-shadow:0 3px 0 #d6e1d3,0 6px 10px #183f2b12!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:4px!important;font-size:clamp(.82rem,3vw,1rem)!important;transition:transform .12s ease,box-shadow .12s ease!important}
+.student-calendar .cal-day:active{transform:translateY(3px)!important;box-shadow:0 1px 0 #d6e1d3,0 2px 5px #183f2b10!important}
+.student-calendar .cal-day.has-lesson{background:linear-gradient(160deg,#f2fbef 0%,#e5f4e8 75%,#d9eddb 100%)!important;border-color:#9bc4a0!important;border-bottom-color:#73a77e!important;font-weight:800!important;box-shadow:0 3px 0 #8eb997,0 6px 10px #216c4318!important}
+.student-calendar .cal-day.selected{outline:2px solid #216c43!important;background:linear-gradient(160deg,#e8f6e7,#cfe8d2)!important}
+.student-calendar .cal-day.today{border:2px solid #d59b28!important;border-bottom:5px solid #b98519!important;background:linear-gradient(160deg,#fff8dc 0%,#fff1c2 75%,#ffe6a0 100%)!important;box-shadow:0 4px 0 #c89427,0 7px 12px #d59b2833!important}
 .student-calendar .cal-day.today:after{content:"اليوم";display:block;font-size:.58rem;font-weight:800;color:#805400;background:#ffe3a0;border-radius:8px;padding:1px 4px;margin-top:1px}
 .student-calendar .cal-day i{display:block;width:6px;height:6px;background:#23834b;border-radius:50%;margin:1px auto 0}
 .student-calendar .cal-legend{font-size:.8rem!important;margin:14px 0 0!important;padding-top:10px!important;border-top:1px solid #edf1e9!important}
-#selectedLessonDay{border:1px solid #dce5d9!important;border-radius:18px!important;padding:16px!important;margin-top:14px!important;background:#fff!important}
+#selectedLessonDay{border:1px solid #dce5d9!important;border-radius:18px!important;padding:16px!important;margin-top:14px!important;background:#fff!important;box-shadow:0 4px 0 #e4ebe1,0 8px 18px #183f2b0d!important}
 #selectedLessonDay>strong{display:block;color:#174b30;font-size:1.05rem;margin-bottom:9px}
 #selectedLessonDay p{line-height:1.8}
-@media(max-width:420px){.student-calendar{padding:12px!important}.student-calendar .cal-grid{gap:4px!important}.student-calendar .cal-day{min-height:55px!important;border-radius:10px!important;padding:5px 1px!important}.student-calendar .cal-grid>small{font-size:9px!important}}
+@media(max-width:420px){.student-calendar{padding:12px!important}.student-calendar .cal-grid{gap:5px!important}.student-calendar .cal-day{min-height:55px!important;border-radius:12px!important;padding:5px 1px!important}.student-calendar .cal-grid>small{font-size:9px!important}}
 </style>
 </head>
 <body>
