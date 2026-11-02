@@ -1514,6 +1514,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
       v.setAttribute("aria-hidden", active ? "false" : "true");
     });
     activeView = id;
+    if(id!=="loginView")sessionStorage.setItem("tahadi_last_view",id);
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
@@ -2525,13 +2526,15 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
   async function logout() {
     const token = localStorage.getItem("tahadi_teacher_token");
     if (token) { try { await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"logout"})}); } catch (_) {} }
-    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires");
+    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); sessionStorage.removeItem("tahadi_last_view");
     $("sessionActions").style.display="none"; $("topLogout").hidden=true;
     showView("homeView"); showStatus("تم تسجيل الخروج.", "ok");
   }
   $("logoutBtn").addEventListener("click", logout); $("topLogout").addEventListener("click", logout);
   const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
   if (savedToken && expiry && new Date(expiry).getTime() > Date.now()) {
+    const lastView=sessionStorage.getItem("tahadi_last_view");
+    if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView);
     loadDashboard(savedToken).then(()=>{}).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم أو اضغطي تحديث البيانات.","error");console.error("initial dashboard load failed",err);});
   } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
   form.addEventListener("submit", async event => {
