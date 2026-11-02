@@ -2277,7 +2277,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     }
     $("lessonNotes").value=x.notes||"";$("lessonUnitPrice").value=String(x.unit_price??0);
     const recurrence=row.recurrence||{};
-    $("lessonRepeatWeekly").disabled=duplicate?false:scopeMap[scopeChoice]==="this";
+    $("lessonRepeatWeekly").disabled=duplicate?false:(isRecurring&&scopeMap[scopeChoice]==="this");
     $("lessonRepeatWeekly").checked=duplicate?false:!!(scopeMap[scopeChoice]!=="this"&&recurrence.enabled);
     $("lessonRepeatEndWrap").hidden=!$("lessonRepeatWeekly").checked;
     $("lessonRepeatEndWrap").style.display=$("lessonRepeatWeekly").checked?"block":"none";
