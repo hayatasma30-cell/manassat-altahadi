@@ -140,9 +140,9 @@
  transition:transform .14s ease,box-shadow .14s ease!important
 }
 .student-action:active{transform:translateY(3px)!important;box-shadow:0 1px 0 #14532d20,0 3px 7px #14532d12!important}
-.student-action-icon{width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:11px!important;font-size:1.12rem!important}
-.student-action strong{font-size:.91rem!important;line-height:1.35!important}
-.student-action small{font-size:.72rem!important;line-height:1.45!important}
+.student-action-icon{width:32px!important;height:32px!important;flex:0 0 32px!important;border-radius:10px!important;font-size:1rem!important}
+.student-action strong{font-size:.86rem!important;line-height:1.3!important}
+.student-action small{font-size:.68rem!important;line-height:1.35!important}
 .student-lesson-nav{gap:8px!important;margin:12px 0 14px!important}
 .student-lesson-nav button,.student-back,#backToStudentMenu,#studentHelpBtn{
  box-sizing:border-box!important;min-height:44px!important;padding:9px 12px!important;
@@ -151,21 +151,21 @@
  color:#14532d!important;font-weight:800!important;box-shadow:0 3px 0 #14532d20,0 7px 12px #14532d12!important
 }
 .student-lesson-nav button.active{background:#14532d!important;color:#fff!important;border-color:#14532d!important;border-bottom-color:#0b3820!important}
-#studentHelpBtn{width:100%;margin:0 0 12px!important;background:linear-gradient(145deg,#f8fff4,#e4f3df)!important}
+#studentHelpBtn{width:100%;margin:16px 0 4px!important;background:linear-gradient(145deg,#f8fff4,#e4f3df)!important}
 .student-help-overlay{position:fixed;inset:0;z-index:9999;background:#102b1db8;display:flex;align-items:center;justify-content:center;padding:16px}
 .student-help-overlay.hidden{display:none!important}
 .student-help-card{width:min(100%,520px);max-height:82vh;overflow:auto;background:#fff;border:1px solid #d6e6d2;border-radius:20px;padding:17px;box-shadow:0 12px 35px #071d1280}
 .student-help-card h2{margin:0 0 10px}
 .student-help-card h3{font-size:.98rem;color:#14532d;margin:14px 0 5px}
 .student-help-card p,.student-help-card li{font-size:.88rem;line-height:1.75;color:#536357}
-.student-help-card ul{padding-inline-start:20px;margin:5px 0}
+.student-help-card ul{padding-inline-start:20px;margin:5px 0}.student-help-note{padding:10px;border-radius:12px;background:#edf7eb;color:#14532d!important;font-weight:700}
 .student-help-close{width:100%;margin-top:12px;min-height:43px;border:0;border-radius:12px;background:#14532d;color:#fff;font-weight:800}
 @media(max-width:500px){
  .student-actions{gap:8px!important}
- .student-action{min-height:72px!important;padding:9px 8px!important;gap:7px!important;border-radius:13px!important}
- .student-action-icon{width:32px!important;height:32px!important;flex-basis:32px!important;font-size:1rem!important}
- .student-action strong{font-size:.82rem!important}
- .student-action small{font-size:.68rem!important}
+ .student-action{min-height:62px!important;padding:7px 7px!important;gap:6px!important;border-radius:12px!important}
+ .student-action-icon{width:29px!important;height:29px!important;flex-basis:29px!important;font-size:.92rem!important}
+ .student-action strong{font-size:.78rem!important}
+ .student-action small{font-size:.64rem!important}
  .student-lesson-nav button{min-height:46px!important;font-size:.82rem!important;padding:8px 5px!important}
 }
 
@@ -177,8 +177,19 @@
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
 <section id="dashboard" class="hidden"><div id="teacherPreviewBanner" class="panel hidden" style="margin-bottom:14px;border:2px solid #d5b34c;background:linear-gradient(120deg,#fff8df,#f2f8e9)"><strong style="color:#765815">👁 معاينة الأستاذة — عرض فضاء التلميذ كما يظهر له</strong><span style="display:inline-block;margin-inline-start:8px;font-size:.75rem;color:#765815">نسخة المعاينة: 26-10-2026 J</span><p class="muted" style="margin:5px 0">هذه معاينة للقراءة فقط. لا تحتاجين إلى رمز التلميذ، ولن يتم إرسال أي إجراء باسمه.</p><button id="exitTeacherPreview" class="secondary" style="margin:0">العودة إلى قائمة التلاميذ ↗</button></div>
 <div class="panel student-identity" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:1.8rem">👩‍🎓</div><div style="flex:1;min-width:100px"><div class="muted">فضاء التلميذ</div><h2 id="studentName" style="margin:0"></h2><span id="studentLevel" class="tag"></span></div><button class="student-action profile-quick-action" data-section="profile" type="button"><span class="student-action-icon">👤</span><span><strong>ملف التلميذ</strong></span></button><button id="logoutBtn" class="secondary" style="margin:0">خروج</button></div>
-<button type="button" id="studentHelpBtn">❔ مساعدة: دليل استخدام فضاء التلميذ</button>
-<div id="studentHelpOverlay" class="student-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentHelpTitle"><div class="student-help-card"><h2 id="studentHelpTitle">📘 دليل استخدام فضاء التلميذ</h2><p>اختاري الزر المناسب، وستجدين هنا وظيفة كل قسم وطريقة استعماله.</p><h3>🔔 تنبيهاتي</h3><p>لمتابعة إعلانات الأستاذة والتنبيهات والتحديثات الجديدة.</p><h3>💡 تعلّم اليوم</h3><p>للاطلاع على المعلومة العلمية اليومية والموارد التعليمية.</p><h3>✉️ أسئلتي للأستاذة حياة</h3><p>لإرسال سؤال ومتابعة إجابة الأستاذة.</p><h3>📝 اختباراتي الإلكترونية</h3><p>لفتح الاختبارات المنشورة، ثم الاطلاع على النتائج والأخطاء وملاحظات الأستاذة.</p><h3>📚 دوراتي وملخصاتي</h3><p>للوصول إلى الدورات والملخصات والموارد التي أضافتك الأستاذة إليها.</p><h3>📅 حصصي ومواعيدي</h3><p>يعرض الحصص القادمة وتقويم الحصص وسجل الحضور والغياب وملخص الحصص. داخل القسم اختاري الزر المطلوب أعلى الصفحة.</p><h3>📚 خدماتي ودفعاتي</h3><p>لمراجعة الاشتراكات والخدمات المسجلة والدفعات.</p><h3>👤 ملف التلميذ</h3><p>للاطلاع على معلومات ملفك الدراسي.</p><h3>↩ العودة إلى فضائي</h3><p>يعيدك إلى القائمة الرئيسية بعد فتح أي قسم.</p><button type="button" id="studentHelpClose" class="student-help-close">فهمت، إغلاق الدليل</button></div></div>
+<div id="studentHelpOverlay" class="student-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentHelpTitle"><div class="student-help-card"><h2 id="studentHelpTitle">📘 دليل استخدام فضاء التلميذ</h2><p>مرحبًا بك! هذا الدليل يشرح لك وظيفة كل زر، والخطوات التي تتبعها للاستفادة من خدمات فضائك.</p>
+<h3>🔔 1. تنبيهاتي</h3><p>افتحي هذا القسم لمشاهدة إعلانات الأستاذة حياة، والتنبيهات الجديدة، وأي تحديث يخص دراستك أو حصصك. اقرئي تفاصيل كل تنبيه، وعودي إلى فضائك من زر الرجوع في الصفحة.</p>
+<h3>💡 2. تعلّم اليوم</h3><p>اضغطي عليه لقراءة المعلومة العلمية اليومية واستكشاف المكتبة الموضوعية. يمكنك الاستفادة منه للمراجعة وتوسيع معلوماتك في علوم الطبيعة والحياة.</p>
+<h3>✉️ 3. أسئلتي للأستاذة حياة</h3><p>ادخلي إلى القسم، اكتبي سؤالك بوضوح ثم أرسليه. عودي إلى القسم لاحقًا لمتابعة رد الأستاذة والإجابة عن استفسارك.</p>
+<h3>📝 4. اختباراتي الإلكترونية</h3><ul><li>افتحي الاختبارات المنشورة والموجهة إلى مستواك الدراسي.</li><li>اختاري الاختبار المطلوب واقرئي التعليمات والمدة قبل البدء.</li><li>أجيبي عن الأسئلة ثم أرسلي إجاباتك عند الانتهاء.</li><li>من قسم النتائج تابعي علامتك ومحاولاتك والإجابات الصحيحة.</li><li>من «أخطائي» راجعي الأسئلة التي أخطأتِ فيها والتصحيح، واقرئي ملاحظات الأستاذة إن وُجدت.</li></ul>
+<h3>📚 5. دوراتي وملخصاتي</h3><p>تجدين هنا الدورات التي أضافتك الأستاذة إليها والموارد المرتبطة بها. افتحي الدورة المطلوبة ثم اختاري الدرس أو الملخص أو التمرين المتاح للمراجعة.</p>
+<h3>📅 6. حصصي ومواعيدي</h3><ul><li>«حصتي القادمة»: لمعرفة موعد الحصة القادمة وتوقيتها.</li><li>«تقويم الحصص»: لمشاهدة أيام الحصص خلال الشهر. انتقلي بين الأشهر، واضغطي على يوم مميز لعرض حصصه.</li><li>«سجل الحضور»: لمتابعة الحضور والغياب عندما تسجل الأستاذة الحالة.</li><li>«ملخص حصصي»: للاطلاع على عدد الحصص المجدولة والمنجزة وإحصاءات الحضور والغياب.</li></ul><p>إذا لم تظهر تفاصيل الحضور بعد، فقد تكون الأستاذة لم تسجلها بعد.</p>
+<h3>💳 7. خدماتي ودفعاتي</h3><p>من «اشتراكاتي وخدماتي» راجعي الخدمات المسجلة لك. ومن «دفعاتي» اطلعي على الدفعات التي سجلتها الأستاذة. إذا لاحظتِ معلومة غير صحيحة، تواصلي مع الأستاذة لتتحقق منها.</p>
+<h3>👤 8. ملف التلميذ</h3><p>يعرض معلومات ملفك ومستواك الدراسي. تحققي من صحة بياناتك، وأخبري الأستاذة إذا احتاجت إلى تصحيح.</p>
+<h3>↩ 9. العودة إلى فضائي</h3><p>بعد فتح أي قسم، استخدمي زر «العودة إلى فضائي» للرجوع إلى القائمة الرئيسية واختيار خدمة أخرى.</p>
+<h3>🚪 10. تسجيل الخروج</h3><p>عند الانتهاء من استعمال فضائك، اضغطي على «خروج» لحماية حسابك، خاصة إذا كنت تستعملين هاتفًا مشتركًا.</p>
+<p class="student-help-note">نصيحة: استعملي فضاءك بانتظام لمتابعة التنبيهات والحصص والاختبارات، وتأكدي من تسجيل الخروج بعد الانتهاء.</p>
+<button type="button" id="studentHelpClose" class="student-help-close">فهمت، إغلاق الدليل</button></div></div>
 <div id="studentMenu" class="student-menu">
 
 <div class="student-actions student-home-grid"><a class="student-action" href="notifications.html?role=student&v=20261028-clean1"><span class="student-action-icon">🔔</span><span><strong>تنبيهاتي <span id="notificationCount" class="notification-count" aria-label="عدد التنبيهات">0</span></strong><small>الإعلانات والتحديثات الجديدة</small></span><span class="student-arrow">‹</span></a><a class="student-action" href="daily-science.html"><span class="student-action-icon">💡</span><span><strong>تعلّم اليوم</strong><small>معلومة علمية ومكتبة موضوعية</small></span><span class="student-arrow">‹</span></a>
@@ -186,7 +197,7 @@
 <button class="student-action" data-section="quizMenu"><span class="student-action-icon">📝</span><span><strong>اختباراتي الإلكترونية <span id="quizCount" class="section-count" aria-label="عدد الاختبارات المرسلة">0</span></strong><small>الاختبارات والنتائج</small></span><span class="student-arrow">‹</span></button>
 <button class="student-action" data-section="reviewCourses"><span class="student-action-icon">📚</span><span><strong>دوراتي وملخصاتي</strong><small>الدورات التي سجلتِ فيها ومواردها</small></span><span class="student-arrow">‹</span></button>
 <button class="student-action" data-section="lessons"><span class="student-action-icon">📅</span><span><strong>حصصي ومواعيدي</strong><small>الحصص الفردية والجماعية ومواعيدها</small></span><span class="student-arrow">‹</span></button><button class="student-action" data-section="servicesPayments"><span class="student-action-icon">📚</span><span><strong>خدماتي ودفعاتي</strong><small>الاشتراكات والخدمات والمدفوعات</small></span><span class="student-arrow">‹</span></button>
-</div></div>
+</div><button type="button" id="studentHelpBtn">❔ مساعدة: دليل استخدام فضاء التلميذ</button></div>
 <div id="studentDetail" class="hidden">
 <button id="backToStudentMenu" class="student-back">→ العودة إلى فضائي</button>
 <section class="card student-section hidden" data-panel="quizMenu"><h2>📝 اختباراتي الإلكترونية</h2><p class="muted">الاختبارات المنشورة والنتائج المميزة لتلاميذ مستواك.</p><button type="button" class="secondary" id="refreshPublishedQuizzes">تحديث الاختبارات والنتائج</button><div id="publishedQuizzesList"><p class="muted">تظهر هنا الاختبارات المنشورة لمستواك الدراسي.</p></div><div class="student-actions" style="margin-top:14px"><button type="button" class="student-action" data-section="quizzes"><span class="student-action-icon">📊</span><span><strong>نتائجي في الاختبارات</strong><small>العلامات والمحاولات وملخص الإجابات الصحيحة والتصحيح</small></span><span class="student-arrow">‹</span></button><button type="button" class="student-action" data-section="mistakes"><span class="student-action-icon">💡</span><span><strong>أخطائي في الاختبارات</strong><small>راجعي الإجابات الخاطئة والتصحيح الصحيح</small></span><span class="student-arrow">‹</span></button><button type="button" class="student-action" data-section="teacherNotes"><span class="student-action-icon">🗒️</span><span><strong>ملاحظات الأستاذة</strong><small>اطّلعي على ملاحظات الأستاذة حول تقدمك</small></span><span class="student-arrow">‹</span></button></div></section>
