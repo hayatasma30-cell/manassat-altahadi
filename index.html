@@ -1972,7 +1972,6 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     });
     $("incomeCalendar2025Month").addEventListener("change",()=>{incomeCalendar2025Selected="";renderIncomeCalendar2025();});
     $("incomeCalendar2025Grid").addEventListener("click",e=>{const b=e.target.closest("[data-income-calendar-2025-day]");if(!b)return;incomeCalendar2025Selected=b.dataset.incomeCalendar2025Day;renderIncomeCalendar2025();});
-    $("refreshIncomeCalendar2025").addEventListener("click",loadIncomeCalendar2025);
     let incomeCompare2025Entries=[],incomeCompare2026Entries=[],incomeCompare2027Entries=[],incomeCompareLessons=[],incomeCompareData=null;
     const incomeCompareMonths=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     const compareClass=(previous,current)=>current>previous?"زيادة":current<previous?"نقصان":"ثابت";
