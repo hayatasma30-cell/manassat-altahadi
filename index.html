@@ -1271,7 +1271,37 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
  input.addEventListener("focus",refresh);input.addEventListener("input",refresh);
 };
 </script>
-</head>
+<style id="income-compare-unified-v1">
+.income-compare-page{padding:clamp(12px,3vw,20px)!important}
+.income-compare-page .view-head{align-items:center;flex-wrap:wrap}
+.income-compare-page .income-compare-season-head{margin:12px 0 8px}
+.income-compare-page .income-compare-season-head>div{padding:12px 8px}
+.income-compare-page .income-compare-season-head b{font-size:1.15rem;color:#174b30;overflow-wrap:anywhere}
+.income-compare-page .income-compare-kpis{display:block;margin:8px 0 14px}
+.income-compare-page .income-compare-kpi.highlight{display:flex;align-items:center;flex-direction:row;justify-content:space-between;flex-wrap:wrap;gap:5px 12px;margin:0;padding:12px 14px}
+.income-compare-page .income-compare-kpi.highlight span{width:100%}
+.income-compare-page .income-compare-kpi.highlight strong{font-size:1.3rem}
+.income-compare-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 14px;padding:5px;border-radius:14px;background:#f0f5ed}
+.income-compare-mode button{min-height:43px;border:1px solid transparent;border-radius:10px;background:transparent;color:#315b3d;font:inherit;font-weight:800}
+.income-compare-mode button.active{background:#17633b;color:#fff;box-shadow:0 3px 8px #174b3020}
+#incomeCompareMonthlySection>h3{font-size:1rem;margin:8px 0;color:#244a32}
+.income-compare-page .income-compare-months{gap:8px;margin-top:8px}
+.income-compare-page .income-compare-month{padding:11px;border-radius:13px;box-shadow:none}
+.income-compare-page .income-compare-month h4{margin-bottom:8px;font-size:.95rem}
+.income-compare-page .income-compare-values>div{padding:8px}
+.income-compare-page .income-compare-delta{margin-top:7px;padding:8px 9px}
+.income-compare-review{margin-top:16px;border:1px solid #dce8d7;border-radius:13px;background:#fbfdf9;overflow:hidden}
+.income-compare-review summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;cursor:pointer;color:#245638;font-weight:800;list-style:none}
+.income-compare-review summary::-webkit-details-marker{display:none}
+.income-compare-review summary strong{min-width:28px;padding:2px 8px;border-radius:20px;background:#e7f2e4;text-align:center}
+.income-compare-review[open] summary{border-bottom:1px solid #e3ebdf}
+.income-compare-review #incomeCompareWarnings{padding:8px 12px}
+.income-compare-review-row{display:grid;gap:3px;padding:9px 0;border-bottom:1px solid #edf1e9;font-size:.82rem}
+.income-compare-review-row:last-child{border-bottom:0}
+.income-compare-review-row strong{color:#355641;font-weight:700}
+.income-compare-review-row span{color:#778278;font-size:.77rem}
+.income-compare-page .income-compare-footnote{margin-top:12px}
+</style></head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
 <main class="wrap">
@@ -1992,7 +2022,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
       const addDate=(date,value)=>{const season=academicKey(date);if(!season)return;const m=Number(date.slice(5,7)),d=Number(date.slice(8,10)),key=m+"-"+d;if(season==="A"){add(totalsA,m,value);add(dailyA,key,value);}else{add(totalsB,m,value);add(dailyB,key,value);}};
       incomeCompareLessons.forEach(x=>{
         if(x.status!=="تمت")return;
-        const d=String(x.lesson_date||"");if(!/^202[567]-\\d{2}-\\d{2}$/.test(d))return;
+        const d=String(x.lesson_date||"");if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;
         const unitPrice=Number(x.unit_price)||0;
         const count=x.lesson_type==="فردية"?(x.student_id?1:0):Number(x._chargeableCount??x._presentCount??0);
         if(unitPrice<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:"سعر الحصة غير محدد"});
