@@ -2006,7 +2006,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     let incomeCompare2025Entries=[],incomeCompare2026Entries=[],incomeCompare2027Entries=[],incomeCompareLessons=[],incomeCompareData=null;
     const incomeCompareMonths=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     const compareClass=(previous,current)=>current>previous?"زيادة":current<previous?"نقصان":"ثابت";
-    const compareRow=(label,a,b)=>{const delta=b-a,pct=a>0?(delta/a)*100:null,pctText=pct===null?(b>0?"لا تُحسب النسبة لأن الموسم السابق صفر":"لا تُحسب النسبة لأن الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";const trend=delta>0?"up":delta<0?"down":"same";return '<article class="income-compare-month"><h4>'+label+'</h4><div class="income-compare-values"><div><span>2025/2026</span><strong>'+money(a)+' دج</strong></div><div><span>2026/2027</span><strong>'+money(b)+' دج</strong></div></div><div class="income-compare-delta '+trend+'"><strong>'+(delta>0?"+":"")+money(delta)+' دج</strong><span>'+compareClass(a,b)+' · '+pctText+'</span></div></article>';};
+    const compareRow=(label,a,b)=>{const delta=b-a,pct=a>0?(delta/a)*100:null,pctText=pct===null?(b>0?"لا تُحسب النسبة لأن الموسم السابق صفر":"لا تُحسب النسبة لأن الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";const trend=delta>0?"up":delta<0?"down":"same";return '<article class="income-compare-month"><h4>'+label+'</h4><div class="income-compare-values"><div><span>2025/2026</span><strong>'+money(a)</strong></div><div><span>2026/2027</span><strong>'+money(b)</strong></div></div><div class="income-compare-delta '+trend+'"><strong>'+(delta>0?"+":"")+money(delta)</strong><span>'+compareClass(a,b)+' · '+pctText+'</span></div></article>';};
     function setIncomeCompareMode(mode){
       const daily=mode==="daily";
       $("incomeCompareMonthlySection").hidden=daily;
@@ -2033,7 +2033,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
       const totalA=months.reduce((n,x)=>n+x.a,0),totalB=months.reduce((n,x)=>n+x.b,0),diff=totalB-totalA;
       const pct=totalA>0?(diff/totalA)*100:null,pctText=pct===null?(totalB>0?"لا تُحسب النسبة لأن الموسم السابق صفر":"لا تُحسب النسبة لأن الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";
       $("incomeCompareTotalA").textContent=money(totalA)+" دج";$("incomeCompareTotalB").textContent=money(totalB)+" دج";
-      $("incomeCompareSummary").innerHTML='<div class="income-compare-kpi highlight"><span>الفرق بين الموسمين</span><strong>'+(diff>0?"+":"")+money(diff)+' دج</strong><small>'+compareClass(totalA,totalB)+' · نسبة التغير: '+pctText+'</small></div>';
+      $("incomeCompareSummary").innerHTML='<div class="income-compare-kpi highlight"><span>الفرق بين الموسمين</span><strong>'+(diff>0?"+":"")+money(diff)</strong><small>'+compareClass(totalA,totalB)+' · نسبة التغير: '+pctText+'</small></div>';
       $("incomeCompareMonthly").innerHTML=months.map(x=>compareRow(x.name,x.a,x.b)).join("");
       $("incomeCompareReviewCount").textContent=String(reviewRows.length);
       $("incomeCompareWarnings").innerHTML=reviewRows.length?reviewRows.map(x=>'<div class="income-compare-review-row"><strong>'+escapeHtml(x.date)+' · '+escapeHtml(x.title)+'</strong><span>'+escapeHtml(x.reason)+'</span></div>').join(""):'<p class="muted">لا توجد حصص تحتاج إلى مراجعة.</p>';
