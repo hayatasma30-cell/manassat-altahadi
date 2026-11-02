@@ -355,21 +355,11 @@ async function loadPublishedQuizzes(){
  listEl.innerHTML='<p class="muted">جارٍ تحميل الاختبارات…</p>';
  try{
   let quizzes=[];
-  if(teacherPreviewId&&teacherPreviewData&&teacherPreviewData.student){
-   // Teacher preview already receives the published resources in its authenticated preview payload.
-   // Reuse that same snapshot so the quiz section does not start a second teacher-session request.
-   const studentLevel=teacherPreviewData.student.level||"";
-   quizzes=(teacherPreviewData.resources||[]).filter(q=>q.resource_type==="quiz"&&q.is_published&&q.level===studentLevel);
-  }else{
-   const controller=new AbortController();
-   const timeout=setTimeout(()=>controller.abort(),15000);
-   let response;
-   try{response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"student_list_published_quizzes",session_token:sessionToken}),signal:controller.signal});}
-   finally{clearTimeout(timeout);}
-   const d=await response.json();
-   if(!response.ok||!d.ok)throw Error(d.error||"تعذر تحميل الاختبارات المنشورة.");
-   quizzes=d.quizzes||[];
-  }
+  // الاختبارات المنشورة موجودة أصلًا ضمن بيانات فضاء التلميذ المحمّلة من Supabase.
+  // نستخدم نفس البيانات في دخول التلميذ ودخول الأستاذة باسمه، دون طلب جلسة ثانية أو كود إضافي.
+  const source=teacherPreviewData?.student?teacherPreviewData:currentDashboardData;
+  const studentLevel=source?.student?.level||"";
+  quizzes=(source?.resources||[]).filter(q=>q.resource_type==="quiz"&&q.is_published===true&&q.level===studentLevel);
   if(!quizzes.length){
    listEl.innerHTML='<div class="empty">لا توجد اختبارات منشورة لمستوى هذا التلميذ حاليًا.</div>';
    return;
