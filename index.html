@@ -1599,6 +1599,16 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
+  // فتح قسم المداخيل من داخل نطاق التطبيق نفسه، مع تجاوز أي معالج قديم متعارض.
+  document.addEventListener("click",function(event){
+    const target=event.target instanceof Element?event.target:null;
+    const button=target&&target.closest('[data-view="incomeView"]');
+    if(!button)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    try{showView("incomeView");openIncomePage("incomeCalendarPage");}
+    catch(error){console.error("Income view navigation failed",error);showStatus("تعذر فتح المداخيل: "+(error.message||"خطأ غير معروف"),"error");}
+  },true);
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
   // معالجان موحدان للقسمين: منع تكرار المعالجات القديمة وضمان فتح الصفحة وتحميل بياناتها.
   document.addEventListener("click",async function(event){
@@ -2859,30 +2869,6 @@ const handleIncomeCalendarClick=async e=>{
    }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";dayEl.textContent="—";timeEl.textContent="—";modeEl.textContent="—";countEl.textContent="—";statusEl.textContent="";console.warn("next teacher lesson",error);}
  }
  loadNextTeacherLesson();setInterval(loadNextTeacherLesson,60*1000);
-
- // معالجات مباشرة داخل النطاق الصحيح لضمان عمل لوحة الأستاذة وقسم المداخيل.
- document.addEventListener("click",function(event){
-   const target=event.target instanceof Element?event.target:null;
-   if(!target)return;
-   const incomeButton=target.closest('[data-view="incomeView"]');
-   if(incomeButton){
-     event.preventDefault();
-     event.stopImmediatePropagation();
-     try{showView("incomeView");openIncomePage("incomeCalendarPage");}
-     catch(error){console.error("تعذر فتح قسم المداخيل",error);showStatus("تعذر فتح المداخيل: "+(error.message||"خطأ غير معروف"),"error");}
-     return;
-   }
-   const toggle=target.closest("#toggleTeacherCommandPanel");
-   if(toggle){
-     event.preventDefault();
-     event.stopImmediatePropagation();
-     const panel=toggle.closest(".teacher-command-panel");
-     if(!panel)return;
-     const collapsed=panel.classList.toggle("is-collapsed");
-     toggle.setAttribute("aria-expanded",String(!collapsed));
-     toggle.textContent=collapsed?"＋ فتح لوحة التذكيرات":"− إخفاء لوحة التذكيرات";
-   }
- },true);
 
  renderClock();renderReminders();setInterval(()=>{renderClock();checkAlarms();},1000);
 })();
