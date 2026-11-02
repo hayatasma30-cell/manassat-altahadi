@@ -1976,6 +1976,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
     const calendarParts=["lessonNextCountdown","lessonCalendarViewButtons","lessonCalendarPrev","lessonCalendarMonth","lessonCalendarNext","lessonCalendarGrid"].map(id=>document.getElementById(id));
     calendarParts.forEach(el=>{if(el){const toolbar=el.closest(".lesson-calendar-toolbar");if(toolbar)toolbar.hidden=lessonCalendarDayPageOpen;else el.hidden=lessonCalendarDayPageOpen;}});
     const dayHint=document.querySelector("#lessonsCalendarPanel > p.muted");if(dayHint)dayHint.hidden=lessonCalendarDayPageOpen;
+    const listPanel=document.getElementById("lessonListPanel");if(listPanel)listPanel.classList.toggle("day-page-open",lessonCalendarDayPageOpen);
     details.hidden=!lessonCalendarDayPageOpen;
     updateCalendarLessonAmounts(dayRows);
   }
@@ -2549,6 +2550,14 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #teacherNextLessonCard .command-next-lesson-head .command-next-lesson-countdown{margin:0!important;font-size:.88rem!important;line-height:1.3!important;letter-spacing:0!important;direction:rtl!important;text-align:right!important;white-space:nowrap!important}
 @media(max-width:600px){#teacherNextLessonCard .command-next-lesson-head{gap:5px!important}#teacherNextLessonCard .command-next-lesson-head>span:first-child{font-size:.78rem!important}#teacherNextLessonCard .command-next-lesson-head .teacher-remaining-icon{font-size:14px!important}#teacherNextLessonCard .command-next-lesson-head .command-next-lesson-countdown{font-size:.69rem!important}}
 
+/* وضع صفحة اليوم: عرض الحصص فقط وإخفاء أدوات إدارة القائمة */
+#lessonListPanel.day-page-open>.lesson-list-heading,
+#lessonListPanel.day-page-open #lessonNextCountdown,
+#lessonListPanel.day-page-open #lessonCalendarViewButtons,
+#lessonListPanel.day-page-open .lesson-calendar-toolbar,
+#lessonListPanel.day-page-open > #lessonsCalendarPanel > p.muted{display:none!important}
+#lessonListPanel.day-page-open #lessonCalendarDayDetails{display:block!important}
+#lessonListPanel.day-page-open #lessonCalendarDayDetails .calendar-day-page-back{margin:0 0 14px auto!important}
 /* إخفاء عناصر التقويم فعليًا عند فتح صفحة اليوم؛ تجاوز display:grid!important */
 #dailyLessonsView #lessonCalendarGrid[hidden],
 #dailyLessonsView #lessonCalendarViewButtons[hidden],
