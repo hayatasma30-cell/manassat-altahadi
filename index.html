@@ -2673,7 +2673,13 @@ const handleIncomeCalendarClick=async e=>{
   let lessonAutoRefreshBusy=false;const refreshVisibleLessonPage=async()=>{if(lessonAutoRefreshBusy||document.hidden||!$("lessonListPanel")||$("lessonListPanel").hidden||selectedLessonPage!=="library")return;lessonAutoRefreshBusy=true;try{await loadDailyLessons();}finally{lessonAutoRefreshBusy=false;}};document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshVisibleLessonPage();});window.addEventListener("focus",refreshVisibleLessonPage);
   lessonDateInput.addEventListener("change",loadDailyLessons);
   $("dailyLessonsList").addEventListener("click",async ev=>{const detailToggle=ev.target.closest("[data-lesson-details]");if(detailToggle){const panel=$("dailyLessonsList").querySelector(`[data-lesson-details-panel="${detailToggle.dataset.lessonDetails}"]`);if(panel){panel.hidden=!panel.hidden;detailToggle.setAttribute("aria-expanded",String(!panel.hidden));detailToggle.firstElementChild.textContent=panel.hidden?"⌄":"⌃";}return;}const edit=ev.target.closest("[data-lesson-edit]"),duplicate=ev.target.closest("[data-lesson-duplicate]"),st=ev.target.closest("[data-lesson-status]"),ca=ev.target.closest("[data-lesson-cancel]"),del=ev.target.closest("[data-lesson-delete]");try{if(edit){await openDailyLessonEditor(edit.dataset.lessonEdit,false);return;}if(duplicate){await openDailyLessonEditor(duplicate.dataset.lessonDuplicate,true);return;}if(st){await lessonRequest({action:"daily_lessons_update",id:st.dataset.lessonStatus,status:st.dataset.nextStatus});}else if(ca){await lessonRequest({action:"daily_lessons_update",id:ca.dataset.lessonCancel,status:"ألغيت"});}else if(del){const recurring=del.dataset.lessonRecurring==="1";let scope="this";if(recurring){const scopeChoice=prompt("هذه الحصة مرتبطة بتكرار أسبوعي. اختاري نطاق الحذف:\n1 = هذه الحصة فقط\n2 = هذه الحصة والحصص المكررة بعدها\n3 = كامل الحصص المكررة","1");if(scopeChoice===null)return;const scopeMap={"1":"this","2":"future","3":"all"};if(!scopeMap[scopeChoice]){lessonMessage("اختاري 1 أو 2 أو 3.","error");return;}scope=scopeMap[scopeChoice];}const scopeLabel=scope==="this"?"هذه الحصة فقط":scope==="future"?"هذه الحصة والحصص المكررة بعدها":"كامل الحصص المكررة";if(!confirm("تأكيد حذف "+scopeLabel+" نهائيًا؟"))return;const result=await lessonRequest({action:"daily_lessons_series_mutation",operation:"delete",scope,id:del.dataset.lessonDelete});if(!Number(result.affected))throw new Error("لم تُحذف الحصة؛ لم تؤكد قاعدة البيانات حذف أي سجل.");lessonMessage("تم حذف "+result.affected+" حصة بنجاح.");}else if(st){lessonMessage("تم تحديث حالة الحصة.");}else if(ca){lessonMessage("تم إلغاء الحصة.");}else return;await loadDailyLessons();}catch(e){lessonMessage(e.message,"error");}});
-  // تتم معالجة زر حصص اليوم مركزيًا في مرحلة الالتقاط لضمان فتحه حتى عند وجود معالجات أخرى.
+  // واجهة عامة آمنة لاستدعاء شاشة الحصص من معالج النقر الاحتياطي المستقل.
+  window.tahadiOpenDailyLessons=async function(){
+    setLessonHome();
+    setLessonPage("calendar");
+    await loadDailyLessons();
+    return true;
+  };
   document.querySelector('[data-view="paymentsView"]').addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث إشعارات الدفع: "+(err.message||"خطأ غير معروف"),"error");console.error("paymentsView load failed",err);}});
   const requestedLessonEdit=new URLSearchParams(location.search).get("edit_lesson");
   if(requestedLessonEdit&&localStorage.getItem("tahadi_teacher_token")){showView("dailyLessonsView");setTimeout(async()=>{try{await openDailyLessonEditor(requestedLessonEdit,false);history.replaceState(null,"",location.pathname);}catch(e){lessonMessage(e.message||"تعذر فتح تعديل الحصة.","error");}},350);}
@@ -3154,6 +3160,42 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
       const parent=details.parentElement;
       if(parent)parent.querySelectorAll(":scope > .section-category").forEach(item=>{if(item!==details)item.open=false;});
       details.open=next;
+    }
+  },true);
+})();
+</script>
+<script id="tahadi-daily-lessons-click-recovery-v3">
+(function(){
+  if(window.tahadiDailyLessonsClickRecoveryV3)return;
+  window.tahadiDailyLessonsClickRecoveryV3=true;
+  window.addEventListener("click",function(event){
+    const target=event.target instanceof Element?event.target:null;
+    const button=target&&target.closest('[data-view="dailyLessonsView"]');
+    if(!button)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const token=localStorage.getItem("tahadi_teacher_token");
+    const views=document.querySelectorAll(".view");
+    if(!token){
+      views.forEach(view=>{const active=view.id==="loginView";view.classList.toggle("active",active);view.style.display=active?"block":"none";view.setAttribute("aria-hidden",active?"false":"true");});
+      return;
+    }
+    const page=document.getElementById("dailyLessonsView");
+    if(!page)return;
+    views.forEach(view=>{const active=view===page;view.classList.toggle("active",active);view.style.display=active?"block":"none";view.setAttribute("aria-hidden",active?"false":"true");});
+    window.scrollTo({top:0,behavior:"smooth"});
+    if(typeof window.tahadiOpenDailyLessons==="function"){
+      Promise.resolve(window.tahadiOpenDailyLessons()).catch(function(error){
+        const status=document.getElementById("status");
+        if(status){status.textContent="تعذر تحميل الحصص: "+(error&&error.message?error.message:"خطأ غير معروف");status.className="status show error";}
+      });
+    }else{
+      const add=document.getElementById("lessonAddPanel"),list=document.getElementById("lessonListPanel"),calendar=document.getElementById("lessonsCalendarPanel");
+      if(add)add.hidden=true;
+      if(list)list.hidden=false;
+      if(calendar)calendar.hidden=false;
+      const status=document.getElementById("status");
+      if(status){status.textContent="تم فتح قسم الحصص، لكن تعذر تشغيل محمّل البيانات. أعيدي تحميل الصفحة.";status.className="status show error";}
     }
   },true);
 })();
