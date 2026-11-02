@@ -3092,5 +3092,63 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
 </style>
+
+<script id="tahadi-home-click-recovery-v2">
+/* معالج احتياطي مستقل لأزرار الصفحة الرئيسية والقوائم */
+(function(){
+  if(window.tahadiHomeClickRecoveryV2)return;
+  window.tahadiHomeClickRecoveryV2=true;
+  window.addEventListener("click",function(event){
+    const target=event.target instanceof Element?event.target:null;
+    if(!target)return;
+    const reminder=target.closest("#toggleTeacherCommandPanel");
+    if(reminder){
+      event.preventDefault();event.stopImmediatePropagation();
+      const panel=document.querySelector(".teacher-command-panel");
+      if(!panel)return;
+      const collapsed=panel.classList.toggle("is-collapsed");
+      reminder.setAttribute("aria-expanded",String(!collapsed));
+      reminder.textContent=collapsed?"فتح لوحة التذكيرات":"إخفاء لوحة التذكيرات";
+      return;
+    }
+    const home=target.closest("[data-home]");
+    if(home){
+      event.preventDefault();event.stopImmediatePropagation();
+      document.querySelectorAll(".view").forEach(view=>{
+        const active=view.id==="homeView";
+        view.classList.toggle("active",active);
+        view.style.display=active?"block":"none";
+        view.setAttribute("aria-hidden",active?"false":"true");
+      });
+      document.querySelectorAll(".platform-sections,.section-category").forEach(item=>item.open=false);
+      window.scrollTo({top:0,behavior:"smooth"});
+      return;
+    }
+    const rootSummary=target.closest(".platform-sections > summary");
+    if(rootSummary){
+      event.preventDefault();event.stopImmediatePropagation();
+      const details=rootSummary.parentElement;
+      details.open=!details.open;
+      return;
+    }
+    const back=target.closest(".category-back-button");
+    if(back){
+      event.preventDefault();event.stopImmediatePropagation();
+      const details=back.closest(".section-category");
+      if(details)details.open=false;
+      return;
+    }
+    const categorySummary=target.closest(".section-category > summary");
+    if(categorySummary){
+      event.preventDefault();event.stopImmediatePropagation();
+      const details=categorySummary.parentElement;
+      const next=!details.open;
+      const parent=details.parentElement;
+      if(parent)parent.querySelectorAll(":scope > .section-category").forEach(item=>{if(item!==details)item.open=false;});
+      details.open=next;
+    }
+  },true);
+})();
+</script>
 </body>
 </html>
