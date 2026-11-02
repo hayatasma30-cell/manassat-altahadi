@@ -1972,18 +1972,14 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
     for(const x of counterRows){const key=[x.level||"",x.delivery_mode||"",x.lesson_time||"",x.lesson_type||"",x.lesson_type==="فردية"?(x.student_id||x.student_name||""):""].join("|");if(!counterGroups.has(key))counterGroups.set(key,[]);counterGroups.get(key).push(x);}
     const lessonCounterLabels=new Map();for(const group of counterGroups.values()){group.sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));let n=0;for(const x of group){if(x.status==="تمت"){n++;lessonCounterLabels.set(x.id,x.delivery_mode==="in_person"?(("الحصة "+(((n-1)%4)+1)+"/4 · الشهر "+Math.ceil(n/4))):("الحصة رقم "+n));}}}
     const dayRows=(rows||[]).filter(x=>String(x.lesson_date||"").slice(0,10)===selected).sort((a,b)=>String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
-    details.innerHTML='<section class="calendar-lessons-day"><h3>حصص يوم '+escapeHtml(selected)+'</h3><p>عدد الحصص: '+dayRows.length+'</p>'+(dayRows.length?dayRows.map(x=>'<details class="calendar-lesson-entry"><summary><span class="calendar-lesson-time">'+escapeHtml(x.lesson_time||"الوقت غير محدد")+'</span><span class="calendar-lesson-title">'+escapeHtml(x.level||"المستوى غير محدد")+' — '+escapeHtml(x.lesson_type||"جماعية")+'</span><span class="calendar-lesson-state">'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+' · '+escapeHtml(x.status||"مجدولة")+'</span>'+(lessonCounterLabels.has(x.id)?'<span class="calendar-lesson-state">'+escapeHtml(lessonCounterLabels.get(x.id))+'</span>':'')+'<span class="calendar-lesson-chevron">⌄</span></summary><div class="calendar-lesson-content"><div class="calendar-lesson-info"><div class="calendar-lesson-info-row student"><span>اسم ولقب التلميذ</span><strong>'+escapeHtml(x.student_name||"حصة جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>نوع الحصة</span><strong>'+escapeHtml(x.lesson_type||"جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>تصنيف الحصة</span><strong>'+escapeHtml(x.lesson_category||"عادية")+'</strong></div>'+(x.lesson_category==="دورة مراجعة"?'<div class="calendar-lesson-info-row"><span>نوع التقييم</span><strong>'+escapeHtml(x.course_kind||"فرض")+' رقم '+escapeHtml(x.course_number||1)+' · '+escapeHtml(x.course_term||"الفصل الأول")+'</strong></div>':'')+'<div class="calendar-lesson-info-row"><span>طريقة التدريس</span><strong>'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+'</strong></div><div class="calendar-lesson-info-row"><span>حالة الحصة</span><strong>'+escapeHtml(x.status||"مجدولة")+'</strong></div></div>'+(x.notes?'<p class="calendar-lesson-notes"><span>ملاحظات</span><strong>'+escapeHtml(x.notes)+'</strong></p>':'')+'<div class="calendar-lesson-actions"><button type="button" class="primary lesson-status-button" data-calendar-done="'+escapeHtml(x.id)+'">تمت الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-not-done="'+escapeHtml(x.id)+'">لم تتم الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-delete="'+escapeHtml(x.id)+'">حذف الحصة</button></div></div></details>').join(""):'<p class="muted">ما كاين حتى حصة في هذا اليوم.</p>')+'<div class="calendar-day-income" data-calendar-day-income><span>إجمالي المبلغ المحتسب من حصص اليوم</span><strong>جارٍ الحساب…</strong></div></section>';
-    updateCalendarDayIncome(selected,dayRows);
+    details.innerHTML='<section class="calendar-lessons-day"><h3>حصص يوم '+escapeHtml(selected)+'</h3><p>عدد الحصص: '+dayRows.length+'</p>'+(dayRows.length?dayRows.map(x=>'<details class="calendar-lesson-entry"><summary><span class="calendar-lesson-time">'+escapeHtml(x.lesson_time||"الوقت غير محدد")+'</span><span class="calendar-lesson-title">'+escapeHtml(x.level||"المستوى غير محدد")+' — '+escapeHtml(x.lesson_type||"جماعية")+'</span><span class="calendar-lesson-state">'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+' · '+escapeHtml(x.status||"مجدولة")+'</span>'+(lessonCounterLabels.has(x.id)?'<span class="calendar-lesson-state">'+escapeHtml(lessonCounterLabels.get(x.id))+'</span>':'')+'<span class="calendar-lesson-chevron">⌄</span></summary><div class="calendar-lesson-content"><div class="calendar-lesson-info"><div class="calendar-lesson-info-row student"><span>اسم ولقب التلميذ</span><strong>'+escapeHtml(x.student_name||"حصة جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>نوع الحصة</span><strong>'+escapeHtml(x.lesson_type||"جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>تصنيف الحصة</span><strong>'+escapeHtml(x.lesson_category||"عادية")+'</strong></div>'+(x.lesson_category==="دورة مراجعة"?'<div class="calendar-lesson-info-row"><span>نوع التقييم</span><strong>'+escapeHtml(x.course_kind||"فرض")+' رقم '+escapeHtml(x.course_number||1)+' · '+escapeHtml(x.course_term||"الفصل الأول")+'</strong></div>':'')+'<div class="calendar-lesson-info-row"><span>طريقة التدريس</span><strong>'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+'</strong></div><div class="calendar-lesson-info-row"><span>حالة الحصة</span><strong>'+escapeHtml(x.status||"مجدولة")+'</strong></div><div class="calendar-lesson-info-row lesson-income-row"><span>المبلغ المحتسب</span><strong data-lesson-income="'+escapeHtml(x.id)+'">'+(x.status==="تمت"?"جارٍ الحساب…":"—")+'</strong></div></div>'+(x.notes?'<p class="calendar-lesson-notes"><span>ملاحظات</span><strong>'+escapeHtml(x.notes)+'</strong></p>':'')+'<div class="calendar-lesson-actions"><button type="button" class="primary lesson-status-button" data-calendar-done="'+escapeHtml(x.id)+'">تمت الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-not-done="'+escapeHtml(x.id)+'">لم تتم الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-delete="'+escapeHtml(x.id)+'">حذف الحصة</button></div></div></details>').join(""):'<p class="muted">ما كاين حتى حصة في هذا اليوم.</p>')+'/section>';
+    updateCalendarLessonAmounts(dayRows);
   }
-  async function updateCalendarDayIncome(date,dayRows){
-    const target=document.querySelector("#lessonCalendarDayDetails [data-calendar-day-income] strong");
-    if(!target)return;
-    const completed=(dayRows||[]).filter(x=>x.status==="تمت");
-    let total=0,known=false;
-    for(const lesson of completed){
-      const price=Math.max(0,Number(lesson.unit_price)||0);
-      if(!price)continue;
+  async function updateCalendarLessonAmounts(dayRows){
+    for(const lesson of (dayRows||[]).filter(x=>x.status==="تمت")){
+      const selector='#lessonCalendarDayDetails [data-lesson-income="'+CSS.escape(String(lesson.id))+'"]';
       try{
+        const price=Math.max(0,Number(lesson.unit_price)||0);
         let count=0;
         if(lesson.lesson_type==="فردية")count=lesson.student_id?1:0;
         else{
@@ -1993,11 +1989,14 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
           const present=[...new Set(rows.filter(a=>a.status==="present").map(a=>String(a.student_id)))];
           count=rows.some(a=>a.is_chargeable===true)?chargeable.length:present.length;
         }
-        total+=price*count;known=true;
-      }catch(err){console.warn("تعذر احتساب دخل الحصة",lesson.id,err);}
+        const live=document.querySelector(selector);
+        if(live)live.textContent=(price*count).toLocaleString("fr-FR")+" دج";
+      }catch(err){
+        const live=document.querySelector(selector);
+        if(live)live.textContent="غير متاح";
+        console.warn("تعذر احتساب مبلغ الحصة",lesson.id,err);
+      }
     }
-    const current=document.querySelector("#lessonCalendarDayDetails [data-calendar-day-income] strong");
-    if(current)current.textContent=known?total.toLocaleString("fr-FR")+" دج":(completed.length?"غير متاح":"0 دج");
   }
   window.tahadiSelectLessonDate=function(date){
     lessonCalendarSelectedDate=String(date||"").slice(0,10);
@@ -2559,10 +2558,10 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #lessonCalendarDayDetails .calendar-lesson-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
 #lessonCalendarDayDetails .calendar-lesson-actions .lesson-status-button{width:100%;max-width:none;min-height:48px!important;flex:auto;padding:10px 8px!important;font-size:.9rem!important}
 #lessonCalendarDayDetails .calendar-lesson-actions [data-calendar-delete]{grid-column:1/-1;justify-self:end;width:auto;min-width:120px;min-height:40px!important;font-size:.82rem!important;background:#fff!important;border:1px solid #e5c9c3!important;color:#913c31!important;box-shadow:0 2px 0 #ead8d3!important}
-#lessonCalendarDayDetails .calendar-day-income{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:16px;padding:15px 16px;border:1px solid #cfe1cb;border-radius:15px;background:linear-gradient(135deg,#edf7eb,#f8fbf5);color:#245238}
+#lessonCalendarDayDetails .lesson-income-row{background:#f0f7ed}.lesson-income-row strong{color:#17633b!important;font-size:1rem}
 #lessonCalendarDayDetails .calendar-day-income span{font-size:.9rem;font-weight:650}
 #lessonCalendarDayDetails .calendar-day-income strong{font-size:1.1rem;font-weight:850;white-space:nowrap}
-@media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:12px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:12px 10px;font-size:.85rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:1.02rem}#lessonCalendarDayDetails .calendar-day-income{align-items:flex-start;flex-direction:column;gap:6px}}
+@media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:12px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:12px 10px;font-size:.85rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:1.02rem}}
 
 </style></body>
 </html>
