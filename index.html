@@ -760,6 +760,30 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  #studentLevelView .student-list-tools input,#studentLevelView .student-list-tools select{font-size:13px!important}
  #studentLevelView #studentsList>.daily-mode-switch button{font-size:9px!important}
 }
+
+/* بطاقات تلاميذ شديدة الاختصار لعرض عدد أكبر على الهاتف */
+@media(max-width:600px){
+ #studentLevelView #studentsList>.student-card{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+  grid-template-areas:"name name" "meta meta" "actions actions" "details details"!important;
+  gap:5px 8px!important;padding:8px 9px!important;margin:2px 0 4px!important;
+  border-radius:11px!important;box-shadow:0 2px 0 rgba(20,83,45,.06),0 3px 8px rgba(20,63,34,.045)!important;
+ }
+ #studentLevelView #studentsList .student-card-name{grid-area:name;font-size:13px!important;line-height:1.35!important}
+ #studentLevelView #studentsList .student-card-meta{grid-area:meta;gap:4px!important}
+ #studentLevelView #studentsList .student-chip{font-size:9px!important;padding:2px 6px!important;line-height:1.4!important}
+ #studentLevelView #studentsList .student-card-actions{grid-area:actions;display:flex!important;gap:5px!important;margin:0!important}
+ #studentLevelView #studentsList .student-card-actions button{
+  flex:1 1 0!important;min-width:0!important;min-height:29px!important;
+  padding:3px 5px!important;font-size:10px!important;border-radius:8px!important;
+  border-bottom-width:2px!important;box-shadow:0 2px 0 rgba(20,83,45,.06)!important;
+ }
+ #studentLevelView #studentsList .student-card-details{grid-area:details;padding-top:3px!important;margin-top:1px!important}
+ #studentLevelView #studentsList .student-card-details summary{font-size:10px!important;padding:2px!important}
+ #studentLevelView #studentsList .student-card-details .student-actions{gap:4px!important;margin-top:4px!important}
+ #studentLevelView #studentsList .student-card-details .student-actions button{min-height:27px!important;padding:3px 4px!important;font-size:9px!important}
+ #studentLevelView #studentsList .student-card-meta .student-chip{white-space:nowrap}
+}
 </style>
 
 <style id="home-redesign-clean-v3">
