@@ -356,13 +356,10 @@ async function loadPublishedQuizzes(){
  try{
   let quizzes=[];
   if(teacherPreviewId&&teacherPreviewData&&teacherPreviewData.student){
-   const token=localStorage.getItem("tahadi_teacher_token");
-   if(!token)throw Error("انتهت جلسة الأستاذة؛ عودي إلى فضاء الأستاذة.");
-   const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_list_resources"})});
-   const d=await r.json();
-   if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل الاختبارات للمعاينة.");
+   // Teacher preview already receives the published resources in its authenticated preview payload.
+   // Reuse that same snapshot so the quiz section does not start a second teacher-session request.
    const studentLevel=teacherPreviewData.student.level||"";
-   quizzes=(d.resources||[]).filter(q=>q.resource_type==="quiz"&&q.is_published&&q.level===studentLevel);
+   quizzes=(teacherPreviewData.resources||[]).filter(q=>q.resource_type==="quiz"&&q.is_published&&q.level===studentLevel);
   }else{
    const controller=new AbortController();
    const timeout=setTimeout(()=>controller.abort(),15000);
