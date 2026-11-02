@@ -1958,6 +1958,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
       const dateObject=new Date(date+"T12:00:00");
       $("calendarDayPageTitle").textContent=Number.isNaN(dateObject.getTime())?"حصص يوم "+date:"حصص يوم "+dateObject.toLocaleDateString("ar-DZ",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
       const total=lessons.filter(x=>x.status==="تمت").reduce((sum,x)=>sum+(Number(x.amount)||0),0);
+      document.querySelector("#calendarDayPage .calendar-day-summary")?.remove();
       const summary=document.createElement("div");summary.className="calendar-day-summary";
       summary.innerHTML='<span>عدد الحصص · '+lessons.length+'</span><strong>'+calendarMoney(total)+' دج</strong>';
       const list=$("calendarDayPageList");list.innerHTML="";
