@@ -359,7 +359,7 @@ async function loadPublishedQuizzes(){
   // نستخدم نفس البيانات في دخول التلميذ ودخول الأستاذة باسمه، دون طلب جلسة ثانية أو كود إضافي.
   const source=teacherPreviewData?.student?teacherPreviewData:currentDashboardData;
   const studentLevel=source?.student?.level||"";
-  quizzes=(source?.resources||[]).filter(q=>q.resource_type==="quiz"&&q.is_published===true&&q.level===studentLevel);
+  quizzes=(source?.resources||[]).filter(q=>q.resource_type==="quiz"&&q.level===studentLevel);
   if(!quizzes.length){
    listEl.innerHTML='<div class="empty">لا توجد اختبارات منشورة لمستوى هذا التلميذ حاليًا.</div>';
    return;
