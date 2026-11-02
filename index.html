@@ -2860,6 +2860,30 @@ const handleIncomeCalendarClick=async e=>{
  }
  loadNextTeacherLesson();setInterval(loadNextTeacherLesson,60*1000);
 
+ // معالجات مباشرة داخل النطاق الصحيح لضمان عمل لوحة الأستاذة وقسم المداخيل.
+ document.addEventListener("click",function(event){
+   const target=event.target instanceof Element?event.target:null;
+   if(!target)return;
+   const incomeButton=target.closest('[data-view="incomeView"]');
+   if(incomeButton){
+     event.preventDefault();
+     event.stopImmediatePropagation();
+     try{showView("incomeView");openIncomePage("incomeCalendarPage");}
+     catch(error){console.error("تعذر فتح قسم المداخيل",error);showStatus("تعذر فتح المداخيل: "+(error.message||"خطأ غير معروف"),"error");}
+     return;
+   }
+   const toggle=target.closest("#toggleTeacherCommandPanel");
+   if(toggle){
+     event.preventDefault();
+     event.stopImmediatePropagation();
+     const panel=toggle.closest(".teacher-command-panel");
+     if(!panel)return;
+     const collapsed=panel.classList.toggle("is-collapsed");
+     toggle.setAttribute("aria-expanded",String(!collapsed));
+     toggle.textContent=collapsed?"＋ فتح لوحة التذكيرات":"− إخفاء لوحة التذكيرات";
+   }
+ },true);
+
  renderClock();renderReminders();setInterval(()=>{renderClock();checkAlarms();},1000);
 })();
 </script>
