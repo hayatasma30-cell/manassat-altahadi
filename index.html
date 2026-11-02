@@ -425,7 +425,35 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 .perfect-scores-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.perfect-level{min-width:0;padding:12px;border:1px solid #dce8dc;border-radius:16px;background:#fbfdf9}.perfect-level h3{margin:0 0 10px;color:#175a37}@media(max-width:640px){.perfect-scores-grid{grid-template-columns:1fr}}
 .income-calendar-grid{display:grid!important;width:100%!important;min-width:100%!important;max-width:100%!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;grid-auto-flow:row!important;grid-auto-columns:minmax(0,1fr)!important;gap:5px;margin:12px 0 20px;direction:rtl;align-items:stretch}.income-calendar-weekday{grid-column:auto!important;grid-row:auto!important;text-align:center;color:#627568;font-size:11px;font-weight:700;padding:5px 0;min-width:0}.income-calendar-day{grid-column:auto!important;grid-row:auto!important;display:flex!important;width:100%!important;min-width:0!important;max-width:100%!important;min-height:66px;padding:5px 1px!important;border:1px solid #dce8d7!important;border-radius:10px!important;background:#fff!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#18382a;white-space:normal!important;overflow:hidden}.income-calendar-day.has-income{background:#eaf6e9!important;border-color:#8fbd91!important}.income-calendar-day.selected{outline:3px solid #d9ad53;outline-offset:1px}.income-calendar-day .day-number{font-weight:800;font-size:13px}.income-calendar-day .day-amount{font-size:9px;color:#17633a;line-height:1.2;overflow-wrap:anywhere}.income-calendar-day.empty{grid-column:auto!important;grid-row:auto!important;visibility:hidden}.income-calendar-day:disabled{opacity:.55}@media(max-width:390px){.income-calendar-grid{gap:3px}.income-calendar-day{min-height:58px!important}.income-calendar-day .day-amount{font-size:8px}}
 .calendar-roster-page{position:fixed;inset:0;z-index:9999;background:#f8f8f1;overflow-y:auto;padding:18px 14px calc(28px + env(safe-area-inset-bottom));}.calendar-roster-shell{max-width:760px;margin:0 auto;min-height:100%;}.calendar-roster-shell .view-head{position:sticky;top:0;z-index:2;background:#f8f8f1;padding:8px 0 14px;border-bottom:1px solid #dce5da;}.calendar-roster-shell .view-head h2{font-size:1.15rem;margin:0}.calendar-roster-shell .data-item{background:#fff;border:1px solid #dce5da;border-radius:14px;padding:13px;margin:9px 0}.calendar-roster-row{display:flex;align-items:center;gap:12px}.calendar-roster-row strong{flex:1;line-height:1.6}.calendar-roster-row select{min-width:118px;padding:10px;border:1px solid #cbd7ca;border-radius:10px;background:#fff;color:var(--ink)}.calendar-roster-shell #calendarRosterSave{position:sticky;bottom:10px;width:100%;box-shadow:0 5px 14px #173e2a30;margin:14px 0 8px}
-.calendar-roster-page{position:fixed;inset:0;z-index:9999;background:#f8f8f1;overflow-y:auto;padding:18px 14px calc(28px + env(safe-area-inset-bottom));}.calendar-roster-shell{max-width:760px;margin:0 auto;min-height:100%;}.calendar-roster-shell .view-head{position:sticky;top:0;z-index:2;background:#f8f8f1;padding:8px 0 14px;border-bottom:1px solid #dce5da;}.calendar-roster-shell .view-head h2{font-size:1.15rem;margin:0}.calendar-roster-shell .data-item{background:#fff;border:1px solid #dce5da;border-radius:14px;padding:13px;margin:9px 0}.calendar-roster-row{display:flex;align-items:center;gap:12px}.calendar-roster-row strong{flex:1;line-height:1.6}.calendar-roster-row select{min-width:118px;padding:10px;border:1px solid #cbd7ca;border-radius:10px;background:#fff;color:var(--ink)}.calendar-roster-shell #calendarRosterSave{position:sticky;bottom:10px;width:100%;box-shadow:0 5px 14px #173e2a30;margin:14px 0 8px}.calendar-day-lesson{width:100%;text-align:right;background:#fff;border:1px solid #dce5da;border-radius:16px;padding:17px;margin:10px 0;color:var(--ink);display:block}.calendar-day-lesson strong{display:block;font-size:1.05rem;margin-bottom:9px}.calendar-day-lesson span{display:block;color:#66756a;line-height:1.8}.calendar-lesson-actions{display:grid;gap:10px;margin-top:18px}.calendar-lesson-actions button{width:100%}
+.calendar-roster-page{position:fixed;inset:0;z-index:9999;background:#f8f8f1;overflow-y:auto;padding:18px 14px calc(28px + env(safe-area-inset-bottom));}.calendar-roster-shell{max-width:760px;margin:0 auto;min-height:100%;}.calendar-roster-shell .view-head{position:sticky;top:0;z-index:2;background:#f8f8f1;padding:8px 0 14px;border-bottom:1px solid #dce5da;}.calendar-roster-shell .view-head h2{font-size:1.15rem;margin:0}.calendar-roster-shell .data-item{background:#fff;border:1px solid #dce5da;border-radius:14px;padding:13px;margin:9px 0}.calendar-roster-row{display:flex;align-items:center;gap:12px}.calendar-roster-row strong{flex:1;line-height:1.6}.calendar-roster-row select{min-width:118px;padding:10px;border:1px solid #cbd7ca;border-radius:10px;background:#fff;color:var(--ink)}.calendar-roster-shell #calendarRosterSave{position:sticky;bottom:10px;width:100%;box-shadow:0 5px 14px #173e2a30;margin:14px 0 8px}.calendar-day-lesson{width:100%;text-align:right;background:#fff;border:1px solid #dce5da;border-radius:16px;padding:17px;margin:10px 0;color:var(--ink);display:block}.calendar-day-lesson strong{display:block;font-size:1.05rem;margin-bottom:9px}.calendar-day-lesson span{display:block;color:#66756a;line-height:1.8}
+/* صفحة حصص اليوم: بطاقات مرتبة ومتجاوبة */
+#calendarDayPage{background:linear-gradient(180deg,#f5f8f1 0%,#fbfaf5 100%)}
+#calendarDayPage .calendar-roster-shell{max-width:680px;padding-bottom:26px}
+#calendarDayPage .view-head{display:flex;flex-direction:column;align-items:stretch;gap:15px;padding:12px 0 18px}
+#calendarDayPage .view-head .back{align-self:flex-start;margin:0}
+#calendarDayPage .view-head h2{font-size:1.35rem!important;font-weight:900;color:#174a2e;margin:0!important}
+.calendar-day-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;margin:18px 0;background:#eaf4e7;border:1px solid #d4e5d0;border-right:4px solid #21834c;border-radius:16px;color:#174a2e}
+.calendar-day-summary span{font-size:.88rem;color:#58705d}
+.calendar-day-summary strong{font-size:1.15rem;white-space:nowrap}
+#calendarDayPageList{display:grid;gap:13px;margin-top:14px}
+#calendarDayPageList .calendar-day-lesson{position:relative;text-align:right;margin:0;padding:17px 16px 15px;border:1px solid #dce8d8;border-radius:19px;background:#fff;box-shadow:0 5px 0 #dce8d8,0 10px 20px rgba(27,68,42,.07);transition:transform .15s ease;overflow:hidden}
+#calendarDayPageList .calendar-day-lesson:active{transform:translateY(2px);box-shadow:0 3px 0 #dce8d8,0 6px 12px rgba(27,68,42,.06)}
+.calendar-day-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:13px}
+.calendar-day-card-title{display:block!important;font-size:1.04rem;font-weight:900;color:#183d2b;line-height:1.55}
+.calendar-day-card-type{display:inline-flex;align-items:center;margin-top:5px;padding:3px 9px;border-radius:20px;background:#edf6e9;color:#28613b;font-size:.76rem;font-weight:700}
+.calendar-day-status{flex:none;padding:5px 9px;border-radius:20px;background:#e8f4e7;color:#176238;font-size:.75rem;font-weight:800}
+.calendar-day-status.pending{background:#f2f1e9;color:#796c3d}
+.calendar-day-meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 14px}
+.calendar-day-meta>div{min-width:0;padding:9px 10px;border-radius:12px;background:#f7faf5}
+.calendar-day-meta small{display:block;color:#748176;font-size:.72rem;margin-bottom:3px}
+.calendar-day-meta strong{display:block;color:#284b35;font-size:.88rem;overflow-wrap:anywhere}
+.calendar-day-money{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid #e8eee5}
+.calendar-day-money span{color:#6a796d;font-size:.82rem}
+.calendar-day-money strong{font-size:1.12rem;color:#176238;white-space:nowrap}
+.calendar-day-open-hint{display:block!important;margin-top:10px;color:#829084!important;font-size:.76rem;text-align:left}
+.calendar-day-empty{padding:25px 16px;text-align:center;background:#fff;border:1px dashed #cbd9c8;border-radius:17px;color:#718073}
+@media(max-width:390px){.calendar-day-meta{gap:7px}.calendar-day-meta>div{padding:8px}.calendar-day-card-title{font-size:.96rem}}
+.calendar-lesson-actions{display:grid;gap:10px;margin-top:18px}.calendar-lesson-actions button{width:100%}
 
 /* تصميم واضح ومختصر لمقارنة الموسمين الدراسيين */
 .income-compare-page{padding:clamp(12px,3vw,20px)!important}
@@ -1927,8 +1955,27 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
       const rows=incomeCalendarRows.filter(x=>x.date===date&&x.lessonId);
       const seen=new Map();for(const x of rows){const key=[x.date,String(x.note||"").replace(/[–—−]/g,"-").replace(/\s+/g,""),x.lessonType,x.level,x.studentName,x.deliveryMode].join("|");const prev=seen.get(key);if(!prev||(x.status==="تمت"&&prev.status!=="تمت"))seen.set(key,x);}
       const lessons=[...seen.values()];
-      $("calendarDayPageTitle").textContent="حصص يوم "+date;
-      $("calendarDayPageList").innerHTML=lessons.length?lessons.map(x=>'<button type="button" class="calendar-day-lesson" data-calendar-open-lesson="'+escapeHtml(x.lessonId)+'"><strong>'+(x.lessonType==="فردية"?"حصة فردية":x.lessonCategory==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+escapeHtml(x.level||x.studentName||"")+'</strong><span>'+escapeHtml(x.note||"")+'</span><span>الحالة: '+escapeHtml(x.status||"مجدولة")+' · سعر الوحدة: '+Number(x.unitPrice||0).toLocaleString("ar-DZ")+' دج</span><span>الحاضرون: '+Number(x.count||0)+' · إجمالي المستحقات: '+(Number(x.unitPrice||0)*Number(x.count||0)).toLocaleString("ar-DZ")+' دج</span><span>اضغطي لفتح تفاصيل الحصة وإدارة التلاميذ</span></button>').join(""):'<p class="muted">لا توجد حصص مسجلة في هذا اليوم.</p>';
+      const dateObject=new Date(date+"T12:00:00");
+      $("calendarDayPageTitle").textContent=Number.isNaN(dateObject.getTime())?"حصص يوم "+date:"حصص يوم "+dateObject.toLocaleDateString("ar-DZ",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+      const total=lessons.filter(x=>x.status==="تمت").reduce((sum,x)=>sum+(Number(x.amount)||0),0);
+      const summary=document.createElement("div");summary.className="calendar-day-summary";
+      summary.innerHTML='<span>عدد الحصص · '+lessons.length+'</span><strong>'+calendarMoney(total)+' دج</strong>';
+      const list=$("calendarDayPageList");list.innerHTML="";
+      if(lessons.length){
+        list.before(summary);
+        list.innerHTML=lessons.map(x=>{
+          const type=x.lessonType==="فردية"?"فردية":x.lessonCategory==="دورة مراجعة"?"دورة مراجعة":"جماعية";
+          const title=x.lessonType==="فردية"?(x.studentName||x.level||"حصة فردية"):(x.level||"حصة جماعية");
+          const time=String(x.note||"").split("·")[0].trim()||"—";
+          const method=x.deliveryMode==="zoom"?"Zoom":"حضوري";
+          const completed=x.status==="تمت";
+          const totalAmount=Number(x.amount)||0;
+          return '<button type="button" class="calendar-day-lesson" data-calendar-open-lesson="'+escapeHtml(x.lessonId)+'"><div class="calendar-day-card-head"><div><strong class="calendar-day-card-title">'+escapeHtml(title)+'</strong><span class="calendar-day-card-type">حصة '+type+'</span></div><span class="calendar-day-status '+(completed?'':'pending')+'">'+escapeHtml(x.status||"مجدولة")+'</span></div><div class="calendar-day-meta"><div><small>التوقيت</small><strong>'+escapeHtml(time)+'</strong></div><div><small>طريقة الدراسة</small><strong>'+method+'</strong></div><div><small>سعر الوحدة</small><strong>'+calendarMoney(x.unitPrice)+' دج</strong></div><div><small>عدد التلاميذ</small><strong>'+Number(x.count||0)+'</strong></div></div><div class="calendar-day-money"><span>مستحقات الحصة</span><strong>'+calendarMoney(totalAmount)+' دج</strong></div><span class="calendar-day-open-hint">فتح تفاصيل الحصة ←</span></button>';
+        }).join("");
+      }else{
+        summary.innerHTML='<span>عدد الحصص · 0</span><strong>0 دج</strong>';list.before(summary);
+        list.innerHTML='<div class="calendar-day-empty">لا توجد حصص في هذا اليوم</div>';
+      }
       $("calendarDayPage").hidden=false;
     }
     function openCalendarLessonPage(id){
