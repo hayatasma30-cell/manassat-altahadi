@@ -1307,7 +1307,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 <main class="wrap">
 <section id="homeView" class="view active">
 <section class="teacher-command-panel is-collapsed" aria-label="لوحة الأستاذة والتذكيرات" dir="rtl">
-  <div class="command-top"><div class="command-heading"><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>تذكيراتك في مكان واحد.</p><button type="button" id="toggleTeacherCommandPanel" class="secondary command-toggle" aria-expanded="false">＋ فتح لوحة التذكيرات</button></div><div class="live-clock-wrap"><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
+  <div class="command-top"><div class="command-heading"><span class="command-kicker">لوحة الأستاذة</span><h2>وقتي ومهامي</h2><p>تذكيراتك في مكان واحد.</p><button type="button" id="toggleTeacherCommandPanel" class="secondary command-toggle" aria-expanded="false">فتح لوحة التذكيرات</button></div><div class="live-clock-wrap"><span id="teacherLiveDate">جارٍ تحميل التاريخ…</span></div></div>
   <div class="command-stats"><div><span>🔔</span><strong id="teacherReminderCount">0</strong><small>تذكيرات قادمة</small></div><div><span>⏰</span><strong id="teacherNextReminder">—</strong><small>أقرب تذكير</small></div></div>
   <section class="command-next-lesson lesson-card-clickable" id="teacherNextLessonCard" aria-label="الحصة القادمة" role="button" tabindex="0"><div class="command-next-lesson-head"><span>🎓 الحصة القادمة</span><span class="teacher-remaining-icon" aria-hidden="true">⏰</span><strong id="teacherNextLessonCountdown" class="command-next-lesson-countdown">—</strong></div><strong id="teacherNextLessonTitle">—</strong><div class="teacher-lesson-facts"><div><small>اليوم</small><strong id="teacherNextLessonDay">—</strong></div><div><small>الساعة</small><strong id="teacherNextLessonTime">—</strong></div><div><small>الطريقة</small><strong id="teacherNextLessonMode">—</strong></div></div></section>
   <div class="command-reminder-form"><h3>➕ أضيفي تذكيرًا أو منبّهًا</h3><label for="teacherReminderTitle">ما الذي تريدين تذكّره؟</label><input id="teacherReminderTitle" type="text" maxlength="120" placeholder="مثال: تحضير حصة السنة الرابعة" required>
@@ -1599,16 +1599,6 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
-  // فتح قسم المداخيل من داخل نطاق التطبيق نفسه، مع تجاوز أي معالج قديم متعارض.
-  document.addEventListener("click",function(event){
-    const target=event.target instanceof Element?event.target:null;
-    const button=target&&target.closest('[data-view="incomeView"]');
-    if(!button)return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    try{showView("incomeView");openIncomePage("incomeCalendarPage");}
-    catch(error){console.error("Income view navigation failed",error);showStatus("تعذر فتح المداخيل: "+(error.message||"خطأ غير معروف"),"error");}
-  },true);
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
   // معالجان موحدان للقسمين: منع تكرار المعالجات القديمة وضمان فتح الصفحة وتحميل بياناتها.
   document.addEventListener("click",async function(event){
@@ -2818,7 +2808,7 @@ const handleIncomeCalendarClick=async e=>{
  function renderReminders(){const list=$("teacherReminderList");if(!list)return;const now=Date.now(),pending=reminders.filter(r=>!r.done&&new Date(r.at).getTime()>=now).sort((a,b)=>new Date(a.at)-new Date(b.at));$("teacherReminderCount").textContent=String(pending.length);$("teacherNextReminder").textContent=pending.length?new Intl.DateTimeFormat("ar-DZ",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(pending[0].at)):"—";const sorted=[...reminders].sort((a,b)=>(a.done-b.done)||(new Date(a.at)-new Date(b.at)));if(!sorted.length){list.innerHTML='<p class="muted">لا توجد تذكيرات بعد. أضيفي أول منبّه من الأعلى.</p>';return;}list.innerHTML=sorted.map(r=>{const d=new Date(r.at),due=!r.done&&d.getTime()<=now;return '<article class="command-reminder-item '+(r.done?'is-done ':'')+(due?'is-due':'')+'"><div><div class="command-reminder-title">'+escapeText(r.title)+'</div><div class="command-reminder-meta">📂 '+escapeText(r.category)+' · 📅 '+escapeText(new Intl.DateTimeFormat("ar-DZ",{weekday:"short",day:"numeric",month:"short",year:"numeric"}).format(d))+' · 🕒 '+escapeText(new Intl.DateTimeFormat("ar-DZ",{hour:"2-digit",minute:"2-digit"}).format(d))+(due?' · حان موعده':r.done?' · تم الإنجاز':'')+'</div></div><div class="command-reminder-actions">'+(!r.done?'<button type="button" class="secondary" data-reminder-done="'+escapeText(r.id)+'">تمّ</button>':'<button type="button" class="secondary" data-reminder-undo="'+escapeText(r.id)+'">استعادة</button>')+'<button type="button" class="secondary" data-reminder-delete="'+escapeText(r.id)+'">حذف</button></div></article>';}).join("");}
  function playAlarm(){try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=new C();[0,.28,.56].forEach((offset,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.type="sine";osc.frequency.value=i===1?880:660;gain.gain.setValueAtTime(.001,ctx.currentTime+offset);gain.gain.exponentialRampToValueAtTime(.16,ctx.currentTime+offset+.03);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+offset+.22);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime+offset);osc.stop(ctx.currentTime+offset+.24);});setTimeout(()=>ctx.close(),1400);}catch(_){}}
  function checkAlarms(){const now=Date.now();let changed=false;reminders.forEach(r=>{if(r.done||r.fired)return;const at=new Date(r.at).getTime();if(Number.isFinite(at)&&at<=now){r.fired=true;changed=true;playAlarm();if("Notification"in window&&Notification.permission==="granted"){try{new Notification("منبّه منصة التحدي",{body:r.title,tag:"tahadi-"+r.id});}catch(_){}}else if($("teacherReminderStatus"))$("teacherReminderStatus").textContent="🔔 حان موعد: "+r.title+" — افتحي الإشعارات لتلقي تنبيه النظام.";}});if(changed){try{localStorage.setItem(key,JSON.stringify(reminders));}catch(_){}renderReminders();}}
- const panel=document.querySelector(".teacher-command-panel"),toggle=$("toggleTeacherCommandPanel");if(panel&&toggle){toggle.addEventListener("click",()=>{const collapsed=panel.classList.toggle("is-collapsed");toggle.setAttribute("aria-expanded",String(!collapsed));toggle.textContent=collapsed?"＋ فتح لوحة التذكيرات":"− إخفاء لوحة التذكيرات";});}
+ const panel=document.querySelector(".teacher-command-panel"),toggle=$("toggleTeacherCommandPanel");if(panel&&toggle){toggle.addEventListener("click",()=>{const collapsed=panel.classList.toggle("is-collapsed");toggle.setAttribute("aria-expanded",String(!collapsed));toggle.textContent=collapsed?"فتح لوحة التذكيرات":"إخفاء لوحة التذكيرات";});}
  const title=$("teacherReminderTitle"),date=$("teacherReminderDate"),time=$("teacherReminderTime");
  if(!title||!date||!time)return;
  const now=new Date();date.min=dateKey(now);date.value=dateKey(now);time.value=pad(now.getHours())+":"+pad((Math.ceil(now.getMinutes()/5)*5)%60);if(Number(time.value.slice(3))===0&&now.getMinutes()>55){const later=new Date(now.getTime()+10*60000);date.value=dateKey(later);time.value=pad(later.getHours())+":"+pad(later.getMinutes());}
@@ -3102,41 +3092,5 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
 </style>
-<script id="teacher-income-navigation-recovery-v1">
-(function(){
-  if(window.tahadiNavigationRecoveryInstalled)return;
-  window.tahadiNavigationRecoveryInstalled=true;
-  document.addEventListener("click",function(event){
-    const target=event.target instanceof Element?event.target:null;
-    if(!target)return;
-    const incomeButton=target.closest('[data-view="incomeView"]');
-    if(incomeButton){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      try{
-        const hasShowView=typeof showView==="function";
-        if(hasShowView)showView("incomeView");
-        else{
-          document.querySelectorAll(".view").forEach(view=>{
-            const active=view.id==="incomeView";
-            view.classList.toggle("active",active);
-            view.style.display=active?"block":"none";
-            view.setAttribute("aria-hidden",active?"false":"true");
-          });
-        }
-        if(!hasShowView&&typeof openIncomePage==="function")openIncomePage("incomeCalendarPage");
-        else if(!hasShowView){
-          document.querySelectorAll("#incomeView .income-subpage").forEach(page=>{
-            const active=page.id==="incomeCalendarPage";
-            page.hidden=!active;
-            page.style.setProperty("display",active?"block":"none","important");
-          });
-          if(typeof loadIncomeCalendar==="function")loadIncomeCalendar();
-        }
-      }catch(error){console.error("Income navigation recovery failed",error);}
-      return;
-    }
-  },true);
-})();
-</script></body>
+</body>
 </html>
