@@ -1562,7 +1562,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
   }
-  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => {showView(btn.dataset.view);if(btn.dataset.view==="incomeView"){showIncomePage("incomeCalendarPage");loadIncomeCalendar();}}));
+  document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => {showView(btn.dataset.view);if(btn.dataset.view==="incomeView")openIncomePage("incomeCalendarPage");}));
   // معالجان موحدان للقسمين: منع تكرار المعالجات القديمة وضمان فتح الصفحة وتحميل بياناتها.
   document.addEventListener("click",async function(event){
     const studentsButton=event.target.closest('[data-view="studentsView"]');
@@ -1876,7 +1876,8 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     const monthLabels=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     let manual2025={};
     const incomePageIds=["incomeTotalsPage","daily2025Page","daily2026Page","manual2025Page","incomeComparePage","incomeCompareMonthlyPage","incomeCompareDailyPage","incomeMonthlyPage","incomePaymentsPage","incomeCalendarPage","incomeCalendar2025Page"];
-    function showIncomePage(id){$("incomeHomePage").hidden=id!=="home";incomePageIds.forEach(pid=>$(pid).hidden=pid!==id);} 
+    function showIncomePage(id){if(id==="home"||!incomePageIds.includes(id))id="incomeCalendarPage";const home=$("incomeHomePage");if(home)home.hidden=true;incomePageIds.forEach(pid=>{const page=$(pid);if(page)page.hidden=pid!==id;});return id;}
+    function openIncomePage(id){id=showIncomePage(id);if(id==="incomeCalendarPage")loadIncomeCalendar();else if(id==="incomeCalendar2025Page")loadIncomeCalendar2025();else if(id==="incomeComparePage")loadIncomeCompare();else if(id==="manual2025Page")loadDailyWork25();else if(id==="daily2025Page")loadDailyIncome(2025);else if(id==="daily2026Page")loadDailyIncome(2026);} 
     // Daily manual income entries use the existing authenticated Supabase function.
     let dailyIncomeEntries={2025:[],2026:[]};
     const dailyIncomeLabels={g1:"السنة الأولى متوسط",g2:"السنة الثانية متوسط",g3:"السنة الثالثة متوسط",g4:"السنة الرابعة متوسط"};
@@ -1919,10 +1920,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     $("saveDailyWork25Btn").addEventListener("click",async()=>{const status=$("dailyWork25Status"),btn=$("saveDailyWork25Btn");const ok=await saveDailyIncomeEntry(2025,{work_date:$("dailyWork25Date").value,description:$("dailyWork25Description").value.trim(),amount:Number($("dailyWork25Amount").value),notes:$("dailyWork25Notes").value.trim()},status,btn);if(ok){$("dailyWork25Description").value="";$("dailyWork25Amount").value="";$("dailyWork25Notes").value="";}});
     $("dailyWorkDate").addEventListener("change",()=>{if($("dailyGroupDate"))$("dailyGroupDate").value=$("dailyWorkDate").value;});
 
-    document.querySelectorAll("[data-income-page]").forEach(btn=>btn.addEventListener("click",()=>{showIncomePage(btn.dataset.incomePage);if(btn.dataset.incomePage==="incomeCalendarPage")loadIncomeCalendar();if(btn.dataset.incomePage==="incomeCalendar2025Page")loadIncomeCalendar2025();if(btn.dataset.incomePage==="incomeComparePage")loadIncomeCompare();if(btn.dataset.incomePage==="manual2025Page")loadDailyWork25();if(btn.dataset.incomePage==="daily2025Page")loadDailyIncome(2025);if(btn.dataset.incomePage==="daily2026Page")loadDailyIncome(2026);}));
-    document.querySelectorAll("[data-income-home]").forEach(btn=>btn.addEventListener("click",()=>{showIncomePage("incomeCalendarPage");loadIncomeCalendar();}));
-    document.querySelectorAll("[data-compare-open]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage(btn.dataset.compareOpen)));
-    document.querySelectorAll("[data-compare-back]").forEach(btn=>btn.addEventListener("click",()=>showIncomePage("incomeComparePage")));
+    document.addEventListener("click",event=>{const pageButton=event.target.closest("[data-income-page]");if(pageButton){event.preventDefault();openIncomePage(pageButton.dataset.incomePage);return;}const homeButton=event.target.closest("[data-income-home]");if(homeButton){event.preventDefault();openIncomePage("incomeCalendarPage");return;}const compareButton=event.target.closest("[data-compare-open]");if(compareButton){event.preventDefault();showIncomePage(compareButton.dataset.compareOpen);return;}const compareBack=event.target.closest("[data-compare-back]");if(compareBack){event.preventDefault();showIncomePage("incomeComparePage");}});
     let incomeCalendar2025Entries=[],incomeCalendar2025Selected="";
     function renderIncomeCalendar2025(){
       const input=$("incomeCalendar2025Month"),grid=$("incomeCalendar2025Grid");if(!input||!grid)return;
