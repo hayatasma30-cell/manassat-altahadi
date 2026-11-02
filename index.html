@@ -1604,7 +1604,7 @@ window.addEventListener("unhandledrejection",function(e){
       v.setAttribute("aria-hidden", active ? "false" : "true");
     });
     activeView = id;
-    if(id==="incomeView"&&typeof openIncomePage==="function")openIncomePage("incomeCalendarPage");
+    if(id==="incomeView"&&typeof window.tahadiOpenIncomePage==="function")window.tahadiOpenIncomePage("incomeCalendarPage");
     if(id!=="loginView")sessionStorage.setItem("tahadi_last_view",id);
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
@@ -2320,6 +2320,9 @@ const handleIncomeCalendarClick=async e=>{
     $("refreshPaymentsBtn")?.addEventListener("click",async()=>{const b=$("refreshPaymentsBtn"),s=$("paymentsRefreshStatus");b.disabled=true;s.textContent="جارٍ تحديث إشعارات الدفع…";try{await refresh();s.textContent="تم تحديث إشعارات الدفع."; }catch(e){s.textContent="تعذر تحديث إشعارات الدفع: "+(e.message||"خطأ غير معروف");}finally{b.disabled=false;}});
     $("sessionActions").style.display = "block"; $("topLogout").hidden = false;
     ensureTeacherPushButton();
+    // إتاحة فتح تقويم المداخيل من التنقل العام بعد اكتمال تهيئة بيانات الأستاذة.
+    window.tahadiOpenIncomePage=openIncomePage;
+    if(activeView==="incomeView")openIncomePage("incomeCalendarPage");
   }
   let selectedLessonMode="in_person";
   let selectedLessonPage="add"; let selectedLessonCategoryFilter="all"; let selectedLessonSubpage="all"; function setLessonCategoryFilter(value){selectedLessonCategoryFilter=value;if($("lessonCategoryFilterSelect"))$("lessonCategoryFilterSelect").value=value;const labels={all:"عرض كل التصنيفات.","عادية":"عرض الحصص العادية فقط.","دورة مراجعة":"عرض حصص دورات المراجعة فقط."};if($("lessonCategoryFilterHint"))$("lessonCategoryFilterHint").textContent=labels[value]||labels.all;if(selectedLessonPage!=="add")loadDailyLessons();} $("lessonCategoryFilterSelect").addEventListener("change",()=>setLessonCategoryFilter($("lessonCategoryFilterSelect").value));
