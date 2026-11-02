@@ -1054,6 +1054,28 @@ input,select,textarea{min-height:40px!important;padding:8px 10px!important;borde
 }
 @media(max-width:350px){#dailyLessonsView .lesson-main-nav button{font-size:9px!important}}
 </style>
+<style id="lesson-calendar-clean-compact-v2">
+/* إخفاء عنوان إدارة الحصص فقط عند فتح صفحة التقويم */
+#lessonListPanel:has(#lessonsCalendarPanel.calendar-clean-page) .lesson-list-heading{display:none!important}
+/* تقويم شهري أصغر ومتوازن على الهاتف */
+#dailyLessonsView #lessonCalendarGrid{gap:4px!important}
+#dailyLessonsView .lesson-calendar-dayname{padding:3px 0!important;font-size:clamp(9px,2.5vw,12px)!important}
+#dailyLessonsView .lesson-calendar-day{
+ min-height:52px!important;padding:4px 1px!important;gap:3px!important;
+ border-radius:9px!important;font-size:clamp(10px,2.8vw,13px)!important;
+}
+#dailyLessonsView .lesson-calendar-count{font-size:9px!important;padding:1px 4px!important;border-radius:7px!important}
+#dailyLessonsView .lesson-calendar-day.today:after{font-size:8px!important;padding:1px 3px!important}
+#dailyLessonsView .lesson-calendar-toolbar{gap:6px!important;margin:8px 0 12px!important}
+#dailyLessonsView .lesson-calendar-toolbar strong{font-size:clamp(13px,3.5vw,17px)!important}
+#dailyLessonsView .lesson-calendar-toolbar button{min-height:35px!important;padding:5px 8px!important;font-size:11px!important}
+#dailyLessonsView #lessonCalendarDayDetails{margin-top:9px!important}
+@media(max-width:420px){
+ #dailyLessonsView .lesson-calendar-grid{gap:3px!important}
+ #dailyLessonsView .lesson-calendar-day{min-height:47px!important;padding:3px 0!important}
+ #dailyLessonsView .lesson-calendar-dayname{font-size:9px!important}
+}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2487,41 +2509,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 </script>
 
 <script>
-/* Isolated navigation for the two main lesson panels; does not depend on app handlers. */
-(function(){
-  document.addEventListener("click",function(event){
-    var el=event.target;
-    if(!(el instanceof Element))return;
-    var button=el.closest("#dailyLessonsView [data-lesson-page]");
-    if(!button)return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    var page=button.getAttribute("data-lesson-page")==="add"?"add":"library";
-    var add=document.getElementById("lessonAddPanel");
-    var list=document.getElementById("lessonListPanel");
-    var calendar=document.getElementById("lessonsCalendarPanel");
-    if(!add||!list)return;
-    add.hidden=page!=="add";
-    add.style.setProperty("display",page==="add"?"block":"none","important");
-    list.hidden=page==="add";
-    list.style.setProperty("display",page==="add"?"none":"block","important");
-    if(calendar){
-      calendar.hidden=page!=="library";
-      calendar.style.setProperty("display",page==="library"?"block":"none","important");
-    }
-    document.querySelectorAll("#dailyLessonsView [data-lesson-page]").forEach(function(btn){
-      var active=(btn.getAttribute("data-lesson-page")==="add")=== (page==="add");
-      btn.classList.toggle("primary",active);
-      btn.classList.toggle("secondary",!active);
-      btn.setAttribute("aria-pressed",active?"true":"false");
-    });
-    if(page==="library"){
-      var refresh=document.getElementById("refreshLessonsBtn");
-      if(refresh)refresh.click();
-    }
-  },true);
-})();
+/* يعتمد التنقل على معالج الصفحات الأساسي setLessonPage لتجنب اعتراض النقرات */
 </script>
 
 
