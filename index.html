@@ -2558,6 +2558,10 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #lessonCalendarDayDetails .calendar-lesson-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px;align-items:stretch}
 #lessonCalendarDayDetails .calendar-lesson-actions .lesson-status-button{width:100%;min-width:0;max-width:none;min-height:38px!important;flex:auto;padding:6px 3px!important;font-size:.72rem!important;line-height:1.25!important;white-space:normal!important}
 #lessonCalendarDayDetails .calendar-lesson-actions [data-calendar-delete]{grid-column:auto;justify-self:stretch;width:100%;min-width:0;min-height:38px!important;font-size:.72rem!important;background:#fff!important;border:1px solid #e5c9c3!important;color:#913c31!important;box-shadow:0 1px 0 #ead8d3!important}
+/* فرض صف واحد لأزرار الحصة على الهاتف */
+#lessonCalendarDayDetails .calendar-lesson-actions{display:flex!important;flex-flow:row nowrap!important;align-items:stretch!important;gap:5px!important;width:100%!important}
+#lessonCalendarDayDetails .calendar-lesson-actions .lesson-status-button,
+#lessonCalendarDayDetails .calendar-lesson-actions [data-calendar-delete]{display:flex!important;flex:1 1 0!important;grid-column:auto!important;justify-content:center!important;align-items:center!important;width:0!important;min-width:0!important;max-width:none!important;min-height:36px!important;margin:0!important;padding:5px 2px!important;font-size:clamp(9px,2.7vw,12px)!important;line-height:1.2!important;white-space:normal!important;text-align:center!important}
 #lessonCalendarDayDetails .lesson-income-row{background:#f0f7ed}.lesson-income-row strong{color:#17633b!important;font-size:.88rem}
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
