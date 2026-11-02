@@ -986,6 +986,38 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
  #sessionActions #logoutBtn{min-height:43px!important;font-size:13px!important}
 }
 </style>
+
+<style id="lesson-main-nav-single-row-v1">
+/* أزرار إضافة الحصة والتقويم وإدارة الحصص: صف واحد ثابت على الهاتف والحاسوب */
+#dailyLessonsView .lesson-main-nav{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  width:100%!important;
+  gap:clamp(5px,1.8vw,10px)!important;
+  direction:rtl!important;
+  align-items:stretch!important;
+}
+#dailyLessonsView .lesson-main-nav button{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:48px!important;
+  margin:0!important;
+  padding:8px 4px!important;
+  font-size:clamp(10px,2.8vw,14px)!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  text-align:center!important;
+}
+@media(max-width:380px){
+  #dailyLessonsView .lesson-main-nav{gap:4px!important}
+  #dailyLessonsView .lesson-main-nav button{font-size:10px!important;padding:7px 2px!important;min-height:44px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
