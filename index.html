@@ -2378,7 +2378,7 @@ const handleIncomeCalendarClick=async e=>{
       });
     }
     const dayRows=(rows||[]).filter(x=>String(x.lesson_date||"").slice(0,10)===selected).sort((a,b)=>String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
-    details.innerHTML='<button type="button" class="secondary calendar-day-page-back" data-calendar-day-back>→ العودة إلى التقويم</button><section class="calendar-lessons-day"><h3>حصص يوم '+escapeHtml(selected)+'</h3><p>عدد الحصص: '+dayRows.length+'</p>'+(dayRows.length?dayRows.map(x=>'<details class="calendar-lesson-entry"><summary><span class="calendar-lesson-time">'+escapeHtml(x.lesson_time||"الوقت غير محدد")+'</span><span class="calendar-lesson-title">'+escapeHtml(x.level||"المستوى غير محدد")+' — '+escapeHtml(x.lesson_type||"جماعية")+'</span><span class="calendar-lesson-state">'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+' · '+escapeHtml(x.status||"مجدولة")+'</span><span class="calendar-lesson-state">'+(x.recurrence_group_id?"حصة مكررة":"حصة مستقلة")+'</span>'+(lessonCounterLabels.has(x.id)?'<span class="calendar-lesson-state">'+escapeHtml(lessonCounterLabels.get(x.id))+'</span>':'')+'<span class="calendar-lesson-chevron">⌄</span></summary><div class="calendar-lesson-content"><div class="calendar-lesson-info"><div class="calendar-lesson-info-row student"><span>اسم ولقب التلميذ</span><strong>'+escapeHtml(x.student_name||"حصة جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>نوع الحصة</span><strong>'+escapeHtml(x.lesson_type||"جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>نوع التكرار</span><strong>'+(x.recurrence_group_id?"حصة مكررة":"حصة مستقلة")+'</strong></div><div class="calendar-lesson-info-row"><span>تصنيف الحصة</span><strong>'+escapeHtml(x.lesson_category||"عادية")+'</strong></div>'+(x.lesson_category==="دورة مراجعة"?'<div class="calendar-lesson-info-row"><span>نوع التقييم</span><strong>'+escapeHtml(x.course_kind||"فرض")+' رقم '+escapeHtml(x.course_number||1)+' · '+escapeHtml(x.course_term||"الفصل الأول")+'</strong></div>':'')+'<div class="calendar-lesson-info-row"><span>طريقة التدريس</span><strong>'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+'</strong></div><div class="calendar-lesson-info-row"><span>حالة الحصة</span><strong>'+escapeHtml(x.status||"مجدولة")+'</strong></div><div class="calendar-lesson-info-row lesson-income-row"><span>المبلغ المحتسب</span><strong data-lesson-income="'+escapeHtml(x.id)+'">'+(x.status==="تمت"?"جارٍ الحساب…":"—")+'</strong></div></div>'+(x.replacement_lesson_id?(()=>{const linked=(rows||[]).find(r=>String(r.id)===String(x.replacement_lesson_id))||{};const linkedAmount=Math.max(0,Number(linked.unit_price)||0);const linkedDate=String(linked.lesson_date||"");const monthNames=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];const monthIndex=Number(linkedDate.slice(5,7))-1;const countedMonth=monthIndex>=0&&monthIndex<12?monthNames[monthIndex]+" "+linkedDate.slice(0,4):"غير محدد";return '<div class="calendar-lesson-notes" style="padding:12px;border:1px solid #cfe2ce;border-radius:12px;background:#f2faf1"><strong style="display:block;color:#175b36;margin-bottom:8px">✓ تفاصيل الحصة التعويضية المنجزة</strong><p><span>تاريخ الإنجاز الفعلي</span><strong>'+escapeHtml(linkedDate||"غير مسجل")+'</strong></p><p><span>وقت الإنجاز</span><strong>'+escapeHtml(linked.lesson_time||"غير مسجل")+'</strong></p><p><span>حالة الحصة التعويضية</span><strong>'+escapeHtml(linked.status||"غير متاحة")+'</strong></p><p><span>المبلغ المحتسب</span><strong>'+linkedAmount.toLocaleString("ar-DZ")+' دج</strong></p><p><span>شهر احتساب المداخيل</span><strong>'+escapeHtml(countedMonth)+'</strong></p><small>يُحتسب المبلغ من الحصة المنجزة المرتبطة مرة واحدة، ولا يُضاف مبلغ ثانٍ للحصة الأصلية «تمت من قبل».</small></div>';})():'')+(x.notes?'<p class="calendar-lesson-notes"><span>ملاحظات</span><strong>'+escapeHtml(x.notes)+'</strong></p>':'')+'<div class="calendar-lesson-actions"><button type="button" class="secondary lesson-status-button" data-calendar-edit="'+escapeHtml(x.id)+'">✏️ تعديل الحصة</button><button type="button" class="primary lesson-status-button" data-calendar-done="'+escapeHtml(x.id)+'">تمت الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-not-done="'+escapeHtml(x.id)+'">لم تتم الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-delete="'+escapeHtml(x.id)+'" data-calendar-recurring="'+(x.recurrence_group_id?"1":"0")+'">حذف الحصة</button></div></div></details>').join(""):'<p class="muted">ما كاين حتى حصة في هذا اليوم.</p>')+'</section>';
+    details.innerHTML='<button type="button" class="secondary calendar-day-page-back" data-calendar-day-back>→ العودة إلى التقويم</button><section class="calendar-lessons-day"><h3>حصص يوم '+escapeHtml(selected)+'</h3><p>عدد الحصص: '+dayRows.length+'</p>'+(dayRows.length?dayRows.map(x=>'<details class="calendar-lesson-entry"><summary><span class="calendar-lesson-time">'+escapeHtml(x.lesson_time||"الوقت غير محدد")+'</span><span class="calendar-lesson-title">'+escapeHtml(x.level||"المستوى غير محدد")+' — '+escapeHtml(x.lesson_type||"جماعية")+'</span><span class="calendar-lesson-state">'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+' · '+escapeHtml(x.status||"مجدولة")+'</span><span class="calendar-lesson-state">'+(x.recurrence_group_id?"حصة مكررة":"حصة مستقلة")+'</span>'+(lessonCounterLabels.has(x.id)?'<span class="calendar-lesson-state">'+escapeHtml(lessonCounterLabels.get(x.id))+'</span>':'')+'<span class="calendar-lesson-chevron">⌄</span></summary><div class="calendar-lesson-content"><div class="calendar-lesson-info"><div class="calendar-lesson-info-row student"><span>اسم ولقب التلميذ</span><strong>'+escapeHtml(x.student_name||"حصة جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>نوع الحصة</span><strong>'+escapeHtml(x.lesson_type||"جماعية")+'</strong></div><div class="calendar-lesson-info-row"><span>نوع التكرار</span><strong>'+(x.recurrence_group_id?"حصة مكررة":"حصة مستقلة")+'</strong></div><div class="calendar-lesson-info-row"><span>تصنيف الحصة</span><strong>'+escapeHtml(x.lesson_category||"عادية")+'</strong></div>'+(x.lesson_category==="دورة مراجعة"?'<div class="calendar-lesson-info-row"><span>نوع التقييم</span><strong>'+escapeHtml(x.course_kind||"فرض")+' رقم '+escapeHtml(x.course_number||1)+' · '+escapeHtml(x.course_term||"الفصل الأول")+'</strong></div>':'')+'<div class="calendar-lesson-info-row"><span>طريقة التدريس</span><strong>'+escapeHtml(x.delivery_mode==="in_person"?"حضوري":"زووم")+'</strong></div><div class="calendar-lesson-info-row"><span>حالة الحصة</span><strong>'+escapeHtml(x.status||"مجدولة")+'</strong></div><div class="calendar-lesson-info-row lesson-income-row"><span>المبلغ المحتسب</span><strong data-lesson-income="'+escapeHtml(x.id)+'">'+(x.status==="تمت"?"جارٍ الحساب…":"—")+'</strong></div></div>'+(x.replacement_lesson_id?'<div class="calendar-lesson-notes" data-replacement-info="'+escapeHtml(x.id)+'" style="padding:12px;border:1px solid #cfe2ce;border-radius:12px;background:#f2faf1"><strong>جارٍ تحميل تفاصيل الحصة التعويضية…</strong></div>':'')+(x.notes?'<p class="calendar-lesson-notes"><span>ملاحظات</span><strong>'+escapeHtml(x.notes)+'</strong></p>':'')+'<div class="calendar-lesson-actions"><button type="button" class="secondary lesson-status-button" data-calendar-edit="'+escapeHtml(x.id)+'">✏️ تعديل الحصة</button><button type="button" class="primary lesson-status-button" data-calendar-done="'+escapeHtml(x.id)+'">تمت الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-not-done="'+escapeHtml(x.id)+'">لم تتم الحصة</button><button type="button" class="secondary lesson-status-button" data-calendar-delete="'+escapeHtml(x.id)+'" data-calendar-recurring="'+(x.recurrence_group_id?"1":"0")+'">حذف الحصة</button></div></div></details>').join(""):'<p class="muted">ما كاين حتى حصة في هذا اليوم.</p>')+'</section>';
     const calendarParts=["lessonNextCountdown","lessonCalendarViewButtons","lessonCalendarPrev","lessonCalendarMonth","lessonCalendarNext","lessonCalendarGrid"].map(id=>document.getElementById(id));
     calendarParts.forEach(el=>{if(el){const toolbar=el.closest(".lesson-calendar-toolbar");if(toolbar)toolbar.hidden=lessonCalendarDayPageOpen;else el.hidden=lessonCalendarDayPageOpen;}});
     const dayHint=document.querySelector("#lessonsCalendarPanel > p.muted");if(dayHint)dayHint.hidden=lessonCalendarDayPageOpen;
@@ -2387,25 +2387,44 @@ const handleIncomeCalendarClick=async e=>{
     updateCalendarLessonAmounts(dayRows);
   }
   async function updateCalendarLessonAmounts(dayRows){
-    for(const lesson of (dayRows||[]).filter(x=>x.status==="تمت")){
-      const selector='#lessonCalendarDayDetails [data-lesson-income="'+CSS.escape(String(lesson.id))+'"]';
-      try{
-        const price=Math.max(0,Number(lesson.unit_price)||0);
-        let count=0;
-        if(lesson.lesson_type==="فردية")count=lesson.student_id?1:0;
-        else{
-          const data=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
-          const rows=data.attendance||[];
-          const chargeable=[...new Set(rows.filter(a=>a.is_chargeable===true).map(a=>String(a.student_id)))];
-          const present=[...new Set(rows.filter(a=>a.status==="present").map(a=>String(a.student_id)))];
-          count=rows.some(a=>a.is_chargeable===true)?chargeable.length:present.length;
+    for(const lesson of (dayRows||[])){
+      if(lesson.status==="تمت"){
+        const selector='#lessonCalendarDayDetails [data-lesson-income="'+CSS.escape(String(lesson.id))+'"]';
+        try{
+          const price=Math.max(0,Number(lesson.unit_price)||0);
+          let count=0;
+          if(lesson.lesson_type==="فردية")count=lesson.student_id?1:0;
+          else{
+            const data=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
+            const attendance=data.attendance||[];
+            const chargeable=[...new Set(attendance.filter(a=>a.is_chargeable===true).map(a=>String(a.student_id)))];
+            const present=[...new Set(attendance.filter(a=>a.status==="present").map(a=>String(a.student_id)))];
+            count=attendance.some(a=>a.is_chargeable===true)?chargeable.length:present.length;
+          }
+          const live=document.querySelector(selector);
+          if(live)live.textContent=(price*count).toLocaleString("fr-FR")+" دج";
+        }catch(err){
+          const live=document.querySelector(selector);
+          if(live)live.textContent="غير متاح";
+          console.warn("تعذر احتساب مبلغ الحصة",lesson.id,err);
         }
-        const live=document.querySelector(selector);
-        if(live)live.textContent=(price*count).toLocaleString("fr-FR")+" دج";
-      }catch(err){
-        const live=document.querySelector(selector);
-        if(live)live.textContent="غير متاح";
-        console.warn("تعذر احتساب مبلغ الحصة",lesson.id,err);
+      }
+      if(lesson.status==="تمت من قبل"&&lesson.replacement_lesson_id){
+        const info=document.querySelector('#lessonCalendarDayDetails [data-replacement-info="'+CSS.escape(String(lesson.id))+'"]');
+        if(!info)continue;
+        try{
+          const response=await lessonRequest({action:"daily_lessons_get",id:lesson.replacement_lesson_id});
+          const linked=response.lesson||{};
+          const price=Math.max(0,Number(linked.unit_price)||0);
+          const date=String(linked.lesson_date||"");
+          const months=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+          const mi=Number(date.slice(5,7))-1;
+          const month=mi>=0&&mi<12?months[mi]+" "+date.slice(0,4):"غير محدد";
+          info.innerHTML='<strong style="display:block;color:#175b36;margin-bottom:8px">✓ تفاصيل الحصة التعويضية المنجزة</strong><p><span>تاريخ الإنجاز الفعلي</span><strong>'+escapeHtml(date||"غير مسجل")+'</strong></p><p><span>وقت الإنجاز</span><strong>'+escapeHtml(linked.lesson_time||"غير مسجل")+'</strong></p><p><span>حالة الحصة التعويضية</span><strong>'+escapeHtml(linked.status||"غير متاحة")+'</strong></p><p><span>المبلغ المحتسب</span><strong>'+price.toLocaleString("ar-DZ")+' دج</strong></p><p><span>شهر احتساب المداخيل</span><strong>'+escapeHtml(month)+'</strong></p><small>يُحتسب المبلغ من الحصة المنجزة المرتبطة مرة واحدة، ولا يُضاف مبلغ ثانٍ للحصة الأصلية «تمت من قبل».</small>';
+        }catch(err){
+          info.textContent="تعذر تحميل تفاصيل الحصة التعويضية. أعيدي فتح اليوم للمحاولة.";
+          console.warn("تعذر تحميل الحصة التعويضية",lesson.id,err);
+        }
       }
     }
   }
