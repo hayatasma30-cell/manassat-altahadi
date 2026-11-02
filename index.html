@@ -240,7 +240,6 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #reviewCoursesView .course-back{width:auto}
 @media(max-width:420px){#reviewCoursesView .course-step{font-size:.72rem;padding:8px 3px}#reviewCoursesView .course-nav-actions{flex-direction:column}#reviewCoursesView .course-nav-actions button{width:100%}}
 \n#lessonCategory{border:1px solid #cbdcc8;border-radius:14px;padding:13px;background:#fff;color:var(--ink);width:100%;font:inherit;font-weight:700;box-shadow:0 3px 0 #e3e9dc}#lessonCategoryHint{background:#eef7ec;border-right:4px solid #21834c;border-radius:10px;padding:9px 12px}.lesson-kind-pill{display:inline-block;background:#e5f3e5;color:#14532d;border:1px solid #b7d8b8;border-radius:999px;padding:2px 10px;font-size:.9rem;font-weight:700}.daily-mode-switch button{border-radius:14px;box-shadow:0 4px 0 #0b3820,0 7px 14px #14532d18;min-height:46px}.daily-mode-switch button:active{transform:translateY(2px);box-shadow:0 2px 0 #0b3820}\n.lesson-category-filter{margin-top:10px}.lesson-category-filter button{flex:1;min-width:0;font-size:.95rem;padding:11px 9px;border-radius:13px;box-shadow:0 4px 0 rgba(20,83,45,.16),0 7px 12px rgba(20,63,34,.07)}.lesson-category-filter button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(20,83,45,.16)}
-#lessonZoomLinkWrap[hidden]{display:none!important}
 /* إعادة تنظيم حصصي اليومية على الهاتف */
 #dailyLessonsView>.panel{padding:18px!important}
 #dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:16px 0 20px!important}
@@ -611,6 +610,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #lessonAddPanel .lesson-wizard-step.active{color:#17643a;font-weight:800}#lessonAddPanel .lesson-wizard-step.active b,#lessonAddPanel .lesson-wizard-step.done b{background:#176b3a;color:#fff}
 #lessonAddPanel .lesson-wizard-title{font-size:.9rem;font-weight:800;color:#174b2c;margin:0 0 12px}
 #lessonAddPanel .lesson-form-grid [data-step]{display:none!important}#lessonAddPanel .lesson-form-grid [data-step].wizard-active{display:flex!important}
+#lessonAddPanel .lesson-form-grid #lessonZoomLinkWrap[hidden]{display:none!important}
 #lessonAddPanel .lesson-form-grid [data-step].wizard-active.lesson-field-full{grid-column:1/-1}
 #lessonAddPanel .lesson-wizard-review[hidden]{display:none!important}#lessonAddPanel .lesson-wizard-review:not([hidden]){display:block!important;padding:13px;border-radius:14px;background:#f5f9f2;border:1px solid #dce8d8}
 #lessonAddPanel .lesson-wizard-review h4{margin:0 0 10px;color:#174b2c}#lessonAddPanel .lesson-review-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -2920,6 +2920,5 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #lessonCalendarDayDetails .lesson-income-row{background:#f0f7ed}.lesson-income-row strong{color:#17633b!important;font-size:.88rem}
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
-#lessonAddPanel #lessonZoomLinkWrap[hidden]{display:none!important;visibility:hidden!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important;overflow:hidden!important}
 </style></body>
 </html>
