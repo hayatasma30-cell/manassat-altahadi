@@ -2050,7 +2050,7 @@ window.addEventListener("unhandledrejection",function(e){
       const totalA=months.reduce((n,x)=>n+x.a,0),totalB=months.reduce((n,x)=>n+x.b,0),diff=totalB-totalA;
       const pct=totalA>0?(diff/totalA)*100:null,pctText=pct===null?(totalB>0?"لا تُحسب النسبة لأن الموسم السابق صفر":"لا تُحسب النسبة لأن الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";
       $("incomeCompareTotalA").textContent=money(totalA);$("incomeCompareTotalB").textContent=money(totalB);
-      $("incomeCompareSummary").innerHTML='<div class="income-compare-kpi highlight"><span>الفرق بين الموسمين</span><strong>'+(diff>0?"+":"")+money(diff)+'</strong><small>''+compareClass(totalA,totalB)+' · نسبة التغير: '+pctText+'</small></div>';
+      $("incomeCompareSummary").innerHTML='<div class="income-compare-kpi highlight"><span>الفرق بين الموسمين</span><strong>'+(diff>0?"+":"")+money(diff)+'</strong><small>'+compareClass(totalA,totalB)+' · نسبة التغير: '+pctText+'</small></div>';
       $("incomeCompareMonthly").innerHTML=months.map(x=>compareRow(x.name,x.a,x.b)).join("");
       $("incomeCompareReviewCount").textContent=String(reviewRows.length);
       $("incomeCompareWarnings").innerHTML=reviewRows.length?reviewRows.map(x=>'<div class="income-compare-review-row"><strong>'+escapeHtml(x.date)+' · '+escapeHtml(x.title)+'</strong><span>'+escapeHtml(x.reason)+'</span></div>').join(""):'<p class="muted">لا توجد حصص تحتاج إلى مراجعة.</p>';
