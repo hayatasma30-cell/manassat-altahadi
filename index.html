@@ -706,6 +706,19 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #studentsList .student-card-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
 #studentsList .student-card-details[open]{background:#fbfdf9;border-radius:12px;padding:9px}
 @media(max-width:520px){.level-status-counts{font-size:10px;gap:4px}.level-status-counts span{padding:3px 6px}}
+
+/* صفحة قائمة المستويات: بحث شامل وأزرار مدمجة */
+.students-overview-tools{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.overview-search{display:flex;gap:7px;align-items:center;margin:12px 0 14px}
+.overview-search input{flex:1;min-width:0;height:39px;padding:7px 11px!important;border-radius:10px!important}
+.overview-search button,.overview-add-button{width:auto!important;min-height:34px!important;padding:6px 10px!important;font-size:12px!important;border-radius:9px!important;white-space:nowrap}
+#studentsView .level-filters{gap:8px!important;margin:10px 0!important}
+#studentsView .level-filter{min-height:58px!important;padding:8px 10px!important;border-radius:12px!important;border-bottom-width:3px!important;box-shadow:0 3px 0 rgba(20,83,45,.08),0 5px 9px rgba(24,63,34,.08)!important}
+#studentsView .level-filter>span{font-size:12px!important;line-height:1.35}
+#studentsView .level-filter .level-count{font-size:15px!important;font-weight:800}
+#studentsView .level-filter .level-status-counts{font-size:10px!important}
+#studentsView .level-filter .level-open{font-size:10px!important}
+@media(max-width:600px){.students-overview-tools h3{font-size:1rem}.students-overview-tools p{font-size:.78rem}.overview-search{margin:9px 0 11px}.overview-search input{height:36px;font-size:14px!important}.overview-search button,.overview-add-button{min-height:31px!important;padding:5px 8px!important;font-size:11px!important}#studentsView .level-filter{min-height:52px!important;padding:6px 8px!important;gap:4px!important}}
 </style>
 
 <style id="home-redesign-clean-v3">
@@ -1182,7 +1195,7 @@ input,select,textarea{min-height:40px!important;padding:8px 10px!important;borde
 </section>
 <section id="studentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div>
-<div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><h3 style="margin:0">قائمة المستويات</h3><p class="muted" style="margin:6px 0 0">اختاري المستوى لفتح صفحة تلاميذه، أو افتحي صفحة مستقلة لإضافة تلميذ جديد.</p></div><button class="primary" id="openAddStudentPage" type="button">➕ إضافة تلميذ جديد</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
+<div class="panel"><div class="students-overview-tools"><div><h3 style="margin:0">قائمة المستويات</h3><p class="muted" style="margin:4px 0 0">ابحثي عن أي تلميذ أو اختاري المستوى.</p></div><button class="primary overview-add-button" id="openAddStudentPage" type="button">➕ إضافة تلميذ</button></div><div class="overview-search"><input id="allStudentsSearchInput" type="search" autocomplete="off" placeholder="ابحثي بالاسم أو رقم الهاتف…"><button type="button" class="primary" id="allStudentsSearchBtn">بحث</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
 
 </section>
 <section id="addStudentView" class="view">
@@ -1599,6 +1612,10 @@ input,select,textarea{min-height:40px!important;padding:8px 10px!important;borde
       renderStudents();
       showView("studentLevelView");
     });
+    const allStudentsSearchInput=$("allStudentsSearchInput");
+    const runAllStudentsSearch=()=>{studentSearchTerm=allStudentsSearchInput.value.trim().toLocaleLowerCase("ar");selectedStudentLevel="all";studentStatusFilter="all";selectedStudyMode="all";studentSearchInput.value=allStudentsSearchInput.value;renderStudentFilters();renderStudents();showView("studentLevelView");};
+    $("allStudentsSearchBtn").addEventListener("click",runAllStudentsSearch);
+    allStudentsSearchInput.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runAllStudentsSearch();}});
     $("backToStudentLevels").addEventListener("click", () => showView("studentsView"));
     $("openAddStudentPage").addEventListener("click",()=>showView("addStudentView"));
     $("backFromAddStudent").addEventListener("click",()=>showView("studentsView"));
