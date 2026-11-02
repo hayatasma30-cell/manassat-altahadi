@@ -2193,7 +2193,7 @@ window.addEventListener("unhandledrejection",function(e){
         }
         if(requestId!==window.tahadiIncomeCalendarRequestId)return;
         renderIncomeCalendar();if(calendarCurrentLessonId&&!$("calendarLessonPage").hidden)openCalendarLessonPage(calendarCurrentLessonId);
-      }catch(e){if(requestId!==window.tahadiIncomeCalendarRequestId)return;const message="تعذر تحميل التقويم: "+(e&&e.message?e.message:"خطأ غير معروف");grid.innerHTML='<div class="note" role="alert">'+escapeHtml(message)+'</div><button type="button" class="secondary" id="retryIncomeCalendar">إعادة المحاولة</button>';$("incomeCalendarSummary").textContent=message;const retry=$("retryIncomeCalendar");if(retry)retry.addEventListener("click",()=>loadIncomeCalendar());}
+      }catch(e){if(requestId!==window.tahadiIncomeCalendarRequestId)return;const message="تعذر تحميل التقويم: "+(e&&e.message?e.message:"خطأ غير معروف");grid.innerHTML='<div class="note" role="alert">'+escapeHtml(message)+'</div>';$("incomeCalendarSummary").textContent=message;}
       finally{
         if(requestId===window.tahadiIncomeCalendarRequestId){
           window.tahadiIncomeCalendarLoading=false;
