@@ -2063,13 +2063,14 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     }
     function showIncomeCalendarDay(date){openCalendarDayPage(date);}
     async function loadIncomeCalendar(){
-      if(window.tahadiIncomeCalendarLoading)return;
+      const requestId=window.tahadiIncomeCalendarRequestId=(window.tahadiIncomeCalendarRequestId||0)+1;
       window.tahadiIncomeCalendarLoading=true;
       const grid=$("incomeCalendarGrid");if(!grid){window.tahadiIncomeCalendarLoading=false;return;}grid.innerHTML='<p class="muted">جارٍ تحميل التقويم…</p>';
       const input=$("incomeCalendarMonth");if(!input.value||!input.value.startsWith("2026-"))input.value="2026-10";
       const selectedMonth=String(input.value);incomeCalendarRows=[];
       try{
         const lessonData=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
+        if(requestId!==window.tahadiIncomeCalendarRequestId)return;
         const rawCalendarLessons=(lessonData.lessons||[]).filter(x=>["مجدولة","تمت"].includes(x.status)&&String(x.lesson_date||"").startsWith(selectedMonth+"-"));
         // منع تكرار الحصة نفسها في العرض مع إبقاء كل السجلات محفوظة في قاعدة البيانات.
         const lessonKey=x=>[x.lesson_date,x.lesson_time,x.lesson_type,x.lesson_category,x.level,String(x.student_name||"").trim(),x.delivery_mode].join("|");
@@ -2084,6 +2085,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
         let countMap={};
         if(groupLessons.length){
           const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:groupLessons.map(x=>x.id)});
+          if(requestId!==window.tahadiIncomeCalendarRequestId)return;
           countMap=countData.counts||{};
         }
         for(const x of calendarLessons){
@@ -2092,9 +2094,10 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
           const unitPrice=Number(x.unit_price||0),completed=x.status==="تمت",needsReview=completed&&(unitPrice<=0||count<=0);
           incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:completed&&unitPrice>0&&count>0?unitPrice*count:0,estimate:0,unitPrice,kind:needsReview?"حصة تحتاج مراجعة":completed?"حصة مكتملة":"حصة مجدولة",status:x.status,needsReview,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
+        if(requestId!==window.tahadiIncomeCalendarRequestId)return;
         renderIncomeCalendar();if(calendarCurrentLessonId&&!$("calendarLessonPage").hidden)openCalendarLessonPage(calendarCurrentLessonId);
-      }catch(e){const message="تعذر تحميل التقويم: "+(e&&e.message?e.message:"خطأ غير معروف");grid.innerHTML='<div class="note" role="alert">'+escapeHtml(message)+'</div><button type="button" class="secondary" id="retryIncomeCalendar">إعادة المحاولة</button>';$("incomeCalendarSummary").textContent=message;const retry=$("retryIncomeCalendar");if(retry)retry.addEventListener("click",()=>loadIncomeCalendar());}
-      finally{window.tahadiIncomeCalendarLoading=false;}
+      }catch(e){if(requestId!==window.tahadiIncomeCalendarRequestId)return;const message="تعذر تحميل التقويم: "+(e&&e.message?e.message:"خطأ غير معروف");grid.innerHTML='<div class="note" role="alert">'+escapeHtml(message)+'</div><button type="button" class="secondary" id="retryIncomeCalendar">إعادة المحاولة</button>';$("incomeCalendarSummary").textContent=message;const retry=$("retryIncomeCalendar");if(retry)retry.addEventListener("click",()=>loadIncomeCalendar());}
+      finally{if(requestId===window.tahadiIncomeCalendarRequestId)window.tahadiIncomeCalendarLoading=false;}
     }
     $("incomeCalendarMonth").addEventListener("change",()=>{incomeCalendarSelected="";loadIncomeCalendar();});
     // تحديث تلقائي عند الرجوع إلى الصفحة، وعند عودة التطبيق إلى الواجهة، وكل دقيقة أثناء عرض التقويم.
