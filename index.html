@@ -2157,11 +2157,14 @@ window.addEventListener("unhandledrejection",function(e){
       const requestId=window.tahadiIncomeCalendarRequestId=(window.tahadiIncomeCalendarRequestId||0)+1;
       window.tahadiIncomeCalendarLoading=true;
       window.tahadiIncomeCalendarPending=false;
-      const grid=$("incomeCalendarGrid");if(!grid){window.tahadiIncomeCalendarLoading=false;return;}grid.innerHTML='<p class="muted">جارٍ تحميل التقويم…</p>';
+      const grid=$("incomeCalendarGrid");if(!grid){window.tahadiIncomeCalendarLoading=false;return;}
       const input=$("incomeCalendarMonth");
       const currentMonth=new Date().getFullYear()+"-"+String(new Date().getMonth()+1).padStart(2,"0");
       if(!input.value||!input.value.startsWith("2026-"))input.value=currentMonth;
       const selectedMonth=String(input.value);incomeCalendarRows=[];
+      // اعرض شبكة الشهر فورًا، ثم حدّث المبالغ عند وصول بيانات Supabase.
+      renderIncomeCalendar();
+      if($("incomeCalendarSummary"))$("incomeCalendarSummary").textContent="جارٍ تحميل بيانات الحصص والمداخيل…";
       try{
         const lessonData=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
         if(requestId!==window.tahadiIncomeCalendarRequestId)return;
@@ -2199,8 +2202,7 @@ window.addEventListener("unhandledrejection",function(e){
       }
     }
     $("incomeCalendarMonth").addEventListener("change",()=>{incomeCalendarSelected="";loadIncomeCalendar();});
-    // إعادة التحميل عند عودة التطبيق إلى الواجهة فقط، مع منع تداخل الطلبات.
-    document.addEventListener("visibilitychange",()=>{if(!document.hidden&&!$("incomeCalendarPage").hidden)loadIncomeCalendar();});
+    // لا نعيد إرسال طلبات التقويم تلقائيًا عند تبديل التبويبات؛ التحميل يتم عند فتح الصفحة أو تغيير الشهر.
     let calendarRosterLessonId=null;
     function closeCalendarRosterPage(){ $("calendarRosterPage").hidden=true; calendarRosterLessonId=null; }
     async function openCalendarRosterPage(id){
