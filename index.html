@@ -1301,6 +1301,18 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 .income-compare-review-row strong{color:#355641;font-weight:700}
 .income-compare-review-row span{color:#778278;font-size:.77rem}
 .income-compare-page .income-compare-footnote{margin-top:12px}
+</style><style id="lesson-calendar-status-colors-v1">
+/* ألوان حالة الحصص مع الحفاظ على عمق أزرار التقويم */
+.lesson-calendar-day.state-done{background:linear-gradient(160deg,#f2fbef 0%,#e5f4e8 75%,#d9eddb 100%)!important;border-color:#9bc4a0!important;border-bottom:5px solid #73a77e!important;box-shadow:0 4px 0 #8eb997,0 7px 12px #216c4318!important}
+.lesson-calendar-day.state-not-done{background:linear-gradient(160deg,#fff5f4 0%,#ffe5e2 75%,#ffd4cf 100%)!important;border-color:#e7a09a!important;border-bottom:5px solid #cf7169!important;box-shadow:0 4px 0 #d78b84,0 7px 12px #a8322820!important}
+.lesson-calendar-day.state-overdue{background:linear-gradient(160deg,#fff9ed 0%,#ffedcf 75%,#ffdfad 100%)!important;border-color:#e8bd72!important;border-bottom:5px solid #d99a36!important;box-shadow:0 4px 0 #d9a34e,0 7px 12px #a66a1820!important}
+.lesson-calendar-count.count-done{background:#216c43!important;color:#fff!important}
+.lesson-calendar-count.count-not-done{background:#bd4038!important;color:#fff!important}
+.lesson-calendar-count.count-overdue{background:#c47a17!important;color:#fff!important}
+.lesson-calendar-day.today{outline-offset:2px}
+.lesson-calendar-day.today.state-done{border-top:3px solid #d59b28!important}
+.lesson-calendar-day.today.state-not-done{border-top:3px solid #d59b28!important}
+.lesson-calendar-day.today.state-overdue{border-top:3px solid #d59b28!important}
 </style></head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2433,13 +2445,43 @@ const handleIncomeCalendarClick=async e=>{
     if(!grid||!monthLabel||!details)return;
     const year=lessonCalendarCursor.getFullYear(),month=lessonCalendarCursor.getMonth();
     const first=new Date(year,month,1),days=new Date(year,month+1,0).getDate(),offset=first.getDay();
-    const counts={};(rows||[]).forEach(x=>{const key=String(x.lesson_date||"").slice(0,10);if(key)counts[key]=(counts[key]||0)+1;});
+    const counts={},dayStates={};
+    const calendarNow=new Date();
+    const isOverdueScheduled=x=>{
+      if(x.status!=="مجدولة")return false;
+      const date=String(x.lesson_date||"").slice(0,10),times=String(x.lesson_time||"").split(/[–—-]/).map(v=>v.trim()),end=times[1]||times[0]||"";
+      if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(date)||!/^\\d{1,2}:\\d{2}$/.test(end))return date<dateKey(calendarNow);
+      const [y,m,d]=date.split("-").map(Number),[hh,mm]=end.split(":").map(Number);
+      return new Date(y,m-1,d,hh,mm,0,0)<calendarNow;
+    };
+    (rows||[]).forEach(x=>{
+      const key=String(x.lesson_date||"").slice(0,10);if(!key)return;
+      counts[key]=(counts[key]||0)+1;
+      const state=dayStates[key]||(dayStates[key]={done:0,notDone:0,overdue:0});
+      if(x.status==="تمت")state.done++;
+      else if(x.status==="لم تتم")state.notDone++;
+      else if(isOverdueScheduled(x))state.overdue++;
+    });
+    const dayColorClass=key=>{
+      const state=dayStates[key];if(!state)return "";
+      if(state.notDone)return " state-not-done";
+      if(state.overdue)return " state-overdue";
+      if(state.done)return " state-done";
+      return "";
+    };
+    const countColorClass=key=>{
+      const state=dayStates[key];if(!state)return "";
+      if(state.notDone)return " count-not-done";
+      if(state.overdue)return " count-overdue";
+      if(state.done)return " count-done";
+      return "";
+    };
     const names=["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
     const fmt=d=>new Intl.DateTimeFormat("ar-DZ",{day:"numeric",month:"long",year:"numeric"}).format(d);
     const dateKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
     const now=new Date(),todayKey=dateKey(now),selected=String(lessonCalendarSelectedDate||todayKey).slice(0,10);
     const selectedDate=new Date(selected+"T12:00:00");
-    const cell=(date)=>{const key=dateKey(date),count=counts[key]||0;const countLabel=count===1?'1 حصة':count===2?'2 حصتان':count+' حصص';return '<button type="button" class="lesson-calendar-day '+(count?'has-lessons ':'')+(key===todayKey?'today ':'')+(key===selected?'selected':'')+'" data-calendar-date="'+key+'"><span>'+date.getDate()+'</span>'+(count?'<span class="lesson-calendar-count">'+countLabel+'</span>':'')+'</button>';};
+    const cell=(date)=>{const key=dateKey(date),count=counts[key]||0;const countLabel=count===1?'1 حصة':count===2?'2 حصتان':count+' حصص';return '<button type="button" class="lesson-calendar-day '+(count?'has-lessons ':'')+dayColorClass(key)+' '+(key===todayKey?'today ':'')+(key===selected?'selected':'')+'" data-calendar-date="'+key+'"><span>'+date.getDate()+'</span>'+(count?'<span class="lesson-calendar-count'+countColorClass(key)+'">'+countLabel+'</span>':'')+'</button>';};
     let html="";
     if(lessonCalendarView==="month"){
       monthLabel.textContent=new Intl.DateTimeFormat("ar-DZ",{month:"long",year:"numeric"}).format(first);
