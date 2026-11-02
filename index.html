@@ -3136,16 +3136,6 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
       }catch(error){console.error("Income navigation recovery failed",error);}
       return;
     }
-    const toggle=target.closest("#toggleTeacherCommandPanel");
-    if(toggle){
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const panel=toggle.closest(".teacher-command-panel");
-      if(!panel)return;
-      const collapsed=panel.classList.toggle("is-collapsed");
-      toggle.setAttribute("aria-expanded",String(!collapsed));
-      toggle.textContent=collapsed?"＋ فتح لوحة التذكيرات":"− إخفاء لوحة التذكيرات";
-    }
   },true);
 })();
 </script></body>
