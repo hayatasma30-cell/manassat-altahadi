@@ -3322,6 +3322,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
           document.getElementById("lessonsCalendarPanel")&&!document.getElementById("lessonsCalendarPanel").hidden?"calendar":
           document.getElementById("lessonListPanel")&&!document.getElementById("lessonListPanel").hidden?"library":"",
         editingLessonId:window.tahadiEditingLessonId||"",
+        wizardStep:Math.max(0,Math.min(3,Array.from(document.querySelectorAll("#lessonWizardProgress .lesson-wizard-step")).findIndex(el=>el.classList.contains("active")))),
         lessonTitle:document.getElementById("lessonListTitle")?.textContent||""
       };
       localStorage.setItem(KEY,JSON.stringify(state));
@@ -3367,6 +3368,9 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
         if(cal){cal.hidden=true;cal.style.setProperty("display","none","important");}
         if(state.editingLessonId)window.tahadiEditingLessonId=state.editingLessonId;
         const title=document.getElementById("lessonListTitle");if(title&&state.lessonTitle)title.textContent=state.lessonTitle;
+        /* استعادة خطوة إضافة الحصة بعد إعادة تحميل الصفحة */
+        const wantedStep=Math.max(0,Math.min(3,Number(state.wizardStep)||0));
+        setTimeout(()=>{const next=document.getElementById("lessonWizardNext");if(!next)return;let attempts=0;while(attempts<wantedStep&&!next.hidden){const before=Array.from(document.querySelectorAll("#lessonWizardProgress .lesson-wizard-step")).findIndex(el=>el.classList.contains("active"));next.click();const after=Array.from(document.querySelectorAll("#lessonWizardProgress .lesson-wizard-step")).findIndex(el=>el.classList.contains("active"));if(after<=before)break;attempts++;}},350);
       }else if(state.lessonPage==="calendar"){
         const list=document.getElementById("lessonListPanel"),cal=document.getElementById("lessonsCalendarPanel");
         if(list){list.hidden=false;list.classList.add("calendar-mode");}
