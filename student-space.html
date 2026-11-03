@@ -487,11 +487,11 @@ const saveStudentPagePosition=()=>{try{sessionStorage.setItem(studentScrollStora
 window.addEventListener("scroll",saveStudentPagePosition,{passive:true});
 window.addEventListener("pagehide",saveStudentPagePosition);
 function restoreStudentPageState(){
+ let saved=0;try{saved=Math.max(0,Number(sessionStorage.getItem(studentScrollStorageKey))||0);}catch(_){}
  const requested=new URL(location.href).searchParams.get("section");
  const valid=requested&&Array.from(document.querySelectorAll(".student-section")).some(el=>el.dataset.panel===requested);
  if(valid)openStudentSection(requested);
- let saved=0;try{saved=Math.max(0,Number(sessionStorage.getItem(studentScrollStorageKey))||0);}catch(_){}
- setTimeout(()=>window.scrollTo(0,saved),180);
+ setTimeout(()=>window.scrollTo(0,saved),220);
 }
 $("backToStudentMenu").addEventListener("click",showStudentMenu);window.addEventListener("popstate",()=>{const key=new URL(location.href).searchParams.get("section");if(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));if(key==="quizzes")refreshQuizResults().catch(()=>{});if(key==="teacherNotes")loadTeacherNotes();}else{ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));}});
 window.addEventListener("focus",()=>{const key=new URL(location.href).searchParams.get("section");if(key==="quizzes"&&!document.hidden)refreshQuizResults().catch(()=>{});});
