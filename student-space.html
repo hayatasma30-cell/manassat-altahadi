@@ -620,9 +620,25 @@ const initializeStudentSpace = async () => {
       return;
     }
     try{
+      // First reuse the student's own still-valid session; this avoids depending on the teacher token expiring.
+      if(sessionToken){
+        try{
+          const existing=await call("student_portal_dashboard",{session_token:sessionToken,question_bank:QUIZ_QUESTION_BANK});
+          if(existing&&existing.student){
+            await dashboard(existing.student,existing);
+            await loadStudentCourses();
+            await loadNotificationCount();
+            restoreStudentPageState();
+            return;
+          }
+        }catch(sessionError){
+          sessionToken=null;
+          localStorage.removeItem("tahadi_student_session");
+        }
+      }
       const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+teacherToken},body:JSON.stringify({action:"teacher_student_login",full_name:savedName})});
       const data=await response.json();
-      if(!response.ok||!data.ok||!data.session_token||!data.student)throw new Error(data.error||"تعذر استعادة جلسة التلميذ.");
+      if(!response.ok||!data.ok||!data.session_token||!data.student)throw new Error(data.error||"تعذر استعادة جلسة التلميذ. قد تحتاج جلسة الأستاذة إلى تسجيل دخول جديد.");
       sessionToken=data.session_token;
       localStorage.setItem("tahadi_student_session",sessionToken);
       localStorage.setItem("tahadi_teacher_student_id",String(data.student.id||""));
@@ -634,7 +650,7 @@ const initializeStudentSpace = async () => {
     }catch(error){
       $("loginPanel").classList.remove("hidden");
       $("dashboard").classList.add("hidden");
-      $("loginError").textContent="تعذر استعادة فضاء التلميذ: "+(error.message||"تحققي من اتصال الإنترنت وجلسة الأستاذة.");
+      $("loginError").textContent="تعذر استعادة فضاء التلميذ: "+(error.message||"تحققي من الاتصال وجلسة الأستاذة.");
       return;
     }
   }
