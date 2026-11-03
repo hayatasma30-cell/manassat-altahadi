@@ -3508,5 +3508,42 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 
 
 <script src="./workspace-autosave.js" defer></script>
+<script>
+/* استعادة التنقل من صفحة تسجيل الدفعة */
+(function(){
+  if(window.tahadiPaymentNavigationRecoveryV1)return;
+  window.tahadiPaymentNavigationRecoveryV1=true;
+  function forceView(id){
+    document.querySelectorAll(".view").forEach(function(v){
+      var active=v.id===id;
+      v.classList.toggle("active",active);
+      v.style.display=active?"block":"none";
+      v.setAttribute("aria-hidden",active?"false":"true");
+    });
+    try{sessionStorage.setItem("tahadi_last_view",id);localStorage.setItem("tahadi_last_view_persistent",id);}catch(_){}
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.addEventListener("click",function(event){
+    var target=event.target instanceof Element?event.target:null;
+    if(!target)return;
+    var back=target.closest("#backToPayments");
+    if(back){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      forceView("paymentsView");
+      if(location.hash==="#manual-payment")history.back();
+      return;
+    }
+    var open=target.closest("#toggleManualInPersonPayment");
+    if(open && location.hash!=="#manual-payment"){
+      history.pushState({tahadiPaymentEntry:true},"",location.pathname+location.search+"#manual-payment");
+    }
+  },true);
+  window.addEventListener("popstate",function(){
+    var manual=document.getElementById("manualInPersonPaymentView");
+    if(manual && manual.classList.contains("active"))forceView("paymentsView");
+  });
+})();
+</script>
 </body>
 </html>
