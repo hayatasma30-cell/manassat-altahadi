@@ -18,4 +18,6 @@ $("backTopics").onclick=showTopics;
 async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];draw();showTopics()}catch(e){$("todayContent").textContent=e.message}}
 $("libraryBtn").onclick=()=>{$("library").classList.toggle("hide");$("today").classList.toggle("hide")};$("search").oninput=filter;
 load();
-</script></body></html>
+</script>
+<script src="./workspace-autosave.js" defer></script>
+</body></html>
