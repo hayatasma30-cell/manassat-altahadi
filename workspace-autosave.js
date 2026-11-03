@@ -3,19 +3,20 @@
   "use strict";
   if(window.__tahadiWorkspaceRecoveryV2)return;
   window.__tahadiWorkspaceRecoveryV2=true;
-  const path=location.pathname.replace(/\\/+$/,"")||"/";
+  let path=location.pathname;
+  while(path.length>1&&path.endsWith("/"))path=path.slice(0,-1);
   const key="tahadi_workspace_v2:"+path;
   const skip=new Set(["password","file","hidden","submit","button","reset"]);
-  let restoring=false,timer=0;\n  const dirty=new WeakSet();
-  const safe=(fn)=>{try{fn()}catch(e){console.warn("[Tahadi workspace]",e)}};
+  const dirty=new WeakSet();
+  let restoring=false,timer=0;
+  const safe=fn=>{try{fn()}catch(e){console.warn("[Tahadi workspace]",e)}};
   function save(){
     if(restoring)return;
     safe(()=>{
       const fields=[];
       document.querySelectorAll("input,select,textarea").forEach((el,index)=>{
         const type=(el.type||"").toLowerCase();
-        if(skip.has(type)||el.id==="tahadi_teacher_token"||el.name==="password"||!dirty.has(el))return;
-        if(el.disabled)return;
+        if(skip.has(type)||el.id==="tahadi_teacher_token"||el.name==="password"||!dirty.has(el)||el.disabled)return;
         fields.push({id:el.id||"",name:el.name||"",index,type,
           value:(type==="checkbox"||type==="radio")?!!el.checked:el.value,
           selectedIndex:el.tagName==="SELECT"?el.selectedIndex:null});
@@ -24,14 +25,26 @@
       const active=views.find(v=>v.classList.contains("active")||getComputedStyle(v).display!=="none");
       const details=[];
       document.querySelectorAll("details").forEach((el,i)=>{if(el.open)details.push(el.id||"@"+i)});
-      const state={at:Date.now(),url:location.href,view:active?.id||"",scrollX:scrollX,scrollY:scrollY,fields,details};
-      localStorage.setItem(key,JSON.stringify(state));
+      localStorage.setItem(key,JSON.stringify({at:Date.now(),url:location.href,view:active?.id||"",scrollX,scrollY,fields,details}));
     });
   }
   function queue(){clearTimeout(timer);timer=setTimeout(save,250)}
-  document.addEventListener("input",queue,true);
-  document.addEventListener("change",queue,true);
+  function markDirty(event){
+    const el=event.target;
+    if(el&&el.matches&&el.matches("input,select,textarea")){
+      const type=(el.type||"").toLowerCase();
+      if(!skip.has(type)&&el.id!=="tahadi_teacher_token")dirty.add(el);
+    }
+    queue();
+  }
+  document.addEventListener("input",markDirty,true);
+  document.addEventListener("change",markDirty,true);
   document.addEventListener("click",()=>setTimeout(save,400),true);
+  document.addEventListener("submit",event=>{
+    const form=event.target;
+    if(form&&form.querySelectorAll)form.querySelectorAll("input,select,textarea").forEach(el=>dirty.delete(el));
+    setTimeout(save,500);
+  },true);
   window.addEventListener("scroll",queue,{passive:true});
   window.addEventListener("pagehide",save);
   window.addEventListener("beforeunload",save);
@@ -52,19 +65,20 @@
         else if("value" in el)el.value=item.value??"";
       });
       (state.details||[]).forEach(id=>{
-        const el=id[0]==="@"?document.querySelectorAll("details")[Number(id.slice(1))]:document.getElementById(id);
+        const el=id.startsWith("@")?document.querySelectorAll("details")[Number(id.slice(1))]:document.getElementById(id);
         if(el&&el.tagName==="DETAILS")el.open=true;
       });
       if(state.view&&localStorage.getItem("tahadi_teacher_token")){
         const target=document.getElementById(state.view);
         if(target&&target.classList.contains("view")){
           document.querySelectorAll(".view").forEach(v=>{
-            const on=v===target;v.classList.toggle("active",on);v.style.display=on?"block":"none";v.setAttribute("aria-hidden",on?"false":"true");
+            const on=v===target;
+            v.classList.toggle("active",on);v.style.display=on?"block":"none";v.setAttribute("aria-hidden",on?"false":"true");
           });
         }
       }
       if(state.url&&new URL(state.url).pathname===location.pathname){
-        setTimeout(()=>window.scrollTo({left:Number(state.scrollX)||0,top:Number(state.scrollY)||0,behavior:"instant"}),700);
+        setTimeout(()=>window.scrollTo({left:Number(state.scrollX)||0,top:Number(state.scrollY)||0,behavior:"auto"}),700);
       }
     });
     setTimeout(()=>{restoring=false},1300);
