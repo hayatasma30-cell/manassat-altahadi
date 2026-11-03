@@ -12,4 +12,6 @@ $('prev').onclick=()=>{if(index>0){index--;render()}};$('next').onclick=()=>{if(
 function finish(){let score=answers.reduce((n,a,i)=>n+(a===qs[i][2]?1:0),0);$('quiz').classList.add('hidden');$('result').classList.remove('hidden');$('score').textContent=score+' / '+qs.length;$('message').textContent=score>=16?'ممتاز! أحسنت العمل.':score>=10?'عمل جيد، راجع الإجابات لتحسين نتيجتك.':'واصل المراجعة ثم أعد الاختبار.';$('bar').style.width='100%';$('review').classList.add('hidden')}
 $('reviewBtn').onclick=()=>{const box=$('review');box.innerHTML='';qs.forEach((q,i)=>{const a=document.createElement('article');const title=document.createElement('strong');title.textContent=(i+1)+'. '+q[0];a.append(title);const p=document.createElement('p');p.className=answers[i]===q[2]?'correct':'wrong';p.textContent='إجابتك: '+(answers[i]===null?'لم تجب':('أبجد'[answers[i]]+' ـ '+q[1][answers[i]]));a.append(p);const c=document.createElement('p');c.className='correct';c.textContent='الإجابة الصحيحة: '+'أبجد'[q[2]]+' ـ '+q[1][q[2]];a.append(c);box.append(a)});box.classList.toggle('hidden')};
 $('retry').onclick=()=>{index=0;answers=Array(qs.length).fill(null);$('result').classList.add('hidden');$('quiz').classList.remove('hidden');render()};render();
-</script></body></html>
+</script>
+<script src="./workspace-autosave.js" defer></script>
+</body></html>
