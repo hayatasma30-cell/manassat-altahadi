@@ -1931,7 +1931,7 @@ window.addEventListener("unhandledrejection",function(e){
       const individualSubscriptionDebts=subscriptions.filter(x=>["individual_session","فردية"].includes(String(x.service_type||"").toLowerCase())).map(x=>{
         const remaining=Math.max(0,Number(x.remaining_balance??(Number(x.amount_due||0)-Number(x.amount_paid||0)))||0);
         const student=students.find(st=>String(st.id)===String(x.student_id));
-        return {kind:"حصة فردية",student:student?.full_name||x.full_name||"تلميذ غير محدد",level:student?.level||"غير محدد",mode:student?.study_mode==="zoom"?"زووم":student?.study_mode==="in_person"?"حضوري":"غير محددة",service:x.service_name||"حصة فردية",period:x.created_at?formatDate(x.created_at):"غير محدد",due:Number(x.amount_due)||0,paid:Number(x.amount_paid)||0,remaining,id:x.id};
+        const details=String(x.service_name||"").split(" — ").slice(1).join(" — ");return {kind:"حصة فردية",student:student?.full_name||x.full_name||"تلميذ غير محدد",level:student?.level||"غير محدد",mode:student?.study_mode==="zoom"?"زووم":student?.study_mode==="in_person"?"حضوري":"غير محددة",service:"حصة فردية",period:details|| (x.created_at?formatDate(x.created_at):"غير محدد"),due:Number(x.amount_due)||0,paid:Number(x.amount_paid)||0,remaining,id:x.id};
       }).filter(x=>x.remaining>0);
       const individualDebts=payments.filter(p=>{
         const type=String(p.service_type||"")+" "+String(p.service_name||"");
