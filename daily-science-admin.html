@@ -20,4 +20,6 @@ function fillTopics(){$("topic").innerHTML='<option value="">اختاري موض
 $("targetAudience").onchange=()=>{$("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة")};
 $("saveBtn").onclick=async()=>{try{if(!$("topic").value)throw Error("اختاري موضوعًا قبل الحفظ.");if(!$("targetLevel").value)throw Error("حددي المستوى.");if(!$("targetAudience").value)throw Error("اختاري الفئة.");if($("targetAudience").value==="دورة المراجعة"&&!$("reviewCycle").value)throw Error("اختاري دورة المراجعة.");if(!$("dailyInfo").value.trim()||!$("question").value.trim())throw Error("اكتبي المعلومة والسؤال.");const d=await call("daily_science_save",{title:$("title").value,info_date:$("infoDate").value,topic:$("topic").value,scientific_question:$("question").value,scientific_problem:"",explanation:"",conclusion:"",daily_information:$("dailyInfo").value,target_level:$("targetLevel").value,target_audience:$("targetAudience").value,review_cycle:$("reviewCycle").value,is_published:$("published").checked});$("status").textContent=d.message;await load()}catch(e){$("status").textContent=e.message}};
 $("addBtn").classList.remove("hide");$("infoDate").value=new Date().toISOString().slice(0,10);if(!token){$("todayContent").textContent="يلزم تسجيل الدخول إلى فضاء الأستاذة.";$("addBtn").classList.add("hide");}else{load();}
-</script></body></html>
+</script>
+<script src="./workspace-autosave.js" defer></script>
+</body></html>
