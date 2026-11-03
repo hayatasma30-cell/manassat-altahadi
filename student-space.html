@@ -491,11 +491,15 @@ const subscriptionCardHtml=x=>{
  return '<article class="item subscription-progress-card"><strong>'+safe(x.service_name||x.service_type||"خدمة تعليمية")+'</strong><p><span class="tag">'+studentStatus(x)+'</span></p>'+
  (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' من 4</b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div><p class="subscription-expiry">ينتهي الاشتراك في: <b>'+safe(expiry)+'</b></p><p class="muted">'+(remaining>0?"لديك "+remaining+" حصص متبقية لهذا الشهر.": "اكتملت الحصص الأربع لهذا الشهر.")+'</p>':((x.course_date||x.subscription_month)?'<span class="muted">'+safe(x.course_date||x.subscription_month)+'</span>':""))+'</article>';
 };
-const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=>x.lesson_type==="فردية").map(x=>({...x,service_type:"individual_session",service_name:"حصة فردية",status:x.status==="تمت"?"paid":"registered"}));
+const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=>x.lesson_type==="فردية").map(x=>{
+ const linkedSub=studentSubscriptions.find(sub=>String(sub.lesson_id||"")===String(x.id));
+ const paid=!!linkedSub&&Number(linkedSub.remaining_balance??Math.max(0,Number(linkedSub.amount_due||0)-Number(linkedSub.amount_paid||0)))<=0;
+ return {...x,service_type:"individual_session",service_name:"حصة فردية",payment_status:paid?"paid":"unpaid",status:paid?"مدفوعة":"غير مدفوعة"};
+});
 const monthlyAndOtherSubscriptions=studentSubscriptions.filter(x=>String(x.service_type||"").toLowerCase()!=="individual_session");
 const subscriptionDisplayRows=[...monthlyAndOtherSubscriptions,...individualLessonServices];
 list("subscriptions",subscriptionDisplayRows,x=>{
- if(x.service_type==="individual_session")return '<strong>حصة فردية</strong><p class="muted">'+safe(x.lesson_date||"التاريخ غير محدد")+' · '+safe(x.lesson_time||"")+'</p><p><span class="tag">'+(x.status==="paid"?"تمت":"مجدولة")+'</span></p>';
+ if(x.service_type==="individual_session")return '<strong>حصة فردية</strong><p class="muted">'+safe(x.lesson_date||"التاريخ غير محدد")+' · '+safe(x.lesson_time||"")+'</p><p><span class="tag">'+safe(x.status)+'</span></p>';
  return subscriptionCardHtml(x);
 },"لا توجد اشتراكات أو حصص فردية مسجلة حاليًا.");
 list("payments",studentPayments,x=>'<strong>'+safe(studentStatus(x))+'</strong><span class="muted">'+date(x.payment_date||x.created_at)+'</span>',"لا توجد دفعات مسجلة حاليًا.");
