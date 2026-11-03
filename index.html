@@ -2348,20 +2348,40 @@ const handleIncomeCalendarClick=async e=>{
   function setLessonPage(page){if(page==="calendar"){setLessonPage("library");setLessonSubpage("calendar");document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.dataset.lessonPage==="calendar";b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});return;}if(page!=="add"&&page!=="scheduled"&&page!=="cancelled")page="library";selectedLessonPage=page;selectedLessonSubpage="all";document.querySelectorAll("[data-lesson-subpage]").forEach(b=>b.classList.toggle("active",false));$("lessonSubpageNav").hidden=page==="add"?true:false;$("lessonSubpageBack").hidden=true;$("dailyLessonsList").hidden=true;$("lessonsCalendarPanel").hidden=true;$("toggleLessonsCalendarBtn").hidden=true;$("lessonAddPanel").hidden=page!=="add";$("lessonListPanel").hidden=page==="add";const titles={library:"📚 إدارة الحصص",scheduled:"🗓️ الحصص المسجلة",cancelled:"🚫 الحصص الملغاة"};$("lessonListTitle").textContent=titles[page]||"إدارة الحصص";if($("lessonListScopeSelect"))$("lessonListScopeSelect").value=page==="add"?"library":page;const calendarMode=false;$("lessonsCalendarPanel").hidden=true;$("lessonListPanel").classList.remove("calendar-mode");["lessonListFilters","lessonListModeHint","lessonCategoryFilterHint"].forEach(id=>{const el=$(id);if(el)el.hidden=false;});$("dailyLessonsList").hidden=true;$("toggleLessonsCalendarBtn").textContent="📅 فتح تقويم الحصص";document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.dataset.lessonPage==="add"?page==="add":b.dataset.lessonPage==="calendar"?false:page!=="add";b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});if(page!=="add")loadDailyLessons();}
   document.querySelectorAll("[data-lesson-page]").forEach(b=>b.addEventListener("click",()=>{const page=b.dataset.lessonPage;if(page==="add"){window.tahadiEditingLessonId="";$("lessonRepeatWeekly").disabled=false;$("lessonRepeatWeekly").checked=false;$("lessonRepeatEndWrap").hidden=true;$("lessonRepeatEndWrap").style.display="none";}setLessonPage(page);}));
   /* معالج مركزي لأزرار أقسام الحصص: يضمن عمل الأزرار حتى عند تعطل الربط المباشر */
+  /* ربط مباشر مستقل لأزرار التنقل الرئيسية، مع ضمان إظهار القسم المطلوب */
+  function activateLessonMainButton(page){
+    try{
+      if(page==="add"){
+        window.tahadiEditingLessonId="";
+        const repeat=$("lessonRepeatWeekly"),wrap=$("lessonRepeatEndWrap");
+        if(repeat){repeat.disabled=false;repeat.checked=false;}
+        if(wrap){wrap.hidden=true;wrap.style.display="none";}
+        setLessonPage("add");
+      }else if(page==="calendar"){
+        setLessonPage("library");
+        setLessonSubpage("calendar");
+      }else{
+        setLessonPage("library");
+        setLessonSubpage("all");
+      }
+      const view=$("dailyLessonsView");
+      if(view){view.classList.add("active");view.style.display="block";view.setAttribute("aria-hidden","false");}
+      document.querySelectorAll("#dailyLessonsView [data-lesson-page]").forEach(b=>{
+        const active=b.dataset.lessonPage===page;
+        b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);
+      });
+      return true;
+    }catch(error){console.error("Tahadi lesson navigation:",error);return false;}
+  }
+  document.querySelectorAll("#dailyLessonsView .lesson-main-nav [data-lesson-page]").forEach(button=>{
+    button.style.pointerEvents="auto";button.style.position="relative";button.style.zIndex="5";
+    button.onclick=function(event){event.preventDefault();event.stopPropagation();activateLessonMainButton(button.dataset.lessonPage);};
+  });
   document.addEventListener("click",function(event){
-    const button=event.target instanceof Element?event.target.closest("#dailyLessonsView [data-lesson-page]"):null;
+    const target=event.target;
+    const button=target&&target.closest?target.closest("#dailyLessonsView .lesson-main-nav [data-lesson-page]"):null;
     if(!button)return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const page=button.dataset.lessonPage;
-    if(page==="add"){
-      window.tahadiEditingLessonId="";
-      $("lessonRepeatWeekly").disabled=false;
-      $("lessonRepeatWeekly").checked=false;
-      $("lessonRepeatEndWrap").hidden=true;
-      $("lessonRepeatEndWrap").style.display="none";
-    }
-    setLessonPage(page);
+    event.preventDefault();event.stopImmediatePropagation();activateLessonMainButton(button.dataset.lessonPage);
   },true);
 
   $("lessonListScopeSelect").addEventListener("change",()=>setLessonPage($("lessonListScopeSelect").value));
