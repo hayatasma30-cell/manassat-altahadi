@@ -488,8 +488,9 @@ const subscriptionCardHtml=x=>{
  const completed=isMonthly?monthLessons.length:0,remaining=isMonthly?Math.max(0,4-completed):0;
  const expiry=monthEnd.toLocaleDateString("ar-DZ",{day:"numeric",month:"long",year:"numeric"});
  const active=studentStatus(x)==="paid"||studentStatus(x)==="registered";
- return '<article class="item subscription-progress-card"><strong>'+safe(x.service_name||x.service_type||"خدمة تعليمية")+'</strong><p><span class="tag">'+studentStatus(x)+'</span></p>'+
- (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' من 4</b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div><p class="subscription-expiry">ينتهي الاشتراك في: <b>'+safe(expiry)+'</b></p><p class="muted">'+(remaining>0?"لديك "+remaining+" حصص متبقية لهذا الشهر.": "اكتملت الحصص الأربع لهذا الشهر.")+'</p>':((x.course_date||x.subscription_month)?'<span class="muted">'+safe(x.course_date||x.subscription_month)+'</span>':""))+'</article>';
+ const statusLabel=studentStatus(x)==="paid"?"مدفوع":studentStatus(x)==="pending"?"قيد المراجعة":studentStatus(x)==="rejected"?"مرفوض":"مسجل";
+ return '<article class="item subscription-progress-card"><div class="subscription-card-head"><div><small class="subscription-kicker">'+(isMonthly?"اشتراك شهري":"خدمة تعليمية")+'</small><strong>'+safe(x.service_name||x.service_type||"خدمة تعليمية")+'</strong></div><span class="subscription-status '+(studentStatus(x)==="paid"?"is-paid":"is-pending")+'">'+statusLabel+'</span></div>'+
+ (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' <small>من 4</small></b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div><div class="subscription-expiry"><span>نهاية الاشتراك</span><b>'+safe(expiry)+'</b></div><p class="subscription-hint">'+(remaining>0?"باقي لك "+remaining+" حصص هذا الشهر.": "أكملت الحصص الأربع لهذا الشهر.")+'</p>':((x.course_date||x.subscription_month)?'<p class="subscription-date">'+safe(x.course_date||x.subscription_month)+'</p>':""))+'</article>';
 };
 const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=>x.lesson_type==="فردية").map(x=>{
  const linkedSub=studentSubscriptions.find(sub=>String(sub.lesson_id||"")===String(x.id));
@@ -499,7 +500,7 @@ const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=
 const monthlyAndOtherSubscriptions=studentSubscriptions.filter(x=>String(x.service_type||"").toLowerCase()!=="individual_session");
 const subscriptionDisplayRows=[...monthlyAndOtherSubscriptions,...individualLessonServices];
 list("subscriptions",subscriptionDisplayRows,x=>{
- if(x.service_type==="individual_session")return '<strong>حصة فردية</strong><p class="muted">'+safe(x.lesson_date||"التاريخ غير محدد")+' · '+safe(x.lesson_time||"")+'</p><p><span class="tag">'+safe(x.status)+'</span></p>';
+ if(x.service_type==="individual_session")return '<article class="item subscription-progress-card individual-service-card"><div class="subscription-card-head"><div><small class="subscription-kicker">خدمة فردية</small><strong>حصة فردية</strong></div><span class="subscription-status '+(x.payment_status==="paid"?"is-paid":"is-pending")+'">'+safe(x.status)+'</span></div><div class="individual-session-meta"><span>📅 '+safe(x.lesson_date||"التاريخ غير محدد")+'</span><span>🕒 '+safe(x.lesson_time||"التوقيت غير محدد")+'</span></div></article>';
  return subscriptionCardHtml(x);
 },"لا توجد اشتراكات أو حصص فردية مسجلة حاليًا.");
 list("payments",studentPayments,x=>'<strong>'+safe(studentStatus(x))+'</strong><span class="muted">'+date(x.payment_date||x.created_at)+'</span>',"لا توجد دفعات مسجلة حاليًا.");
@@ -868,4 +869,22 @@ initializeStudentSpace().catch((error) => {
 .subscription-progress b{display:block;color:#14532d;font-size:1.2rem}
 .subscription-expiry{margin:8px 0;color:#6b5520;background:#fff8e7;border:1px solid #f0dfb6;border-radius:10px;padding:8px 10px}
 </style>
-</body></html>
+<style id="student-services-refined">
+[data-panel="subscriptions"]>h2{margin:0 0 16px;padding:4px 2px 13px;border-bottom:1px solid #e4ecdf;color:#174d31}
+.subscription-progress-card{margin:12px 0!important;padding:17px!important;border:1px solid #dce9d9!important;border-radius:20px!important;background:linear-gradient(145deg,#fff 0%,#f7fbf5 100%)!important;box-shadow:0 5px 0 #e1ecde,0 10px 22px #173f2410!important}
+.subscription-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.subscription-card-head>div{display:grid;gap:3px}
+.subscription-card-head strong{font-size:1.08rem;color:#174d31}
+.subscription-kicker{font-size:.76rem;color:#87958a}
+.subscription-status{white-space:nowrap;border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:700}
+.subscription-status.is-paid{background:#e5f5e8;color:#17613c}
+.subscription-status.is-pending{background:#fff3d8;color:#876019}
+.subscription-progress{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 12px}
+.subscription-progress>div{background:#eff7ed;border:1px solid #deebda;border-radius:15px;padding:12px}
+.subscription-progress small{color:#718075;font-size:.8rem}
+.subscription-progress b{display:block;color:#175b38;font-size:1.35rem}
+.subscription-expiry{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#fff8e8;border:1px solid #f0e3c4;border-radius:13px;padding:10px 12px;margin:10px 0;color:#6e5a2a}
+.subscription-hint,.subscription-date{margin:10px 2px 0;color:#758078;font-size:.87rem}
+.individual-session-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.individual-session-meta span{background:#f0f7ef;border:1px solid #e0ebdc;border-radius:12px;padding:8px 11px;color:#536b5b;font-size:.9rem}
+</style></body></html>
