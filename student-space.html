@@ -329,7 +329,7 @@ function renderStudentLessons(items){
  const data=currentDashboardData||teacherPreviewData||{},rows=Array.isArray(items)?items:[],attendance=Array.isArray(data.attendance)?data.attendance:[];
  const rawMode=String(data.student?.study_mode||data.profile?.student?.study_mode||"").trim().toLowerCase();
  const mode=["zoom","in_person"].includes(rawMode)?rawMode:null;
- const visibleRows=rows.filter(x=>!mode||x.delivery_mode===mode);
+ const visibleRows=rows.filter(x=>x.lesson_type==="فردية"||!mode||x.delivery_mode===mode);
  const lessonDateTime=(x,end=false)=>{const date=String(x.lesson_date||"");const parts=String(x.lesson_time||"").split(/[–—-]/).map(v=>v.trim());const time=parts[end?1:0]||"";if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||!/^\d{1,2}:\d{2}$/.test(time))return NaN;const [y,m,d]=date.split("-").map(Number),[hh,mm]=time.split(":").map(Number);return new Date(y,m-1,d,hh,mm,0,0).getTime();};
  const nowMs=Date.now();
  const upcoming=visibleRows.filter(x=>x.status==="مجدولة"&&Number.isFinite(lessonDateTime(x,true))&&lessonDateTime(x,true)>nowMs).sort((a,b)=>lessonDateTime(a,false)-lessonDateTime(b,false));
@@ -491,7 +491,13 @@ const subscriptionCardHtml=x=>{
  return '<article class="item subscription-progress-card"><strong>'+safe(x.service_name||x.service_type||"خدمة تعليمية")+'</strong><p><span class="tag">'+studentStatus(x)+'</span></p>'+
  (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' من 4</b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div><p class="subscription-expiry">ينتهي الاشتراك في: <b>'+safe(expiry)+'</b></p><p class="muted">'+(remaining>0?"لديك "+remaining+" حصص متبقية لهذا الشهر.": "اكتملت الحصص الأربع لهذا الشهر.")+'</p>':((x.course_date||x.subscription_month)?'<span class="muted">'+safe(x.course_date||x.subscription_month)+'</span>':""))+'</article>';
 };
-list("subscriptions",studentSubscriptions,subscriptionCardHtml,"لا توجد اشتراكات مسجلة حاليًا.");
+const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=>x.lesson_type==="فردية").map(x=>({...x,service_type:"individual_session",service_name:"حصة فردية",status:x.status==="تمت"?"paid":"registered"}));
+const monthlyAndOtherSubscriptions=studentSubscriptions.filter(x=>String(x.service_type||"").toLowerCase()!=="individual_session");
+const subscriptionDisplayRows=[...monthlyAndOtherSubscriptions,...individualLessonServices];
+list("subscriptions",subscriptionDisplayRows,x=>{
+ if(x.service_type==="individual_session")return '<strong>حصة فردية</strong><p class="muted">'+safe(x.lesson_date||"التاريخ غير محدد")+' · '+safe(x.lesson_time||"")+'</p><p><span class="tag">'+(x.status==="paid"?"تمت":"مجدولة")+'</span></p>';
+ return subscriptionCardHtml(x);
+},"لا توجد اشتراكات أو حصص فردية مسجلة حاليًا.");
 list("payments",studentPayments,x=>'<strong>'+safe(studentStatus(x))+'</strong><span class="muted">'+date(x.payment_date||x.created_at)+'</span>',"لا توجد دفعات مسجلة حاليًا.");
 const automaticStars=[];const seenStarQuizzes=new Set();for(const attempt of (d.quiz_attempts||[])){if(!attempt.submitted_at)continue;const max=Number(attempt.auto_max_score||20),score=attempt.teacher_score!==null&&attempt.teacher_score!==undefined?Number(attempt.teacher_score):Number(attempt.auto_score);const slug=String(attempt.quiz_slug||"");if(max===20&&score===20&&slug&&!seenStarQuizzes.has(slug)){seenStarQuizzes.add(slug);automaticStars.push({title:attempt.quiz_title||"اختبار إلكتروني",date:attempt.submitted_at,reason:"حصلت على العلامة الكاملة 20/20 في هذا الاختبار."});}}$("studentName").textContent=student.full_name+(automaticStars.length?" ⭐":"");$("studentProfile").innerHTML='<p><b>الاسم الكامل:</b> '+safe(student.full_name||"—")+(automaticStars.length?' <span style="color:#b8860b">⭐</span>':"")+'</p><p><b>المستوى الدراسي:</b> '+safe(student.level||"غير محدد")+'</p><p><b>طريقة الدراسة:</b> '+safe(student.study_mode||"غير محددة")+'</p><section style="margin-top:14px;padding:14px;border:1px solid #e8d49a;border-radius:16px;background:linear-gradient(135deg,#fffdf3,#f5f8e9)"><h3 style="margin:0 0 8px;color:#896719">⭐ نجوم التحدي</h3><strong style="font-size:22px;color:#17613c">'+automaticStars.length+' نجمة</strong>'+(automaticStars.length?automaticStars.map(x=>'<article style="padding:9px 0;border-top:1px solid #eadfbf"><b>⭐ '+safe(x.title)+'</b><p style="margin:3px 0;color:#6c6b56">'+safe(x.reason)+'</p><small class="muted">'+date(x.date)+'</small></article>').join(""):'<p class="muted">ستحصل على أول نجمة تلقائيًا عندما تحقق 20/20 في أحد الاختبارات.</p>')+'</section>';
 
