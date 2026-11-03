@@ -740,4 +740,92 @@ initializeStudentSpace().catch((error) => {
  #dashboard .student-home-grid,#dashboard .student-submenu-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 </style>
+<style id="student-all-pages-unified-3d-20261103">
+/* هوية موحدة لكل صفحات فضاء التلميذ */
+#dashboard .student-section,
+#dashboard #studentMenu{color:#244b35}
+#dashboard .student-section .panel,
+#dashboard .student-section .card,
+#dashboard .student-section .item,
+#dashboard .student-section .list-card,
+#dashboard .student-section .content-card{
+  border:1px solid #d9e7d6!important;
+  border-radius:15px!important;
+  background:linear-gradient(145deg,#fff 0%,#f8fcf6 100%)!important;
+  box-shadow:0 3px 0 #d7e5d3,0 7px 15px #174b2c12!important;
+}
+#dashboard .student-section button,
+#dashboard .student-section input[type="button"],
+#dashboard .student-section input[type="submit"],
+#dashboard #studentMenu button,
+#dashboard .student-identity button,
+#dashboard .student-help-overlay button,
+#dashboard .student-help-overlay .student-guide-send{
+  min-height:40px!important;
+  border:1px solid #b9d5b8!important;
+  border-bottom:4px solid #25804b!important;
+  border-radius:12px!important;
+  background:linear-gradient(160deg,#fff 0%,#f1f9ef 72%,#e5f2e2 100%)!important;
+  color:#174b30!important;
+  box-shadow:0 3px 0 #a9c7a8,0 6px 11px #174b2c18!important;
+  font-weight:800!important;
+  transition:transform .14s ease,box-shadow .14s ease!important;
+}
+#dashboard .student-section button:active,
+#dashboard .student-section input[type="button"]:active,
+#dashboard .student-section input[type="submit"]:active,
+#dashboard #studentMenu button:active,
+#dashboard .student-identity button:active,
+#dashboard .student-help-overlay button:active{
+  transform:translateY(2px)!important;
+  box-shadow:0 1px 0 #a9c7a8,0 2px 5px #174b2c12!important;
+}
+#dashboard .student-section button:disabled,
+#dashboard .student-section input:disabled{
+  opacity:.55!important;transform:none!important;box-shadow:none!important
+}
+#dashboard .student-section .danger,
+#dashboard .student-section button.danger,
+#dashboard .student-section .delete,
+#dashboard .student-section button.delete{
+  background:linear-gradient(160deg,#fff 0%,#fff3f0 100%)!important;
+  color:#9b342b!important;border-color:#e8c4bd!important;border-bottom-color:#b85b50!important;
+  box-shadow:0 3px 0 #e2c2bc,0 6px 11px #8c302018!important
+}
+#dashboard .student-section h2,
+#dashboard .student-section h3{
+  color:#174b30!important
+}
+#dashboard .student-section label{color:#365d45}
+#dashboard .student-section input:not([type="checkbox"]):not([type="radio"]),
+#dashboard .student-section select,
+#dashboard .student-section textarea{
+  border:1px solid #cbdcc8!important;border-radius:11px!important;
+  background:#fff!important;box-shadow:inset 0 1px 3px #174b2c0b!important;
+  max-width:100%!important
+}
+#dashboard .student-section .tag,
+#dashboard .student-section .badge{
+  border-radius:999px!important
+}
+#dashboard .student-section .empty{
+  border:1px dashed #bfd6bb!important;border-radius:13px!important;
+  background:#f5faf2!important;padding:10px!important
+}
+@media(max-width:500px){
+ #dashboard .student-section{padding:0!important;margin:6px 0!important}
+ #dashboard .student-section>.panel,
+ #dashboard .student-section>.card{padding:9px!important;margin:6px 0!important}
+ #dashboard .student-section button,
+ #dashboard .student-section input[type="button"],
+ #dashboard .student-section input[type="submit"]{
+   min-height:36px!important;padding:7px 10px!important;border-radius:10px!important
+ }
+ #dashboard .student-section .item{padding:8px!important;margin:6px 0!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #dashboard .student-section button,
+ #dashboard #studentMenu button{transition:none!important}
+}
+</style>
 </body></html>
