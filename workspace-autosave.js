@@ -16,7 +16,7 @@
       const fields=[];
       document.querySelectorAll("input,select,textarea").forEach((el,index)=>{
         const type=(el.type||"").toLowerCase();
-        if(skip.has(type)||el.id==="tahadi_teacher_token"||el.name==="password"||!dirty.has(el)||el.disabled)return;
+        if(skip.has(type)||el.id==="tahadi_teacher_token"||el.name==="password"||el.disabled)return;
         fields.push({id:el.id||"",name:el.name||"",index,type,
           value:(type==="checkbox"||type==="radio")?!!el.checked:el.value,
           selectedIndex:el.tagName==="SELECT"?el.selectedIndex:null});
@@ -25,7 +25,7 @@
       const active=views.find(v=>v.classList.contains("active")||getComputedStyle(v).display!=="none");
       const details=[];
       document.querySelectorAll("details").forEach((el,i)=>{if(el.open)details.push(el.id||"@"+i)});
-      localStorage.setItem(key,JSON.stringify({at:Date.now(),url:location.href,view:active?.id||"",scrollX,scrollY,fields,details}));
+      localStorage.setItem(key,JSON.stringify({at:Date.now(),url:location.href,view:active?.id||"",scrollX,scrollY,fields,details,activeControls:[...document.querySelectorAll("[aria-selected=true],[aria-pressed=true]")].map(el=>({id:el.id||"",name:el.getAttribute("name")||"",value:el.getAttribute("aria-selected")!==null?"selected":"pressed"}))}));
     });
   }
   function queue(){clearTimeout(timer);timer=setTimeout(save,250)}
@@ -64,6 +64,7 @@
         else if(el.tagName==="SELECT"&&Number.isInteger(item.selectedIndex)&&item.selectedIndex>=0&&item.selectedIndex<el.options.length)el.selectedIndex=item.selectedIndex;
         else if("value" in el)el.value=item.value??"";
       });
+      (state.activeControls||[]).forEach(item=>{const el=item.id?document.getElementById(item.id):item.name?document.querySelector('[name="'+CSS.escape(item.name)+'"]'):null;if(el)el.setAttribute(item.value==="selected"?"aria-selected":"aria-pressed","true")});
       (state.details||[]).forEach(id=>{
         const el=id.startsWith("@")?document.querySelectorAll("details")[Number(id.slice(1))]:document.getElementById(id);
         if(el&&el.tagName==="DETAILS")el.open=true;
