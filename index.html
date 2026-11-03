@@ -1542,6 +1542,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
     <div class="view-head"><h3>➕ إضافة حصة</h3><button class="back" id="closeIncome2025Entry" type="button">إغلاق ✕</button></div>
     <p class="muted">أدخلي تاريخ الحصة وعدد الحاضرين وسعر التلميذ الواحد، وسيُحسب المبلغ تلقائيًا.</p>
     <label for="income2025EntryDate">تاريخ الحصة</label><input id="income2025EntryDate" type="date" min="2025-01-01" max="2025-12-31">
+    <label for="income2025LessonType">نوع الحصة</label><select id="income2025LessonType" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><option value="">اختاري نوع الحصة</option><option value="حصة زووم أسبوعية">حصة زووم أسبوعية</option><option value="حصة حضورية أسبوعية">حصة حضورية أسبوعية</option><option value="حصة حضورية فردية">حصة حضورية فردية</option><option value="حصة حضورية زووم">حصة حضورية زووم</option><option value="دورة حضورية">دورة حضورية</option><option value="دورة زووم">دورة زووم</option></select>
     <label for="income2025PresentCount">عدد التلاميذ الحاضرين</label><input id="income2025PresentCount" type="number" min="0" max="500" step="1" placeholder="أدخلي عدد الحاضرين" inputmode="numeric">
     <label for="income2025UnitPrice">سعر الوحدة للتلميذ (دج)</label><input id="income2025UnitPrice" type="number" min="0" max="10000000" step="1" placeholder="أدخلي سعر التلميذ" inputmode="numeric">
     <div id="income2025EntryPreview" class="note">أدخلي العدد والسعر لحساب المبلغ الإجمالي.</div>
@@ -2027,7 +2028,7 @@ window.addEventListener("unhandledrejection",function(e){
     $("openIncome2025Entry").addEventListener("click",()=>{
       const panel=$("income2025EntryPanel");
       $("income2025EntryDate").value=incomeCalendar2025Selected||(($("incomeCalendar2025Month").value||"2025-01")+"-01");
-      $("income2025PresentCount").value="";$("income2025UnitPrice").value="";$("income2025EntryStatus").textContent="";
+      $("income2025LessonType").value="";$("income2025PresentCount").value="";$("income2025UnitPrice").value="";$("income2025EntryStatus").textContent="";
       updateIncome2025Preview();panel.hidden=false;$("openIncome2025Entry").hidden=true;
       panel.scrollIntoView({behavior:"smooth",block:"start"});
     });
@@ -2035,15 +2036,15 @@ window.addEventListener("unhandledrejection",function(e){
       $("income2025EntryPanel").hidden=true;$("openIncome2025Entry").hidden=false;
     });
     $("saveIncome2025Entry").addEventListener("click",async()=>{
-      const date=$("income2025EntryDate").value,count=Number($("income2025PresentCount").value),price=Number($("income2025UnitPrice").value),amount=count*price,status=$("income2025EntryStatus"),btn=$("saveIncome2025Entry");
-      if(!date||!date.startsWith("2025-")||!Number.isInteger(count)||count<1||count>500||!Number.isFinite(price)||price<=0||price>10000000){status.textContent="تحققي من التاريخ، وعدد الحاضرين، وسعر الوحدة.";return;}
+      const date=$("income2025EntryDate").value,type=$("income2025LessonType").value,count=Number($("income2025PresentCount").value),price=Number($("income2025UnitPrice").value),amount=count*price,status=$("income2025EntryStatus"),btn=$("saveIncome2025Entry");
+      if(!date||!date.startsWith("2025-")||!type||!Number.isInteger(count)||count<1||count>500||!Number.isFinite(price)||price<=0||price>10000000){status.textContent="اختاري نوع الحصة وتحققي من التاريخ وعدد الحاضرين وسعر الوحدة.";return;}
       btn.disabled=true;status.textContent="جارٍ حفظ الحصة…";
       try{
-        const token=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_income_save",entry:{work_date:date,description:"حصة 2025 — "+count+" حاضر",amount,notes:"عدد الحاضرين: "+count+" · سعر الوحدة: "+calendarMoney(price)+" دج"}})}),d=await r.json();
+        const token=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_income_save",entry:{work_date:date,description:type+" — "+count+" حاضر",amount,notes:"نوع الحصة: "+type+" · عدد الحاضرين: "+count+" · سعر الوحدة: "+calendarMoney(price)+" دج"}})}),d=await r.json();
         if(!r.ok||!d.ok)throw Error(d.error||"تعذر حفظ الحصة.");
         incomeCalendar2025Entries.unshift(d.entry);$("incomeCalendar2025Month").value=date.slice(0,7);incomeCalendar2025Selected=date;renderIncomeCalendar2025();
         $("income2025EntryPanel").hidden=true;$("openIncome2025Entry").hidden=false;
-        $("income2025PresentCount").value="";$("income2025UnitPrice").value="";updateIncome2025Preview();
+        $("income2025LessonType").value="";$("income2025PresentCount").value="";$("income2025UnitPrice").value="";updateIncome2025Preview();
         $("incomeCalendar2025DayDetails").scrollIntoView({behavior:"smooth",block:"center"});
       }catch(e){status.textContent=e.message;}finally{btn.disabled=false;}
     });
