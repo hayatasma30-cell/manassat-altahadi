@@ -1633,6 +1633,10 @@ window.addEventListener("unhandledrejection",function(e){
     return new Intl.DateTimeFormat("ar-DZ", {...options,timeZone:dateOnly ? "UTC" : "Africa/Algiers"}).format(date);
   }
   function showStatus(message, kind) { status.textContent = message; status.className = "status show " + kind; }
+  const teacherPagePositionKey="tahadi_teacher_page_position_v2";
+  function saveTeacherPagePosition(){try{sessionStorage.setItem(teacherPagePositionKey,JSON.stringify({view:activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView",y:window.scrollY||0}));}catch(_){}}
+  window.addEventListener("scroll",saveTeacherPagePosition,{passive:true});
+  window.addEventListener("pagehide",saveTeacherPagePosition);
   function showView(id) {
     const target = document.getElementById(id);
     if (!target || !target.classList.contains("view")) id = "homeView";
@@ -1647,6 +1651,7 @@ window.addEventListener("unhandledrejection",function(e){
     if(id!=="loginView"){sessionStorage.setItem("tahadi_last_view",id);try{localStorage.setItem("tahadi_last_view_persistent",id);}catch(_){}}
     status.className = "status";
     window.scrollTo({top:0,behavior:"smooth"});
+    if(id!=="loginView")setTimeout(saveTeacherPagePosition,80);
   }
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{if(typeof window.tahadiOpenIncomePage==="function")window.tahadiOpenIncomePage("incomeCalendarPage");});
@@ -2976,9 +2981,10 @@ const handleIncomeCalendarClick=async e=>{
   $("logoutBtn").addEventListener("click", logout); $("topLogout").addEventListener("click", logout);
   const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
   if (savedToken && expiry && new Date(expiry).getTime() > Date.now()) {
-    const lastView=localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view");
+    let savedPosition={};try{savedPosition=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
+    const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view");
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView);
-    loadDashboard(savedToken).then(()=>{}).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم أو اضغطي تحديث البيانات.","error");console.error("initial dashboard load failed",err);});
+    loadDashboard(savedToken).then(()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView);setTimeout(()=>window.scrollTo({top:Math.max(0,Number(savedPosition.y)||0),behavior:"instant"}),180);}).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم أو اضغطي تحديث البيانات.","error");console.error("initial dashboard load failed",err);if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView);setTimeout(()=>window.scrollTo({top:Math.max(0,Number(savedPosition.y)||0),behavior:"instant"}),180);});
   } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
   form.addEventListener("submit", async event => {
     event.preventDefault();
