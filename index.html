@@ -1922,6 +1922,7 @@ window.addEventListener("unhandledrejection",function(e){
     document.querySelectorAll("[data-sub-mode]").forEach(b=>b.addEventListener("click",()=>{selectedSubscriptionMode=b.dataset.subMode;renderSubscriptions();}));
     renderSubscriptions();
     const renderUnpaidPayments=()=>{
+      const formatUnpaidMoney=value=>(Number(value)||0).toLocaleString("fr-FR",{maximumFractionDigits:2})+" دج";
       const subscriptionDebts=subscriptions.map(x=>{
         const remaining=Math.max(0,Number(x.remaining_balance??(Number(x.amount_due||0)-Number(x.amount_paid||0)))||0);
         const student=students.find(st=>String(st.id)===String(x.student_id));
@@ -1939,8 +1940,8 @@ window.addEventListener("unhandledrejection",function(e){
       });
       const rows=[...subscriptionDebts,...individualDebts];
       const total=rows.reduce((sum,x)=>sum+x.remaining,0);
-      $("unpaidPaymentSummary").innerHTML=[["عدد المستحقات",rows.length],["إجمالي المبلغ المتبقي",money(total)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
-      $("unpaidPaymentsList").innerHTML=rows.length?rows.map(x=>'<article class="data-item"><strong>'+escapeHtml(x.student)+'</strong><div class="small">المستوى: '+escapeHtml(x.level)+' · '+escapeHtml(x.mode)+'</div><div class="small">النوع: '+escapeHtml(x.kind)+' · الخدمة: '+escapeHtml(x.service)+'</div><div class="small">الفترة/التاريخ: '+escapeHtml(x.period)+'</div><div class="payment-meta"><span>المستحق: <b>'+money(x.due)+'</b></span><span>المقبوض: <b>'+money(x.paid)+'</b></span><span class="payment-status pending">المتبقي: '+money(x.remaining)+'</span></div></article>').join(""):'<div class="data-item">لا توجد دفعات غير مقبوضة مسجلة حاليًا.</div>';
+      $("unpaidPaymentSummary").innerHTML=[["عدد المستحقات",rows.length],["إجمالي المبلغ المتبقي",formatUnpaidMoney(total)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
+      $("unpaidPaymentsList").innerHTML=rows.length?rows.map(x=>'<article class="data-item"><strong>'+escapeHtml(x.student)+'</strong><div class="small">المستوى: '+escapeHtml(x.level)+' · '+escapeHtml(x.mode)+'</div><div class="small">النوع: '+escapeHtml(x.kind)+' · الخدمة: '+escapeHtml(x.service)+'</div><div class="small">الفترة/التاريخ: '+escapeHtml(x.period)+'</div><div class="payment-meta"><span>المستحق: <b>'+formatUnpaidMoney(x.due)+'</b></span><span>المقبوض: <b>'+formatUnpaidMoney(x.paid)+'</b></span><span class="payment-status pending">المتبقي: '+formatUnpaidMoney(x.remaining)+'</span></div></article>').join(""):'<div class="data-item">لا توجد دفعات غير مقبوضة مسجلة حاليًا.</div>';
     };
     renderUnpaidPayments();
     $("subscriptionsList").addEventListener("click",async event=>{
