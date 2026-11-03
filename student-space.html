@@ -473,7 +473,25 @@ const baseStudentSubscriptions=uniqueStudentRows(d.subscriptions,x=>[x.student_i
 const studentSubscriptions=uniqueStudentRows([...baseStudentSubscriptions,...studentCourseSubscriptions],x=>[x.student_id,x.service_type,x.service_name,x.subscription_month,x.course_date,x.amount_due,x.amount_paid,x.remaining_balance,x.group_cycle_label,x.group_units_total,x.status].map(v=>String(v??"").trim().toLowerCase()).join("|"));
 $("subCount").textContent=studentSubscriptions.length;$("payCount").textContent=studentPayments.length;
 const studentStatus=x=>["approved","paid"].includes(String(x.status||"").toLowerCase())?"paid":String(x.status||"").toLowerCase()==="pending"?"pending":String(x.status||"").toLowerCase()==="rejected"?"rejected":"registered";
-list("subscriptions",studentSubscriptions,x=>'<strong>'+safe(x.service_name||x.service_type||"خدمة تعليمية")+'</strong>'+((x.course_date||x.subscription_month)?'<span class="muted">'+safe(x.course_date||x.subscription_month)+'</span>':"")+'<p><span class="tag">'+studentStatus(x)+'</span></p>',"لا توجد اشتراكات مسجلة حاليًا.");
+const subscriptionCardHtml=x=>{
+ const isMonthly=String(x.service_type||"").toLowerCase()==="monthly_subscription";
+ const rawMonth=String(x.subscription_month||x.created_at||"").slice(0,7);
+ const monthMatch=/^\\d{4}-\\d{2}$/.test(rawMonth)?rawMonth:(()=>{const n=new Date();return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0");})();
+ const [sy,sm]=monthMatch.split("-").map(Number);
+ const monthStart=new Date(sy,sm-1,1),monthEnd=new Date(sy,sm,0);
+ const monthLessons=(Array.isArray(d.lessons)?d.lessons:[]).filter(l=>{
+  if(l.status!=="تمت"||!String(l.lesson_date||"").startsWith(monthMatch))return false;
+  if(x.delivery_mode&&l.delivery_mode&&String(x.delivery_mode)!==String(l.delivery_mode))return false;
+  if(x.level&&l.level&&String(x.level)!==String(l.level))return false;
+  return true;
+ });
+ const completed=isMonthly?monthLessons.length:0,remaining=isMonthly?Math.max(0,4-completed):0;
+ const expiry=monthEnd.toLocaleDateString("ar-DZ",{day:"numeric",month:"long",year:"numeric"});
+ const active=studentStatus(x)==="paid"||studentStatus(x)==="registered";
+ return '<article class="item subscription-progress-card"><strong>'+safe(x.service_name||x.service_type||"خدمة تعليمية")+'</strong><p><span class="tag">'+studentStatus(x)+'</span></p>'+
+ (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' من 4</b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div><p class="subscription-expiry">ينتهي الاشتراك في: <b>'+safe(expiry)+'</b></p><p class="muted">'+(remaining>0?"لديك "+remaining+" حصص متبقية لهذا الشهر.": "اكتملت الحصص الأربع لهذا الشهر.")+'</p>':((x.course_date||x.subscription_month)?'<span class="muted">'+safe(x.course_date||x.subscription_month)+'</span>':""))+'</article>';
+};
+list("subscriptions",studentSubscriptions,subscriptionCardHtml,"لا توجد اشتراكات مسجلة حاليًا.");
 list("payments",studentPayments,x=>'<strong>'+safe(studentStatus(x))+'</strong><span class="muted">'+date(x.payment_date||x.created_at)+'</span>',"لا توجد دفعات مسجلة حاليًا.");
 const automaticStars=[];const seenStarQuizzes=new Set();for(const attempt of (d.quiz_attempts||[])){if(!attempt.submitted_at)continue;const max=Number(attempt.auto_max_score||20),score=attempt.teacher_score!==null&&attempt.teacher_score!==undefined?Number(attempt.teacher_score):Number(attempt.auto_score);const slug=String(attempt.quiz_slug||"");if(max===20&&score===20&&slug&&!seenStarQuizzes.has(slug)){seenStarQuizzes.add(slug);automaticStars.push({title:attempt.quiz_title||"اختبار إلكتروني",date:attempt.submitted_at,reason:"حصلت على العلامة الكاملة 20/20 في هذا الاختبار."});}}$("studentName").textContent=student.full_name+(automaticStars.length?" ⭐":"");$("studentProfile").innerHTML='<p><b>الاسم الكامل:</b> '+safe(student.full_name||"—")+(automaticStars.length?' <span style="color:#b8860b">⭐</span>':"")+'</p><p><b>المستوى الدراسي:</b> '+safe(student.level||"غير محدد")+'</p><p><b>طريقة الدراسة:</b> '+safe(student.study_mode||"غير محددة")+'</p><section style="margin-top:14px;padding:14px;border:1px solid #e8d49a;border-radius:16px;background:linear-gradient(135deg,#fffdf3,#f5f8e9)"><h3 style="margin:0 0 8px;color:#896719">⭐ نجوم التحدي</h3><strong style="font-size:22px;color:#17613c">'+automaticStars.length+' نجمة</strong>'+(automaticStars.length?automaticStars.map(x=>'<article style="padding:9px 0;border-top:1px solid #eadfbf"><b>⭐ '+safe(x.title)+'</b><p style="margin:3px 0;color:#6c6b56">'+safe(x.reason)+'</p><small class="muted">'+date(x.date)+'</small></article>').join(""):'<p class="muted">ستحصل على أول نجمة تلقائيًا عندما تحقق 20/20 في أحد الاختبارات.</p>')+'</section>';
 
@@ -830,5 +848,14 @@ initializeStudentSpace().catch((error) => {
  #dashboard .student-section button,
  #dashboard #studentMenu button{transition:none!important}
 }
+</style>
+
+<style id="monthly-subscription-progress-20261103">
+.subscription-progress-card{border:1px solid #cfe3cc!important;background:linear-gradient(145deg,#fff,#f4faf1)!important}
+.subscription-progress{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:10px 0}
+.subscription-progress>div{padding:10px;border:1px solid #dcebd8;border-radius:12px;background:#f0f8ed}
+.subscription-progress small{display:block;color:#68776c;font-size:.8rem}
+.subscription-progress b{display:block;color:#14532d;font-size:1.2rem}
+.subscription-expiry{margin:8px 0;color:#6b5520;background:#fff8e7;border:1px solid #f0dfb6;border-radius:10px;padding:8px 10px}
 </style>
 </body></html>
