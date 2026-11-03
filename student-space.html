@@ -668,6 +668,19 @@ const initializeStudentSpace = async () => {
     if(status)status.textContent="تعذر تحديث البيانات مؤقتًا. بقي تسجيل الدخول محفوظًا؛ أعيدي المحاولة بعد التحقق من الاتصال.";
   }
 };
+// Paint the last student section immediately, before network requests finish.
+(function restoreStudentSectionBeforeFetch(){
+ try{
+  const params=new URL(location.href).searchParams;
+  const key=params.get("section")||localStorage.getItem("tahadi_student_active_section")||"";
+  if(!key)return;
+  const menu=document.getElementById("studentMenu"),detail=document.getElementById("studentDetail");
+  const panel=Array.from(document.querySelectorAll(".student-section")).find(el=>el.dataset.panel===key);
+  if(!menu||!detail||!panel)return;
+  menu.classList.add("hidden");detail.classList.remove("hidden");
+  document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));
+ }catch(_){}
+})();
 initializeStudentSpace().catch((error) => {
   console.error("[Tahadi] student-space initialization failed", error);
   if (teacherPreviewId) {
