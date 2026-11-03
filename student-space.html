@@ -481,7 +481,19 @@ $("studentHelpBtn").addEventListener("click",()=>{studentHelpOverlay.classList.r
 $("studentHelpClose").addEventListener("click",()=>{studentHelpOverlay.classList.add("hidden");$("studentHelpBtn").focus();});
 studentHelpOverlay.addEventListener("click",e=>{if(e.target===studentHelpOverlay)studentHelpOverlay.classList.add("hidden");});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&studentHelpOverlay&&!studentHelpOverlay.classList.contains("hidden"))studentHelpOverlay.classList.add("hidden");});
-const originalOpenStudentSection=openStudentSection;openStudentSection=function(key){originalOpenStudentSection(key);if(key==="studentQuestions"){loadStudentQuestions();loadQuestionLibrary();}};$("backToStudentMenu").addEventListener("click",showStudentMenu);window.addEventListener("popstate",()=>{const key=new URL(location.href).searchParams.get("section");if(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));if(key==="quizzes")refreshQuizResults().catch(()=>{});if(key==="teacherNotes")loadTeacherNotes();}else{ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));}});
+const originalOpenStudentSection=openStudentSection;openStudentSection=function(key){originalOpenStudentSection(key);if(key==="studentQuestions"){loadStudentQuestions();loadQuestionLibrary();}};
+const studentScrollStorageKey="tahadi_student_space_scroll_v1";
+const saveStudentPagePosition=()=>{try{sessionStorage.setItem(studentScrollStorageKey,String(window.scrollY||0));}catch(_){}};
+window.addEventListener("scroll",saveStudentPagePosition,{passive:true});
+window.addEventListener("pagehide",saveStudentPagePosition);
+function restoreStudentPageState(){
+ const requested=new URL(location.href).searchParams.get("section");
+ const valid=requested&&Array.from(document.querySelectorAll(".student-section")).some(el=>el.dataset.panel===requested);
+ if(valid)openStudentSection(requested);
+ let saved=0;try{saved=Math.max(0,Number(sessionStorage.getItem(studentScrollStorageKey))||0);}catch(_){}
+ setTimeout(()=>window.scrollTo(0,saved),180);
+}
+$("backToStudentMenu").addEventListener("click",showStudentMenu);window.addEventListener("popstate",()=>{const key=new URL(location.href).searchParams.get("section");if(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));if(key==="quizzes")refreshQuizResults().catch(()=>{});if(key==="teacherNotes")loadTeacherNotes();}else{ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));}});
 window.addEventListener("focus",()=>{const key=new URL(location.href).searchParams.get("section");if(key==="quizzes"&&!document.hidden)refreshQuizResults().catch(()=>{});});
 document.addEventListener("visibilitychange",()=>{const key=new URL(location.href).searchParams.get("section");if(!document.hidden&&key==="quizzes")refreshQuizResults().catch(()=>{});});
 $("loginBtn").addEventListener("click",login);$("teacherNameLoginBtn").addEventListener("click",teacherNameLogin);if(localStorage.getItem("tahadi_teacher_token")){$("teacherNameLoginBtn").classList.remove("hidden");$("studentCodeLogin").classList.add("hidden");$("loginPanel").querySelector(".muted").textContent="أنتِ مسجّلة بصفتك الأستاذة. اكتبي اسم التلميذ للدخول إلى فضائه مباشرة.";}$("portalCode").addEventListener("keydown",e=>{if(e.key==="Enter")login()});$("fullName").addEventListener("keydown",e=>{if(e.key==="Enter")$("portalCode").focus()});$("logoutBtn").addEventListener("click",async()=>{if(teacherPreviewId){location.href=new URL("index.html",location.href).href;return;}try{if(sessionToken)await call("student_portal_logout",{session_token:sessionToken})}catch(e){}sessionToken=null;if(teacherStudentMode){teacherStudentMode=false;}else{localStorage.removeItem("tahadi_student_session");}$("dashboard").classList.add("hidden");$("loginPanel").classList.remove("hidden");$("portalCode").value="";$("loginError").textContent="تم تسجيل الخروج."});
@@ -548,6 +560,7 @@ const initializeStudentSpace = async () => {
       await dashboard(data.student, data);
       await loadStudentCourses();
       await loadNotificationCount();
+      restoreStudentPageState();
       $("teacherPreviewBanner").classList.toggle("hidden",teacherAccessMode);
 
       hideIfExists("sendQuestion");
@@ -566,9 +579,10 @@ const initializeStudentSpace = async () => {
     await dashboard(data.student, data);
     await loadStudentCourses();
     await loadNotificationCount();
-  } catch (_) {
-    sessionToken = null;
-    localStorage.removeItem("tahadi_student_session");
+    restoreStudentPageState();
+  } catch (error) {
+    const status=$("loginError");
+    if(status)status.textContent="تعذر تحديث البيانات مؤقتًا. بقي تسجيل الدخول محفوظًا؛ أعيدي المحاولة بعد التحقق من الاتصال.";
   }
 };
 initializeStudentSpace().catch((error) => {
