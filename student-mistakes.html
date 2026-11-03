@@ -51,4 +51,6 @@ else if(PAGE==="mistakes"){$("title").textContent="💡 أخطائي وتصحي�
 else{$("title").textContent="💬 ملاحظات الأستاذة";if(!notes.length)html='<div class="empty">لا توجد ملاحظات من الأستاذة مسجلة حاليًا. ستظهر هنا عندما تضيف الأستاذة ملاحظة إلى نتيجة أحد اختباراتك.</div>';else html=notes.map(a=>'<article class="item"><strong>'+safe(a.quiz_title||"ملاحظة على اختبار")+'</strong><p>'+safe(a.teacher_note)+'</p><span class="muted">'+date(a.submitted_at)+'</span></article>').join("")}
 $("content").innerHTML=html}
 load().catch(e=>{$("title").textContent="تعذر تحميل الصفحة";$("content").innerHTML='<div class="empty">'+safe(e.message)+'</div>'});
-</script></body></html>
+</script>
+<script src="./workspace-autosave.js" defer></script>
+</body></html>
