@@ -566,4 +566,67 @@ initializeStudentSpace().catch((error) => {
 });
 </script>
 <script src="./workspace-autosave.js" defer></script>
+
+<style id="student-home-polish-20261103">
+/* تحسين بصري هادئ لواجهة التلميذ دون تغيير الوظائف أو البيانات */
+#dashboard{max-width:100%;padding-bottom:18px}
+#dashboard .student-identity{
+  position:relative;overflow:hidden;
+  border:1px solid #d8e8d5!important;
+  border-right:5px solid #237447!important;
+  border-radius:22px!important;
+  background:linear-gradient(125deg,#fff 0%,#f5faf1 58%,#eaf5e7 100%)!important;
+  box-shadow:0 7px 20px #174b2c0d!important;
+  padding:17px!important;
+}
+#dashboard .student-identity h2{color:#174b30;font-size:clamp(1.12rem,4.4vw,1.45rem);line-height:1.5}
+#dashboard .student-identity>.muted{letter-spacing:.1px}
+#dashboard .student-identity .tag{margin-top:6px;padding:5px 12px;font-size:.8rem}
+#dashboard .hero{
+  border:1px solid #dce8d5!important;border-top:6px solid #237447!important;
+  border-radius:25px!important;
+  background:linear-gradient(135deg,#fffaf0 0%,#f3f8e9 52%,#e8f4e6 100%)!important;
+  box-shadow:0 9px 24px #174b2c0b!important;
+  padding:22px 18px!important;margin:12px 0 18px!important;
+}
+#dashboard .hero p{line-height:1.9;margin-top:10px}
+#dashboard .card,#dashboard>.panel{
+  border:1px solid #dfe8dc!important;
+  border-radius:22px!important;
+  box-shadow:0 7px 22px #183f2b0c!important;
+}
+#dashboard .student-section h2{
+  color:#174b30;font-size:1.12rem;line-height:1.6;
+  padding-bottom:10px;border-bottom:1px solid #e8eee5;
+}
+#dashboard .student-home-grid .student-action,
+#dashboard .student-submenu-grid .student-action{
+  border-radius:16px!important;
+  box-shadow:0 3px 0 #8eb493,0 7px 14px #174b2c12!important;
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+#dashboard .student-home-grid .student-action:active,
+#dashboard .student-submenu-grid .student-action:active{transform:translateY(2px);box-shadow:0 1px 0 #8eb493!important}
+#dashboard .item{
+  border:1px solid #e1e9de!important;border-radius:17px!important;
+  background:linear-gradient(145deg,#fff,#fbfdf9)!important;
+  padding:15px!important;margin:11px 0!important;
+  box-shadow:0 3px 10px #174b2c08!important;
+  line-height:1.8;
+}
+#dashboard .item strong{color:#174b30;line-height:1.8}
+#dashboard .tag{padding:5px 13px;font-weight:700}
+#dashboard .empty{border:1px dashed #d5e4d1;background:#f7fbf5;border-radius:15px;line-height:1.8}
+@media(max-width:500px){
+ #dashboard .student-identity{padding:14px!important;gap:8px!important}
+ #dashboard .hero{padding:18px 15px!important}
+ #dashboard .card,#dashboard>.panel{padding:14px!important}
+ #dashboard .student-section h2{font-size:1.03rem}
+}
+@media(prefers-reduced-motion:reduce){
+ #dashboard .student-home-grid .student-action,
+ #dashboard .student-submenu-grid .student-action{transition:none}
+}
+</style>
+
 </body></html>
