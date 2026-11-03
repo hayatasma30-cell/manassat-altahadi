@@ -2210,7 +2210,7 @@ window.addEventListener("unhandledrejection",function(e){
           incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:completed&&unitPrice>0&&count>0?unitPrice*count:0,estimate:0,unitPrice,kind:needsReview?"حصة تحتاج مراجعة":completed?"حصة مكتملة":"حصة مجدولة",status:x.status,needsReview,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
         if(requestId!==window.tahadiIncomeCalendarRequestId)return;
-        renderIncomeCalendar();if(calendarCurrentLessonId&&!$("calendarLessonPage").hidden)openCalendarLessonPage(calendarCurrentLessonId);
+        renderIncomeCalendar();
       }catch(e){if(requestId!==window.tahadiIncomeCalendarRequestId)return;const message="تعذر تحميل التقويم: "+(e&&e.message?e.message:"خطأ غير معروف");grid.innerHTML='<div class="note" role="alert">'+escapeHtml(message)+'</div>';$("incomeCalendarSummary").textContent=message;}
       finally{
         if(requestId===window.tahadiIncomeCalendarRequestId){
