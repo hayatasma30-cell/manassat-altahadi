@@ -514,16 +514,19 @@ $("studentHelpClose").addEventListener("click",()=>{studentHelpOverlay.classList
 studentHelpOverlay.addEventListener("click",e=>{if(e.target===studentHelpOverlay)studentHelpOverlay.classList.add("hidden");});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&studentHelpOverlay&&!studentHelpOverlay.classList.contains("hidden"))studentHelpOverlay.classList.add("hidden");});
 const originalOpenStudentSection=openStudentSection;openStudentSection=function(key){originalOpenStudentSection(key);if(key==="studentQuestions"){loadStudentQuestions();loadQuestionLibrary();}};
-const studentScrollStorageKey="tahadi_student_space_scroll_v1";
-const saveStudentPagePosition=()=>{try{sessionStorage.setItem(studentScrollStorageKey,String(window.scrollY||0));}catch(_){}};
+const studentScrollStorageKey="tahadi_student_space_scroll_v2";
+const saveStudentPagePosition=()=>{try{const section=new URL(location.href).searchParams.get("section")||"";sessionStorage.setItem(studentScrollStorageKey,JSON.stringify({y:window.scrollY||0,section,at:Date.now()}));}catch(_){}};
 window.addEventListener("scroll",saveStudentPagePosition,{passive:true});
 window.addEventListener("pagehide",saveStudentPagePosition);
+window.addEventListener("beforeunload",saveStudentPagePosition);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveStudentPagePosition();});
 function restoreStudentPageState(){
- let saved=0;try{saved=Math.max(0,Number(sessionStorage.getItem(studentScrollStorageKey))||0);}catch(_){}
- const requested=new URL(location.href).searchParams.get("section");
+ let saved={y:0,section:""};try{saved=JSON.parse(sessionStorage.getItem(studentScrollStorageKey)||"{}")||saved;}catch(_){}
+ const requested=new URL(location.href).searchParams.get("section")||saved.section;
  const valid=requested&&Array.from(document.querySelectorAll(".student-section")).some(el=>el.dataset.panel===requested);
  if(valid)openStudentSection(requested);
- setTimeout(()=>window.scrollTo(0,saved),220);
+ const y=Math.max(0,Number(saved.y)||0);
+ [180,450,900,1500].forEach(delay=>setTimeout(()=>{if(y>0)window.scrollTo({top:y,behavior:"instant"});},delay));
 }
 $("backToStudentMenu").addEventListener("click",showStudentMenu);window.addEventListener("popstate",()=>{const key=new URL(location.href).searchParams.get("section");if(key){$("studentMenu").classList.add("hidden");$("studentDetail").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.toggle("hidden",el.dataset.panel!==key));if(key==="quizzes")refreshQuizResults().catch(()=>{});if(key==="teacherNotes")loadTeacherNotes();}else{ $("studentDetail").classList.add("hidden");$("studentMenu").classList.remove("hidden");document.querySelectorAll(".student-section").forEach(el=>el.classList.add("hidden"));}});
 window.addEventListener("focus",()=>{const key=new URL(location.href).searchParams.get("section");if(key==="quizzes"&&!document.hidden)refreshQuizResults().catch(()=>{});});
