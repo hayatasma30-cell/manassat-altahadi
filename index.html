@@ -1638,7 +1638,7 @@ window.addEventListener("unhandledrejection",function(e){
   }
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{if(typeof window.tahadiOpenIncomePage==="function")window.tahadiOpenIncomePage("incomeCalendarPage");});
-  $("schoolYearGoalsShortcut")?.addEventListener("click",()=>{showView("incomeView");openIncomePage("schoolYearGoalsPage");});
+  $("schoolYearGoalsShortcut")?.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();showView("incomeView");if(typeof window.tahadiOpenIncomePage==="function"){window.tahadiOpenIncomePage("schoolYearGoalsPage");}else{const note=$("schoolYearGoalSummary");if(note)note.textContent="تهيئة صفحة الأهداف لم تكتمل بعد. أعيدي المحاولة بعد لحظات.";}});
   // معالجان موحدان للقسمين: منع تكرار المعالجات القديمة وضمان فتح الصفحة وتحميل بياناتها.
   document.addEventListener("click",async function(event){
     const studentsButton=event.target.closest('[data-view="studentsView"]');
