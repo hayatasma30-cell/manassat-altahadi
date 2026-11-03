@@ -2502,16 +2502,17 @@ const handleIncomeCalendarClick=async e=>{
     (rows||[]).forEach(x=>{
       const key=String(x.lesson_date||"").slice(0,10);if(!key)return;
       counts[key]=(counts[key]||0)+1;
-      const state=dayStates[key]||(dayStates[key]={done:0,notDone:0,overdue:0,deferred:0});
+      const state=dayStates[key]||(dayStates[key]={done:0,notDone:0,scheduled:0,overdue:0,deferred:0});
       const status=String(x.status||"").trim();
       if(status==="تمت"||status==="تمت من قبل")state.done++;
       else if(["لم تتم","ألغيت","ملغاة","ملغية","ملغى","ملغي"].includes(status))state.notDone++;
       else if(status==="مؤجلة")state.deferred++;
+      else if(status==="مجدولة")state.scheduled++;
       else if(isOverdueScheduled(x))state.overdue++;
     });
     const dayColorClass=key=>{
       const state=dayStates[key];if(!state)return "";
-      if(state.notDone)return " state-not-done";
+      if(state.notDone||state.scheduled)return " state-not-done";
       if(state.overdue)return " state-overdue";
       if(state.deferred)return " state-deferred";
       if(state.done)return " state-done";
@@ -2519,7 +2520,7 @@ const handleIncomeCalendarClick=async e=>{
     };
     const countColorClass=key=>{
       const state=dayStates[key];if(!state)return "";
-      if(state.notDone)return " count-not-done";
+      if(state.notDone||state.scheduled)return " count-not-done";
       if(state.overdue)return " count-overdue";
       if(state.deferred)return " count-deferred";
       if(state.done)return " count-done";
