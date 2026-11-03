@@ -6,7 +6,7 @@
   const path=location.pathname.replace(/\\/+$/,"")||"/";
   const key="tahadi_workspace_v2:"+path;
   const skip=new Set(["password","file","hidden","submit","button","reset"]);
-  let restoring=false,timer=0;
+  let restoring=false,timer=0;\n  const dirty=new WeakSet();
   const safe=(fn)=>{try{fn()}catch(e){console.warn("[Tahadi workspace]",e)}};
   function save(){
     if(restoring)return;
@@ -14,7 +14,7 @@
       const fields=[];
       document.querySelectorAll("input,select,textarea").forEach((el,index)=>{
         const type=(el.type||"").toLowerCase();
-        if(skip.has(type)||el.id==="tahadi_teacher_token"||el.name==="password")return;
+        if(skip.has(type)||el.id==="tahadi_teacher_token"||el.name==="password"||!dirty.has(el))return;
         if(el.disabled)return;
         fields.push({id:el.id||"",name:el.name||"",index,type,
           value:(type==="checkbox"||type==="radio")?!!el.checked:el.value,
@@ -67,7 +67,7 @@
         setTimeout(()=>window.scrollTo({left:Number(state.scrollX)||0,top:Number(state.scrollY)||0,behavior:"instant"}),700);
       }
     });
-    setTimeout(()=>{restoring=false;save()},1300);
+    setTimeout(()=>{restoring=false},1300);
   }
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(restore,1100),{once:true});
   else setTimeout(restore,1100);
