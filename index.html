@@ -3343,10 +3343,17 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
         });
         try{sessionStorage.setItem("tahadi_last_view",state.view);}catch(_){}
       }
-      if(state.lessonPage==="add"&&state.editingLessonId&&typeof window.tahadiOpenDailyLessons==="function"){
-        Promise.resolve(window.tahadiOpenDailyLessons()).then(()=>{
-          if(typeof window.tahadiOpenDailyLessonEditor==="function")return window.tahadiOpenDailyLessonEditor(state.editingLessonId,false);
-        }).catch(()=>{});
+      if(state.lessonPage==="add"){
+        const add=document.getElementById("lessonAddPanel"),list=document.getElementById("lessonListPanel"),cal=document.getElementById("lessonsCalendarPanel");
+        if(add){add.hidden=false;add.style.setProperty("display","block","important");}
+        if(list){list.hidden=true;list.style.setProperty("display","none","important");}
+        if(cal){cal.hidden=true;cal.style.setProperty("display","none","important");}
+        if(state.editingLessonId)window.tahadiEditingLessonId=state.editingLessonId;
+        const title=document.getElementById("lessonListTitle");if(title&&state.lessonTitle)title.textContent=state.lessonTitle;
+      }else if(state.lessonPage==="calendar"){
+        const list=document.getElementById("lessonListPanel"),cal=document.getElementById("lessonsCalendarPanel");
+        if(list){list.hidden=false;list.classList.add("calendar-mode");}
+        if(cal)cal.hidden=false;
       }
       setTimeout(()=>{window.scrollTo(0,Math.max(0,Number(state.scrollY)||0));restoring=false;snapshot();},900);
     }catch(e){restoring=false;console.warn("Workspace restore:",e);}
