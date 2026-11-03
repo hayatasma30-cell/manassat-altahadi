@@ -2681,12 +2681,12 @@ const handleIncomeCalendarClick=async e=>{
         const selected=Array.from(members)[0]||"",present=selected&&saved.get(selected)==="present";
         panel.innerHTML='<h4>تحديد التلميذ والحضور</h4>'+info+
           '<label class="lesson-roster-field">التلميذ<select data-individual-student><option value="">اختاري التلميذ</option>'+students.map(st=>'<option value="'+escapeHtml(st.id)+'" '+(String(st.id)===selected?'selected':'')+'>'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</option>').join("")+'</select></label>'+
-          (lesson.delivery_mode==="zoom"?'<p style="color:#17633b;font-weight:700">يُسجَّل التلميذ حاضرًا تلقائيًا في حصة Zoom.</p>':'<div class="lesson-individual-attendance"><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="present" '+(present?'checked':'')+'> حضر الحصة</label><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="absent" '+(selected&&!present?'checked':'')+'> لم يحضر الحصة</label><label><input type="checkbox" data-individual-charge-absent '+(selected&&attendance?.is_chargeable===true?'checked':'')+'> احتساب الحصة رغم الغياب</label></div>')+
+          (lesson.delivery_mode==="zoom"?'<p style="color:#17633b;font-weight:700">يُسجَّل التلميذ حاضرًا تلقائيًا في حصة Zoom.</p>':'<div class="lesson-individual-attendance"><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="present" '+(present?'checked':'')+'> حضر الحصة</label><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="absent" '+(selected&&!present?'checked':'')+'> لم يحضر الحصة</label><label><input type="checkbox" data-individual-charge-absent '+''+'> احتساب الحصة رغم الغياب</label></div>')+
           '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'" data-individual="1">حفظ التلميذ والحضور</button>';
       }else{
         panel.innerHTML='<h4>قائمة التلاميذ والحضور</h4>'+info+
           '<div class="lesson-roster-head"><span>اسم التلميذ</span><span>في الحصة</span><span>حاضر</span></div>'+
-          (students.length?students.map(st=>{const id=String(st.id),member=members.has(id),present=saved.get(id)==="present";return '<div class="lesson-roster-row"><span class="lesson-roster-name">'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</span><label><input type="checkbox" data-roster-student="'+escapeHtml(id)+'" '+(member?'checked':'')+'> إضافة</label>'+(lesson.delivery_mode==="zoom"?'<strong style="color:#17633b">حاضر تلقائيًا</strong>':'<label><input type="checkbox" data-present-student="'+escapeHtml(id)+'" '+(present?'checked':'')+(member?'':' disabled')+'> حاضر</label><label><input type="checkbox" data-charge-absent-student="'+escapeHtml(id)+'" '+(member?'':' disabled')+'> احتساب عند الغياب</label>')+'</div>';}).join(""):'<p>لا يوجد تلاميذ نشطون في هذا المستوى.</p>')+
+          (students.length?students.map(st=>{const id=String(st.id),member=members.has(id),present=saved.get(id)==="present";return '<div class="lesson-roster-row"><span class="lesson-roster-name">'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</span><label><input type="checkbox" data-roster-student="'+escapeHtml(id)+'" '+(member?'checked':'')+'> إضافة</label>'+(lesson.delivery_mode==="zoom"?'<strong style="color:#17633b">حاضر تلقائيًا</strong>':'<label><input type="checkbox" data-present-student="'+escapeHtml(id)+'" '+(present?'checked':'')+(member?'':' disabled')+'> حاضر</label><label><input type="checkbox" data-charge-absent-student="'+escapeHtml(id)+'" '+(member&&!present?'':' disabled')+'> احتساب عند الغياب</label>')+'</div>';}).join(""):'<p>لا يوجد تلاميذ نشطون في هذا المستوى.</p>')+
           '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'">حفظ التلاميذ والحضور</button>';
       }
       panel.insertAdjacentHTML("afterbegin",'<button type="button" class="back" data-lesson-action-back>→ العودة إلى التقويم</button>');
@@ -2696,8 +2696,10 @@ const handleIncomeCalendarClick=async e=>{
     if(combinedPanel&&e.target.matches("[data-roster-student]")){
       const id=e.target.dataset.rosterStudent,present=combinedPanel.querySelector('[data-present-student="'+CSS.escape(id)+'"]');
       if(present){present.disabled=!e.target.checked;if(!e.target.checked)present.checked=false;}
+      const charge=combinedPanel.querySelector('[data-charge-absent-student="'+CSS.escape(id)+'"]');if(charge){charge.disabled=!e.target.checked||present?.checked===true;if(charge.disabled)charge.checked=false;}
       return;
     }
+    if(combinedPanel&&e.target.matches("[data-present-student]")){const charge=combinedPanel.querySelector('[data-charge-absent-student="'+CSS.escape(e.target.dataset.presentStudent)+'"]');if(charge){charge.disabled=e.target.checked;if(e.target.checked)charge.checked=false;}return;}
     const combinedSave=e.target.closest("[data-combined-save]");
     if(combinedSave){(async()=>{try{
       const panel=combinedSave.closest(".lesson-roster-panel"),lessonId=combinedSave.dataset.combinedSave;
