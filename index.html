@@ -2373,9 +2373,11 @@ const handleIncomeCalendarClick=async e=>{
       return true;
     }catch(error){console.error("Tahadi lesson navigation:",error);return false;}
   }
+  window.tahadiActivateLessonMainButton=activateLessonMainButton;
   document.querySelectorAll("#dailyLessonsView .lesson-main-nav [data-lesson-page]").forEach(button=>{
-    button.style.pointerEvents="auto";button.style.position="relative";button.style.zIndex="5";
-    button.onclick=function(event){event.preventDefault();event.stopPropagation();activateLessonMainButton(button.dataset.lessonPage);};
+    button.style.setProperty("pointer-events","auto","important");button.style.setProperty("position","relative");button.style.setProperty("z-index","9999");button.style.setProperty("touch-action","manipulation");
+    button.setAttribute("onclick","if(window.tahadiActivateLessonMainButton){window.tahadiActivateLessonMainButton(this.dataset.lessonPage)}");
+    button.onclick=function(event){event.preventDefault();event.stopPropagation();if(window.tahadiActivateLessonMainButton)window.tahadiActivateLessonMainButton(button.dataset.lessonPage);};
   });
   document.addEventListener("click",function(event){
     const target=event.target;
