@@ -59,4 +59,6 @@ document.getElementById("readerModalClose").addEventListener("click",closeReader
 readerModal.addEventListener("click",e=>{if(e.target===readerModal)closeReaderModal();});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeReaderModal();});
 document.addEventListener("click",e=>{const btn=e.target.closest("[data-reader-open]");if(!btn)return;const n=teacherFeedItems.find(x=>x.id===btn.dataset.readerOpen);if(!n)return;const list=document.getElementById("readerModalList");list.innerHTML=(n.readers||[]).map(r=>'<div class="reader-row"><span>'+esc(r.name||"تلميذ")+'</span><time>'+(r.read_at?new Date(r.read_at).toLocaleString("ar-DZ"):"")+'</time></div>').join("")||'<div class="feed-meta">لا توجد بيانات قراءة.</div>';document.getElementById("readerModalTitle").textContent="قرأه "+Number(n.read_count||0)+" تلميذًا";readerModal.classList.add("open");readerModal.setAttribute("aria-hidden","false");});
-</script></body></html>
+</script>
+<script src="./workspace-autosave.js" defer></script>
+</body></html>
