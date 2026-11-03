@@ -496,13 +496,16 @@ const subscriptionCardHtml=x=>{
 };
 const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=>x.lesson_type==="فردية").map(x=>{
  const linkedSub=studentSubscriptions.find(sub=>String(sub.lesson_id||"")===String(x.id));
- const paid=!!linkedSub&&Number(linkedSub.remaining_balance??Math.max(0,Number(linkedSub.amount_due||0)-Number(linkedSub.amount_paid||0)))<=0;
- return {...x,service_type:"individual_session",service_name:"حصة فردية",payment_status:paid?"paid":"unpaid",status:paid?"مدفوعة":"غير مدفوعة"};
+ const subStatus=String(linkedSub?.status||"").toLowerCase();
+ const paid=subStatus==="paid"||subStatus==="approved"||(!!linkedSub&&Number(linkedSub.remaining_balance??Math.max(0,Number(linkedSub.amount_due||0)-Number(linkedSub.amount_paid||0)))<=0);
+ const completed=["تمت","تمت من قبل","مكتملة"].includes(String(x.status||"").trim());
+ const paymentStatus=paid?"paid":completed?"unpaid":"scheduled";
+ return {...x,service_type:"individual_session",service_name:"حصة فردية",payment_status:paymentStatus,status:paid?"مدفوعة":completed?"غير مدفوعة":"مجدولة"};
 });
 const monthlyAndOtherSubscriptions=studentSubscriptions.filter(x=>String(x.service_type||"").toLowerCase()!=="individual_session");
 const subscriptionDisplayRows=[...monthlyAndOtherSubscriptions,...individualLessonServices];
 list("subscriptions",subscriptionDisplayRows,x=>{
- if(x.service_type==="individual_session")return '<article class="item subscription-progress-card individual-service-card"><div class="subscription-card-head"><div><small class="subscription-kicker">خدمة فردية</small><strong>حصة فردية</strong></div><span class="subscription-status '+(x.payment_status==="paid"?"is-paid":"is-pending")+'">'+safe(x.status)+'</span></div><div class="individual-session-meta"><span>📅 '+safe(x.lesson_date||"التاريخ غير محدد")+'</span><span>🕒 '+safe(x.lesson_time||"التوقيت غير محدد")+'</span></div></article>';
+ if(x.service_type==="individual_session")return '<article class="item subscription-progress-card individual-service-card"><div class="subscription-card-head"><div><small class="subscription-kicker">خدمة فردية</small><strong>حصة فردية</strong></div><span class="subscription-status '+(x.payment_status==="paid"?"is-paid":x.payment_status==="scheduled"?"is-scheduled":"is-pending")+'">'+safe(x.status)+'</span></div><div class="individual-session-meta"><span>📅 '+safe(x.lesson_date||"التاريخ غير محدد")+'</span><span>🕒 '+safe(x.lesson_time||"التوقيت غير محدد")+'</span></div></article>';
  return subscriptionCardHtml(x);
 },"لا توجد اشتراكات أو حصص فردية مسجلة حاليًا.");
 list("payments",studentPayments,x=>'<strong>'+safe(studentStatus(x))+'</strong><span class="muted">'+date(x.payment_date||x.created_at)+'</span>',"لا توجد دفعات مسجلة حاليًا.");
@@ -922,4 +925,4 @@ initializeStudentSpace().catch((error) => {
 .subscription-hint,.subscription-date{margin:10px 2px 0;color:#758078;font-size:.87rem}
 .individual-session-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 .individual-session-meta span{background:#f0f7ef;border:1px solid #e0ebdc;border-radius:12px;padding:8px 11px;color:#536b5b;font-size:.9rem}
-</style></body></html>
+</style><style id="individual-session-status-style">.subscription-status.is-scheduled{background:#edf1f3;color:#586b73}</style></body></html>
