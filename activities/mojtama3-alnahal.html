@@ -55,5 +55,5 @@ function render(){updateProgress();if(current>=questions.length){showResult();re
 function showResult(){quiz.hidden=true;let score=answers.reduce((s,a,i)=>s+(a===questions[i].a?1:0),0);let box=document.getElementById('result');box.hidden=false;box.innerHTML='<h2>انتهى الاختبار!</h2><div class="score">'+score+' / '+questions.length+'</div><p>أحسنت المحاولة! راجع إجاباتك وتعرّف على الأسئلة التي تحتاج إلى مراجعة.</p><div class="review">'+questions.map((q,i)=>'<div class="review-item"><strong>السؤال '+(i+1)+' — <span class="'+(answers[i]===q.a?'good':'bad')+'">'+(answers[i]===q.a?'إجابة صحيحة':'إجابة غير صحيحة')+'</span></strong><div>'+q.q+'</div><div>الإجابة العلمية: '+['أ','ب','ج','د'][q.a]+'. '+q.o[q.a]+'</div></div>').join('')+'</div><button class="btn primary" onclick="location.reload()">إعادة الاختبار</button>';updateProgress();window.scrollTo({top:0,behavior:'smooth'})}
 render();
 </script>
-<script src="./workspace-autosave.js" defer></script>
+<script src="../workspace-autosave.js" defer></script>
 </body></html>
