@@ -57,5 +57,5 @@ let score=0, review="";questions.forEach((item,i)=>{const picked=form.querySelec
 document.getElementById("showReview").addEventListener("click",()=>{const r=document.getElementById("review");r.hidden=!r.hidden;document.getElementById("showReview").textContent=r.hidden?"عرض التصحيح":"إخفاء التصحيح"});
 document.getElementById("retry").addEventListener("click",()=>{form.reset();document.getElementById("student").value="";document.getElementById("result").style.display="none";document.getElementById("submit").disabled=false;updateProgress();window.scrollTo({top:0,behavior:"smooth"})});
 </script>
-<script src="./workspace-autosave.js" defer></script>
+<script src="../workspace-autosave.js" defer></script>
 </body></html>
