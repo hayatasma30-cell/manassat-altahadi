@@ -112,7 +112,7 @@ async function saveReply(id) {
  if(!teacher_reply){msg.className="error";msg.textContent="اكتبي الإجابة قبل الحفظ.";return;}
  btn.disabled=true;msg.className="muted";msg.textContent="جارٍ حفظ الإجابة…";
  try {
-  await call("teacher_reply_student_question",{id,teacher_reply});
+  await call("teacher_reply_student_question",{id,teacher_reply});localStorage.removeItem("tahadi_question_reply_draft_"+id);
   const q=questions.find(x=>String(x.id)===String(id));if(q)q.teacher_reply=teacher_reply;
   await load();
   openQuestion(id,currentListPage);
