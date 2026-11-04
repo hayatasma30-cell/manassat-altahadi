@@ -59,13 +59,16 @@ function openQuestion(id,fromPage) {
  document.querySelectorAll(".page").forEach(p=>p.hidden=true);
  $("questionDetailPage").hidden=false;
  const reply=$("detailReply");
- $("detailSave").onclick=()=>saveReply(q.id);
+ const editButton=$("detailEdit"),saveButton=$("detailSave"),editor=$("replyEditor");
+ if(editButton)editButton.onclick=()=>{editor.hidden=false;editButton.hidden=true;saveButton.hidden=false;reply.focus();};
+ if(saveButton)saveButton.onclick=()=>saveReply(q.id);
  $("detailPublish").onclick=()=>publishQuestion(q.id,!q.is_published);
  $("detailDelete").onclick=()=>deleteQuestion(q.id);
  window.scrollTo({top:0,behavior:"smooth"});
 }
 function detailMarkup(q) {
- return '<article class="card detail-layout"><h2 class="question-detail-title">'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h2><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span></p><h3>سؤال التلميذ</h3><div class="question question-detail-text">'+esc(q.question_text)+'</div>'+(q.teacher_reply?'<div class="saved"><strong>إجابتك المحفوظة</strong><p style="white-space:pre-wrap">'+esc(q.teacher_reply)+'</p></div>':'')+'<label for="detailReply">اكتبي إجابتك للتلميذ</label><textarea id="detailReply" rows="7" maxlength="5000" placeholder="اكتبي إجابتك هنا…">'+esc(q.teacher_reply||"")+'</textarea><div class="detail-actions"><button id="detailSave" class="action green" type="button">💾 حفظ الإجابة وإرسالها</button><button id="detailPublish" class="action green" type="button">'+(q.is_published?'✅ إخفاء السؤال من فضاء التلميذ':'📢 نشر السؤال في فضاء التلميذ')+'</button><button id="detailDelete" class="action danger" type="button">🗑️ حذف السؤال</button></div><p id="detailStatus" class="muted" role="status"></p></article>';
+ const hasReply=!!String(q.teacher_reply||"").trim();
+ return '<article class="card detail-layout"><h2 class="question-detail-title">'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h2><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span></p><h3>سؤال التلميذ</h3><div class="question question-detail-text">'+esc(q.question_text)+'</div>'+(hasReply?'<div class="saved"><strong>إجابتك المحفوظة</strong><p style="white-space:pre-wrap">'+esc(q.teacher_reply)+'</p></div>':'')+'<div id="replyEditor" '+(hasReply?'hidden':'')+'><label for="detailReply">'+(hasReply?'تعديل نص الإجابة':'اكتبي إجابتك للتلميذ')+'</label><textarea id="detailReply" rows="7" maxlength="5000" placeholder="اكتبي إجابتك هنا…">'+esc(q.teacher_reply||"")+'</textarea></div><div class="detail-actions">'+(hasReply?'<button id="detailEdit" class="action light" type="button">✏️ تعديل الإجابة</button>':'')+'<button id="detailSave" class="action green" type="button" '+(hasReply?'hidden':'')+'>💾 '+(hasReply?'حفظ التعديل':'حفظ الإجابة وإرسالها')+'</button><button id="detailPublish" class="action green" type="button">'+(q.is_published?'✅ إخفاء السؤال من فضاء التلميذ':'📢 نشر السؤال في فضاء التلميذ')+'</button><button id="detailDelete" class="action danger" type="button">🗑️ حذف السؤال</button></div><p id="detailStatus" class="muted" role="status"></p></article>';
 }
 function questionCard(q,fromPage) {
  return '<article class="card question-list-card"><div class="summary"><h3>'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h3><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span></p><p>'+esc((q.question_text||"").slice(0,150))+(String(q.question_text||"").length>150?"…":"")+'</p></div><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
@@ -82,7 +85,13 @@ async function saveReply(id) {
  const teacher_reply=field?.value.trim();
  if(!teacher_reply){msg.className="error";msg.textContent="اكتبي الإجابة قبل الحفظ.";return;}
  btn.disabled=true;msg.className="muted";msg.textContent="جارٍ حفظ الإجابة…";
- try {await call("teacher_reply_student_question",{id,teacher_reply});msg.className="success";msg.textContent="تم حفظ الإجابة وإرسالها إلى فضاء التلميذ.";await load();}
+ try {
+  await call("teacher_reply_student_question",{id,teacher_reply});
+  const q=questions.find(x=>String(x.id)===String(id));if(q)q.teacher_reply=teacher_reply;
+  await load();
+  openQuestion(id,currentListPage);
+  const refreshedMsg=$("detailStatus");if(refreshedMsg){refreshedMsg.className="success";refreshedMsg.textContent="تم حفظ تعديل الإجابة وإرساله إلى فضاء التلميذ.";}
+ }
  catch(e){msg.className="error";msg.textContent=e.message;}
  finally{btn.disabled=false;}
 }
