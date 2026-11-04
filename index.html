@@ -2742,8 +2742,9 @@ const handleIncomeCalendarClick=async e=>{
         const info=document.querySelector('#lessonCalendarDayDetails [data-replacement-info="'+CSS.escape(String(lesson.id))+'"]');
         if(!info)continue;
         try{
-          const response=await lessonRequest({action:"daily_lessons_get",id:lesson.replacement_lesson_id});
-          const linked=response.lesson||response.data?.lesson||{};if(!linked.id)throw new Error("لم تُرجع قاعدة البيانات بيانات الحصة التعويضية المرتبطة.");
+          let linked=(window.tahadiLoadedLessonRows||[]).find(row=>String(row.id)===String(lesson.replacement_lesson_id))||null;
+          if(!linked){const response=await lessonRequest({action:"daily_lessons_get",id:lesson.replacement_lesson_id});linked=response.lesson||response.data?.lesson||{};}
+          if(!linked||!linked.id)throw new Error("لم تُرجع قائمة الحصص أو قاعدة البيانات تفاصيل الحصة التعويضية المرتبطة.");
           const price=Math.max(0,Number(linked.unit_price)||0);
           const date=String(linked.lesson_date||"");
           const months=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
