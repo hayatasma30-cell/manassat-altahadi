@@ -1634,7 +1634,7 @@ window.addEventListener("unhandledrejection",function(e){
   }
   function showStatus(message, kind) { status.textContent = message; status.className = "status show " + kind; }
   const teacherPagePositionKey="tahadi_teacher_page_position_v2";
-  function saveTeacherPagePosition(){try{const state=JSON.stringify({view:activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView",y:window.scrollY||0});sessionStorage.setItem(teacherPagePositionKey,state);localStorage.setItem(teacherPagePositionKey,state);}catch(_){}}
+  function saveTeacherPagePosition(){try{const state=JSON.stringify({view:activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView",y:window.scrollY||0,lessonPage:typeof selectedLessonPage!=="undefined"?selectedLessonPage:null,lessonSubpage:typeof selectedLessonSubpage!=="undefined"?selectedLessonSubpage:null,lessonMode:typeof selectedLessonMode!=="undefined"?selectedLessonMode:null});sessionStorage.setItem(teacherPagePositionKey,state);localStorage.setItem(teacherPagePositionKey,state);}catch(_){}}
   window.addEventListener("scroll",saveTeacherPagePosition,{passive:true});
   window.addEventListener("pagehide",saveTeacherPagePosition);
   function showView(id, options={}) {
@@ -2982,8 +2982,9 @@ const handleIncomeCalendarClick=async e=>{
   async function refresh() {
     const token = localStorage.getItem("tahadi_teacher_token");
     if (!token) { showView("loginView"); showStatus("سجلي الدخول أولًا.", "error"); return; }
-    try { await loadDashboard(token); showStatus("تم تحديث البيانات.", "ok"); }
-    catch (e) { showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
+    const keepView=activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView",keepY=window.scrollY||0;
+    try { await loadDashboard(token); if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true}); setTimeout(()=>window.scrollTo({top:keepY,behavior:"instant"}),80); showStatus("تم تحديث بيانات الصفحة الحالية.", "ok"); }
+    catch (e) { if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true}); setTimeout(()=>window.scrollTo({top:keepY,behavior:"instant"}),80); showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
   }
   $("backToStudents").addEventListener("click", () => showView("studentsView"));
   $("refreshBtn").addEventListener("click", refresh);
@@ -3003,7 +3004,7 @@ const handleIncomeCalendarClick=async e=>{
     let savedPosition={};try{savedPosition=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
     const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view");
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});
-    loadDashboard(savedToken).then(()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});setTimeout(()=>window.scrollTo({top:Math.max(0,Number(savedPosition.y)||0),behavior:"instant"}),180);}).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم أو اضغطي تحديث البيانات.","error");console.error("initial dashboard load failed",err);if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});setTimeout(()=>window.scrollTo({top:Math.max(0,Number(savedPosition.y)||0),behavior:"instant"}),180);});
+    const restoreTeacherPosition=()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});if(lastView==="dailyLessonsView"&&typeof setLessonHome==="function"){setLessonHome();if(savedPosition.lessonMode&&typeof setLessonMode==="function")setLessonMode(savedPosition.lessonMode,"list");if(savedPosition.lessonSubpage&&savedPosition.lessonSubpage!=="all"){setLessonPage("library");setLessonSubpage(savedPosition.lessonSubpage);}else if(savedPosition.lessonPage&&typeof setLessonPage==="function")setLessonPage(savedPosition.lessonPage);}const y=Math.max(0,Number(savedPosition.y)||0);[180,500,1000].forEach(delay=>setTimeout(()=>window.scrollTo({top:y,behavior:"instant"}),delay));}; loadDashboard(savedToken).then(restoreTeacherPosition).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم عند استقرار الاتصال.","error");console.error("initial dashboard load failed",err);restoreTeacherPosition();});
   } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
   form.addEventListener("submit", async event => {
     event.preventDefault();
