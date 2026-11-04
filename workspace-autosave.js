@@ -23,9 +23,11 @@
       });
       const views=[...document.querySelectorAll(".view")];
       const active=views.find(v=>v.classList.contains("active")||getComputedStyle(v).display!=="none");
+      const pages=[...document.querySelectorAll(".page")];
+      const activePage=pages.find(p=>!p.hidden&&getComputedStyle(p).display!=="none");
       const details=[];
       document.querySelectorAll("details").forEach((el,i)=>{if(el.open)details.push(el.id||"@"+i)});
-      localStorage.setItem(key,JSON.stringify({at:Date.now(),url:location.href,view:active?.id||"",scrollX,scrollY,fields,details,activeControls:[...document.querySelectorAll("[aria-selected=true],[aria-pressed=true]")].map(el=>({id:el.id||"",name:el.getAttribute("name")||"",value:el.getAttribute("aria-selected")!==null?"selected":"pressed"}))}));
+      localStorage.setItem(key,JSON.stringify({at:Date.now(),url:location.href,view:active?.id||"",page:activePage?.id||"",scrollX,scrollY,fields,details,activeControls:[...document.querySelectorAll("[aria-selected=true],[aria-pressed=true]")].map(el=>({id:el.id||"",name:el.getAttribute("name")||"",value:el.getAttribute("aria-selected")!==null?"selected":"pressed"}))}));
     });
   }
   function queue(){clearTimeout(timer);timer=setTimeout(save,250)}
@@ -69,8 +71,19 @@
         const el=id.startsWith("@")?document.querySelectorAll("details")[Number(id.slice(1))]:document.getElementById(id);
         if(el&&el.tagName==="DETAILS")el.open=true;
       });
-      // The teacher page has one authoritative view/scroll restorer in index.html.
-      // This helper restores form fields and expanded panels only, avoiding competing navigation/scroll jumps.
+      // index.html and student-space.html have dedicated restorers; avoid competing with them.
+      const isDedicated=path.endsWith("/index.html")||path==="/"||path.endsWith("/student-space.html");
+      if(!isDedicated){
+        if(state.page){
+          const page=document.getElementById(state.page);
+          if(page&&page.classList.contains("page")){
+            document.querySelectorAll(".page").forEach(item=>item.hidden=item!==page);
+          }
+        }
+        const restoreScroll=()=>window.scrollTo({left:Math.max(0,Number(state.scrollX)||0),top:Math.max(0,Number(state.scrollY)||0),behavior:"auto"});
+        requestAnimationFrame(()=>requestAnimationFrame(restoreScroll));
+        setTimeout(restoreScroll,450);
+      }
     });
     setTimeout(()=>{restoring=false},1300);
   }
