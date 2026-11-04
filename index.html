@@ -2738,12 +2738,12 @@ const handleIncomeCalendarClick=async e=>{
           console.warn("تعذر احتساب مبلغ الحصة",lesson.id,err);
         }
       }
-      if(lesson.status==="تمت من قبل"&&lesson.replacement_lesson_id){
+      if(lesson.replacement_lesson_id){
         const info=document.querySelector('#lessonCalendarDayDetails [data-replacement-info="'+CSS.escape(String(lesson.id))+'"]');
         if(!info)continue;
         try{
           const response=await lessonRequest({action:"daily_lessons_get",id:lesson.replacement_lesson_id});
-          const linked=response.lesson||{};
+          const linked=response.lesson||response.data?.lesson||{};if(!linked.id)throw new Error("لم تُرجع قاعدة البيانات بيانات الحصة التعويضية المرتبطة.");
           const price=Math.max(0,Number(linked.unit_price)||0);
           const date=String(linked.lesson_date||"");
           const months=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
