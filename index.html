@@ -2749,7 +2749,23 @@ const handleIncomeCalendarClick=async e=>{
           const months=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
           const mi=Number(date.slice(5,7))-1;
           const month=mi>=0&&mi<12?months[mi]+" "+date.slice(0,4):"غير محدد";
-          info.innerHTML='<div class="calendar-lesson-info-row"><span>تاريخ الحصة التعويضية</span><strong>'+escapeHtml(date||"غير مسجل")+'</strong></div><div class="calendar-lesson-info-row"><span>وقت الإنجاز</span><strong>'+escapeHtml(linked.lesson_time||"غير مسجل")+'</strong></div><div class="calendar-lesson-info-row"><span>حالة الحصة التعويضية</span><strong>'+escapeHtml(linked.status||"غير متاحة")+'</strong></div><div class="calendar-lesson-info-row"><span>مبلغ الحصة التعويضية</span><strong>'+price.toLocaleString("ar-DZ")+' دج</strong></div><div class="calendar-lesson-info-row"><span>شهر احتساب المداخيل</span><strong>'+escapeHtml(month)+'</strong></div>';
+          const replacementRows=[
+            ["المستوى",linked.level||"غير محدد"],
+            ["نوع الحصة",linked.lesson_type||"غير محدد"],
+            ["تصنيف الحصة",linked.lesson_category||"عادية"],
+            ["طريقة التدريس",linked.delivery_mode==="in_person"?"حضوري":linked.delivery_mode==="zoom"?"Zoom":(linked.delivery_mode||"غير محددة")],
+            ["تاريخ الحصة التعويضية",date||"غير مسجل"],
+            ["توقيت الحصة",linked.lesson_time||"غير مسجل"],
+            ["حالة الحصة التعويضية",linked.status||"غير متاحة"],
+            ["رقم الحصة",lessonCounterLabels.get(String(linked.id))||"—"],
+            ["المادة",linked.subject||"علوم طبيعية"],
+            ["اسم التلميذ",linked.student_name||"حصة جماعية"],
+            ["المبلغ المحتسب",price.toLocaleString("ar-DZ")+" دج"],
+            ["شهر احتساب المداخيل",month],
+            ["رابط Zoom",linked.zoom_link||"غير مسجل"],
+            ["ملاحظات الحصة",linked.notes||"لا توجد"]
+          ];
+          info.innerHTML='<div class="calendar-lesson-info-row"><strong>تفاصيل الحصة التعويضية</strong><span>مرتبطة بالحصة الأصلية</span></div>'+replacementRows.map(([label,value])=>'<div class="calendar-lesson-info-row"><span>'+escapeHtml(label)+'</span><strong>'+escapeHtml(value)+'</strong></div>').join("");
         }catch(err){
           info.textContent="تعذر تحميل تفاصيل الحصة التعويضية. أعيدي فتح اليوم للمحاولة.";
           console.warn("تعذر تحميل الحصة التعويضية",lesson.id,err);
