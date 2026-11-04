@@ -475,7 +475,7 @@ const baseStudentSubscriptions=uniqueStudentRows(d.subscriptions,x=>[x.student_i
 const studentSubscriptions=uniqueStudentRows([...baseStudentSubscriptions,...studentCourseSubscriptions],x=>[x.student_id,x.service_type,x.service_name,x.subscription_month,x.course_date,x.amount_due,x.amount_paid,x.remaining_balance,x.group_cycle_label,x.group_units_total,x.status].map(v=>String(v??"").trim().toLowerCase()).join("|"));
 $("subCount").textContent=studentSubscriptions.length;$("payCount").textContent=studentPayments.length;
 const studentStatus=x=>["approved","paid"].includes(String(x.status||"").toLowerCase())?"paid":String(x.status||"").toLowerCase()==="pending"?"pending":String(x.status||"").toLowerCase()==="rejected"?"rejected":"registered";
-const monthlyCycleRows=studentSubscriptions.filter(x=>String(x.service_type||"").toLowerCase()==="monthly_subscription").sort((a,b)=>String(a.subscription_month||a.created_at||"").localeCompare(String(b.subscription_month||b.created_at||"")));
+const monthlyCycleRows=studentPayments.filter(x=>String(x.service_type||"").toLowerCase()==="monthly_subscription").map(p=>({...((studentSubscriptions.find(sub=>String(sub.id||"")===String(p.subscription_id||""))||{}),...p,cycle_payment_id:p.id,cycle_month:p.subscription_month||p.payment_date||p.created_at})).sort((a,b)=>String(a.cycle_month||"").localeCompare(String(b.cycle_month||"")));
 const inPersonCycleLessons=(Array.isArray(d.lessons)?d.lessons:[]).filter(l=>{
  const type=String(l.lesson_type||"").toLowerCase();
  const mode=String(l.delivery_mode||l.study_mode||"").toLowerCase();
@@ -484,13 +484,13 @@ const inPersonCycleLessons=(Array.isArray(d.lessons)?d.lessons:[]).filter(l=>{
 const cycleOrdinal=n=>["الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر"][n]||String(n+1);
 const subscriptionCardHtml=x=>{
  const isMonthly=String(x.service_type||"").toLowerCase()==="monthly_subscription";
- const cycleIndex=monthlyCycleRows.findIndex(row=>row===x);
+ const cycleIndex=monthlyCycleRows.findIndex(row=>String(row.cycle_payment_id||"")===String(x.cycle_payment_id||""));
  const cycleLessons=isMonthly?inPersonCycleLessons.slice(Math.max(0,cycleIndex)*4,Math.max(0,cycleIndex)*4+4):[];
  const completed=cycleLessons.filter(l=>["تمت","تمت من قبل","مكتملة","completed"].includes(String(l.status||"").trim().toLowerCase())).length;
  const remaining=isMonthly?Math.max(0,4-completed):0;
  const statusLabel=studentStatus(x)==="paid"?"مدفوع":studentStatus(x)==="pending"?"قيد المراجعة":studentStatus(x)==="rejected"?"مرفوض":"مسجل";
  const cycleDetails=isMonthly?'<div class="cycle-lesson-list">'+[0,1,2,3].map(i=>{const l=cycleLessons[i];const done=!!l&&["تمت","تمت من قبل","مكتملة","completed"].includes(String(l.status||"").trim().toLowerCase());return '<div class="cycle-lesson-row"><span>الحصة '+(i+1)+'/4</span><span>'+(l?safe(l.lesson_date||"موعد مسجل"):"لم تُبرمج بعد")+'</span><b class="'+(done?"cycle-done":"cycle-wait")+'">'+(done?"منجزة":l?"مبرمجة":"—")+'</b></div>';}).join("")+'</div>':"";
- const monthLabel=x.subscription_month?safe(x.subscription_month):"دورة الاشتراك";
+ const monthLabel=x.subscription_month?safe(x.subscription_month):"حسب الدفعة "+(x.payment_date||x.created_at?date(x.payment_date||x.created_at):"");
  return '<article class="item subscription-progress-card"><div class="subscription-card-head"><div><small class="subscription-kicker">'+(isMonthly?"اشتراك أربع حصص":"خدمة تعليمية")+'</small><strong>'+(isMonthly?"الشهر "+cycleOrdinal(Math.max(0,cycleIndex))+" — "+monthLabel:safe(x.service_name||x.service_type||"خدمة تعليمية"))+'</strong></div><span class="subscription-status '+(studentStatus(x)==="paid"?"is-paid":"is-pending")+'">'+statusLabel+'</span></div>'+
  (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' / 4</b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div>'+cycleDetails+'<p class="subscription-hint">'+(remaining>0?"باقي لك "+remaining+" حصص في هذه الدورة.":"اكتملت الحصص الأربع لهذه الدورة.")+'</p>':((x.course_date||x.subscription_month)?'<p class="subscription-date">'+safe(x.course_date||x.subscription_month)+'</p>':""))+'</article>';
 };
@@ -502,15 +502,15 @@ const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=
  const paymentStatus=paid?"paid":completed?"unpaid":"scheduled";
  return {...x,service_type:"individual_session",service_name:"حصة فردية",payment_status:paymentStatus,status:paid?"مدفوعة":completed?"غير مدفوعة":"مجدولة"};
 });
-const monthlyAndOtherSubscriptions=studentSubscriptions.filter(x=>String(x.service_type||"").toLowerCase()!=="individual_session");
-const subscriptionDisplayRows=[...monthlyAndOtherSubscriptions,...individualLessonServices];
+const monthlyAndOtherSubscriptions=studentSubscriptions.filter(x=>!["individual_session","monthly_subscription"].includes(String(x.service_type||"").toLowerCase()));
+const subscriptionDisplayRows=[...monthlyCycleRows,...monthlyAndOtherSubscriptions,...individualLessonServices];
 list("subscriptions",subscriptionDisplayRows,x=>{
  if(x.service_type==="individual_session")return '<article class="item subscription-progress-card individual-service-card"><div class="subscription-card-head"><div><small class="subscription-kicker">خدمة فردية</small><strong>حصة فردية</strong></div><span class="subscription-status '+(x.payment_status==="paid"?"is-paid":x.payment_status==="scheduled"?"is-scheduled":"is-pending")+'">'+safe(x.status)+'</span></div><div class="individual-session-meta"><span>📅 '+safe(x.lesson_date||"التاريخ غير محدد")+'</span><span>🕒 '+safe(x.lesson_time||"التوقيت غير محدد")+'</span></div></article>';
  return subscriptionCardHtml(x);
 },"لا توجد اشتراكات أو حصص فردية مسجلة حاليًا.");
 list("payments",studentPayments,x=>{
  const linked=studentSubscriptions.find(sub=>String(sub.id||"")===String(x.subscription_id||""));
- const cycleIndex=linked&&String(linked.service_type||"").toLowerCase()==="monthly_subscription"?monthlyCycleRows.findIndex(row=>String(row.id||"")===String(linked.id||"")):-1;
+ const cycleIndex=String(x.service_type||"").toLowerCase()==="monthly_subscription"?monthlyCycleRows.findIndex(row=>String(row.cycle_payment_id||"")===String(x.id||"")):-1;
  const label=cycleIndex>=0?"دفعة الشهر "+cycleOrdinal(cycleIndex):safe(x.service_name||linked?.service_name||"دفعة خدمة");
  const amount=Number(x.amount_paid||0);
  return '<article class="item payment-cycle-card"><div class="payment-cycle-head"><strong>'+label+'</strong><span class="subscription-status '+(studentStatus(x)==="paid"?"is-paid":"is-pending")+'">'+(studentStatus(x)==="paid"?"مدفوع":studentStatus(x)==="pending"?"قيد المراجعة":studentStatus(x)==="rejected"?"مرفوض":"مسجل")+'</span></div><b class="payment-cycle-amount">'+(Number.isFinite(amount)?amount.toLocaleString("fr-FR"):"—")+' دج</b><span class="muted">تاريخ الدفع: '+date(x.payment_date||x.created_at)+'</span>'+(cycleIndex>=0?'<small class="muted">مرتبطة باشتراك أربع حصص: 1/4 إلى 4/4</small>':"")+'</article>';
