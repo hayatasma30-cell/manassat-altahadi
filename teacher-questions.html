@@ -65,6 +65,11 @@ function switchPage(id) {
  window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
+$("detailBack").addEventListener("click",()=>{
+ const target=["newPage","answeredPage","libraryPage"].includes(currentListPage)?currentListPage:"newPage";
+ switchPage(target);
+});
+
 function statusText(q){return q.status==="answered"?"تم الرد":q.status==="closed"?"مغلق":q.status==="in_progress"?"قيد المعالجة":"جديد";}
 function openQuestion(id,fromPage) {
  currentListPage=fromPage;
