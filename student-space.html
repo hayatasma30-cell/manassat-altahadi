@@ -701,8 +701,12 @@ const initializeStudentSpace = async () => {
     await loadNotificationCount();
     restoreStudentPageState();
   } catch (error) {
-    const status=$("loginError");
-    if(status)status.textContent="تعذر تحديث البيانات مؤقتًا. بقي تسجيل الدخول محفوظًا؛ أعيدي المحاولة بعد التحقق من الاتصال.";
+    const message=error&&error.message?error.message:"خطأ غير معروف في الاتصال.";
+    const name=$("studentName"),level=$("studentLevel"),status=$("loginError");
+    if(name)name.textContent="تعذر تحديث فضاء التلميذ";
+    if(level)level.textContent="تحققي من الاتصال ثم أعيدي تحميل الصفحة.";
+    if(status)status.textContent="تعذر تحديث البيانات: "+message+" — بقي تسجيل الدخول محفوظًا.";
+    console.error("[Tahadi] student dashboard refresh failed",error);
   }
 };
 // Paint the last student section immediately, before network requests finish.
