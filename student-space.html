@@ -523,7 +523,9 @@ const subscriptionCardHtml=x=>{
  (isMonthly?'<div class="subscription-progress"><div><small>الحصص المنجزة</small><b>'+completed+' / 4</b></div><div><small>الحصص المتبقية</small><b>'+remaining+'</b></div></div>'+cycleDetails+'<p class="subscription-hint">'+(remaining>0?"باقي لك "+remaining+" حصص في هذا الاشتراك.":"اكتملت الحصص الأربع لهذا الاشتراك.")+'</p>':((x.course_date||x.subscription_month)?'<p class="subscription-date">'+safe(x.course_date||x.subscription_month)+'</p>':""))+'</article>';
 };
 const individualLessonServices=(Array.isArray(d.lessons)?d.lessons:[]).filter(x=>x.lesson_type==="فردية").map(x=>{
- const linkedSub=studentSubscriptions.find(sub=>String(sub.lesson_id||"")===String(x.id));
+ const lessonDate=String(x.lesson_date||"").slice(0,10);
+ const lessonDateDMY=lessonDate&&/^\\d{4}-\\d{2}-\\d{2}$/.test(lessonDate)?lessonDate.slice(8,10)+"/"+lessonDate.slice(5,7)+"/"+lessonDate.slice(0,4):"";
+ const linkedSub=studentSubscriptions.find(sub=>String(sub.lesson_id||"")===String(x.id))||studentSubscriptions.find(sub=>{const type=String(sub.service_type||"").toLowerCase(),name=String(sub.service_name||"");const paidStatus=["paid","approved"].includes(String(sub.status||"").toLowerCase())||Number(sub.amount_due||0)>0&&Number(sub.amount_paid||0)>=Number(sub.amount_due||0);return paidStatus&&(type.includes("فردية")||name.includes("حصة فردية"))&&lessonDateDMY&&name.includes(lessonDateDMY);});
  const subStatus=String(linkedSub?.status||"").toLowerCase();
  const paid=subStatus==="paid"||subStatus==="approved"||(!!linkedSub&&Number(linkedSub.remaining_balance??Math.max(0,Number(linkedSub.amount_due||0)-Number(linkedSub.amount_paid||0)))<=0);
  const completed=["تمت","تمت من قبل","مكتملة"].includes(String(x.status||"").trim());
