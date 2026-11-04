@@ -87,6 +87,7 @@ $("detailBack").addEventListener("click",()=>{
 function statusText(q){return q.status==="answered"?"تم الرد":q.status==="closed"?"مغلق":q.status==="in_progress"?"قيد المعالجة":"جديد";}
 function openQuestion(id,fromPage) {
  currentListPage=fromPage;
+ savePageState("questionDetailPage",id);
  const q=questions.find(x=>String(x.id)===String(id));
  if(!q){$("status").textContent="لم أجد السؤال، حدّثي القائمة وحاولي مجددًا.";return;}
  $("questionDetail").innerHTML=detailMarkup(q);
