@@ -2444,7 +2444,7 @@ const handleIncomeCalendarClick=async e=>{
     const selectedManualStudent=()=>students.find(st=>String(st.id)===String(manualPaymentStudent?.value||""));
     const updateManualStudentInfo=()=>{if(manualPaymentServiceType?.value==="individual_session"&&manualPaymentStudent?.value)loadManualIndividualLessons();};
     const updateManualRemaining=()=>{const due=Number($("manualPaymentDue")?.value)||0,paid=Number($("manualPaymentPaid")?.value)||0;$("manualPaymentRemaining").textContent=money(Math.max(0,due-paid));};
-    manualPaymentStudent?.addEventListener("change",updateManualStudentInfo);manualPaymentIndividualLesson?.addEventListener("change",()=>{const option=manualPaymentIndividualLesson.selectedOptions?.[0],price=Number(option?.dataset?.price||0),due=$("manualPaymentDue");if(manualPaymentServiceType?.value==="individual_session"&&due){due.value=manualPaymentIndividualLesson.value&&price>0?String(price):"";due.readOnly=true;updateManualRemaining();}});
+    manualPaymentStudent?.addEventListener("change",updateManualStudentInfo);
     $("manualPaymentDue")?.addEventListener("input",updateManualRemaining);
     $("manualPaymentPaid")?.addEventListener("input",updateManualRemaining);
     $("toggleManualInPersonPayment")?.addEventListener("click",()=>{updateManualStudentInfo();updateManualRemaining();showView("manualInPersonPaymentView");});
