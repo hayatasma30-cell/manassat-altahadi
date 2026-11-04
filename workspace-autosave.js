@@ -69,18 +69,8 @@
         const el=id.startsWith("@")?document.querySelectorAll("details")[Number(id.slice(1))]:document.getElementById(id);
         if(el&&el.tagName==="DETAILS")el.open=true;
       });
-      if(state.view&&localStorage.getItem("tahadi_teacher_token")){
-        const target=document.getElementById(state.view);
-        if(target&&target.classList.contains("view")){
-          document.querySelectorAll(".view").forEach(v=>{
-            const on=v===target;
-            v.classList.toggle("active",on);v.style.display=on?"block":"none";v.setAttribute("aria-hidden",on?"false":"true");
-          });
-        }
-      }
-      if(state.url&&new URL(state.url).pathname===location.pathname){
-        setTimeout(()=>window.scrollTo({left:Number(state.scrollX)||0,top:Number(state.scrollY)||0,behavior:"auto"}),700);
-      }
+      // The teacher page has one authoritative view/scroll restorer in index.html.
+      // This helper restores form fields and expanded panels only, avoiding competing navigation/scroll jumps.
     });
     setTimeout(()=>{restoring=false},1300);
   }
