@@ -122,9 +122,23 @@ async function saveReply(id) {
  finally{btn.disabled=false;}
 }
 async function publishQuestion(id,is_published) {
+ const q=questions.find(x=>String(x.id)===String(id));
  const msg=$("detailStatus");
- try {await call("teacher_publish_student_question",{id,is_published});const q=questions.find(x=>String(x.id)===String(id));if(q)q.is_published=is_published;$("status").className="success";$("status").textContent=is_published?"تم نشر السؤال في مكتبة التلاميذ.":"تم إخفاء السؤال من المكتبة.";render();if($("questionDetailPage")&&!$("questionDetailPage").hidden)openQuestion(id,currentListPage);}
- catch(e){if(msg){msg.className="error";msg.textContent=e.message;}else{$("status").className="error";$("status").textContent=e.message;}}
+ if(is_published&&q&&!String(q.teacher_reply||"").trim()){
+  msg.className="error";msg.textContent="يجب حفظ إجابة الأستاذة أولًا قبل نشر السؤال في مكتبة التلاميذ.";return;
+ }
+ if(!window.confirm(is_published?"هل تريدين نشر السؤال وإجابته في مكتبة التلاميذ؟":"هل تريدين إخفاء السؤال من مكتبة التلاميذ؟"))return;
+ try {
+  await call("teacher_publish_student_question",{id,is_published});
+  if(q)q.is_published=is_published;
+  $("status").className="success";
+  $("status").textContent=is_published?"تم نشر السؤال في مكتبة التلاميذ.":"تم إخفاء السؤال من المكتبة.";
+  render();
+  if(!$("questionDetailPage").hidden)openQuestion(id,currentListPage);
+ } catch(e) {
+  if(msg){msg.className="error";msg.textContent=e.message;}
+  else{$("status").className="error";$("status").textContent=e.message;}
+ }
 }
 function bindOpenButtons(){document.querySelectorAll(".open-question").forEach(b=>b.addEventListener("click",()=>openQuestion(b.dataset.id,b.dataset.from)));document.querySelectorAll(".delete-question").forEach(b=>b.addEventListener("click",()=>deleteQuestion(b.dataset.id)));document.querySelectorAll(".publish-question").forEach(b=>b.addEventListener("click",()=>publishQuestion(b.dataset.id,b.dataset.published!=="true")));}
 function fillLevelSelect(id) {
