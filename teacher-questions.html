@@ -44,6 +44,19 @@ const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-qui
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let questions=[],currentListPage="newPage";
+const PAGE_STATE_KEY="tahadi_teacher_questions_page_state";
+function savePageState(activePage,questionId=""){
+ try{sessionStorage.setItem(PAGE_STATE_KEY,JSON.stringify({activePage,currentListPage,questionId:String(questionId||"")}));}catch(e){}
+}
+function readPageState(){
+ try{const value=JSON.parse(sessionStorage.getItem(PAGE_STATE_KEY)||"{}");
+  return {activePage:["newPage","answeredPage","libraryPage","questionDetailPage"].includes(value.activePage)?value.activePage:"newPage",
+   currentListPage:["newPage","answeredPage","libraryPage"].includes(value.currentListPage)?value.currentListPage:"newPage",
+   questionId:String(value.questionId||"")};
+ }catch(e){return {activePage:"newPage",currentListPage:"newPage",questionId:""};}
+}
+const initialPageState=readPageState();
+currentListPage=initialPageState.currentListPage;
 async function call(action,extra={}) {
  const token=localStorage.getItem("tahadi_teacher_token");
  if(!token) throw new Error("جلسة الأستاذة غير موجودة في هذه الصفحة. ادخلي إلى فضاء الأستاذة أولًا ثم افتحي الأسئلة من داخله.");
@@ -62,6 +75,7 @@ async function call(action,extra={}) {
 function switchPage(id) {
  document.querySelectorAll(".page").forEach(p=>p.hidden=p.id!==id);
  document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ savePageState(id,id==="questionDetailPage"?initialPageState.questionId:"");
  window.scrollTo({top:0,behavior:"smooth"});
 }
 document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
@@ -195,8 +209,16 @@ $("librarySearch").addEventListener("input",renderLibrary);
 $("libraryLevel").addEventListener("change",renderLibrary);
 
 async function load() {
- try {const data=await call("teacher_student_questions");questions=data.questions||[];render();$("status").className="muted";$("status").textContent="تم تحديث الأسئلة.";}
- catch(e){$("status").className="error";$("status").textContent=e.message;$("newQuestions").innerHTML='<div class="empty">'+esc(e.message)+'</div>';}
+ try {
+  const data=await call("teacher_student_questions");questions=data.questions||[];render();
+  $("status").className="muted";$("status").textContent="تم تحديث الأسئلة.";
+  const saved=readPageState();currentListPage=saved.currentListPage;
+  if(saved.activePage==="questionDetailPage"&&saved.questionId&&questions.some(q=>String(q.id)===saved.questionId)){
+   openQuestion(saved.questionId,currentListPage);
+  }else{
+   switchPage(saved.activePage==="questionDetailPage"?currentListPage:saved.activePage);
+  }
+ }catch(e){$("status").className="error";$("status").textContent=e.message;$("newQuestions").innerHTML='<div class="empty">'+esc(e.message)+'</div>';}
 }
 load();
 </script>
