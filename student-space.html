@@ -475,7 +475,7 @@ const baseStudentSubscriptions=uniqueStudentRows(d.subscriptions,x=>[x.student_i
 const studentSubscriptions=uniqueStudentRows([...baseStudentSubscriptions,...studentCourseSubscriptions],x=>[x.student_id,x.service_type,x.service_name,x.subscription_month,x.course_date,x.amount_due,x.amount_paid,x.remaining_balance,x.group_cycle_label,x.group_units_total,x.status].map(v=>String(v??"").trim().toLowerCase()).join("|"));
 $("subCount").textContent=studentSubscriptions.length;$("payCount").textContent=studentPayments.length;
 const studentStatus=x=>["approved","paid"].includes(String(x.status||"").toLowerCase())?"paid":String(x.status||"").toLowerCase()==="pending"?"pending":String(x.status||"").toLowerCase()==="rejected"?"rejected":"registered";
-const monthlyCycleRows=studentPayments.filter(x=>String(x.service_type||"").toLowerCase()==="monthly_subscription").map(p=>({...((studentSubscriptions.find(sub=>String(sub.id||"")===String(p.subscription_id||""))||{}),...p,cycle_payment_id:p.id,cycle_month:p.subscription_month||p.payment_date||p.created_at})).sort((a,b)=>String(a.cycle_month||"").localeCompare(String(b.cycle_month||"")));
+const monthlyCycleRows=studentPayments.filter(x=>String(x.service_type||"").toLowerCase()==="monthly_subscription").map(p=>({...((studentSubscriptions.find(sub=>String(sub.id||"")===String(p.subscription_id||""))||{})),...p,cycle_payment_id:p.id,cycle_month:p.subscription_month||p.payment_date||p.created_at})).sort((a,b)=>String(a.cycle_month||"").localeCompare(String(b.cycle_month||"")));
 const inPersonCycleLessons=(Array.isArray(d.lessons)?d.lessons:[]).filter(l=>{
  const type=String(l.lesson_type||"").toLowerCase();
  const mode=String(l.delivery_mode||l.study_mode||"").toLowerCase();
