@@ -2803,7 +2803,7 @@ const handleIncomeCalendarClick=async e=>{
   });
 
   $("lessonCalendarGrid").addEventListener("click",e=>{const b=e.target.closest("[data-calendar-date]");if(!b)return;e.preventDefault();window.tahadiSelectLessonDate(b.dataset.calendarDate);});
-  $("lessonCalendarDayDetails").addEventListener("click",e=>{
+  $("lessonCalendarDayDetails").addEventListener("click",async e=>{
     const backDayPage=e.target.closest("[data-calendar-day-back]");
     if(backDayPage){lessonCalendarDayPageOpen=false;renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);const panel=document.getElementById("lessonsCalendarPanel");if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});return;}
     const rosterBtn=e.target.closest("[data-roster-open]");
