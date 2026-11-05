@@ -12,6 +12,35 @@ body.embed input,body.embed select,body.embed textarea{min-height:38px;padding:8
 body.embed .q{padding:10px;margin:8px 0}
 body.embed .q textarea{min-height:52px}
 body.embed .btn{font-size:13px;padding:8px 12px}
+body.embed .wrap{overflow:visible}
+body.embed .panel{border:1px solid #e3e9dc;background:#fff;overflow:visible}
+body.embed #formTitle{display:none!important}
+body.embed #editor{padding:16px 15px 18px;margin:0;border:1px solid #e1e9df;border-radius:17px;background:#fff}
+body.embed #editor .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+body.embed #editor>label{display:block;margin-top:13px}
+body.embed #editor .row:has(>#addQ){align-items:center;padding-bottom:8px;border-bottom:1px solid #edf1e9}
+body.embed #questions{display:grid;gap:12px;margin-top:12px}
+body.embed .q{border:1px solid #dce7d9;border-radius:15px;background:#fbfdf9;padding:13px;box-shadow:0 3px 10px #153d2008}
+body.embed .q>.row{justify-content:space-between;padding-bottom:8px;border-bottom:1px solid #e9efe6}
+body.embed .q>.row strong{color:#14532d;font-size:15px}
+body.embed .q .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+body.embed .q input,body.embed .q select,body.embed .q textarea{background:#fff}
+body.embed #editor>.row:last-child{position:static;display:flex;gap:9px;padding-top:14px;margin-top:16px;border-top:1px solid #e9efe6}
+body.embed #editor>.row:last-child .btn{flex:1;min-height:44px}
+body.embed #message{margin:8px 0 12px}
+@media(max-width:600px){
+ body.embed .panel{padding:12px!important}
+ body.embed #editor{padding:13px 11px 16px!important}
+ body.embed #editor .grid,body.embed .q .grid{grid-template-columns:1fr!important}
+ body.embed .q{padding:11px!important;margin:0!important}
+ body.embed .q>.row strong{font-size:14px}
+ body.embed .q .btn.warn{min-height:36px;padding:7px 13px}
+ body.embed #editor .row:has(>#addQ){justify-content:space-between!important}
+ body.embed #addQ{min-height:40px;padding:8px 13px}
+ body.embed #editor>.row:last-child{flex-wrap:wrap}
+ body.embed #editor>.row:last-child .btn{flex:1 1 42%;font-size:13px}
+ body.embed textarea{min-height:76px}
+}
 
 
 /* تحسين العرض على الهاتف وتوحيد المسافات مع فضاء الأستاذة */
@@ -55,6 +84,7 @@ const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,
 function message(t){$("message").textContent=t;$("message").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}
 async function call(action,data={}){if(!token)throw Error("جلسة الأستاذة غير موجودة. سجّلي الدخول إلى فضاء الأستاذة أولًا.");const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNobnNqeGh6b2libHVhY210dmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0NzgsImV4cCI6MjEwNzk5ODQ3OH0.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+token},body:JSON.stringify({action,...data})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d}
 function addQuestion(q={}){const id=q.id||crypto.randomUUID();questions.push({...q,id});renderQuestions()}
+function fitEmbeddedFrame(){if(!document.body.classList.contains("embed")||!window.frameElement)return;requestAnimationFrame(()=>{const h=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);window.frameElement.style.height=(h+8)+"px";});}
 function renderQuestions(){$("questions").innerHTML=questions.map((q,i)=>'<div class="q" data-id="'+esc(q.id)+'"><div class="row"><strong>السؤال '+(i+1)+'</strong><button class="btn warn" type="button" onclick="removeQ(\''+esc(q.id)+'\')">حذف</button></div><label>نص السؤال</label><textarea class="qt">'+esc(q.text||"")+'</textarea><div class="grid">'+[0,1,2,3].map(n=>'<div><label>الخيار '+(n+1)+'</label><input class="opt" value="'+esc((q.options||[])[n]||"")+'"></div>').join("")+'</div><label>الإجابة الصحيحة</label><select class="correct">'+[0,1,2,3].map(n=>'<option value="'+n+'" '+((q.options||[])[n]===q.correct_answer?"selected":"")+'>الخيار '+(n+1)+'</option>').join("")+'</select><label>النقاط</label><input class="points" type="number" min="1" max="10" value="'+(q.points||1)+'"></div>').join("")}
 window.removeQ=id=>{questions=questions.filter(q=>q.id!==id);renderQuestions()};
 function readQuestions(){return [...$("questions").children].map(el=>{const opts=[...el.querySelectorAll(".opt")].map(x=>x.value.trim()).filter(Boolean);const idx=Number(el.querySelector(".correct").value);return{id:el.dataset.id,text:el.querySelector(".qt").value,options:opts,correct_answer:opts[idx]||"",points:Number(el.querySelector(".points").value)||1}})}
@@ -76,4 +106,5 @@ $("publishBtn").onclick=()=>publishChallenge(editingId);if(document.body.classLi
 }
 reset();load();
 if(location.hash){setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView({behavior:"smooth",block:"start"}),250)}
+if(document.body.classList.contains("embed")&&"ResizeObserver" in window){const ro=new ResizeObserver(fitEmbeddedFrame);ro.observe(document.body);window.addEventListener("load",fitEmbeddedFrame);setTimeout(fitEmbeddedFrame,100);setTimeout(fitEmbeddedFrame,500);}
 </script></body></html>
