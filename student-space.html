@@ -1269,4 +1269,163 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
 }
 </style>
 
+
+<style id="student-space-consistent-system-20261105">
+/* نظام بصري موحد لجميع صفحات فضاء التلميذ — تنسيق فقط، دون تغيير الوظائف أو البيانات */
+:root{
+ --student-green:#17643b;--student-green-dark:#124b2d;--student-green-soft:#edf7eb;
+ --student-border:#d8e6d5;--student-text:#183b2a;--student-muted:#718075;
+ --student-shadow:0 4px 0 #17643b18,0 9px 18px #173f2210;
+}
+#dashboard{width:100%;max-width:100%;margin:0 auto;color:var(--student-text)}
+#dashboard .student-identity,
+#dashboard .student-section,
+#studentDetail>.student-section{
+ width:100%!important;box-sizing:border-box!important;
+ border:1px solid var(--student-border)!important;border-top:4px solid #25824d!important;
+ border-radius:19px!important;background:#fff!important;
+ box-shadow:0 6px 18px #173f220c!important;
+}
+#dashboard .student-identity{margin:0 0 14px!important;padding:14px 16px!important}
+#dashboard .student-section,#studentDetail>.student-section{
+ margin:0 0 13px!important;padding:16px!important;
+}
+#dashboard .student-section h2,#studentDetail .student-section h2{
+ display:flex!important;align-items:center!important;gap:8px!important;
+ color:var(--student-green-dark)!important;font-size:1.08rem!important;
+ line-height:1.5!important;margin:0 0 12px!important;padding:0 0 9px!important;
+ border-bottom:1px solid #e9efe6!important;
+}
+#dashboard .muted,#studentDetail .muted{color:var(--student-muted)!important;line-height:1.75!important}
+#dashboard .student-actions,#studentDetail .student-actions{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ width:100%!important;gap:10px!important;align-items:stretch!important;
+}
+#studentMenu .student-home-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:11px!important}
+#dashboard .student-action,#studentDetail .student-action,
+#dashboard .student-submenu-grid>.student-action{
+ position:relative!important;display:flex!important;align-items:center!important;
+ justify-content:flex-start!important;flex-direction:row!important;
+ width:100%!important;min-width:0!important;min-height:78px!important;height:auto!important;
+ margin:0!important;padding:10px 12px!important;gap:9px!important;
+ box-sizing:border-box!important;text-align:right!important;text-decoration:none!important;
+ color:var(--student-text)!important;background:linear-gradient(145deg,#fff,#f3faf1)!important;
+ border:1px solid #c8dfc6!important;border-bottom:4px solid #27824c!important;
+ border-radius:15px!important;box-shadow:var(--student-shadow)!important;
+ transition:transform .15s ease,box-shadow .15s ease!important;
+}
+#dashboard .student-action:active,#studentDetail .student-action:active{
+ transform:translateY(2px)!important;box-shadow:0 2px 0 #17643b18!important;
+}
+#dashboard .student-action-icon,#studentDetail .student-action-icon{
+ width:39px!important;height:39px!important;flex:0 0 39px!important;
+ display:grid!important;place-items:center!important;border-radius:12px!important;
+ background:linear-gradient(145deg,#eff8ec,#e1f1dd)!important;
+ border:1px solid #fff!important;box-shadow:0 3px 8px #193d2010!important;
+ font-size:1.15rem!important;
+}
+#dashboard .student-action>span:nth-child(2),#studentDetail .student-action>span:nth-child(2){
+ flex:1!important;min-width:0!important;
+}
+#dashboard .student-action strong,#studentDetail .student-action strong{
+ display:block!important;color:var(--student-green-dark)!important;
+ font-size:.88rem!important;line-height:1.45!important;
+}
+#dashboard .student-action small,#studentDetail .student-action small{
+ display:block!important;color:var(--student-muted)!important;
+ font-size:.69rem!important;line-height:1.45!important;margin-top:2px!important;
+}
+#dashboard .student-arrow,#studentDetail .student-arrow{
+ display:block!important;flex:0 0 auto!important;margin-right:auto!important;
+ color:var(--student-green)!important;font-size:1.12rem!important;
+}
+#dashboard .student-submenu-grid{
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ max-width:100%!important;margin:14px auto 0!important;gap:12px!important;
+}
+#dashboard .student-submenu-grid>.student-action{
+ min-height:145px!important;flex-direction:column!important;
+ justify-content:center!important;align-items:center!important;text-align:center!important;
+ padding:13px 9px!important;gap:8px!important;border-radius:18px!important;
+}
+#dashboard .student-submenu-grid .student-action-icon{
+ width:43px!important;height:43px!important;flex-basis:43px!important;font-size:1.25rem!important;
+}
+#dashboard .student-submenu-grid .student-submenu-copy{
+ display:grid!important;gap:3px!important;width:100%!important;text-align:center!important;
+}
+#dashboard .student-submenu-grid .student-submenu-copy strong{font-size:.86rem!important}
+#dashboard .student-submenu-grid .student-submenu-copy small{font-size:.68rem!important}
+#dashboard .student-submenu-grid .section-count{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-width:27px!important;height:27px!important;margin:0!important;border-radius:50%!important;
+ background:#e2f1df!important;color:var(--student-green-dark)!important;font-weight:800!important;
+}
+#dashboard .student-submenu-grid .student-arrow{position:absolute!important;top:8px!important;left:9px!important}
+#dashboard .student-back{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:42px!important;margin:0 0 12px!important;padding:8px 14px!important;
+ border:1px solid #c8dfc6!important;border-bottom:4px solid #27824c!important;
+ border-radius:12px!important;background:linear-gradient(145deg,#fff,#f1f8ee)!important;
+ color:var(--student-green-dark)!important;box-shadow:var(--student-shadow)!important;
+}
+#dashboard .item,#studentDetail .item,
+#dashboard .student-lesson-page .item{
+ border:1px solid #e0e9dc!important;border-radius:14px!important;
+ background:linear-gradient(145deg,#fff,#fbfdf9)!important;
+ padding:12px!important;margin:9px 0!important;box-shadow:0 3px 10px #173f2208!important;
+}
+#dashboard .student-calendar{border:1px solid var(--student-border)!important;border-radius:15px!important;padding:12px!important;background:#fbfdf9!important}
+#dashboard .student-lesson-page{margin-top:10px!important}
+#dashboard .student-lesson-page h3{color:var(--student-green-dark)!important;font-size:1rem!important;margin:0 0 10px!important;padding-bottom:8px!important;border-bottom:1px solid #e9efe6!important}
+#dashboard .question-page-nav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+#dashboard .question-page-btn,#dashboard .question-3d-btn,
+#studentDetail .question-page-btn,#studentDetail .question-3d-btn{
+ background:linear-gradient(145deg,#2b9258,#17643b)!important;border:1px solid #17643b!important;
+ border-radius:12px!important;box-shadow:0 4px 0 #124b2d!important;
+}
+#dashboard .question-page-btn.active,#studentDetail .question-page-btn.active{
+ background:linear-gradient(145deg,#17643b,#124b2d)!important;
+}
+#dashboard input,#dashboard textarea,#studentDetail input,#studentDetail textarea{
+ max-width:100%!important;border:1px solid #cbdcc8!important;border-radius:12px!important;
+ background:#fff!important;color:var(--student-text)!important;
+}
+#dashboard .student-identity .profile-quick-action{
+ min-height:48px!important;width:auto!important;padding:7px 11px!important;
+}
+#dashboard #studentHelpBtn{
+ min-height:42px!important;padding:9px 14px!important;border-radius:12px!important;
+ background:linear-gradient(145deg,#fff,#f1f8ee)!important;color:var(--student-green-dark)!important;
+ border:1px solid #c8dfc6!important;border-bottom:4px solid #27824c!important;
+ box-shadow:var(--student-shadow)!important;
+}
+#dashboard #logoutBtn{
+ min-height:42px!important;padding:9px 14px!important;border-radius:12px!important;
+}
+#dashboard footer{padding:18px 10px!important;text-align:center!important}
+@media(max-width:700px){
+ #dashboard .student-identity{padding:11px!important;gap:8px!important}
+ #dashboard .student-section,#studentDetail>.student-section{padding:13px!important;border-radius:16px!important}
+ #studentMenu .student-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+ #dashboard .student-action,#studentDetail .student-action{min-height:72px!important;padding:9px!important;gap:7px!important}
+ #dashboard .student-action-icon,#studentDetail .student-action-icon{width:34px!important;height:34px!important;flex-basis:34px!important;font-size:1.05rem!important}
+ #dashboard .student-action strong,#studentDetail .student-action strong{font-size:.81rem!important}
+ #dashboard .student-action small,#studentDetail .student-action small{font-size:.65rem!important}
+ #dashboard .student-submenu-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ #dashboard .student-submenu-grid>.student-action{min-height:140px!important;padding:12px 7px!important}
+ #dashboard .student-submenu-grid .student-action-icon{width:40px!important;height:40px!important;flex-basis:40px!important}
+ #dashboard .student-section h2,#studentDetail .student-section h2{font-size:1rem!important}
+}
+@media(max-width:360px){
+ #studentMenu .student-home-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #dashboard .student-submenu-grid{gap:8px!important}
+ #dashboard .student-submenu-grid>.student-action{min-height:132px!important}
+ #dashboard .student-action small,#studentDetail .student-action small{display:none!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #dashboard .student-action,#studentDetail .student-action{transition:none!important}
+}
+</style>
+
 </body></html>
