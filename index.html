@@ -3612,5 +3612,8 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   });
 })();
 </script>
+<script>
+(()=>{const mount=()=>{if(!localStorage.getItem("tahadi_teacher_token")||document.getElementById("dailyChallengeShortcut"))return;const a=document.createElement("a");a.id="dailyChallengeShortcut";a.href="./daily-challenge-admin.html";a.textContent="🏆 إدارة التحدي اليومي";a.style.cssText="position:fixed;z-index:9998;bottom:18px;left:14px;background:#286b45;color:#fff;text-decoration:none;padding:11px 15px;border-radius:12px;font: bold 14px Tahoma,Arial;box-shadow:0 4px 0 #194b30";document.body.appendChild(a)};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",mount):mount();setTimeout(mount,1200)})();
+</script>
 </body>
 </html>
