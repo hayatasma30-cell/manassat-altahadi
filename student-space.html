@@ -1555,4 +1555,57 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
 }
 </style>
 
+
+<style id="student-panel-inner-boundaries-20261105">
+/* ضبط حدود الحاويات الداخلية حتى لا تلامس ظلال الأزرار الإطار الخارجي */
+#dashboard .student-section[data-panel="learningFolder"],
+#dashboard .student-section[data-panel="progressFolder"],
+#dashboard .student-section[data-panel="contactFolder"],
+#dashboard .student-section[data-panel="servicesPayments"]{
+ box-sizing:border-box!important;
+ padding:clamp(13px,3.5vw,19px)!important;
+ overflow:visible!important;
+}
+#dashboard .student-section[data-panel="learningFolder"]>.student-actions,
+#dashboard .student-section[data-panel="progressFolder"]>.student-actions,
+#dashboard .student-section[data-panel="contactFolder"]>.student-actions,
+#dashboard .student-section[data-panel="servicesPayments"]>.student-actions{
+ width:100%!important;
+ max-width:100%!important;
+ box-sizing:border-box!important;
+ padding:2px 2px 9px!important;
+ margin:14px auto 5px!important;
+ gap:clamp(10px,2.8vw,15px)!important;
+}
+#dashboard .student-section[data-panel="learningFolder"]>.student-actions>.student-action,
+#dashboard .student-section[data-panel="progressFolder"]>.student-actions>.student-action,
+#dashboard .student-section[data-panel="contactFolder"]>.student-actions>.student-action{
+ min-width:0!important;
+ max-width:100%!important;
+ margin:0!important;
+}
+#dashboard .student-section[data-panel="progressFolder"]>h2,
+#dashboard .student-section[data-panel="learningFolder"]>h2,
+#dashboard .student-section[data-panel="contactFolder"]>h2{
+ margin:0 0 13px!important;
+ padding:0 2px 10px!important;
+ border-bottom:1px solid #e8eee5!important;
+}
+@media(max-width:500px){
+ #dashboard .student-section[data-panel="learningFolder"],
+ #dashboard .student-section[data-panel="progressFolder"],
+ #dashboard .student-section[data-panel="contactFolder"],
+ #dashboard .student-section[data-panel="servicesPayments"]{
+  padding:14px 13px 17px!important;
+ }
+ #dashboard .student-section[data-panel="learningFolder"]>.student-actions,
+ #dashboard .student-section[data-panel="progressFolder"]>.student-actions,
+ #dashboard .student-section[data-panel="contactFolder"]>.student-actions{
+  padding:3px 2px 12px!important;
+  margin:12px auto 4px!important;
+  gap:11px!important;
+ }
+}
+</style>
+
 </body></html>
