@@ -2072,6 +2072,17 @@ body>header .top{min-height:62px!important}
  body>header .top strong{font-size:1.02rem!important}
  body>header .top small{font-size:.72rem!important}
 }
+/* ترتيب زر شارك الآن في الفراغ العلوي بجانب أيقونة الكأس */
+#dashboard .daily-challenge-notice:not(.hidden){grid-template-columns:48px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-items:center!important}
+#dashboard .daily-challenge-notice-icon{grid-column:1!important;grid-row:1!important}
+#dashboard .daily-challenge-notice-link{grid-column:2!important;grid-row:1!important;justify-self:start!important;align-self:center!important;margin:0!important;white-space:nowrap!important}
+#dashboard .daily-challenge-notice-copy{grid-column:1 / -1!important;grid-row:2!important;width:100%!important;margin-top:3px!important}
+@media(max-width:520px){
+#dashboard .daily-challenge-notice:not(.hidden){grid-template-columns:39px minmax(0,1fr)!important;grid-template-rows:auto auto!important}
+#dashboard .daily-challenge-notice-icon{grid-column:1!important;grid-row:1!important}
+#dashboard .daily-challenge-notice-link{grid-column:2!important;grid-row:1!important;justify-self:start!important;margin:0!important}
+#dashboard .daily-challenge-notice-copy{grid-column:1 / -1!important;grid-row:2!important}
+}
 </style>
 <script>
 
