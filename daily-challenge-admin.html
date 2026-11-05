@@ -139,16 +139,16 @@ function setEmbedPanel(page){if(!document.body.classList.contains("embed"))retur
 function reset(){editingId=null;questions=[];$("title").value="";$("description").value="";$("level").value="الكل";$("starts").value="";$("ends").value="";$("duration").value=10;$("formTitle").textContent="إعداد تحدٍّ جديد";$("publishBtn").classList.add("hidden");$("cancelEdit").classList.add("hidden");renderQuestions();addQuestion();autoGrowDescription()}
 function dateValue(v){return v?new Date(v).toISOString().slice(0,16):""}
 function challengeStatusLabel(status){return status==="draft"?"مسودة":status==="published"?"منشور":status==="closed"?"منتهٍ":String(status||"غير محدد")}
-async function load(){try{
+async function load(){const list=$("challengeListItems");list.innerHTML='<div class="item muted" style="text-align:center;padding:18px">جارٍ تحميل التحديات من قاعدة البيانات…</div>';fitEmbeddedFrame();try{
  const d=await call("teacher_list");
- $("challengeListItems").innerHTML=d.items.length?d.items.map(x=>{
+ const items=Array.isArray(d.items)?d.items:[];
+ list.innerHTML=items.length?items.map(x=>{
   const count=(x.questions||[]).length;
   const status=challengeStatusLabel(x.status);
   const date=x.created_at?new Date(x.created_at).toLocaleDateString("ar-DZ"):"";
   return '<article class="item"><h3>'+esc(x.title)+'</h3><p><span>المستوى: <strong>'+esc(x.target_level||"الكل")+'</strong></span><span>الحالة: <strong>'+status+'</strong></span><span>عدد الأسئلة: <strong>'+count+'</strong></span>'+(date?'<span>تاريخ الإنشاء: '+date+'</span>':'')+'</p><div class="row"><button class="btn alt" onclick="showResults(\''+x.id+'\')">المشاركات والنتائج</button>'+(x.status==="draft"?'<button class="btn alt" onclick="editChallenge(\''+x.id+'\')">متابعة التعديل وإضافة الأسئلة</button><button class="btn" onclick="publishChallenge(\''+x.id+'\')">نشر التحدي</button>':'')+(x.status==="published"?'<button class="btn warn" onclick="closeChallenge(\''+x.id+'\')">إنهاء المشاركة</button>':'')+'</div></article>';
  }).join(""):'<div class="item" style="text-align:center;padding:20px"><strong style="color:#14532d">لا توجد تحديات محفوظة بعد</strong><p class="muted">اضغطي على «تحدٍّ جديد» لإنشاء أول تحدٍّ لك.</p></div>';
- }catch(e){$("challengeListItems").textContent=e.message}
-}
+ }catch(e){list.innerHTML='<div class="item" style="text-align:center;padding:18px"><strong style="color:#923c2d">تعذر تحميل مكتبة التحديات</strong><p class="muted">'+esc(e.message)+'</p><button class="btn alt" type="button" onclick="load()">إعادة المحاولة</button></div>';}finally{fitEmbeddedFrame();requestAnimationFrame(()=>requestAnimationFrame(fitEmbeddedFrame));setTimeout(fitEmbeddedFrame,120);setTimeout(fitEmbeddedFrame,400);}}
 window.editChallenge=id=>{call("teacher_list").then(d=>{const x=d.items.find(a=>a.id===id);if(!x)return;setEmbedPanel("editor");$("results").classList.add("hidden");editingId=id;$("title").value=x.title;$("description").value=x.description||"";$("level").value=x.target_level;$("starts").value=dateValue(x.starts_at);$("ends").value=dateValue(x.ends_at);$("duration").value=x.duration_minutes;$("formTitle").textContent="تعديل مسودة التحدي";questions=(x.questions||[]).map(q=>({...q}));renderQuestions();autoGrowDescription();$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");$("editor").scrollIntoView({behavior:"smooth"})}).catch(e=>message(e.message))};
 window.publishChallenge=async id=>{if(!confirm("هل تريدين نشر هذا التحدي للتلاميذ؟"))return;try{await call("teacher_publish",{id});message("تم نشر التحدي.");load()}catch(e){message(e.message)}};
 window.closeChallenge=async id=>{if(!confirm("إنهاء استقبال المشاركات في هذا التحدي؟"))return;try{await call("teacher_close",{id});message("تم إنهاء المشاركة.");load()}catch(e){message(e.message)}};
