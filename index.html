@@ -3112,8 +3112,10 @@ const handleIncomeCalendarClick=async e=>{
     challengePanel.hidden=false;
     $("dailyChallengeEmbeddedTitle").textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
     const target="./daily-challenge-admin.html?embed=1#"+page;
-    if(!challengeFrame.src.endsWith(target)) challengeFrame.src=target;
-    else if(challengeFrame.contentWindow)challengeFrame.contentWindow.location.hash=page;
+    const desired=new URL(target,location.href);
+    let current=null;try{current=new URL(challengeFrame.src,location.href);}catch(_){}
+    if(!current||current.pathname!==desired.pathname||current.search!==desired.search||current.hash!==desired.hash){challengeFrame.src=target;}
+    else if(challengeFrame.contentWindow&&challengeFrame.contentWindow.location.hash!=="#"+page){challengeFrame.contentWindow.location.hash=page;}
     saveTeacherPagePosition();
     challengeFrame.addEventListener("load",()=>{try{challengeFrame.contentWindow.addEventListener("hashchange",saveTeacherPagePosition);challengeFrame.contentWindow.addEventListener("scroll",saveTeacherPagePosition,{passive:true});}catch(_){}saveTeacherPagePosition();},{once:true});
     if(!options.preserveScroll)challengePanel.scrollIntoView({behavior:"smooth",block:"start"});
