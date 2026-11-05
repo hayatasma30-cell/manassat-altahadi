@@ -1992,4 +1992,21 @@ body:has(#dashboard:not(.hidden)) .hero{display:none!important}
  #dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentLevel{font-size:.69rem!important;padding:3px 8px!important}
 }
 </style>
+
+<style id="student-card-home-only-logo-clean-20261105">
+/* بطاقة الترحيب تظهر في القائمة الرئيسية فقط */
+#dashboard:has(>#studentDetail:not(.hidden))>.student-identity-compact{display:none!important}
+/* الشعار أكبر وحرّ دون إطار أو خلفية */
+#dashboard>.student-identity.student-identity-compact>img.student-identity-logo{
+ width:76px!important;height:76px!important;max-width:76px!important;max-height:76px!important;
+ flex:0 0 76px!important;padding:0!important;margin:0!important;
+ border:0!important;border-radius:0!important;background:transparent!important;
+ box-shadow:none!important;object-fit:contain!important;
+}
+@media(max-width:500px){
+ #dashboard>.student-identity.student-identity-compact>img.student-identity-logo{
+  width:68px!important;height:68px!important;max-width:68px!important;max-height:68px!important;flex-basis:68px!important;
+ }
+}
+</style>
 </body></html>
