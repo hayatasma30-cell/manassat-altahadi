@@ -135,7 +135,7 @@ function captureQuestions(){questions=[...$("questions").children].map(el=>{cons
 $("questions").addEventListener("change",e=>{if(e.target.classList.contains("qtype")){captureQuestions();renderQuestions();}});
 window.removeQ=id=>{questions=questions.filter(q=>q.id!==id);renderQuestions()};
 function readQuestions(){captureQuestions();return questions;}
-function setEmbedPanel(page){if(!document.body.classList.contains("embed"))return;["editor","list","results"].forEach(id=>$(id).classList.toggle("embed-active",id===page));if(location.hash!=="#"+page)history.replaceState(null,"",location.pathname+location.search+"#"+page);fitEmbeddedFrame();}
+function setEmbedPanel(page){["editor","list","results"].forEach(id=>{$(id).classList.toggle("hidden",id!==page);$(id).classList.toggle("embed-active",id===page);});if(location.hash!=="#"+page)history.replaceState(null,"",location.pathname+location.search+"#"+page);fitEmbeddedFrame();}
 function reset(){editingId=null;questions=[];$("title").value="";$("description").value="";$("level").value="الكل";$("starts").value="";$("ends").value="";$("duration").value=10;$("formTitle").textContent="إعداد تحدٍّ جديد";$("publishBtn").classList.add("hidden");$("cancelEdit").classList.add("hidden");renderQuestions();addQuestion();autoGrowDescription()}
 function dateValue(v){return v?new Date(v).toISOString().slice(0,16):""}
 function challengeStatusLabel(status){return status==="draft"?"مسودة":status==="published"?"منشور":status==="closed"?"منتهٍ":String(status||"غير محدد")}
@@ -157,11 +157,8 @@ window.gradeChallenge=async(id,submissionId,button)=>{const box=button.closest("
 window.setWinner=async(id,submission_id)=>{if(!confirm("اعتماد هذا التلميذ فائزًا بالتحدي؟"))return;try{await call("teacher_winner",{id,submission_id});message("تم اعتماد الفائز.");}catch(e){message(e.message)}};
 $("addQ").onclick=()=>addQuestion();$("addQBottom").onclick=()=>{addQuestion();const cards=$("questions").children;cards[cards.length-1]?.scrollIntoView({behavior:"smooth",block:"center"});};$("newBtn").onclick=()=>{setEmbedPanel("editor");$("results").classList.add("hidden");reset()};$("newFromLibrary").onclick=()=>{setEmbedPanel("editor");reset()};$("backToChallengeList").onclick=()=>{ $("results").classList.add("hidden");setEmbedPanel("list");load()};$("refreshBtn").onclick=load;$("cancelEdit").onclick=reset;
 $("saveBtn").onclick=async()=>{try{const d=await call("teacher_save",{id:editingId,title:$("title").value,description:$("description").value,target_level:$("level").value,starts_at:$("starts").value?new Date($("starts").value).toISOString():null,ends_at:$("ends").value?new Date($("ends").value).toISOString():null,duration_minutes:Number($("duration").value),questions:readQuestions()});editingId=d.item.id;$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");message("حُفظت المسودة بنجاح. ستجدينها في مكتبة التحديات، ويمكنك العودة إليها لإضافة بقية الأسئلة.");await load();setEmbedPanel("list")}catch(e){message(e.message)}};
-$("publishBtn").onclick=()=>publishChallenge(editingId);if(document.body.classList.contains("embed")){
-  const page=location.hash==="#editor"?"editor":location.hash==="#results"?"results":"list";
-  $("results").classList.add("hidden");
-  setEmbedPanel(page);
-}
+$("publishBtn").onclick=()=>publishChallenge(editingId);const initialPage=location.hash==="#editor"?"editor":location.hash==="#results"?"results":"list";
+setEmbedPanel(initialPage);
 reset();load();
 if(location.hash){setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView({behavior:"smooth",block:"start"}),250)}
 if(document.body.classList.contains("embed")&&"ResizeObserver" in window){const ro=new ResizeObserver(fitEmbeddedFrame);ro.observe(document.body);window.addEventListener("load",fitEmbeddedFrame);setTimeout(fitEmbeddedFrame,100);setTimeout(fitEmbeddedFrame,500);}
