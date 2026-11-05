@@ -96,6 +96,56 @@ body{background:linear-gradient(180deg,#faf9f2,#f1f6ef);color:var(--ink);font-fa
 .question-correction-result p{margin:0;line-height:1.9;white-space:pre-wrap}
 
 .challenge-card .btn{margin-top:9px}
+
+/* تحسين بصري شامل لبطاقات التحديات */
+.head{border:1px solid #d9e7d2;background:radial-gradient(circle at 8% 0%,#e8f1df 0,transparent 34%),linear-gradient(135deg,#fffdf5 0%,#f0f7eb 100%);padding:26px 27px 23px}
+.head h1{display:flex;align-items:center;gap:10px;letter-spacing:.1px}
+.head h1:before{content:"✦";display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:12px;background:#e4efdc;color:#36734a;font-size:21px}
+.back-link{padding:9px 16px;box-shadow:0 3px 0 #e4ebdf;font-size:13px}
+.card{border-radius:24px;padding:23px;background:linear-gradient(180deg,#fff 0%,#fcfdf9 100%);box-shadow:0 10px 28px rgba(35,75,44,.055)}
+.section-title{font-size:20px;margin-bottom:18px}
+.challenge-card{position:relative;overflow:hidden;padding:20px;border:1px solid #dce8d6;border-radius:21px;background:linear-gradient(145deg,#fff 0%,#fbfcf7 100%);box-shadow:0 7px 20px rgba(39,75,45,.06);transition:transform .18s ease,box-shadow .18s ease}
+.challenge-card:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#d8c78d,#6f9b70,#286344)}
+.challenge-card.is-completed{border-color:#d7e5ce;background:linear-gradient(145deg,#fff 0%,#fbfdf8 75%,#f3f8ed 100%)}
+.challenge-card.is-available:before{background:linear-gradient(90deg,#9bbd91,#286344)}
+.challenge-top{align-items:flex-start;gap:12px;margin:4px 0 12px}
+.challenge-title{font-size:clamp(18px,3.5vw,22px);line-height:1.65;color:#214f35;font-weight:900}
+.challenge-badge{padding:7px 12px;font-size:12px;box-shadow:0 2px 5px #284d3010}
+.challenge-badge.done{background:#edf5e8;color:#2c6b43;border-color:#d5e6ce}
+.challenge-desc{padding:11px 13px;margin:0 0 15px;border-right:3px solid #a6c39a;border-radius:10px;background:#f8faf5;color:#637365;font-size:14px}
+.challenge-meta{gap:9px;margin:0 0 17px}
+.meta-cell{min-height:78px;border-color:#e7ecdf;border-radius:15px;background:linear-gradient(145deg,#fbfcf8,#f5f8f1);padding:11px 13px}
+.meta-cell span{font-size:12px;color:#7b897b}
+.meta-cell strong{font-size:14px;color:#294f36;line-height:1.75}
+.completion-panel{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:10px;margin:15px 0 13px;padding:14px 15px;border:1px solid #dce9d1;border-radius:17px;background:linear-gradient(110deg,#f3f8e9,#eaf4e3)}
+.completion-state{display:flex;align-items:center;gap:9px;color:#285d3d;font-size:15px;font-weight:900}
+.completion-check{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#39844d;color:white;font-size:20px;box-shadow:0 3px 0 #24633a}
+.completion-score{text-align:center;border-right:1px solid #cbdcbe;padding-right:12px}
+.completion-score>small{display:block;color:#73836f;font-size:11px}
+.completion-score strong{display:block;color:#286344;font-size:24px;font-weight:900;line-height:1.5}
+.completion-score strong small{display:inline;color:#60765f;font-size:12px}
+.review-btn{width:100%;display:flex;justify-content:center;gap:12px;margin-top:7px;padding:12px 17px;border-radius:14px;background:linear-gradient(145deg,#397e50,#205b3b);border-color:#286b45;border-bottom:4px solid #17472d;box-shadow:0 5px 12px #1d58301c;font-size:15px}
+.review-arrow{font-size:19px}
+.challenge-card>.btn:not(.review-btn){min-width:150px;margin-top:5px}
+@media(max-width:600px){
+ .head{padding:19px 17px;border-radius:19px}
+ .head h1{font-size:22px}
+ .card{padding:16px;border-radius:19px}
+ .section-title{font-size:18px}
+ .challenge-card{padding:16px 14px 15px;border-radius:18px}
+ .challenge-title{font-size:17px}
+ .challenge-top{gap:7px}
+ .challenge-badge{font-size:11px;padding:6px 9px}
+ .challenge-desc{font-size:13px;padding:9px 11px}
+ .challenge-meta{gap:7px}
+ .meta-cell{min-height:72px;padding:9px}
+ .meta-cell strong{font-size:13px}
+ .completion-panel{padding:12px;gap:7px}
+ .completion-state{font-size:13px}
+ .completion-score strong{font-size:22px}
+ .review-btn{min-height:48px;font-size:14px}
+}
+@media(prefers-reduced-motion:no-preference){.challenge-card:active{transform:scale(.995)}}
 </style></head><body><main class="wrap"><header class="head"><h1>التحديات التعليمية</h1><p>مساحة التحديات العلمية — اختر التحدي المناسب لمستواك، وابدأ رحلتك نحو التميّز.</p><a class="back-link" href="./student-space.html">← العودة إلى فضاء التلميذ</a></header><div id="message" class="msg hidden"></div><section class="card"><h2 class="section-title">التحديات المتاحة</h2><div id="list" class="muted">جارٍ تحميل التحديات…</div></section><section id="play" class="card hidden"><h2 id="playTitle"></h2><p id="playDesc"></p><p id="playMeta" class="muted"></p><div class="exam-toolbar"><div><div class="progress-label"><span>تقدم الإجابة</span><span id="progressText">0 من 0</span></div><div class="progress-track" role="progressbar" aria-label="تقدم الإجابة" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack"><div class="progress-fill" id="progressFill"></div></div></div><div class="timer-box" id="timerBox"><span>الوقت المتبقي</span><strong id="timer">10:00</strong></div></div><div id="questionList"></div><div class="play-actions"><button class="btn" id="submit">إرسال الإجابات</button><button class="btn alt" id="back">العودة إلى التحديات</button></div></section></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";let token=localStorage.getItem("tahadi_student_session");let selected=null,startedAt=Date.now(),submittedIds=new Set(),timerInterval=null,deadline=0;
@@ -103,7 +153,7 @@ async function restoreTeacherStudentSession(){if(localStorage.getItem("tahadi_te
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function msg(t){const box=$("message");box.textContent=t;box.classList.remove("hidden");box.setAttribute("role","status");box.setAttribute("aria-live","polite");clearTimeout(window.__studentMsgTimer);window.__studentMsgTimer=setTimeout(()=>box.classList.add("hidden"),7000)}
 async function call(action,data={}){if(!token)throw Error("جلسة التلميذ غير موجودة. سجّل الدخول إلى فضاء التلميذ من جديد.");const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNobnNqeGh6b2libHVhY210dmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0NzgsImV4cCI6MjEwNzk5ODQ3OH0.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+token},body:JSON.stringify({action,...data})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d}
-async function load(){try{await restoreTeacherStudentSession();const d=await call("student_list");submittedIds=new Set((d.submissions||[]).map(x=>x.challenge_id));const submissions=d.submissions||[];const date=v=>{if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return "";const day=new Intl.DateTimeFormat("ar-DZ",{day:"numeric",month:"long",year:"numeric"}).format(d);const time=new Intl.DateTimeFormat("ar-DZ",{hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(d);return day+" · "+time};$("list").innerHTML=d.items.length?d.items.map(x=>{const done=submittedIds.has(x.id);const sub=submissions.find(s=>s.challenge_id===x.id)||{};return '<article class="challenge-card"><div class="challenge-top"><h3 class="challenge-title">'+esc(x.title)+'</h3><span class="challenge-badge '+(done?"done":"")+'">'+(done?"تمت المشاركة":"متاح")+'</span></div>'+(x.description?'<p class="challenge-desc">'+esc(x.description)+'</p>':"")+'<div class="challenge-meta"><div class="meta-cell"><span>المستوى الدراسي</span><strong>'+esc(x.target_level||"الكل")+'</strong></div><div class="meta-cell"><span>عدد الأسئلة</span><strong>'+x.questions.length+' سؤال</strong></div><div class="meta-cell"><span>المدة المحددة</span><strong>'+x.duration_minutes+' دقيقة</strong></div>'+(x.starts_at?'<div class="meta-cell"><span>موعد الظهور</span><strong>'+esc(date(x.starts_at))+'</strong></div>':"")+(x.ends_at?'<div class="meta-cell"><span>نهاية المشاركة</span><strong>'+esc(date(x.ends_at))+'</strong></div>':"")+'</div>'+(done?'<strong style="display:block;color:#286344;font-size:14px;margin:8px 0">✓ تمت المشاركة · '+((Number(sub.score)||0)+(Number(sub.manual_score)||0))+' نقطة</strong><button class="btn alt" onclick="openReview(\\''+x.id+'\\')">عرض النتيجة والتصحيح</button>':'<button class="btn" onclick="openChallenge(\''+x.id+'\')">ابدأ التحدي</button>')}).join(""):'<div class="challenge-card" style="text-align:center;color:#758176;padding:22px">لا توجد تحديات متاحة لمستواك حاليًا.</div>'}catch(e){$("list").innerHTML='<div class="challenge-card" style="text-align:center;color:#a33">تعذر تحميل التحديات: '+esc(e.message||"تحقق من اتصال الإنترنت.")+'</div>'}}
+async function load(){try{await restoreTeacherStudentSession();const d=await call("student_list");submittedIds=new Set((d.submissions||[]).map(x=>x.challenge_id));const submissions=d.submissions||[];const date=v=>{if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return "";const day=new Intl.DateTimeFormat("ar-DZ",{day:"numeric",month:"long",year:"numeric"}).format(d);const time=new Intl.DateTimeFormat("ar-DZ",{hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).format(d);return day+" · "+time};$("list").innerHTML=d.items.length?d.items.map(x=>{const done=submittedIds.has(x.id);const sub=submissions.find(s=>s.challenge_id===x.id)||{};return '<article class="challenge-card '+(done?'is-completed':'is-available')+'"><div class="challenge-top"><h3 class="challenge-title">'+esc(x.title)+'</h3><span class="challenge-badge '+(done?"done":"")+'">'+(done?"تمت المشاركة":"متاح")+'</span></div>'+(x.description?'<p class="challenge-desc">'+esc(x.description)+'</p>':"")+'<div class="challenge-meta"><div class="meta-cell"><span>المستوى الدراسي</span><strong>'+esc(x.target_level||"الكل")+'</strong></div><div class="meta-cell"><span>عدد الأسئلة</span><strong>'+x.questions.length+' سؤال</strong></div><div class="meta-cell"><span>المدة المحددة</span><strong>'+x.duration_minutes+' دقيقة</strong></div>'+(x.starts_at?'<div class="meta-cell"><span>موعد الظهور</span><strong>'+esc(date(x.starts_at))+'</strong></div>':"")+(x.ends_at?'<div class="meta-cell"><span>نهاية المشاركة</span><strong>'+esc(date(x.ends_at))+'</strong></div>':"")+'</div>'+(done?'<div class="completion-panel"><div class="completion-state"><span class="completion-check">✓</span><span>تمت المشاركة</span></div><div class="completion-score"><small>العلامة المحصّل عليها</small><strong>'+((Number(sub.score)||0)+(Number(sub.manual_score)||0))+' <small>نقطة</small></strong></div></div><button class="btn review-btn" onclick="openReview(\\''+x.id+'\\')"><span>عرض النتيجة والتصحيح</span><span class="review-arrow">←</span></button>':'<button class="btn" onclick="openChallenge(\''+x.id+'\')">ابدأ التحدي</button>')}).join(""):'<div class="challenge-card" style="text-align:center;color:#758176;padding:22px">لا توجد تحديات متاحة لمستواك حاليًا.</div>'}catch(e){$("list").innerHTML='<div class="challenge-card" style="text-align:center;color:#a33">تعذر تحميل التحديات: '+esc(e.message||"تحقق من اتصال الإنترنت.")+'</div>'}}
 function stopTimer(){if(timerInterval){clearInterval(timerInterval);timerInterval=null}}
 function updateProgress(){if(!selected)return;const qs=selected.questions||[];let answered=0;for(const q of qs){if(q.type==="written"){if((document.getElementById("answer_"+q.id)?.value||"").trim())answered++}else if(document.querySelector('input[name="q_'+CSS.escape(q.id)+'"]:checked'))answered++}const total=qs.length,pct=total?Math.round(answered/total*100):0;$("progressText").textContent=answered+" من "+total;$("progressFill").style.width=pct+"%";$("progressTrack").setAttribute("aria-valuenow",String(pct))}
 function updateTimer(){const remaining=Math.max(0,Math.ceil((deadline-Date.now())/1000));const mm=String(Math.floor(remaining/60)).padStart(2,"0"),ss=String(remaining%60).padStart(2,"0");$("timer").textContent=mm+":"+ss;$("timerBox").classList.toggle("is-low",remaining>0&&remaining<=300);$("timerBox").classList.toggle("is-over",remaining===0);if(remaining===0){stopTimer();$("timerBox").querySelector("span").textContent="انتهى الوقت";msg("انتهى الوقت المحدد. أرسل إجاباتك الآن.")}}
