@@ -1428,4 +1428,131 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
 }
 </style>
 
+
+<style id="student-responsive-system-20261105">
+/* نظام تناسق شامل لفضاء التلميذ: يتكيف مع عدد الأزرار وعرض الهاتف */
+#dashboard, #dashboard *{min-width:0}
+#dashboard{width:100%;max-width:100%;overflow-x:clip}
+#dashboard .wrap,#dashboard .card,#dashboard .panel,
+#dashboard .student-section,#studentDetail{width:100%;max-width:100%;box-sizing:border-box}
+#dashboard .student-identity{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px!important}
+#dashboard .student-identity>div:nth-child(2){flex:1 1 150px;min-width:0}
+#dashboard .student-identity .profile-quick-action{flex:0 1 auto;max-width:100%}
+
+/* الشبكات تتحدد تلقائياً بحسب عدد البطاقات والمساحة المتاحة */
+#dashboard .student-actions,
+#dashboard .student-home-grid,
+#dashboard .student-submenu-grid,
+#dashboard .student-lesson-nav,
+#dashboard .question-page-nav{
+ display:grid!important;
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))!important;
+ width:100%!important;max-width:100%!important;
+ gap:clamp(8px,2.2vw,13px)!important;
+ justify-content:center!important;align-items:stretch!important;
+ margin-inline:auto!important;
+}
+#dashboard .student-actions>.student-action,
+#dashboard .student-home-grid>.student-action,
+#dashboard .student-submenu-grid>.student-action{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ min-height:clamp(68px,17vw,92px)!important;height:auto!important;
+ margin:0!important;padding:clamp(9px,2.4vw,13px)!important;
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;
+ gap:clamp(7px,2vw,11px)!important;
+ text-align:right!important;white-space:normal!important;
+ overflow-wrap:anywhere!important;box-sizing:border-box!important;
+}
+#dashboard .student-actions>.student-action>span:nth-child(2),
+#dashboard .student-home-grid>.student-action>span:nth-child(2),
+#dashboard .student-submenu-grid>.student-action>span:nth-child(2){
+ flex:1 1 auto!important;min-width:0!important;text-align:right!important
+}
+#dashboard .student-actions .student-action-icon,
+#dashboard .student-home-grid .student-action-icon,
+#dashboard .student-submenu-grid .student-action-icon{
+ width:clamp(31px,9vw,42px)!important;height:clamp(31px,9vw,42px)!important;
+ flex:0 0 clamp(31px,9vw,42px)!important;font-size:clamp(.95rem,3.5vw,1.2rem)!important
+}
+#dashboard .student-actions .student-action strong,
+#dashboard .student-home-grid .student-action strong,
+#dashboard .student-submenu-grid .student-action strong{
+ display:block!important;font-size:clamp(.78rem,2.8vw,.93rem)!important;
+ line-height:1.45!important;overflow-wrap:anywhere!important
+}
+#dashboard .student-actions .student-action small,
+#dashboard .student-home-grid .student-action small,
+#dashboard .student-submenu-grid .student-action small{
+ display:block!important;font-size:clamp(.64rem,2.3vw,.74rem)!important;
+ line-height:1.45!important;white-space:normal!important;overflow-wrap:anywhere!important
+}
+#dashboard .student-actions .student-arrow,
+#dashboard .student-home-grid .student-arrow,
+#dashboard .student-submenu-grid .student-arrow{
+ display:block!important;flex:0 0 auto!important;margin-inline-start:auto!important;
+ font-size:1rem!important
+}
+
+/* إذا كان عدد الأزرار ثلاثة، يكون الثالث في الوسط ولا يتمدد بعرض غير متوازن */
+#dashboard .student-actions:has(>:nth-child(3):last-child)>:nth-child(3),
+#dashboard .student-home-grid:has(>:nth-child(3):last-child)>:nth-child(3),
+#dashboard .student-submenu-grid:has(>:nth-child(3):last-child)>:nth-child(3){
+ grid-column:1/-1!important;width:calc(50% - 5px)!important;justify-self:center!important
+}
+/* بطاقات الاشتراكات والدفعات تبقى متقابلة ومتساوية */
+#dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"]){
+ grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:560px!important;
+ margin:18px auto 0!important;gap:clamp(9px,3vw,15px)!important
+}
+#dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"])>.student-action{
+ min-height:clamp(132px,36vw,166px)!important;
+ flex-direction:column!important;justify-content:center!important;align-items:center!important;
+ text-align:center!important;padding:clamp(10px,3vw,17px)!important
+}
+#dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"]) .student-submenu-copy{
+ width:100%!important;text-align:center!important
+}
+#dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"]) .student-arrow{
+ position:absolute!important;top:8px!important;left:9px!important
+}
+
+/* المسافات والعناوين والبطاقات داخل كل صفحات فضاء التلميذ */
+#dashboard .student-section{margin:0 0 12px!important;padding:clamp(11px,3vw,18px)!important}
+#dashboard .student-section h2{font-size:clamp(1rem,3.8vw,1.18rem)!important;line-height:1.5!important;overflow-wrap:anywhere}
+#dashboard .student-back,#dashboard #backToStudentMenu{
+ width:auto!important;max-width:100%!important;min-height:42px!important;
+ padding:8px 13px!important;margin:0 0 10px!important
+}
+#dashboard .item,#dashboard .subscription-progress-card,#dashboard .payment-cycle-card,
+#dashboard .student-lesson-page,#dashboard .student-calendar{
+ max-width:100%!important;min-width:0!important;overflow-wrap:anywhere!important
+}
+#dashboard input,#dashboard textarea,#dashboard select{max-width:100%!important;min-width:0!important}
+#dashboard table{width:100%;max-width:100%;table-layout:fixed}
+#dashboard img{max-width:100%;height:auto}
+#dashboard .student-calendar{padding:clamp(8px,2.5vw,15px)!important}
+#dashboard .student-calendar .cal-grid{gap:clamp(3px,1.4vw,7px)!important}
+#dashboard .student-calendar .cal-day{min-width:0!important;min-height:clamp(42px,12vw,62px)!important;padding:5px 1px!important;font-size:clamp(.68rem,2.7vw,.85rem)!important}
+#dashboard .stats{grid-template-columns:repeat(auto-fit,minmax(115px,1fr))!important}
+#dashboard footer{padding:16px 8px!important;text-align:center}
+
+/* شاشات الهواتف الصغيرة */
+@media(max-width:390px){
+ #dashboard .student-actions,#dashboard .student-home-grid,#dashboard .student-submenu-grid{
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,132px),1fr))!important
+ }
+ #dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"]){
+  grid-template-columns:repeat(2,minmax(0,1fr))!important
+ }
+ #dashboard .student-section{padding:10px!important}
+ #dashboard .student-identity{padding:10px!important}
+ #dashboard .student-calendar .cal-day{min-height:39px!important}
+}
+@media(max-width:330px){
+ #dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"])>.student-action{min-height:124px!important}
+ #dashboard .student-submenu-grid .student-action small{font-size:.61rem!important}
+}
+</style>
+
 </body></html>
