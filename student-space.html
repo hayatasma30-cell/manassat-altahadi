@@ -559,7 +559,7 @@ list("payments",orderedStudentPayments,(x,paymentIndex)=>{
  const status=studentStatus(x);
  const statusText=status==="paid"?"تم تأكيد الدفع":status==="pending"?"قيد المراجعة":status==="rejected"?"مرفوض":"مسجل";
  const rawService=String(x.service_name||linked?.service_name||"").trim();
- const compactService=rawService.replace(/\\s*[—–-]\\s*\\d{1,2}-\\d{1,2}-\\d{4}.*$/,"").replace(/\\s*[—–-]\\s*\\d{1,2}:\\d{2}.*$/,"").trim();
+ const compactService=rawService.replace(/[—–-].*$/,"").trim();
  const serviceLabel=cycleIndex>=0?"اشتراك شهري":(compactService?(/حصة|درس|اشتراك/.test(compactService)?safe(compactService):"حصة "+safe(compactService)):safe(x.service_type==="individual_session"?"حصة فردية":"خدمة تعليمية"));
  return '<article class="item payment-cycle-card"><div class="payment-cycle-head"><strong>'+label+'</strong><span class="subscription-status '+(status==="paid"?"is-paid":"is-pending")+'">'+(status==="paid"?"مدفوع":status==="pending"?"قيد المراجعة":status==="rejected"?"مرفوض":"مسجل")+'</span></div><div class="payment-cycle-detail"><span class="payment-detail-icon">▦</span><span><small>تاريخ الدفع</small><b>'+date(x.payment_date||x.created_at)+'</b></span></div><div class="payment-cycle-detail"><span class="payment-detail-icon">▤</span><span><small>نوع الخدمة</small><b>'+serviceLabel+'</b></span></div><div class="payment-cycle-confirmation '+(status==="paid"?"confirmed":"")+'"><span>'+(status==="paid"?"✓":"•")+'</span>'+statusText+'</div></article>';
 },"لا توجد دفعات مسجلة حاليًا.");
