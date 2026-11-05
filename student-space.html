@@ -2052,6 +2052,27 @@ body:has(#dashboard:not(.hidden)) .hero{display:none!important}
 }
 @media(max-width:360px){#studentMenu .student-home-grid{gap:7px!important}#studentMenu .student-home-grid .student-action{padding:8px 6px!important;gap:5px!important}#studentMenu .student-home-grid .student-action-icon{width:35px!important;height:35px!important;flex-basis:35px!important}#studentMenu .student-home-grid .student-action strong{font-size:.75rem!important}#studentMenu .student-home-grid .student-action small{font-size:.62rem!important}}
 </style>
+<style id="student-sticky-header-20261105">
+/* تثبيت شريط هوية منصة التحدي أثناء التمرير */
+body>header{
+ position:sticky!important;
+ top:0!important;
+ z-index:1200!important;
+ width:100%!important;
+ isolation:isolate!important;
+ background:linear-gradient(120deg,#103f28,#17613a)!important;
+ box-shadow:0 5px 18px rgba(13,55,31,.20)!important;
+ border-bottom:1px solid rgba(255,255,255,.13)!important;
+}
+body>header .top{min-height:62px!important}
+@media(max-width:520px){
+ body>header{padding:10px 15px!important}
+ body>header .top{min-height:58px!important;gap:10px!important}
+ body>header .logo{width:46px!important;height:46px!important;flex-basis:46px!important}
+ body>header .top strong{font-size:1.02rem!important}
+ body>header .top small{font-size:.72rem!important}
+}
+</style>
 <script>
 
 </script>
