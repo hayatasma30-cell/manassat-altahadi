@@ -260,14 +260,40 @@ body:not(.embed) #challengeListItems>.challenge-card .challenge-actions .btn:las
  body:not(.embed) #challengeListItems>.challenge-card .challenge-actions .btn:last-child:nth-child(3){grid-column:auto!important}
 }
 
+
+/* Library refinement: search, filters, compact stats and bottom notifications */
+#message{position:fixed!important;z-index:10000;right:14px;left:14px;bottom:calc(14px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto!important;padding:13px 16px!important;border:1px solid #cfe2cc!important;border-right:5px solid #4b8b58!important;border-radius:15px!important;background:#f0f7eb!important;color:#285337!important;box-shadow:0 10px 30px rgba(24,56,42,.18)!important}
+.library-heading{align-items:center!important;gap:8px!important}.library-heading h2{margin:0!important;color:#14532d!important}.library-caption{font-size:12px;color:#718174;background:#f5f8f2;border:1px solid #e4ece1;border-radius:999px;padding:5px 10px}
+.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0}
+.library-stat{display:flex;flex-direction:column;gap:2px;min-width:0;padding:11px 12px;border:1px solid #e3ebe0;border-radius:14px;background:linear-gradient(145deg,#fff,#f7faf5)}
+.library-stat b{font-size:21px;line-height:1.3;color:#14532d}.library-stat span{font-size:11px;color:#718174}
+.library-filters{padding:13px;border:1px solid #e4ece1;border-radius:15px;background:#fbfdf9;margin:10px 0 12px}
+.library-filters label{font-size:12px;color:#526c58;margin:0 0 5px}.library-filters input,.library-filters select{min-height:43px;background:#fff}.library-search-label{display:block!important;margin-bottom:6px!important}.library-filter-grid{margin-top:9px;gap:9px}.library-result-count{margin:8px 2px 10px;text-align:left}
+@media(max-width:600px){.library-caption{font-size:11px}.library-stats{gap:6px;margin:11px 0}.library-stat{padding:9px 7px;border-radius:12px}.library-stat b{font-size:19px}.library-stat span{font-size:10px}.library-filters{padding:10px}.library-filter-grid{grid-template-columns:1fr!important}}
 </style></head><body><script>if(new URLSearchParams(location.search).get("embed")==="1")document.body.classList.add("embed");</script><main class="wrap"><header class="head"><h1>إدارة التحدي اليومي</h1><p>أنشئي التحدي، حددي المستوى ووقت المشاركة، ثم انشريه لمشاركته مع التلاميذ.</p><div class="row"><button class="btn alt" id="newBtn">تحدٍّ جديد</button><a class="btn alt" href="./index.html?from=challenge" style="text-decoration:none">العودة إلى فضاء الأستاذة</a><a class="btn alt" href="./index.html?from=challenge" onclick="if(history.length>1){event.preventDefault();history.back()}" style="text-decoration:none">العودة إلى الاختبارات</a></div></header>
 <div id="message" class="msg hidden"></div>
 <section class="panel" id="editor"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px"><h2 id="formTitle" style="margin:0">إعداد تحدٍّ جديد</h2><button class="btn alt" type="button" id="backToLibrary">← العودة إلى المكتبة</button></div><div class="grid"><div><label>عنوان التحدي</label><input id="title" maxlength="180" placeholder="مثال: تحدي الزلازل"></div><div><label>المستوى المستهدف</label><select id="level"><option>الكل</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select></div><div><label for="starts">موعد ظهور الاختبار للتلاميذ</label><input id="starts" type="datetime-local"><small class="muted">لن يظهر الاختبار في فضاء التلميذ قبل هذا الموعد، حتى بعد نشره.</small></div><div><label for="ends">موعد انتهاء المشاركة (اختياري)</label><input id="ends" type="datetime-local"><small class="muted">بعد هذا الموعد يُخفى الاختبار ويتوقف استقبال الإجابات.</small></div><div><label>المدة بالدقائق</label><input id="duration" type="number" min="1" max="180" value="10"></div></div><label for="description">تعليمات التحدي</label><textarea id="description" rows="5" dir="rtl" placeholder="اكتبي تعليمات التحدي هنا… يمكنك كتابة عدة أسطر، وسيزداد ارتفاع المربع تلقائياً."></textarea><p class="muted" style="margin:5px 2px 12px">اكتبي التعليمات براحتك، ويمكنك تقسيمها إلى أسطر ونقاط.</p><div class="row" style="justify-content:space-between;margin-top:16px"><h2 style="margin:0">الأسئلة</h2></div><div id="questions"></div><div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn alt" type="button" id="addQBottom">＋ إضافة سؤال آخر</button></div><div class="row"><button class="btn" id="saveBtn">حفظ المسودة</button><button class="btn alt hidden" id="publishBtn">نشر التحدي</button><button class="btn warn hidden" id="cancelEdit">إلغاء التعديل</button></div></section>
-<section class="panel" id="list"><div class="row" style="justify-content:space-between"><h2>مكتبة التحديات</h2></div><div id="challengeListItems" class="muted">جارٍ التحميل…</div></section><section class="panel hidden" id="results"><div class="row" style="justify-content:space-between"><h2>مشاركات التلاميذ</h2><button class="btn alt" type="button" id="backToChallengeList">← العودة إلى المكتبة</button></div><div id="resultList"></div></section></main>
+<section class="panel" id="list">
+<div class="row library-heading" style="justify-content:space-between"><h2>مكتبة التحديات</h2><span class="library-caption">إدارة وتنظيم التحديات</span></div>
+<div class="library-stats" aria-live="polite">
+<div class="library-stat"><b id="statAll">—</b><span>إجمالي التحديات</span></div>
+<div class="library-stat"><b id="statPublished">—</b><span>منشورة</span></div>
+<div class="library-stat"><b id="statDraft">—</b><span>مسودات</span></div>
+</div>
+<div class="library-filters">
+<label class="library-search-label" for="librarySearch">البحث في المكتبة</label>
+<input id="librarySearch" type="search" placeholder="ابحثي بعنوان التحدي…" autocomplete="off">
+<div class="grid library-filter-grid">
+<div><label for="libraryLevel">المستوى الدراسي</label><select id="libraryLevel"><option value="">جميع المستويات</option><option>الكل</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select></div>
+<div><label for="libraryStatus">حالة التحدي</label><select id="libraryStatus"><option value="">جميع الحالات</option><option value="draft">مسودة</option><option value="published">منشور</option><option value="closed">منتهٍ</option></select></div>
+</div>
+</div>
+<div id="libraryResultCount" class="muted library-result-count"></div>
+<div id="challengeListItems" class="muted">جارٍ التحميل…</div></section><section class="panel hidden" id="results"><div class="row" style="justify-content:space-between"><h2>مشاركات التلاميذ</h2><button class="btn alt" type="button" id="backToChallengeList">← العودة إلى المكتبة</button></div><div id="resultList"></div></section></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const token=localStorage.getItem("tahadi_teacher_token");let questions=[],editingId=null,currentChallenge=null;
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function autoGrowDescription(){const el=$("description");if(!el)return;el.style.height="auto";el.style.height=Math.max(150,el.scrollHeight+4)+"px";} $("description").addEventListener("input",autoGrowDescription);function message(t){$("message").textContent=t;$("message").classList.remove("hidden");window.scrollTo({top:0,behavior:"smooth"})}
+function autoGrowDescription(){const el=$("description");if(!el)return;el.style.height="auto";el.style.height=Math.max(150,el.scrollHeight+4)+"px";} $("description").addEventListener("input",autoGrowDescription);function message(t){const box=$("message");box.textContent=t;box.classList.remove("hidden");box.setAttribute("role","status");box.setAttribute("aria-live","polite");clearTimeout(window.__challengeMessageTimer);window.__challengeMessageTimer=setTimeout(()=>box.classList.add("hidden"),7000);}
 async function call(action,data={}){if(!token)throw Error("جلسة الأستاذة غير موجودة. ارجعي إلى فضاء الأستاذة وسجّلي الدخول من جديد.");const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),12000);let response;try{response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkyNDIyNDc4LCJleHAiOjIxMDc5OTg0Nzh9.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+token},body:JSON.stringify({action,...data}),signal:controller.signal});}catch(e){if(e.name==="AbortError")throw Error("انتهت مهلة الاتصال بقاعدة البيانات بعد 12 ثانية. تحققي من الإنترنت ثم أعيدي المحاولة.");throw e;}finally{clearTimeout(timer);}let d;try{d=await response.json();}catch(_){throw Error("وصل رد غير مفهوم من الخادم. أعيدي المحاولة.");}if(!response.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d}
 function questionMarkup(q,i){
  const type=q.type==="written"?"written":"mcq";
@@ -303,16 +329,31 @@ function reset(){editingId=null;questions=[];$("title").value="";$("description"
 function dateValue(v){if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return "";const p=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes())}
 function challengeStatusLabel(status,startsAt){if(status==="published"&&startsAt&&new Date(startsAt).getTime()>Date.now())return "قيد النشر";return status==="draft"?"مسودة":status==="published"?"منشور ومتاح":status==="closed"?"منتهٍ":String(status||"غير محدد")}
 function scheduleDate(v){return v?new Date(v).toLocaleString("ar-DZ",{dateStyle:"short",timeStyle:"short"}):""}
-async function load(){const list=$("challengeListItems");list.innerHTML='<div class="item muted" style="text-align:center;padding:18px">جارٍ تحميل التحديات من قاعدة البيانات…</div>';fitEmbeddedFrame();try{
- const d=await call("teacher_list");
- const items=Array.isArray(d.items)?d.items:[];
- list.innerHTML=items.length?items.map(x=>{
+window.challengeLibraryItems=[];
+function renderChallengeLibrary(){
+ const items=window.challengeLibraryItems||[];
+ const term=($("librarySearch")?.value||"").trim().toLocaleLowerCase("ar");
+ const level=$("libraryLevel")?.value||"";
+ const status=$("libraryStatus")?.value||"";
+ const filtered=items.filter(x=>(!term||String(x.title||"").toLocaleLowerCase("ar").includes(term))&&(!level||String(x.target_level||"الكل")===level)&&(!status||x.status===status));
+ $("statAll").textContent=items.length;
+ $("statPublished").textContent=items.filter(x=>x.status==="published").length;
+ $("statDraft").textContent=items.filter(x=>x.status==="draft").length;
+ $("libraryResultCount").textContent="عرض "+filtered.length+" من "+items.length+" تحدٍّ";
+ const list=$("challengeListItems");
+ list.innerHTML=filtered.length?filtered.map(x=>{
   const count=(x.questions||[]).length;
   const scheduled=x.status==="published"&&x.starts_at&&new Date(x.starts_at).getTime()>Date.now();
-  const status=challengeStatusLabel(x.status,x.starts_at);
+  const statusLabel=challengeStatusLabel(x.status,x.starts_at);
   const date=x.created_at?new Date(x.created_at).toLocaleDateString("ar-DZ"):"";
-  return '<article class="item challenge-card"><div class="challenge-card-top"><h3>'+esc(x.title)+'</h3><span class="challenge-status '+(scheduled?"is-scheduled":x.status==="published"?"is-published":x.status==="draft"?"is-draft":"is-closed")+'">'+status+'</span></div><div class="challenge-meta"><span><b>المستوى</b><strong>'+esc(x.target_level||"الكل")+'</strong></span><span><b>عدد الأسئلة</b><strong>'+count+' سؤال</strong></span>'+(x.starts_at?'<span><b>موعد الظهور</b><strong>'+esc(scheduleDate(x.starts_at))+'</strong></span>':'')+(x.ends_at?'<span><b>نهاية المشاركة</b><strong>'+esc(scheduleDate(x.ends_at))+'</strong></span>':'')+(date?'<span><b>تاريخ الإنشاء</b><strong>'+date+'</strong></span>':'')+'</div><div class="challenge-actions"><button class="btn alt" onclick="showResults(\''+x.id+'\')">المشاركات والنتائج</button>'+(x.status==="draft"?'<button class="btn alt" onclick="editChallenge(\''+x.id+'\')">متابعة التعديل وإضافة الأسئلة</button><button class="btn" onclick="publishChallenge(\''+x.id+'\')">نشر التحدي</button>':'')+(x.status==="published"?'<button class="btn warn" onclick="closeChallenge(\''+x.id+'\')">إنهاء المشاركة</button>':'')+'</div></article>';
- }).join(""):'<div class="item" style="text-align:center;padding:20px"><strong style="color:#14532d">لا توجد تحديات محفوظة بعد</strong><p class="muted">اضغطي على «تحدٍّ جديد» لإنشاء أول تحدٍّ لك.</p></div>';
+  return '<article class="item challenge-card"><div class="challenge-card-top"><h3>'+esc(x.title)+'</h3><span class="challenge-status '+(scheduled?"is-scheduled":x.status==="published"?"is-published":x.status==="draft"?"is-draft":"is-closed")+'">'+statusLabel+'</span></div><div class="challenge-meta"><span><b>المستوى</b><strong>'+esc(x.target_level||"الكل")+'</strong></span><span><b>عدد الأسئلة</b><strong>'+count+' سؤال</strong></span>'+(x.starts_at?'<span><b>موعد الظهور</b><strong>'+esc(scheduleDate(x.starts_at))+'</strong></span>':'')+(x.ends_at?'<span><b>نهاية المشاركة</b><strong>'+esc(scheduleDate(x.ends_at))+'</strong></span>':'')+(date?'<span><b>تاريخ الإنشاء</b><strong>'+date+'</strong></span>':'')+'</div><div class="challenge-actions"><button class="btn alt" onclick="showResults(\''+x.id+'\')">المشاركات والنتائج</button>'+(x.status==="draft"?'<button class="btn alt" onclick="editChallenge(\''+x.id+'\')">متابعة التعديل وإضافة الأسئلة</button><button class="btn" onclick="publishChallenge(\''+x.id+'\')">نشر التحدي</button>':'')+(x.status==="published"?'<button class="btn warn" onclick="closeChallenge(\''+x.id+'\')">إنهاء المشاركة</button>':'')+'</div></article>';
+ }).join(""):'<div class="item library-empty" style="text-align:center;padding:20px"><strong style="color:#14532d">'+(items.length?"لا توجد نتائج مطابقة للبحث والتصفية":"لا توجد تحديات محفوظة بعد")+'</strong><p class="muted">'+(items.length?"جرّبي تغيير كلمات البحث أو خيارات التصفية.":"اضغطي على «تحدٍّ جديد» لإنشاء أول تحدٍّ لك.")+'</p></div>';
+ fitEmbeddedFrame();
+}
+async function load(){const list=$("challengeListItems");list.innerHTML='<div class="item muted" style="text-align:center;padding:18px">جارٍ تحميل التحديات من قاعدة البيانات…</div>';fitEmbeddedFrame();try{
+ const d=await call("teacher_list");
+ const items=Array.isArray(d.items)?d.items:[];window.challengeLibraryItems=items;renderChallengeLibrary();
+ /* The library is rendered by renderChallengeLibrary() so search and filters share one source. */
  }catch(e){list.innerHTML='<div class="item" style="text-align:center;padding:18px"><strong style="color:#923c2d">تعذر تحميل مكتبة التحديات</strong><p class="muted">'+esc(e.message)+'</p></div>';}finally{fitEmbeddedFrame();requestAnimationFrame(()=>requestAnimationFrame(fitEmbeddedFrame));setTimeout(fitEmbeddedFrame,120);setTimeout(fitEmbeddedFrame,400);}}
 window.editChallenge=id=>{call("teacher_list").then(d=>{const x=d.items.find(a=>a.id===id);if(!x)return;setEmbedPanel("editor");$("results").classList.add("hidden");editingId=id;$("title").value=x.title;$("description").value=x.description||"";$("level").value=x.target_level;$("starts").value=dateValue(x.starts_at);$("ends").value=dateValue(x.ends_at);$("duration").value=x.duration_minutes;$("formTitle").textContent="تعديل مسودة التحدي";questions=(x.questions||[]).map(q=>({...q}));renderQuestions();autoGrowDescription();$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");$("editor").scrollIntoView({behavior:"smooth"})}).catch(e=>message(e.message))};
 window.publishChallenge=async id=>{
@@ -347,7 +388,7 @@ window.gradeChallenge=async(id,submissionId,button)=>{const box=button.closest("
 window.setWinner=async(id,submission_id)=>{if(!confirm("اعتماد هذا التلميذ فائزًا بالتحدي؟"))return;try{await call("teacher_winner",{id,submission_id});message("تم اعتماد الفائز.");}catch(e){message(e.message)}};
 $("backToLibrary").onclick=()=>{setEmbedPanel("list");load()};$("addQBottom").onclick=()=>{addQuestion();const cards=$("questions").children;cards[cards.length-1]?.scrollIntoView({behavior:"smooth",block:"center"});};$("newBtn").onclick=()=>{setEmbedPanel("editor");$("results").classList.add("hidden");reset()};$("backToChallengeList").onclick=()=>{ $("results").classList.add("hidden");setEmbedPanel("list");load()};$("cancelEdit").onclick=reset;
 $("saveBtn").onclick=async()=>{const button=$("saveBtn");if(button.disabled)return;button.disabled=true;try{const d=await call("teacher_save",{id:editingId,title:$("title").value,description:$("description").value,target_level:$("level").value,starts_at:$("starts").value?new Date($("starts").value).toISOString():null,ends_at:$("ends").value?new Date($("ends").value).toISOString():null,duration_minutes:Number($("duration").value),questions:readQuestions()});editingId=d.item.id;$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");$("formTitle").textContent="متابعة إعداد التحدي";message("حُفظت المسودة بنجاح. يمكنك متابعة إضافة الأسئلة هنا، ولن نعيدك إلى المكتبة.");}catch(e){message(e.message)}finally{button.disabled=false}};
-$("publishBtn").onclick=()=>publishChallenge(editingId);const initialPage=location.hash==="#editor"?"editor":location.hash==="#results"?"results":"list";
+$("publishBtn").onclick=()=>publishChallenge(editingId);["librarySearch","libraryLevel","libraryStatus"].forEach(id=>$(id)?.addEventListener(id==="librarySearch"?"input":"change",renderChallengeLibrary));const initialPage=location.hash==="#editor"?"editor":location.hash==="#results"?"results":"list";
 setEmbedPanel(initialPage);
 reset();load();
 if(location.hash){setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView({behavior:"smooth",block:"start"}),250)}
