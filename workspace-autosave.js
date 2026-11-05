@@ -72,7 +72,9 @@
         if(el&&el.tagName==="DETAILS")el.open=true;
       });
       // index.html and student-space.html have dedicated restorers; avoid competing with them.
-      const isDedicated=path.endsWith("/index.html")||path==="/"||path.endsWith("/student-space.html");
+      const isTeacherMainApp=!!document.getElementById("homeView")&&!!document.getElementById("electronicTestsView")&&!!document.getElementById("loginView");
+      const isStudentApp=path.endsWith("/student-space.html");
+      const isDedicated=isTeacherMainApp||isStudentApp;
       if(!isDedicated){
         if(state.page){
           const page=document.getElementById(state.page);
