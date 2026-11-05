@@ -2009,4 +2009,7 @@ body:has(#dashboard:not(.hidden)) .hero{display:none!important}
  }
 }
 </style>
+<script>
+(()=>{const mount=()=>{if(!localStorage.getItem("tahadi_student_session")||document.getElementById("dailyChallengeShortcut"))return;const a=document.createElement("a");a.id="dailyChallengeShortcut";a.href="./daily-challenge.html";a.textContent="🏆 التحدي اليومي";a.style.cssText="position:fixed;z-index:9998;bottom:18px;left:14px;background:#286b45;color:#fff;text-decoration:none;padding:11px 15px;border-radius:12px;font: bold 14px Tahoma,Arial;box-shadow:0 4px 0 #194b30";document.body.appendChild(a)};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",mount):mount();setTimeout(mount,1200)})();
+</script>
 </body></html>
