@@ -239,7 +239,7 @@
 <section class="hero"><h1 class="student-hero-title">مرحبًا بك في عالم التحدي <img class="student-hero-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="رمز منصة التحدي"></h1><p>نتائجك، تنبيهاتك، ومتابعة اشتراكاتك في مكان واحد.</p></section>
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><div id="studentCodeLogin"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button></div><button id="teacherNameLoginBtn" type="button" class="secondary hidden" style="width:100%;margin-top:12px">دخول الأستاذة باسم التلميذ دون رمز</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
 <section id="dashboard" class="hidden"><div id="teacherPreviewBanner" class="hidden" aria-hidden="true"><button id="exitTeacherPreview" type="button" hidden></button></div>
-<div class="panel student-identity" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:1.8rem">🎓</div><div style="flex:1;min-width:100px"><div class="muted">فضاء التلميذ</div><h2 id="studentName" style="margin:0"></h2><span id="studentLevel" class="tag"></span></div></div>
+<div class="panel student-identity student-identity-compact"><div class="student-identity-mark" aria-hidden="true">🎓</div><div class="student-identity-info"><div class="student-identity-label">فضاء التلميذ</div><h2 id="studentName"></h2><span id="studentLevel" class="tag"></span></div><div class="student-identity-spark" aria-hidden="true">✦</div></div>
 <div id="studentHelpOverlay" class="student-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentHelpTitle"><div class="student-help-card">
 <h2 id="studentHelpTitle">📘 دليل استعمال فضاء التلميذ</h2>
 <p>هذا الدليل يشرح أزرار فضائك بعد الدخول إليه، زرًا واحدًا في كل مرة. يمكنك الرجوع إليه في أي وقت.</p>
@@ -1729,4 +1729,47 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
 }
 </style>
 
+
+<style id="student-identity-redesign-20261105">
+#dashboard>.student-identity-compact{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex-wrap:nowrap!important;gap:13px!important;min-height:0!important;
+ padding:13px 15px!important;margin:0 0 13px!important;
+ border:1px solid #c9dfc9!important;border-right:5px solid #23804b!important;
+ border-top:1px solid #c9dfc9!important;border-radius:17px!important;
+ background:linear-gradient(110deg,#f0f7e9 0%,#fff 72%)!important;
+ box-shadow:0 4px 12px #174b2c0b!important;overflow:hidden!important;
+}
+#dashboard>.student-identity-compact .student-identity-mark{
+ flex:0 0 48px!important;width:48px!important;height:48px!important;
+ display:grid!important;place-items:center!important;border-radius:15px!important;
+ background:linear-gradient(145deg,#dff0dc,#f8fff4)!important;
+ border:1px solid #c9dfc9!important;font-size:1.65rem!important;
+ box-shadow:inset 0 1px 2px #fff,0 3px 7px #174b2c12!important;
+}
+#dashboard>.student-identity-compact .student-identity-info{
+ flex:1 1 auto!important;min-width:0!important;text-align:right!important;
+}
+#dashboard>.student-identity-compact .student-identity-label{
+ color:#718276!important;font-size:.78rem!important;margin-bottom:1px!important;
+}
+#dashboard>.student-identity-compact h2{
+ margin:0!important;font-size:1.08rem!important;line-height:1.45!important;
+ color:#174b30!important;font-weight:800!important;overflow-wrap:anywhere!important;
+}
+#dashboard>.student-identity-compact #studentLevel{
+ display:inline-block!important;margin-top:5px!important;padding:4px 10px!important;
+ border-radius:20px!important;background:#e7f3e5!important;color:#245b39!important;
+ font-size:.75rem!important;border:1px solid #d4e7d0!important;
+}
+#dashboard>.student-identity-compact .student-identity-spark{
+ flex:0 0 auto!important;color:#9bb99a!important;font-size:1.1rem!important;
+}
+@media(max-width:500px){
+ #dashboard>.student-identity-compact{padding:10px 12px!important;gap:10px!important;border-radius:15px!important}
+ #dashboard>.student-identity-compact .student-identity-mark{width:42px!important;height:42px!important;flex-basis:42px!important;font-size:1.4rem!important}
+ #dashboard>.student-identity-compact h2{font-size:.98rem!important}
+ #dashboard>.student-identity-compact #studentLevel{font-size:.69rem!important;padding:3px 8px!important}
+}
+</style>
 </body></html>
