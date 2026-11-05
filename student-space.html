@@ -1220,4 +1220,53 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
  #studentMenu .student-home-grid .student-arrow{display:block!important}
 }
 
-</style></body></html>
+</style>
+<style id="student-submenu-balanced-layout-20261105">
+/* توسيط بطاقتي الاشتراكات والدفعات على الهاتف ومنع انحيازهما إلى اليمين */
+#dashboard .student-submenu-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:100%!important;
+  max-width:560px!important;
+  margin:18px auto 0!important;
+  gap:14px!important;
+  justify-content:center!important;
+  justify-items:stretch!important;
+  align-items:stretch!important;
+  direction:rtl!important;
+}
+#dashboard .student-submenu-grid>.student-action{
+  width:100%!important;
+  min-width:0!important;
+  min-height:154px!important;
+  margin:0!important;
+  box-sizing:border-box!important;
+}
+#dashboard .student-submenu-grid .student-submenu-copy{
+  width:100%!important;
+  text-align:center!important;
+}
+#dashboard .student-submenu-grid .student-arrow{
+  left:10px!important;
+  right:auto!important;
+}
+@media(max-width:500px){
+  #dashboard .student-submenu-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    max-width:440px!important;
+    gap:12px!important;
+    margin:18px auto 0!important;
+    padding:0 2px!important;
+  }
+  #dashboard .student-submenu-grid>.student-action{
+    min-height:154px!important;
+    padding:15px 8px!important;
+  }
+}
+@media(max-width:360px){
+  #dashboard .student-submenu-grid{gap:8px!important}
+  #dashboard .student-submenu-grid>.student-action{min-height:140px!important}
+}
+</style>
+
+</body></html>
