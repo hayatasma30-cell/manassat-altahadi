@@ -1,6 +1,19 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
+<script>
+(function(){
+  try{
+    const token=localStorage.getItem("tahadi_teacher_token");
+    const expiry=localStorage.getItem("tahadi_teacher_expires");
+    const saved=JSON.parse(sessionStorage.getItem("tahadi_teacher_page_position_v2")||localStorage.getItem("tahadi_teacher_page_position_v2")||"null");
+    if(token&&expiry&&new Date(expiry).getTime()>Date.now()&&saved&&saved.view&&saved.view!=="homeView"){
+      document.documentElement.classList.add("tahadi-restoring");
+      window.__tahadiRestoreFallback=setTimeout(()=>document.documentElement.classList.remove("tahadi-restoring"),5000);
+    }
+  }catch(_){}
+})();
+</script>
 <meta charset="utf-8">
 <link rel="manifest" href="./manifest.json"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
@@ -9,7 +22,7 @@
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
 :root{--g:#14532d;--g2:#166534;--g3:#21834c;--cream:#faf8ee;--ink:#18382a;--muted:#69786d;--line:#e3e9dc;--pale:#eef7ec;--gold:#f1d38a;--white:#fff}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
+*{box-sizing:border-box}html{scroll-behavior:smooth}html.tahadi-restoring body{visibility:hidden!important}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
 button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .topbar{background:linear-gradient(120deg,#103f28,var(--g2));color:#fff;padding:12px 16px;box-shadow:0 4px 18px #143e2518}
 .top-inner{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:800}.brand-logo{width:48px;height:48px;object-fit:contain;flex:0 0 48px;filter:drop-shadow(0 2px 3px #0002)}.brand-text{display:block}.brand small{display:block;font-size:.7rem;font-weight:400;color:#d6ead9}
@@ -3011,7 +3024,7 @@ const handleIncomeCalendarClick=async e=>{
     let savedPosition={};try{savedPosition=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
     const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view");
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});
-    const restoreTeacherPosition=()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});if(lastView==="dailyLessonsView"&&typeof setLessonHome==="function"){setLessonHome();if(savedPosition.lessonMode&&typeof setLessonMode==="function")setLessonMode(savedPosition.lessonMode,"list");if(savedPosition.lessonSubpage&&savedPosition.lessonSubpage!=="all"){setLessonPage("library");setLessonSubpage(savedPosition.lessonSubpage);}else if(savedPosition.lessonPage&&typeof setLessonPage==="function")setLessonPage(savedPosition.lessonPage);}if(lastView==="electronicTestsView"){if(savedPosition.challengePage&&typeof openDailyChallengePage==="function")openDailyChallengePage(savedPosition.challengePage,{preserveScroll:true});else if(savedPosition.testPage){const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==savedPosition.testPage);if(savedPosition.testPage==="list"&&typeof loadElectronicTests==="function")loadElectronicTests();}}const y=Math.max(0,Number(savedPosition.y)||0);requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:y,behavior:"auto"})));}; loadDashboard(savedToken).then(restoreTeacherPosition).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم عند استقرار الاتصال.","error");console.error("initial dashboard load failed",err);restoreTeacherPosition();});
+    const restoreTeacherPosition=()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});if(lastView==="dailyLessonsView"&&typeof setLessonHome==="function"){setLessonHome();if(savedPosition.lessonMode&&typeof setLessonMode==="function")setLessonMode(savedPosition.lessonMode,"list");if(savedPosition.lessonSubpage&&savedPosition.lessonSubpage!=="all"){setLessonPage("library");setLessonSubpage(savedPosition.lessonSubpage);}else if(savedPosition.lessonPage&&typeof setLessonPage==="function")setLessonPage(savedPosition.lessonPage);}if(lastView==="electronicTestsView"){if(savedPosition.challengePage&&typeof openDailyChallengePage==="function")openDailyChallengePage(savedPosition.challengePage,{preserveScroll:true});else if(savedPosition.testPage){const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==savedPosition.testPage);if(savedPosition.testPage==="list"&&typeof loadElectronicTests==="function")loadElectronicTests();}}const y=Math.max(0,Number(savedPosition.y)||0);requestAnimationFrame(()=>requestAnimationFrame(()=>{window.scrollTo({top:y,behavior:"auto"});document.documentElement.classList.remove("tahadi-restoring");if(window.__tahadiRestoreFallback)clearTimeout(window.__tahadiRestoreFallback);}));}; loadDashboard(savedToken).then(restoreTeacherPosition).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم عند استقرار الاتصال.","error");console.error("initial dashboard load failed",err);restoreTeacherPosition();});
   } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
   form.addEventListener("submit", async event => {
     event.preventDefault();
