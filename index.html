@@ -2992,6 +2992,7 @@ const handleIncomeCalendarClick=async e=>{
   const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
   if (savedToken && expiry && new Date(expiry).getTime() > Date.now()) {
     let savedPosition={};try{savedPosition=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
+    if(new URLSearchParams(location.search).get("from")==="challenge"){savedPosition.challengePage="";const cleanPosition=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,cleanPosition);localStorage.setItem(teacherPagePositionKey,cleanPosition);}
     const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view");
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});
     /* Restore the nested teacher workspace immediately, before the dashboard network request finishes. */
@@ -3120,7 +3121,7 @@ const handleIncomeCalendarClick=async e=>{
     challengeFrame.addEventListener("load",()=>{try{challengeFrame.contentWindow.addEventListener("hashchange",saveTeacherPagePosition);challengeFrame.contentWindow.addEventListener("scroll",saveTeacherPagePosition,{passive:true});}catch(_){}saveTeacherPagePosition();},{once:true});
     if(!options.preserveScroll)challengePanel.scrollIntoView({behavior:"smooth",block:"start"});
   }
-  document.querySelectorAll("[data-challenge-page]").forEach(btn=>btn.addEventListener("click",()=>openDailyChallengePage(btn.dataset.challengePage)));
+  document.querySelectorAll("[data-challenge-page]").forEach(btn=>btn.addEventListener("click",()=>{const page=btn.dataset.challengePage==="editor"?"editor":"list";location.href="./daily-challenge-admin.html?embed=1&v=20261105d#"+page;}));
 
   $("backFromDailyChallenge")?.addEventListener("click",()=>{challengePanel.hidden=true;challengeHub.hidden=false;saveTeacherPagePosition();challengeHub.scrollIntoView({behavior:"smooth",block:"start"});});
   document.querySelectorAll("[data-test-page]").forEach(btn=>btn.addEventListener("click",()=>{const page=btn.dataset.testPage;$("electronicTestsHub").hidden=true;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==page);saveTeacherPagePosition();if(page==="list"){populateLibraryResultsStudents();loadElectronicTests();}}));
