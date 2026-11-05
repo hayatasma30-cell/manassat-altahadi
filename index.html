@@ -3573,7 +3573,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
         if(el&&el.tagName==="DETAILS")el.open=true;
       });
       /* index.html has one canonical page/scroll restorer; do not let this secondary autosave script switch views or scroll again. */
-      if(path.endsWith("/index.html")||path==="/"){setTimeout(()=>{restoring=false},1300);return;}
+      const isTeacherMainApp=!!document.getElementById("homeView")&&!!document.getElementById("electronicTestsView")&&!!document.getElementById("loginView");if(isTeacherMainApp){setTimeout(()=>{restoring=false},1300);return;}
       if(state.view&&state.view!=="loginView"&&localStorage.getItem("tahadi_teacher_token")){
         document.querySelectorAll(".view").forEach(v=>{
           const active=v.id===state.view;
