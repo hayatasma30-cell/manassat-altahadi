@@ -551,11 +551,14 @@ list("subscriptions",subscriptionDisplayRows,x=>{
  if(x.service_type==="individual_session")return '<article class="item subscription-progress-card individual-service-card"><div class="subscription-card-head"><div><small class="subscription-kicker">خدمة فردية</small><strong>حصة فردية</strong></div><span class="subscription-status '+(x.payment_status==="paid"?"is-paid":x.payment_status==="scheduled"?"is-scheduled":"is-pending")+'">'+safe(x.status)+'</span></div><div class="individual-session-meta"><span>📅 '+safe(x.lesson_date||"التاريخ غير محدد")+'</span><span>🕒 '+safe(x.lesson_time||"التوقيت غير محدد")+'</span></div></article>';
  return subscriptionCardHtml(x);
 },"لا توجد اشتراكات أو حصص فردية مسجلة حاليًا.");
-list("payments",studentPayments,x=>{
+list("payments",[...(studentPayments||[])].sort((a,b)=>new Date(b.payment_date||b.created_at||0)-new Date(a.payment_date||a.created_at||0)),x=>{
  const linked=studentSubscriptions.find(sub=>String(sub.id||"")===String(x.subscription_id||""));
  const cycleIndex=linked&&String(linked.service_type||"").toLowerCase()==="monthly_subscription"?monthlyCycleRows.findIndex(row=>String(row.cycle_payment_id||"")===String(x.id||"")):-1;
  const label=cycleIndex>=0?"دفعة الشهر "+cycleOrdinal(cycleIndex):safe(x.service_name||linked?.service_name||"دفعة خدمة");
- return '<article class="item payment-cycle-card"><div class="payment-cycle-head"><strong>'+label+'</strong><span class="subscription-status '+(studentStatus(x)==="paid"?"is-paid":"is-pending")+'">'+(studentStatus(x)==="paid"?"مدفوع":studentStatus(x)==="pending"?"قيد المراجعة":studentStatus(x)==="rejected"?"مرفوض":"مسجل")+'</span></div><span class="muted">تاريخ الدفع: '+date(x.payment_date||x.created_at)+'</span>'+(cycleIndex>=0?'<small class="muted">مرتبطة باشتراك شهري</small>':"")+'</article>';
+ const status=studentStatus(x);
+ const statusText=status==="paid"?"تم تأكيد الدفع":status==="pending"?"قيد المراجعة":status==="rejected"?"مرفوض":"مسجل";
+ const serviceLabel=cycleIndex>=0?"اشتراك شهري":safe(x.service_name||linked?.service_name||"خدمة تعليمية");
+ return '<article class="item payment-cycle-card"><div class="payment-cycle-head"><strong>'+label+'</strong><span class="subscription-status '+(status==="paid"?"is-paid":"is-pending")+'">'+(status==="paid"?"مدفوع":status==="pending"?"قيد المراجعة":status==="rejected"?"مرفوض":"مسجل")+'</span></div><div class="payment-cycle-detail"><span class="payment-detail-icon">▦</span><span><small>تاريخ الدفع</small><b>'+date(x.payment_date||x.created_at)+'</b></span></div><div class="payment-cycle-detail"><span class="payment-detail-icon">▤</span><span><small>نوع الاشتراك</small><b>'+serviceLabel+'</b></span></div><div class="payment-cycle-confirmation '+(status==="paid"?"confirmed":"")+'"><span>'+(status==="paid"?"✓":"•")+'</span>'+statusText+'</div></article>';
 },"لا توجد دفعات مسجلة حاليًا.");
 const automaticStars=[];const seenStarQuizzes=new Set();for(const attempt of (d.quiz_attempts||[])){if(!attempt.submitted_at)continue;const max=Number(attempt.auto_max_score||20),score=attempt.teacher_score!==null&&attempt.teacher_score!==undefined?Number(attempt.teacher_score):Number(attempt.auto_score);const slug=String(attempt.quiz_slug||"");if(max===20&&score===20&&slug&&!seenStarQuizzes.has(slug)){seenStarQuizzes.add(slug);automaticStars.push({title:attempt.quiz_title||"اختبار إلكتروني",date:attempt.submitted_at,reason:"حصلت على العلامة الكاملة 20/20 في هذا الاختبار."});}}$("studentName").textContent=student.full_name+(automaticStars.length?" ⭐":"");$("studentProfile").innerHTML='<p><b>الاسم الكامل:</b> '+safe(student.full_name||"—")+(automaticStars.length?' <span style="color:#b8860b">⭐</span>':"")+'</p><p><b>المستوى الدراسي:</b> '+safe(student.level||"غير محدد")+'</p><p><b>طريقة الدراسة:</b> '+safe(student.study_mode||"غير محددة")+'</p><section style="margin-top:14px;padding:14px;border:1px solid #e8d49a;border-radius:16px;background:linear-gradient(135deg,#fffdf3,#f5f8e9)"><h3 style="margin:0 0 8px;color:#896719">⭐ نجوم التحدي</h3><strong style="font-size:22px;color:#17613c">'+automaticStars.length+' نجمة</strong>'+(automaticStars.length?automaticStars.map(x=>'<article style="padding:9px 0;border-top:1px solid #eadfbf"><b>⭐ '+safe(x.title)+'</b><p style="margin:3px 0;color:#6c6b56">'+safe(x.reason)+'</p><small class="muted">'+date(x.date)+'</small></article>').join(""):'<p class="muted">ستحصل على أول نجمة تلقائيًا عندما تحقق 20/20 في أحد الاختبارات.</p>')+'</section>';
 
@@ -1003,6 +1006,20 @@ initializeStudentSpace().catch((error) => {
 .cycle-lesson-row.is-upcoming>span:first-child{color:#68776c}.cycle-done{font-weight:800;background:#e4f3e5;padding:4px 8px;border-radius:99px}
 .cycle-wait{font-weight:700}
 @media(max-width:380px){.subscription-progress b{font-size:1.12rem}.subscription-progress small{font-size:.74rem}.cycle-lesson-row{grid-template-columns:66px minmax(0,1fr) auto;font-size:.74rem;gap:4px}}
+
+/* تصميم مطوّر لبطاقات دفعات التلميذ */
+.payment-cycle-card{display:grid;gap:13px;margin:12px 0!important;padding:16px!important;border:1px solid #d5e6d2!important;border-radius:19px!important;background:linear-gradient(145deg,#fff 0%,#f6fbf3 100%)!important;box-shadow:0 4px 0 #e2eddf,0 9px 18px #173f220d!important}
+.payment-cycle-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:11px;border-bottom:1px solid #e8efe5}
+.payment-cycle-head strong{font-size:1.05rem;line-height:1.5;color:#174d31}
+.payment-cycle-detail{display:flex;align-items:center;gap:11px;min-width:0}
+.payment-detail-icon{width:37px;height:37px;flex:0 0 37px;display:grid;place-items:center;border-radius:12px;background:#edf7eb;border:1px solid #deebd9;color:#17613c;font-size:1.1rem;font-weight:800}
+.payment-cycle-detail>span:last-child{display:grid;gap:1px;min-width:0}
+.payment-cycle-detail small{font-size:.76rem;color:#78867b}
+.payment-cycle-detail b{font-size:.94rem;color:#315b40;font-weight:800;overflow-wrap:anywhere}
+.payment-cycle-confirmation{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:11px;background:#f4f6f1;color:#66736a;font-size:.82rem;font-weight:700}
+.payment-cycle-confirmation.confirmed{background:#eaf6e9;color:#17613c}
+.payment-cycle-confirmation>span{display:grid;place-items:center;width:21px;height:21px;border-radius:50%;background:#fff;font-weight:900}
+@media(max-width:380px){.payment-cycle-card{padding:13px!important;gap:11px}.payment-cycle-head strong{font-size:.96rem}.payment-cycle-detail b{font-size:.88rem}}
 </style><style id="individual-session-status-style">.subscription-status.is-scheduled{background:#edf1f3;color:#586b73}/* إعادة تصميم فضاء التلميذ ليتناسق مع فضاء الأستاذة — تنسيق فقط دون تغيير الوظائف أو الروابط */
 :root{--g:#14532d;--g2:#166534;--g3:#21834c;--cream:#faf8ee;--ink:#18382a;--muted:#69786d;--line:#e3e9dc;--pale:#eef7ec;--gold:#f1d38a}
 html{scroll-behavior:smooth}
