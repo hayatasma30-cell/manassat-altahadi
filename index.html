@@ -1049,6 +1049,16 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 #homeView .lesson-content-button{width:100%;min-height:48px;padding:10px 14px;border:1px solid #2d8050;border-bottom:5px solid #0c482b;border-radius:12px;background:linear-gradient(180deg,#27834e,#14532d);color:#fff;font:inherit;font-size:.92rem;font-weight:800;box-shadow:0 3px 0 #0c482b,0 7px 12px #174b3020;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
 #homeView .lesson-content-button:active{transform:translateY(3px);border-bottom-width:2px;box-shadow:0 1px 0 #0c482b,0 3px 6px #174b3018}
 @media(max-width:480px){#homeView .command-next-lesson{padding:10px!important;gap:6px!important}#homeView .lesson-countdown-frame{padding:8px 10px}#homeView .lesson-alarm-icon{width:34px;height:34px;flex-basis:34px}#homeView .command-next-lesson-countdown{font-size:1.1rem!important}#homeView .lesson-content-button{min-height:45px;font-size:.86rem}}
+
+.challenge-home-shortcut{margin:12px 0 16px}
+.challenge-home-shortcut .menu-btn{width:100%;min-height:76px!important;padding:12px 15px!important;border:1px solid #c8dfc4!important;border-bottom:4px solid #2f8550!important;border-radius:17px!important;background:linear-gradient(145deg,#fff 0%,#f2faf0 100%)!important;box-shadow:0 4px 0 rgba(20,83,45,.08),0 8px 16px rgba(20,63,34,.06)!important}
+.challenge-home-shortcut .menu-icon{background:#e8f5e5!important}
+.challenge-workspace-panel[hidden]{display:none!important}
+#challengeManagementView .electronic-tests-menu{margin:14px 0 4px}
+#challengeManagementView .electronic-tests-menu .menu-btn{min-height:88px}
+#challengeManagementView .section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#challengeManagementView .electronic-test-back{width:auto}
+@media(max-width:520px){#challengeManagementView .electronic-tests-menu{grid-template-columns:1fr}#challengeManagementView .electronic-tests-menu .menu-btn{min-height:74px}}
 </style>
 <style id="lesson-panel-refined-v7">
 #homeView .command-next-lesson{position:relative;display:flex!important;flex-direction:column!important;gap:8px!important;padding:13px!important;border:1px solid #d7e4d4!important;border-radius:16px!important;background:linear-gradient(145deg,#fff 0%,#f5faf2 100%)!important;box-shadow:0 4px 0 #b4ceb1,0 7px 14px #244d2b10!important}
@@ -1327,6 +1337,9 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
   <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
   <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
 </section>
+<div class="challenge-home-shortcut">
+<button type="button" class="menu-btn" data-view="challengeManagementView"><span class="menu-icon">🏆</span><span class="menu-copy"><strong>فضاء التحديات</strong><small>إضافة تحدٍّ جديد وإدارة مكتبة التحديات</small></span><span class="chev">‹</span></button>
+</div>
 <details class="platform-sections">
 <summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></summary>
 <div class="platform-sections-content">
@@ -1350,6 +1363,20 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 </div>
 </details>
 <div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
+</section>
+<section id="challengeManagementView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🏆 فضاء التحديات</h2></div>
+<div class="panel">
+<p class="muted">مساحة مستقلة لإنشاء التحديات العلمية وإدارة المكتبة. تبقى التحديات محفوظة ومتصلة بقاعدة البيانات الحالية.</p>
+<div id="challengeWorkspaceHub" class="electronic-tests-menu">
+<button type="button" class="menu-btn" data-challenge-workspace-page="editor"><span class="menu-icon">➕</span><span class="menu-copy"><strong>إضافة تحدٍّ جديد</strong><small>إنشاء تحدٍّ وإعداد الأسئلة والمدة والنشر</small></span><span class="chev">‹</span></button>
+<button type="button" class="menu-btn" data-challenge-workspace-page="list"><span class="menu-icon">📚</span><span class="menu-copy"><strong>مكتبة التحديات</strong><small>عرض المسودات والتحديات المنشورة وإدارتها</small></span><span class="chev">‹</span></button>
+</div>
+<div id="challengeWorkspacePanel" class="panel challenge-workspace-panel" hidden>
+<div class="section-heading"><h3 id="challengeWorkspaceTitle">إضافة تحدٍّ جديد</h3><button type="button" class="secondary electronic-test-back" id="backFromChallengeWorkspace">← العودة إلى فضاء التحديات</button></div>
+<iframe id="challengeWorkspaceFrame" title="فضاء إدارة التحديات" src="about:blank" loading="lazy" style="display:block;width:100%;height:78vh;min-height:620px;border:0;border-radius:14px;background:transparent" referrerpolicy="same-origin"></iframe>
+</div>
+</div>
 </section>
 <section id="learningResourcesView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
@@ -3071,6 +3098,24 @@ const handleIncomeCalendarClick=async e=>{
     challengePanel.scrollIntoView({behavior:"smooth",block:"start"});
   }
   document.querySelectorAll("[data-challenge-page]").forEach(btn=>btn.addEventListener("click",()=>openDailyChallengePage(btn.dataset.challengePage)));
+const challengeWorkspaceHub=$("challengeWorkspaceHub"),challengeWorkspacePanel=$("challengeWorkspacePanel"),challengeWorkspaceFrame=$("challengeWorkspaceFrame");
+function openChallengeWorkspacePage(page){
+  if(!challengeWorkspaceHub||!challengeWorkspacePanel||!challengeWorkspaceFrame)return;
+  challengeWorkspaceHub.hidden=true;
+  challengeWorkspacePanel.hidden=false;
+  $("challengeWorkspaceTitle").textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
+  const target="./daily-challenge-admin.html?embed=1#"+page;
+  if(!challengeWorkspaceFrame.src.endsWith(target))challengeWorkspaceFrame.src=target;
+  else if(challengeWorkspaceFrame.contentWindow)challengeWorkspaceFrame.contentWindow.location.hash=page;
+  challengeWorkspacePanel.scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.querySelectorAll("[data-challenge-workspace-page]").forEach(btn=>btn.addEventListener("click",()=>openChallengeWorkspacePage(btn.dataset.challengeWorkspacePage)));
+$("backFromChallengeWorkspace")?.addEventListener("click",()=>{
+  if(challengeWorkspacePanel)challengeWorkspacePanel.hidden=true;
+  if(challengeWorkspaceHub)challengeWorkspaceHub.hidden=false;
+  challengeWorkspaceHub?.scrollIntoView({behavior:"smooth",block:"start"});
+});
+
   $("backFromDailyChallenge")?.addEventListener("click",()=>{challengePanel.hidden=true;challengeHub.hidden=false;challengeHub.scrollIntoView({behavior:"smooth",block:"start"});});
   document.querySelectorAll("[data-test-page]").forEach(btn=>btn.addEventListener("click",()=>{const page=btn.dataset.testPage;$("electronicTestsHub").hidden=true;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==page);if(page==="list")loadElectronicTests();if(page==="top")loadPerfectScores();}));
   document.querySelectorAll(".electronic-test-back").forEach(btn=>btn.addEventListener("click",()=>{$("electronicTestsHub").hidden=false;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);}));
