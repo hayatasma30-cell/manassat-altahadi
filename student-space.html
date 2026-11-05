@@ -2151,6 +2151,41 @@ body>header .top{min-height:62px!important}
 #dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.78rem!important;line-height:1.5!important;color:#59695b!important}
 @media(max-width:520px){#dailyChallengeNotice:not(.hidden){width:calc(100% - 30px)!important;padding:9px 10px!important;gap:8px!important}#dailyChallengeNotice .daily-challenge-notice-link{padding:7px 10px!important;font-size:.77rem!important}#dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:.86rem!important}#dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.7rem!important}}
 #studentMenu .student-home-grid .student-action:nth-child(6){border:1px solid #c7dfc1!important;border-bottom:5px solid #378653!important;background:linear-gradient(145deg,#fff 0%,#f2f8ed 100%)!important;box-shadow:0 5px 0 #1b6b3515,0 9px 17px #173f2210!important}
+</style><style id="student-dashboard-equal-buttons">
+/* توحيد أبعاد بطاقات الأزرار الرئيسية */
+#studentMenu .student-home-grid{align-items:stretch!important;grid-auto-rows:1fr!important}
+#studentMenu .student-home-grid .student-action{
+ box-sizing:border-box!important;
+ width:100%!important;
+ min-width:0!important;
+ height:104px!important;
+ min-height:104px!important;
+ max-height:104px!important;
+ padding:10px 11px!important;
+ display:flex!important;
+ align-items:center!important;
+}
+#studentMenu .student-home-grid .student-action>span:nth-child(2){
+ min-width:0!important;max-height:76px!important;overflow:hidden!important;
+}
+#studentMenu .student-home-grid .student-action strong,
+#studentMenu .student-home-grid .student-action small{
+ display:-webkit-box!important;-webkit-box-orient:vertical!important;overflow:hidden!important;
+}
+#studentMenu .student-home-grid .student-action strong{-webkit-line-clamp:2!important}
+#studentMenu .student-home-grid .student-action small{-webkit-line-clamp:2!important}
+@media(max-width:520px){
+ #studentMenu .student-home-grid .student-action{
+  height:98px!important;min-height:98px!important;max-height:98px!important;
+  padding:9px 8px!important;
+ }
+}
+@media(max-width:360px){
+ #studentMenu .student-home-grid .student-action{
+  height:94px!important;min-height:94px!important;max-height:94px!important;
+  padding:7px 6px!important;
+ }
+}
 </style><script>
 
 </script>
