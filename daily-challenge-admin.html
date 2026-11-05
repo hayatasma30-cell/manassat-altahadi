@@ -3,6 +3,9 @@
 body.embed{background:transparent}
 body.embed .wrap{max-width:none;padding:0;margin:0}
 body.embed .head{display:block!important;margin:0 0 12px;padding:14px 15px;border-radius:16px}
+/* Keep editor, library and results mutually exclusive. */
+#editor:not(.active-panel),#list:not(.active-panel),#results:not(.active-panel){display:none!important}
+#editor.active-panel,#list.active-panel,#results.active-panel{display:block!important}
 body.embed .panel{margin:0 0 10px;padding:14px;border-radius:16px;box-shadow:none}
 body.embed #editor,body.embed #list,body.embed #results{display:none!important}
 body.embed #editor.embed-active,body.embed #list.embed-active,body.embed #results.embed-active{display:block!important}
@@ -135,7 +138,7 @@ function captureQuestions(){questions=[...$("questions").children].map(el=>{cons
 $("questions").addEventListener("change",e=>{if(e.target.classList.contains("qtype")){captureQuestions();renderQuestions();}});
 window.removeQ=id=>{questions=questions.filter(q=>q.id!==id);renderQuestions()};
 function readQuestions(){captureQuestions();return questions;}
-function setEmbedPanel(page){["editor","list","results"].forEach(id=>{$(id).classList.toggle("hidden",id!==page);$(id).classList.toggle("embed-active",id===page);});if(location.hash!=="#"+page)history.replaceState(null,"",location.pathname+location.search+"#"+page);fitEmbeddedFrame();}
+function setEmbedPanel(page){["editor","list","results"].forEach(id=>{const active=id===page;$(id).classList.toggle("active-panel",active);$(id).classList.toggle("hidden",!active);$(id).classList.toggle("embed-active",active);});if(location.hash!=="#"+page)history.replaceState(null,"",location.pathname+location.search+"#"+page);fitEmbeddedFrame();}
 function reset(){editingId=null;questions=[];$("title").value="";$("description").value="";$("level").value="الكل";$("starts").value="";$("ends").value="";$("duration").value=10;$("formTitle").textContent="إعداد تحدٍّ جديد";$("publishBtn").classList.add("hidden");$("cancelEdit").classList.add("hidden");renderQuestions();addQuestion();autoGrowDescription()}
 function dateValue(v){return v?new Date(v).toISOString().slice(0,16):""}
 function challengeStatusLabel(status){return status==="draft"?"مسودة":status==="published"?"منشور":status==="closed"?"منتهٍ":String(status||"غير محدد")}
