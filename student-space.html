@@ -522,7 +522,7 @@ const subscriptionCardHtml=x=>{
  const modeRows=monthlyCycleRows.filter(row=>row.cycle_mode===mode);
  const modeIndex=modeRows.findIndex(row=>String(row.cycle_payment_id||"")===String(x.cycle_payment_id||""));
  const cyclePaymentDate=String(x.payment_date||"").slice(0,10);
- const cycleStartCandidates=[studentRegistrationDate,cyclePaymentDate].filter(v=>/^\\d{4}-\\d{2}-\\d{2}$/.test(String(v||"")));
+ const cycleStartCandidates=[studentRegistrationDate,cyclePaymentDate].filter(v=>/^\d{4}-\d{2}-\d{2}$/.test(String(v||"")));
  const cycleStartDate=cycleStartCandidates.sort().at(-1)||"";
  const modeLessons=lessonsForCycleMode(mode).filter(l=>{const lessonDate=String(l.lesson_date||"").slice(0,10);return !cycleStartDate||!lessonDate||lessonDate>=cycleStartDate;});
  const attendanceByLesson=new Map((Array.isArray(d.attendance)?d.attendance:[]).filter(a=>a.lesson_id).map(a=>[String(a.lesson_id),a]));const attendanceByDate=new Map((Array.isArray(d.attendance)?d.attendance:[]).filter(a=>a.attendance_date).map(a=>[String(a.attendance_date).slice(0,10),a]));
