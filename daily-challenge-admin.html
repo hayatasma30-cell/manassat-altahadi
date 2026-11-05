@@ -100,7 +100,7 @@ window.setWinner=async(id,submission_id)=>{if(!confirm("اعتماد هذا ال
 $("addQ").onclick=()=>addQuestion();$("newBtn").onclick=()=>{setEmbedPanel("editor");$("results").classList.add("hidden");reset()};$("newFromLibrary").onclick=()=>{setEmbedPanel("editor");reset()};$("backToChallengeList").onclick=()=>{ $("results").classList.add("hidden");setEmbedPanel("list");load()};$("refreshBtn").onclick=load;$("cancelEdit").onclick=reset;
 $("saveBtn").onclick=async()=>{try{const d=await call("teacher_save",{id:editingId,title:$("title").value,description:$("description").value,target_level:$("level").value,starts_at:$("starts").value?new Date($("starts").value).toISOString():null,ends_at:$("ends").value?new Date($("ends").value).toISOString():null,duration_minutes:Number($("duration").value),questions:readQuestions()});editingId=d.item.id;$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");message("حُفظت المسودة بنجاح. يمكنك نشرها بعد مراجعتها.");load()}catch(e){message(e.message)}};
 $("publishBtn").onclick=()=>publishChallenge(editingId);if(document.body.classList.contains("embed")){
-  const page=location.hash==="#list"?"list":location.hash==="#results"?"results":"editor";
+  const page=location.hash==="#editor"?"editor":location.hash==="#results"?"results":"list";
   $("results").classList.add("hidden");
   setEmbedPanel(page);
 }
