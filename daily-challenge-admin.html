@@ -323,7 +323,7 @@ window.publishChallenge=async id=>{
  if(!item.starts_at){message("حددي موعد ظهور الاختبار للتلاميذ أولاً، ثم احفظي المسودة وأعيدي النشر.");return;}
  if(item.ends_at&&new Date(item.ends_at).getTime()<=new Date(item.starts_at).getTime()){message("موعد نهاية المشاركة يجب أن يكون بعد موعد ظهور الاختبار.");return;}
  const when=scheduleDate(item.starts_at);
- if(!confirm("سيُنشر الاختبار الآن، لكنه لن يظهر للتلاميذ إلا في الموعد التالي:\\n"+when+"\\nهل تريدين المتابعة؟"))return;
+ if(!confirm("سيُنشر الاختبار الآن، لكنه لن يظهر للتلاميذ إلا في الموعد التالي:\n"+when+"\nهل تريدين المتابعة؟"))return;
  try{await call("teacher_publish",{id});message(new Date(item.starts_at).getTime()>Date.now()?"تم نشر الاختبار وجدولة ظهوره للتلاميذ في الموعد المحدد.":"تم نشر الاختبار وهو متاح للتلاميذ الآن.");load();}
  catch(e){message(e.message);}
 }
