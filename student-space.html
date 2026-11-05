@@ -236,10 +236,10 @@
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
 <main class="wrap">
-<section class="hero"><h1 class="student-hero-title">مرحبًا بك في عالم التحدي <img class="student-hero-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="رمز منصة التحدي"></h1><p>نتائجك، تنبيهاتك، ومتابعة اشتراكاتك في مكان واحد.</p></section>
+<section class="hero"><h1 class="student-hero-title">مرحبًا بك في منصة التحدي <img class="student-hero-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></h1><p>نتائجك، تنبيهاتك، ومتابعة اشتراكاتك في مكان واحد.</p></section>
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><div id="studentCodeLogin"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button></div><button id="teacherNameLoginBtn" type="button" class="secondary hidden" style="width:100%;margin-top:12px">دخول الأستاذة باسم التلميذ دون رمز</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
 <section id="dashboard" class="hidden"><div id="teacherPreviewBanner" class="hidden" aria-hidden="true"><button id="exitTeacherPreview" type="button" hidden></button></div>
-<div class="panel student-identity student-identity-compact"><div class="student-identity-mark" aria-hidden="true">🎓</div><div class="student-identity-info"><div class="student-identity-label">فضاء التلميذ</div><h2 id="studentName"></h2><span id="studentLevel" class="tag"></span></div></div>
+<div class="panel student-identity student-identity-compact"><div class="student-identity-info"><h2 id="studentName"></h2><span id="studentLevel" class="tag"></span></div><img class="student-identity-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></div>
 <div id="studentHelpOverlay" class="student-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentHelpTitle"><div class="student-help-card">
 <h2 id="studentHelpTitle">📘 دليل استعمال فضاء التلميذ</h2>
 <p>هذا الدليل يشرح أزرار فضائك بعد الدخول إليه، زرًا واحدًا في كل مرة. يمكنك الرجوع إليه في أي وقت.</p>
@@ -1791,6 +1791,31 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
 @media(max-width:500px){
  #dashboard .student-identity.student-identity-compact{padding:6px 9px!important;gap:7px!important;max-height:100px!important}
  #dashboard .student-identity-compact .student-identity-mark{width:34px!important;height:34px!important;flex-basis:34px!important}
+}
+</style>
+
+<style id="student-identity-rtl-logo-20261105">
+#dashboard>.student-identity.student-identity-compact{
+ direction:rtl!important;display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-start!important;
+ text-align:right!important;gap:10px!important;
+}
+#dashboard .student-identity-compact .student-identity-info{
+ order:1!important;flex:1 1 auto!important;text-align:right!important;
+}
+#dashboard .student-identity-compact .student-identity-logo{
+ order:2!important;display:block!important;object-fit:contain!important;
+ width:48px!important;height:48px!important;flex:0 0 48px!important;
+ padding:4px!important;border-radius:12px!important;
+ background:linear-gradient(145deg,#f5f8e9,#e5f1df)!important;
+ border:1px solid #d1e2ca!important;
+}
+#dashboard .student-identity-compact h2{text-align:right!important}
+#dashboard .student-identity-compact #studentLevel{margin-right:0!important;margin-left:auto!important}
+.student-hero-title{direction:rtl!important;justify-content:flex-start!important;text-align:right!important}
+#dashboard>.student-identity-compact{max-height:none!important}
+@media(max-width:500px){
+ #dashboard .student-identity-compact .student-identity-logo{width:42px!important;height:42px!important;flex-basis:42px!important}
 }
 </style>
 </body></html>
