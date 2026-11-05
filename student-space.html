@@ -521,7 +521,10 @@ const subscriptionCardHtml=x=>{
  const mode= x.cycle_mode||cycleModeOf(x);
  const modeRows=monthlyCycleRows.filter(row=>row.cycle_mode===mode);
  const modeIndex=modeRows.findIndex(row=>String(row.cycle_payment_id||"")===String(x.cycle_payment_id||""));
- const modeLessons=lessonsForCycleMode(mode);
+ const cyclePaymentDate=String(x.payment_date||"").slice(0,10);
+ const cycleStartCandidates=[studentRegistrationDate,cyclePaymentDate].filter(v=>/^\\d{4}-\\d{2}-\\d{2}$/.test(String(v||"")));
+ const cycleStartDate=cycleStartCandidates.sort().at(-1)||"";
+ const modeLessons=lessonsForCycleMode(mode).filter(l=>{const lessonDate=String(l.lesson_date||"").slice(0,10);return !cycleStartDate||!lessonDate||lessonDate>=cycleStartDate;});
  const attendanceByLesson=new Map((Array.isArray(d.attendance)?d.attendance:[]).filter(a=>a.lesson_id).map(a=>[String(a.lesson_id),a]));const attendanceByDate=new Map((Array.isArray(d.attendance)?d.attendance:[]).filter(a=>a.attendance_date).map(a=>[String(a.attendance_date).slice(0,10),a]));
  const cycleLessons=isMonthly?modeLessons.slice(Math.max(0,modeIndex)*4,Math.max(0,modeIndex)*4+4):[];
  const completed=cycleLessons.filter(l=>{const a=attendanceByLesson.get(String(l.id))||attendanceByDate.get(String(l.lesson_date||"").slice(0,10));return !!a&&["present","حاضر","late","متأخر"].includes(String(a.status||"").trim().toLowerCase());}).length;
