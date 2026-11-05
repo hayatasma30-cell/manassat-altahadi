@@ -241,7 +241,7 @@
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><div id="studentCodeLogin"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button></div><button id="teacherNameLoginBtn" type="button" class="secondary hidden" style="width:100%;margin-top:12px">دخول الأستاذة باسم التلميذ دون رمز</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
 <section id="dashboard" class="hidden"><div id="teacherPreviewBanner" class="hidden" aria-hidden="true"><button id="exitTeacherPreview" type="button" hidden></button></div>
 <div class="panel student-identity student-identity-compact"><div class="student-identity-info"><div class="student-welcome-title">مرحبًا بك في منصة التحدي</div><h2 id="studentName"></h2><span id="studentLevel" class="tag"></span></div><img class="student-identity-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></div>
-<div id="dailyChallengeNotice" class="daily-challenge-notice hidden" role="status" aria-live="polite"><div class="daily-challenge-notice-icon">🏆</div><div class="daily-challenge-notice-copy"><strong>تحدي اليوم متاح الآن!</strong><span id="dailyChallengeNoticeText">لديك تحدٍّ جديد في العلوم الطبيعية.</span></div><a href="./daily-challenge.html" class="daily-challenge-notice-link">شارك الآن ←</a></div>
+<div id="dailyChallengeNotice" class="daily-challenge-notice hidden" role="status" aria-live="polite"><a href="./daily-challenge.html" class="daily-challenge-notice-link">شارك الآن ←</a><div class="daily-challenge-notice-copy"><strong>تحدي اليوم متاح الآن!</strong><span id="dailyChallengeNoticeText">لديك تحدٍّ جديد في العلوم الطبيعية.</span></div></div>
 <div id="studentHelpOverlay" class="student-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentHelpTitle"><div class="student-help-card">
 <h2 id="studentHelpTitle">📘 دليل استعمال فضاء التلميذ</h2>
 <p>هذا الدليل يشرح أزرار فضائك بعد الدخول إليه، زرًا واحدًا في كل مرة. يمكنك الرجوع إليه في أي وقت.</p>
@@ -2142,7 +2142,16 @@ body>header .top{min-height:62px!important}
  #dashboard .daily-challenge-notice-link{padding:8px 10px!important;font-size:.78rem!important;border-radius:11px!important}
 }
 </style>
-<script>
+<style id="daily-notice-layout-v2">
+#dailyChallengeNotice:not(.hidden){display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:calc(100% - 34px)!important;max-width:760px!important;margin:0 auto 16px!important;padding:10px 14px!important;border:1px solid #dfc982!important;border-right:5px solid #b58a32!important;border-radius:16px!important;background:linear-gradient(110deg,#fff9e9,#f3f8eb)!important;box-shadow:0 3px 0 #b58a3226,0 6px 13px #80601a10!important}
+#dailyChallengeNotice .daily-challenge-notice-icon{display:none!important}
+#dailyChallengeNotice .daily-challenge-notice-link{order:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;margin:0!important;padding:8px 13px!important;border:1px solid #b9d5b4!important;border-bottom:4px solid #287447!important;border-radius:12px!important;background:linear-gradient(145deg,#f7fcf3,#e4f2df)!important;color:#205b37!important;font-size:.85rem!important;font-weight:900!important;box-shadow:0 3px 0 #1c67331c!important;white-space:nowrap!important;text-decoration:none!important}
+#dailyChallengeNotice .daily-challenge-notice-copy{order:2!important;display:flex!important;flex:1 1 auto!important;flex-direction:column!important;min-width:0!important;gap:3px!important;margin:0!important;text-align:right!important}
+#dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:1rem!important;line-height:1.45!important;color:#76571e!important;font-weight:900!important}
+#dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.78rem!important;line-height:1.5!important;color:#59695b!important}
+@media(max-width:520px){#dailyChallengeNotice:not(.hidden){width:calc(100% - 30px)!important;padding:9px 10px!important;gap:8px!important}#dailyChallengeNotice .daily-challenge-notice-link{padding:7px 10px!important;font-size:.77rem!important}#dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:.86rem!important}#dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.7rem!important}}
+#studentMenu .student-home-grid .student-action:nth-child(6){border:1px solid #c7dfc1!important;border-bottom:5px solid #378653!important;background:linear-gradient(145deg,#fff 0%,#f2f8ed 100%)!important;box-shadow:0 5px 0 #1b6b3515,0 9px 17px #173f2210!important}
+</style><script>
 
 </script>
 </body></html>
