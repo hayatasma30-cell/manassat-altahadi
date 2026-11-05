@@ -122,6 +122,33 @@ textarea{min-height:64px}
  .row{gap:5px}
  #editor{scroll-margin-top:8px}
 }
+
+/* بطاقة التحدي: ترتيب أوضح ومعلومات قابلة للمسح السريع */
+body.embed #list>.row{padding-bottom:15px;margin-bottom:15px}
+body.embed #list>.row h2{display:flex;align-items:center;gap:8px}
+body.embed #list>.row h2:before{content:"";display:inline-block;width:5px;height:25px;border-radius:8px;background:#4d8b5b}
+body.embed #challengeListItems>.challenge-card{padding:17px 18px;border-color:#dfe8dc;border-radius:19px;box-shadow:0 5px 16px #173f2208}
+body.embed .challenge-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+body.embed .challenge-card-top h3{margin:0;font-size:20px;line-height:1.5}
+body.embed .challenge-status{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap;background:#f1f3ef;color:#526257;border:1px solid #e2e8df}
+body.embed .challenge-status.is-draft{background:#fff7e5;color:#8b641e;border-color:#f0dfb7}
+body.embed .challenge-status.is-published{background:#eaf6ed;color:#17633a;border-color:#cde5d2}
+body.embed .challenge-status.is-closed{background:#f4eeee;color:#80504a;border-color:#ead9d6}
+body.embed .challenge-meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 15px}
+body.embed .challenge-meta span{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border:1px solid #e7ede4;border-radius:11px;background:#f8fbf6;color:#4f6554;font-size:12px;line-height:1.5}
+body.embed .challenge-meta b{color:#718174;font-size:11px;font-weight:600}
+body.embed .challenge-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+body.embed .challenge-actions .btn{width:100%;min-height:45px;margin:0;white-space:normal;line-height:1.45}
+body.embed .challenge-actions .btn:last-child:nth-child(3){grid-column:1/-1}
+@media(max-width:600px){
+ body.embed #challengeListItems>.challenge-card{padding:14px 13px}
+ body.embed .challenge-card-top h3{font-size:18px}
+ body.embed .challenge-meta{gap:6px;margin-bottom:13px}
+ body.embed .challenge-meta span{padding:6px 8px;font-size:11px}
+ body.embed .challenge-actions{grid-template-columns:1fr}
+ body.embed .challenge-actions .btn{min-height:43px}
+ body.embed .challenge-actions .btn:last-child:nth-child(3){grid-column:auto}
+}
 </style></head><body><script>if(new URLSearchParams(location.search).get("embed")==="1")document.body.classList.add("embed");</script><main class="wrap"><header class="head"><h1>إدارة التحدي اليومي</h1><p>أنشئي التحدي، حددي المستوى ووقت المشاركة، ثم انشريه لمشاركته مع التلاميذ.</p><div class="row"><button class="btn alt" id="newBtn">تحدٍّ جديد</button><a class="btn alt" href="./index.html?from=challenge" style="text-decoration:none">العودة إلى فضاء الأستاذة</a><a class="btn alt" href="./index.html?from=challenge" onclick="if(history.length>1){event.preventDefault();history.back()}" style="text-decoration:none">العودة إلى الاختبارات</a></div></header>
 <div id="message" class="msg hidden"></div>
 <section class="panel" id="editor"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px"><h2 id="formTitle" style="margin:0">إعداد تحدٍّ جديد</h2><button class="btn alt" type="button" id="backToLibrary">← العودة إلى المكتبة</button></div><div class="grid"><div><label>عنوان التحدي</label><input id="title" maxlength="180" placeholder="مثال: تحدي الزلازل"></div><div><label>المستوى المستهدف</label><select id="level"><option>الكل</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select></div><div><label>بداية المشاركة</label><input id="starts" type="datetime-local"></div><div><label>نهاية المشاركة</label><input id="ends" type="datetime-local"></div><div><label>المدة بالدقائق</label><input id="duration" type="number" min="1" max="180" value="10"></div></div><label for="description">تعليمات التحدي</label><textarea id="description" rows="5" dir="rtl" placeholder="اكتبي تعليمات التحدي هنا… يمكنك كتابة عدة أسطر، وسيزداد ارتفاع المربع تلقائياً."></textarea><p class="muted" style="margin:5px 2px 12px">اكتبي التعليمات براحتك، ويمكنك تقسيمها إلى أسطر ونقاط.</p><div class="row" style="justify-content:space-between;margin-top:16px"><h2 style="margin:0">الأسئلة</h2><button class="btn alt" id="addQ">إضافة سؤال</button></div><div id="questions"></div><div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn alt" type="button" id="addQBottom">＋ إضافة سؤال آخر</button></div><div class="row"><button class="btn" id="saveBtn">حفظ المسودة</button><button class="btn alt hidden" id="publishBtn">نشر التحدي</button><button class="btn warn hidden" id="cancelEdit">إلغاء التعديل</button></div></section>
@@ -157,7 +184,7 @@ async function load(){const list=$("challengeListItems");list.innerHTML='<div cl
   const count=(x.questions||[]).length;
   const status=challengeStatusLabel(x.status);
   const date=x.created_at?new Date(x.created_at).toLocaleDateString("ar-DZ"):"";
-  return '<article class="item"><h3>'+esc(x.title)+'</h3><p><span>المستوى: <strong>'+esc(x.target_level||"الكل")+'</strong></span><span>الحالة: <strong>'+status+'</strong></span><span>عدد الأسئلة: <strong>'+count+'</strong></span>'+(date?'<span>تاريخ الإنشاء: '+date+'</span>':'')+'</p><div class="row"><button class="btn alt" onclick="showResults(\''+x.id+'\')">المشاركات والنتائج</button>'+(x.status==="draft"?'<button class="btn alt" onclick="editChallenge(\''+x.id+'\')">متابعة التعديل وإضافة الأسئلة</button><button class="btn" onclick="publishChallenge(\''+x.id+'\')">نشر التحدي</button>':'')+(x.status==="published"?'<button class="btn warn" onclick="closeChallenge(\''+x.id+'\')">إنهاء المشاركة</button>':'')+'</div></article>';
+  return '<article class="item challenge-card"><div class="challenge-card-top"><h3>'+esc(x.title)+'</h3><span class="challenge-status '+(x.status==="published"?"is-published":x.status==="draft"?"is-draft":"is-closed")+'">'+status+'</span></div><div class="challenge-meta"><span><b>المستوى</b>'+esc(x.target_level||"الكل")+'</span><span><b>الأسئلة</b>'+count+' سؤال</span>'+(date?'<span><b>تاريخ الإنشاء</b>'+date+'</span>':'')+'</div><div class="challenge-actions"><button class="btn alt" onclick="showResults(\''+x.id+'\')">المشاركات والنتائج</button>'+(x.status==="draft"?'<button class="btn alt" onclick="editChallenge(\''+x.id+'\')">متابعة التعديل وإضافة الأسئلة</button><button class="btn" onclick="publishChallenge(\''+x.id+'\')">نشر التحدي</button>':'')+(x.status==="published"?'<button class="btn warn" onclick="closeChallenge(\''+x.id+'\')">إنهاء المشاركة</button>':'')+'</div></article>';
  }).join(""):'<div class="item" style="text-align:center;padding:20px"><strong style="color:#14532d">لا توجد تحديات محفوظة بعد</strong><p class="muted">اضغطي على «تحدٍّ جديد» لإنشاء أول تحدٍّ لك.</p></div>';
  }catch(e){list.innerHTML='<div class="item" style="text-align:center;padding:18px"><strong style="color:#923c2d">تعذر تحميل مكتبة التحديات</strong><p class="muted">'+esc(e.message)+'</p></div>';}finally{fitEmbeddedFrame();requestAnimationFrame(()=>requestAnimationFrame(fitEmbeddedFrame));setTimeout(fitEmbeddedFrame,120);setTimeout(fitEmbeddedFrame,400);}}
 window.editChallenge=id=>{call("teacher_list").then(d=>{const x=d.items.find(a=>a.id===id);if(!x)return;setEmbedPanel("editor");$("results").classList.add("hidden");editingId=id;$("title").value=x.title;$("description").value=x.description||"";$("level").value=x.target_level;$("starts").value=dateValue(x.starts_at);$("ends").value=dateValue(x.ends_at);$("duration").value=x.duration_minutes;$("formTitle").textContent="تعديل مسودة التحدي";questions=(x.questions||[]).map(q=>({...q}));renderQuestions();autoGrowDescription();$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");$("editor").scrollIntoView({behavior:"smooth"})}).catch(e=>message(e.message))};
