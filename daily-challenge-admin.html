@@ -286,7 +286,7 @@ window.removeQ=id=>{questions=questions.filter(q=>q.id!==id);renderQuestions()};
 function readQuestions(){captureQuestions();return questions;}
 function setEmbedPanel(page){["editor","list","results"].forEach(id=>{const active=id===page;const panel=$(id);panel.classList.toggle("active-panel",active);panel.classList.toggle("hidden",!active);panel.classList.toggle("embed-active",active);panel.style.setProperty("display",active?"block":"none","important");});if(location.hash!=="#"+page)history.replaceState(null,"",location.pathname+location.search+"#"+page);fitEmbeddedFrame();window.scrollTo({top:0,behavior:"instant"});}
 function reset(){editingId=null;questions=[];$("title").value="";$("description").value="";$("level").value="الكل";$("starts").value="";$("ends").value="";$("duration").value=10;$("formTitle").textContent="إعداد تحدٍّ جديد";$("publishBtn").classList.add("hidden");$("cancelEdit").classList.add("hidden");renderQuestions();addQuestion();autoGrowDescription()}
-function dateValue(v){return v?new Date(v).toISOString().slice(0,16):""}
+function dateValue(v){if(!v)return "";const d=new Date(v);if(Number.isNaN(d.getTime()))return "";const p=n=>String(n).padStart(2,"0");return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes())}
 function challengeStatusLabel(status,startsAt){if(status==="published"&&startsAt&&new Date(startsAt).getTime()>Date.now())return "منشور مجدول";return status==="draft"?"مسودة":status==="published"?"منشور ومتاح":status==="closed"?"منتهٍ":String(status||"غير محدد")}
 function scheduleDate(v){return v?new Date(v).toLocaleString("ar-DZ",{dateStyle:"short",timeStyle:"short"}):""}
 async function load(){const list=$("challengeListItems");list.innerHTML='<div class="item muted" style="text-align:center;padding:18px">جارٍ تحميل التحديات من قاعدة البيانات…</div>';fitEmbeddedFrame();try{
@@ -301,7 +301,32 @@ async function load(){const list=$("challengeListItems");list.innerHTML='<div cl
  }).join(""):'<div class="item" style="text-align:center;padding:20px"><strong style="color:#14532d">لا توجد تحديات محفوظة بعد</strong><p class="muted">اضغطي على «تحدٍّ جديد» لإنشاء أول تحدٍّ لك.</p></div>';
  }catch(e){list.innerHTML='<div class="item" style="text-align:center;padding:18px"><strong style="color:#923c2d">تعذر تحميل مكتبة التحديات</strong><p class="muted">'+esc(e.message)+'</p></div>';}finally{fitEmbeddedFrame();requestAnimationFrame(()=>requestAnimationFrame(fitEmbeddedFrame));setTimeout(fitEmbeddedFrame,120);setTimeout(fitEmbeddedFrame,400);}}
 window.editChallenge=id=>{call("teacher_list").then(d=>{const x=d.items.find(a=>a.id===id);if(!x)return;setEmbedPanel("editor");$("results").classList.add("hidden");editingId=id;$("title").value=x.title;$("description").value=x.description||"";$("level").value=x.target_level;$("starts").value=dateValue(x.starts_at);$("ends").value=dateValue(x.ends_at);$("duration").value=x.duration_minutes;$("formTitle").textContent="تعديل مسودة التحدي";questions=(x.questions||[]).map(q=>({...q}));renderQuestions();autoGrowDescription();$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");$("editor").scrollIntoView({behavior:"smooth"})}).catch(e=>message(e.message))};
-window.publishChallenge=async id=>{const d=await call("teacher_list").catch(e=>{message(e.message);return null});const item=d?.items?.find(x=>x.id===id);if(!item)return;if(!item.starts_at){message("حددي موعد ظهور الاختبار للتلاميذ أولاً، ثم احفظي المسودة وأعيدي النشر.");return;}if(item.ends_at&&new Date(item.ends_at).getTime()<=new Date(item.starts_at).getTime()){message("موعد نهاية المشاركة يجب أن يكون بعد موعد ظهور الاختبار.");return;}const when=scheduleDate(item.starts_at);if(!confirm("سيُنشر الاختبار الآن، لكنه لن يظهر للتلاميذ إلا في الموعد التالي:\n"+when+"\nهل تريدين المتابعة؟"))return;try{await call("teacher_publish",{id});message(new Date(item.starts_at).getTime()>Date.now()?"تم نشر الاختبار وجدولة ظهوره للتلاميذ في الموعد المحدد.":"تم نشر الاختبار وهو متاح للتلاميذ الآن.");load()}catch(e){message(e.message)}};
+window.publishChallenge=async id=>{
+ let d=await call("teacher_list").catch(e=>{message(e.message);return null});
+ let item=d?.items?.find(x=>x.id===id);
+ if(!item)return;
+ // When publishing from the editor, persist the current form values first.
+ if(editingId===id&&$("editor").classList.contains("active-panel")){
+  const startsValue=$("starts").value;
+  const endsValue=$("ends").value;
+  if(!startsValue){message("حددي موعد ظهور الاختبار للتلاميذ أولاً.");return;}
+  const startsAt=new Date(startsValue);
+  const endsAt=endsValue?new Date(endsValue):null;
+  if(Number.isNaN(startsAt.getTime())||(endsAt&&Number.isNaN(endsAt.getTime()))){message("تحققي من صحة موعد الظهور وموعد انتهاء المشاركة.");return;}
+  if(endsAt&&endsAt.getTime()<=startsAt.getTime()){message("موعد نهاية المشاركة يجب أن يكون بعد موعد ظهور الاختبار.");return;}
+  try{
+   const saved=await call("teacher_save",{id,title:$("title").value,description:$("description").value,target_level:$("level").value,starts_at:startsAt.toISOString(),ends_at:endsAt?endsAt.toISOString():null,duration_minutes:Number($("duration").value),questions:readQuestions()});
+   item=saved.item||{...item,starts_at:startsAt.toISOString(),ends_at:endsAt?endsAt.toISOString():null};
+   editingId=item.id;
+  }catch(e){message("تعذر حفظ التعديلات قبل النشر: "+e.message);return;}
+ }
+ if(!item.starts_at){message("حددي موعد ظهور الاختبار للتلاميذ أولاً، ثم احفظي المسودة وأعيدي النشر.");return;}
+ if(item.ends_at&&new Date(item.ends_at).getTime()<=new Date(item.starts_at).getTime()){message("موعد نهاية المشاركة يجب أن يكون بعد موعد ظهور الاختبار.");return;}
+ const when=scheduleDate(item.starts_at);
+ if(!confirm("سيُنشر الاختبار الآن، لكنه لن يظهر للتلاميذ إلا في الموعد التالي:\\n"+when+"\\nهل تريدين المتابعة؟"))return;
+ try{await call("teacher_publish",{id});message(new Date(item.starts_at).getTime()>Date.now()?"تم نشر الاختبار وجدولة ظهوره للتلاميذ في الموعد المحدد.":"تم نشر الاختبار وهو متاح للتلاميذ الآن.");load();}
+ catch(e){message(e.message);}
+}
 window.closeChallenge=async id=>{if(!confirm("إنهاء استقبال المشاركات في هذا التحدي؟"))return;try{await call("teacher_close",{id});message("تم إنهاء المشاركة.");load()}catch(e){message(e.message)}};
 window.showResults=async id=>{try{const d=await call("teacher_submissions",{id});$("results").classList.remove("hidden");setEmbedPanel("results");const written=(d.questions||[]).filter(q=>q.type==="written");const maxWritten=written.reduce((n,q)=>n+Math.max(1,Number(q.points)||1),0);$("resultList").innerHTML=d.submissions.length?d.submissions.map((x,i)=>'<article class="item"><strong>'+(i+1)+'. '+esc(x.students?.full_name||"تلميذ")+'</strong><p>المستوى: '+esc(x.students?.level||"—")+' · العلامة الحالية: '+(Number(x.score||0)+Number(x.manual_score||0))+'/'+x.max_score+(written.length?' · '+(x.manual_reviewed?'تم تصحيح الإجابة النصية':'بانتظار تصحيح الإجابة النصية'):'')+'</p><p class="muted">وقت الإرسال: '+new Date(x.submitted_at).toLocaleString("ar-DZ")+'</p>'+(written.length?'<div class="written-review"><strong>الإجابات النصية</strong>'+written.map((q,n)=>'<div class="written-answer"><b>السؤال: '+esc(q.text)+'</b><p>'+esc((x.answers||{})[q.id]||"لم يكتب التلميذ إجابة.")+'</p><small>النقاط المخصصة: '+(q.points||1)+'</small></div>').join("")+'<label>علامة الإجابات النصية (من '+maxWritten+')</label><input class="manual-score" type="number" min="0" max="'+maxWritten+'" step="0.5" value="'+(x.manual_score||0)+'"><label>ملاحظة الأستاذة</label><textarea class="teacher-note" rows="2">'+esc(x.teacher_note||"")+'</textarea><button class="btn alt" onclick="gradeChallenge(\''+id+'\',\''+x.id+'\',this)">حفظ التصحيح</button></div>':'')+'<button class="btn alt" onclick="setWinner(\''+id+'\',\''+x.id+'\')">اعتماد فائز التحدي</button></article>').join(""):'لم تصل مشاركات بعد.';$("results").scrollIntoView({behavior:"smooth"})}catch(e){message(e.message)}};
 window.gradeChallenge=async(id,submissionId,button)=>{const box=button.closest(".written-review"),manual_score=Number(box.querySelector(".manual-score").value),teacher_note=box.querySelector(".teacher-note").value;button.disabled=true;try{const d=await call("teacher_grade",{id,submission_id:submissionId,manual_score,teacher_note});message("تم حفظ التصحيح. العلامة النهائية: "+d.final_score);await showResults(id)}catch(e){message(e.message)}finally{button.disabled=false}};
