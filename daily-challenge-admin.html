@@ -306,6 +306,17 @@ body.embed .grade-state{color:#65756a;font-size:12px}
 #resultList .winner-row{display:flex;justify-content:flex-end;margin-top:13px;padding-top:12px;border-top:1px solid #edf1e9}
 #resultList .winner-row .btn{margin:0}
 @media(max-width:600px){#resultList>.item{padding:13px;border-radius:16px}#resultList .participant-name{font-size:16px}#resultList .written-review{padding:11px}#resultList .written-answer{padding:11px}#resultList .grade-actions{display:grid;grid-template-columns:1fr 1fr}#resultList .grade-choice{width:100%;min-width:0}#resultList .grade-state{grid-column:1/-1}#resultList .save-grade-row{display:grid;grid-template-columns:1fr}#resultList .save-grade-row .btn{width:100%}#resultList .winner-row .btn{width:100%}}
+
+/* تصنيف المشاركات حسب تقدم التصحيح */
+.result-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:14px 0 16px}
+.result-filter{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;padding:9px 12px;border:1px solid #dce7d9;border-radius:13px;background:#f8fbf6;color:#31543b;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.result-filter b{display:inline-flex;align-items:center;justify-content:center;min-width:27px;height:27px;padding:0 7px;border-radius:99px;background:#e8efe5;color:#31543b}
+.result-filter.active{border-color:#4e8a5c;background:#eaf5e9;box-shadow:inset 0 0 0 1px #8db496;color:#14532d}
+.result-filter.active b{background:#14532d;color:#fff}
+#resultList>.item{margin-bottom:14px}
+#resultList .participant-status.partial{background:#fff6e5;border-color:#eed9a8;color:#89631c}
+#resultList .empty-results{text-align:center;padding:22px}
+@media(max-width:380px){.result-filters{grid-template-columns:1fr}}
 </style></head><body><script>if(new URLSearchParams(location.search).get("embed")==="1")document.body.classList.add("embed");</script><main class="wrap"><header class="head"><h1>إدارة التحدي اليومي</h1><p>أنشئي التحدي، حددي المستوى ووقت المشاركة، ثم انشريه لمشاركته مع التلاميذ.</p><div class="row"><button class="btn alt" id="newBtn">تحدٍّ جديد</button><a class="btn alt" href="./index.html?from=challenge" style="text-decoration:none">العودة إلى فضاء الأستاذة</a><a class="btn alt" href="./index.html?from=challenge" onclick="if(history.length>1){event.preventDefault();history.back()}" style="text-decoration:none">العودة إلى الاختبارات</a></div></header>
 <div id="message" class="msg hidden"></div>
 <section class="panel" id="editor"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px"><h2 id="formTitle" style="margin:0">إعداد تحدٍّ جديد</h2><button class="btn alt" type="button" id="backToLibrary">← العودة إلى المكتبة</button></div><div class="grid"><div><label>عنوان التحدي</label><input id="title" maxlength="180" placeholder="مثال: تحدي الزلازل"></div><div><label>المستوى المستهدف</label><select id="level"><option>الكل</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select></div><div><label for="starts">موعد ظهور الاختبار للتلاميذ</label><input id="starts" type="datetime-local"><small class="muted">لن يظهر الاختبار في فضاء التلميذ قبل هذا الموعد، حتى بعد نشره.</small></div><div><label for="ends">موعد انتهاء المشاركة (اختياري)</label><input id="ends" type="datetime-local"><small class="muted">بعد هذا الموعد يُخفى الاختبار ويتوقف استقبال الإجابات.</small></div><div><label>المدة بالدقائق</label><input id="duration" type="number" min="1" max="180" value="10"></div></div><label for="description">تعليمات التحدي</label><textarea id="description" rows="5" dir="rtl" placeholder="اكتبي تعليمات التحدي هنا… يمكنك كتابة عدة أسطر، وسيزداد ارتفاع المربع تلقائياً."></textarea><p class="muted" style="margin:5px 2px 12px">اكتبي التعليمات براحتك، ويمكنك تقسيمها إلى أسطر ونقاط.</p><div class="row" style="justify-content:space-between;margin-top:16px"><h2 style="margin:0">الأسئلة</h2></div><div id="questions"></div><div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn alt" type="button" id="addQBottom">＋ إضافة سؤال آخر</button></div><div class="row"><button class="btn" id="saveBtn">حفظ المسودة</button><button class="btn alt hidden" id="publishBtn">نشر التحدي</button><button class="btn warn hidden" id="cancelEdit">إلغاء التعديل</button></div></section>
@@ -325,7 +336,7 @@ body.embed .grade-state{color:#65756a;font-size:12px}
 </div>
 </div>
 <div id="libraryResultCount" class="muted library-result-count"></div>
-<div id="challengeListItems" class="muted">جارٍ التحميل…</div></section><section class="panel hidden" id="results"><div class="row" style="justify-content:space-between"><h2>مشاركات التلاميذ</h2><button class="btn alt" type="button" id="backToChallengeList">← العودة إلى المكتبة</button></div><div id="resultList"></div></section></main>
+<div id="challengeListItems" class="muted">جارٍ التحميل…</div></section><section class="panel hidden" id="results"><div class="row" style="justify-content:space-between"><h2>مشاركات التلاميذ</h2><button class="btn alt" type="button" id="backToChallengeList">← العودة إلى المكتبة</button></div><div id="resultFilters" class="result-filters" aria-label="تصنيف المشاركات"></div><div id="resultList"></div></section></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const token=localStorage.getItem("tahadi_teacher_token");let questions=[],editingId=null,currentChallenge=null;
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -420,20 +431,37 @@ window.publishChallenge=async id=>{
 }
 window.notifyChallenge=async id=>{try{const d=await call("teacher_challenge_notify",{id});message(d.message||"تم إرسال التنبيه.");}catch(e){message(e.message)}};
 window.closeChallenge=async id=>{if(!confirm("إنهاء استقبال المشاركات في هذا التحدي؟"))return;try{await call("teacher_close",{id});message("تم إنهاء المشاركة.");load()}catch(e){message(e.message)}};
-window.showResults=async id=>{try{
- const d=await call("teacher_submissions",{id});
- $("results").classList.remove("hidden");setEmbedPanel("results");
- const written=(d.questions||[]).filter(q=>q.type==="written");
- $("resultList").innerHTML=d.submissions.length?d.submissions.map((x,i)=>{
-  const grades=x.manual_grading||{};
-  const reviewed=written.length>0&&written.every(q=>typeof grades[q.id]==="boolean"||(grades[q.id]&&typeof grades[q.id].correct==="boolean"));
-  const current=Number(x.score||0)+Number(x.manual_score||0);
-  const review=written.length?'<div class="written-review"><strong>مراجعة إجابات التلميذ</strong><p class="muted">اقرئي كل إجابة واحكمي عليها بنفسك، ثم اكتبي ملاحظتك للتلميذ. لا توجد إجابة نموذجية مفروضة.</p>'+written.map((q,n)=>{
+let resultCache={id:null,questions:[],submissions:[]},resultFilter="all";
+function submissionProgress(x,written){
+ if(!written.length)return "done";
+ const grades=x.manual_grading||{};
+ const count=written.filter(q=>{const v=grades[q.id];return typeof v==="boolean"||(v&&typeof v.correct==="boolean")}).length;
+ return count===0?"pending":count===written.length?"done":"partial";
+}
+function renderSubmissionResults(){
+ const {id,questions,submissions}=resultCache,written=questions.filter(q=>q.type==="written");
+ const counts={all:submissions.length,pending:0,partial:0,done:0};
+ submissions.forEach(x=>counts[submissionProgress(x,written)]++);
+ const filters=[["all","جميع المشاركات"],["pending","غير مصححة"],["partial","قيد التصحيح"],["done","مكتملة التصحيح"]];
+ $("resultFilters").innerHTML=filters.map(([key,label])=>'<button type="button" class="result-filter '+(resultFilter===key?'active':'')+'" aria-pressed="'+(resultFilter===key)+'" onclick="filterSubmissionResults(\''+key+'\')"><span>'+label+'</span><b>'+counts[key]+'</b></button>').join("");
+ const visible=submissions.filter(x=>resultFilter==="all"||submissionProgress(x,written)===resultFilter);
+ $("resultList").innerHTML=visible.length?visible.map((x)=>{
+  const grades=x.manual_grading||{},state=submissionProgress(x,written);
+  const reviewed=state==="done",current=Number(x.score||0)+Number(x.manual_score||0);
+  const review=written.length?'<div class="written-review"><strong>مراجعة إجابات التلميذ</strong><p class="muted">صححي كل إجابة على حدة. يمكنك حفظ ما أنجزتِه والعودة لاحقًا لإكمال الباقي.</p>'+written.map((q,n)=>{
    const value=grades[q.id],chosen=typeof value==="object"&&value?value.correct:value,answer=(x.answers||{})[q.id]||"";
    return '<div class="written-answer" data-qid="'+esc(q.id)+'"><b>السؤال '+(n+1)+': '+esc(q.text)+'</b><p><b>إجابة التلميذ:</b> '+esc(answer||"لم يكتب التلميذ إجابة.")+'</p><small>النقاط المخصصة: '+(q.points||1)+'</small><div class="grade-actions"><button type="button" class="btn alt grade-choice '+(chosen===true?'selected-correct':'')+'" data-value="true" aria-pressed="'+(chosen===true)+'" onclick="setQuestionGrade(this,true)">صحيحة</button><button type="button" class="btn alt grade-choice '+(chosen===false?'selected-wrong':'')+'" data-value="false" aria-pressed="'+(chosen===false)+'" onclick="setQuestionGrade(this,false)">خاطئة</button><small class="grade-state">'+(typeof chosen==="boolean"?(chosen?"تم تحديدها صحيحة":"تم تحديدها خاطئة"):"لم تُصحح بعد")+'</small></div></div>';
-  }).join("")+'<label>ملاحظة الأستاذة للتلميذ</label><textarea class="teacher-note" rows="4" placeholder="اكتبي ملاحظتك وتوجيهك للتلميذ هنا…">'+esc(x.teacher_note||"")+'</textarea><div class="save-grade-row"><button class="btn alt" onclick="gradeChallenge(\''+id+'\',\''+x.id+'\',this)">حفظ التصحيح</button><span class="grading-progress">'+(reviewed?'✓ اكتمل تصحيح جميع الإجابات.':'يمكن حفظ التصحيح الآن وإكمال الباقي لاحقًا.')+'</span></div></div>':'';
-  return '<article class="item"><div class="participant-head"><h3 class="participant-name">'+(i+1)+'. '+esc(x.students?.full_name||"تلميذ")+'</h3><span class="participant-status '+(reviewed?'done':'')+'">'+(reviewed?'اكتمل التصحيح':'بانتظار التصحيح')+'</span></div><div class="participant-meta"><span>المستوى: '+esc(x.students?.level||"—")+'</span><span>العلامة الحالية: '+current+'/'+x.max_score+'</span><span>وقت الإرسال: '+new Date(x.submitted_at).toLocaleString("ar-DZ")+'</span></div>'+review+'<div class="winner-row"><button class="btn alt" onclick="setWinner(\''+id+'\',\''+x.id+'\')">اعتماد فائز التحدي</button></div></article>';
- }).join(""):'لم تصل مشاركات بعد.';
+  }).join("")+'<label>ملاحظة الأستاذة للتلميذ</label><textarea class="teacher-note" rows="4" placeholder="اكتبي ملاحظتك وتوجيهك للتلميذ هنا…">'+esc(x.teacher_note||"")+'</textarea><div class="save-grade-row"><button class="btn alt" onclick="gradeChallenge(\''+id+'\',\''+x.id+'\',this)">حفظ التصحيح</button><span class="grading-progress">'+(reviewed?'✓ اكتمل تصحيح جميع الإجابات.':state==="partial"?'حُفظ جزء من التصحيح؛ أكملي الإجابات المتبقية.':'لم يبدأ التصحيح بعد.')+'</span></div></div>':'<div class="msg">لا توجد إجابات كتابية تحتاج إلى تصحيح يدوي.</div>';
+  const labels={pending:"غير مصححة",partial:"قيد التصحيح",done:"مكتملة التصحيح"};
+  return '<article class="item"><div class="participant-head"><h3 class="participant-name">'+esc(x.students?.full_name||"تلميذ")+'</h3><span class="participant-status '+(reviewed?'done':state==="partial"?'partial':'')+'">'+labels[state]+'</span></div><div class="participant-meta"><span>المستوى: '+esc(x.students?.level||"—")+'</span><span>العلامة: '+current+'/'+x.max_score+'</span><span>الإرسال: '+new Date(x.submitted_at).toLocaleString("ar-DZ")+'</span></div>'+review+'<div class="winner-row"><button class="btn alt" onclick="setWinner(\''+id+'\',\''+x.id+'\')">اعتماد فائز التحدي</button></div></article>';
+ }).join(""):'<div class="msg empty-results">لا توجد مشاركات في هذا القسم.</div>';
+}
+window.filterSubmissionResults=key=>{resultFilter=key;renderSubmissionResults();};
+window.showResults=async id=>{try{
+ const d=await call("teacher_submissions",{id});
+ resultCache={id,questions:d.questions||[],submissions:d.submissions||[]};
+ $("results").classList.remove("hidden");setEmbedPanel("results");
+ renderSubmissionResults();
  $("results").scrollIntoView({behavior:"smooth"});
 }catch(e){message(e.message)}};
 window.setQuestionGrade=(button,value)=>{
