@@ -1911,4 +1911,85 @@ body:has(#dashboard:not(.hidden)) .hero{display:none!important}
  #dashboard .student-identity-compact>.student-identity-logo{width:47px!important;height:47px!important;flex-basis:47px!important}
 }
 </style>
+
+<style id="student-identity-grid-final-fix-20261105">
+/* تثبيت البطاقة على كامل العرض: النص يمينًا والشعار في اليسار */
+#dashboard>.panel.student-identity.student-identity-compact{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) 58px!important;
+ grid-template-rows:auto!important;
+ direction:rtl!important;
+ align-items:center!important;
+ justify-items:stretch!important;
+ column-gap:14px!important;
+ row-gap:0!important;
+ width:100%!important;
+ height:auto!important;
+ min-height:112px!important;
+ max-height:none!important;
+ box-sizing:border-box!important;
+ padding:14px 16px!important;
+ overflow:visible!important;
+}
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info{
+ grid-column:1!important;grid-row:1!important;
+ display:flex!important;flex-direction:column!important;
+ align-items:stretch!important;justify-content:center!important;
+ width:100%!important;min-width:0!important;max-width:none!important;
+ margin:0!important;padding:0!important;
+ direction:rtl!important;text-align:right!important;
+ background:transparent!important;border:0!important;border-radius:0!important;
+ box-shadow:none!important;
+}
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>.student-welcome-title,
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentName,
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentLevel{
+ display:block!important;position:static!important;
+ float:none!important;clear:both!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ box-sizing:border-box!important;
+ direction:rtl!important;text-align:right!important;
+ align-self:stretch!important;justify-self:stretch!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>.student-welcome-title{
+ margin:0 0 5px!important;padding:0!important;
+ color:#718276!important;background:transparent!important;
+ border:0!important;border-radius:0!important;box-shadow:none!important;
+ font-size:.86rem!important;font-weight:700!important;line-height:1.4!important;
+}
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentName{
+ margin:0!important;padding:0!important;
+ color:#174b30!important;font-size:1.14rem!important;
+ font-weight:800!important;line-height:1.4!important;
+}
+#dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentLevel{
+ width:max-content!important;max-width:100%!important;
+ margin:5px 0 0 auto!important;padding:4px 10px!important;
+ color:#245b39!important;background:#e7f3e5!important;
+ border:1px solid #d4e7d0!important;border-radius:20px!important;
+ font-size:.75rem!important;line-height:1.45!important;
+}
+#dashboard>.panel.student-identity.student-identity-compact>img.student-identity-logo{
+ grid-column:2!important;grid-row:1!important;
+ display:block!important;position:static!important;
+ width:58px!important;height:58px!important;
+ max-width:58px!important;max-height:58px!important;
+ margin:0!important;padding:4px!important;
+ object-fit:contain!important;justify-self:end!important;align-self:center!important;
+ box-sizing:border-box!important;
+}
+@media(max-width:500px){
+ #dashboard>.panel.student-identity.student-identity-compact{
+  grid-template-columns:minmax(0,1fr) 52px!important;
+  min-height:108px!important;padding:12px!important;column-gap:10px!important;
+ }
+ #dashboard>.panel.student-identity.student-identity-compact>img.student-identity-logo{
+  width:52px!important;height:52px!important;max-width:52px!important;max-height:52px!important;
+ }
+ #dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>.student-welcome-title{font-size:.78rem!important}
+ #dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentName{font-size:1.03rem!important}
+ #dashboard>.panel.student-identity.student-identity-compact>.student-identity-info>#studentLevel{font-size:.69rem!important;padding:3px 8px!important}
+}
+</style>
 </body></html>
