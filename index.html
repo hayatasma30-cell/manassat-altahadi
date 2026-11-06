@@ -3003,7 +3003,7 @@ const handleIncomeCalendarClick=async e=>{
       if(savedPosition.challengePage&&panel&&frame&&hub){
         hub.hidden=true;panel.hidden=false;
         const page=savedPosition.challengePage==="list"?"list":"editor";
-        const target="./daily-challenge-admin.html?embed=1&v=20261105c#"+page;
+        const target="./daily-challenge-admin.html?embed=1&v=20261106fix3#"+page;
         if(!frame.src.endsWith(target))frame.src=target;
         const title=document.getElementById("dailyChallengeEmbeddedTitle");if(title)title.textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
       }else if(savedPosition.testPage){
@@ -3114,7 +3114,7 @@ const handleIncomeCalendarClick=async e=>{
     document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);
     challengePanel.hidden=false;
     $("dailyChallengeEmbeddedTitle").textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
-    const target="./daily-challenge-admin.html?embed=1&v=20261105c#"+page;
+    const target="./daily-challenge-admin.html?embed=1&v=20261106fix3#"+page;
     const desired=new URL(target,location.href);
     let current=null;try{current=new URL(challengeFrame.src,location.href);}catch(_){}
     if(!current||current.pathname!==desired.pathname||current.search!==desired.search||current.hash!==desired.hash){challengeFrame.src=target;}
@@ -3123,7 +3123,7 @@ const handleIncomeCalendarClick=async e=>{
     challengeFrame.addEventListener("load",()=>{try{challengeFrame.contentWindow.addEventListener("hashchange",saveTeacherPagePosition);challengeFrame.contentWindow.addEventListener("scroll",saveTeacherPagePosition,{passive:true});}catch(_){}saveTeacherPagePosition();},{once:true});
     if(!options.preserveScroll)challengePanel.scrollIntoView({behavior:"smooth",block:"start"});
   }
-  document.querySelectorAll("[data-challenge-page]").forEach(btn=>btn.addEventListener("click",event=>{event.preventDefault();const page=btn.dataset.challengePage==="editor"?"editor":"list";sessionStorage.removeItem(teacherPagePositionKey);localStorage.removeItem(teacherPagePositionKey);window.location.assign("./daily-challenge-admin.html?v=20261105e#"+page);}));
+  document.querySelectorAll("[data-challenge-page]").forEach(btn=>btn.addEventListener("click",event=>{event.preventDefault();const page=btn.dataset.challengePage==="editor"?"editor":"list";sessionStorage.removeItem(teacherPagePositionKey);localStorage.removeItem(teacherPagePositionKey);window.location.assign("./daily-challenge-admin.html?v=20261106fix3#"+page);}));
 
   $("backFromDailyChallenge")?.addEventListener("click",()=>{challengePanel.hidden=true;challengeHub.hidden=false;saveTeacherPagePosition();challengeHub.scrollIntoView({behavior:"smooth",block:"start"});});
   document.querySelectorAll("[data-test-page]").forEach(btn=>btn.addEventListener("click",()=>{const page=btn.dataset.testPage;$("electronicTestsHub").hidden=true;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==page);saveTeacherPagePosition();if(page==="list"){populateLibraryResultsStudents();loadElectronicTests();}}));
