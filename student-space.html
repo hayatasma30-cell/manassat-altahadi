@@ -2142,16 +2142,7 @@ body>header .top{min-height:62px!important}
  #dashboard .daily-challenge-notice-link{padding:8px 10px!important;font-size:.78rem!important;border-radius:11px!important}
 }
 </style>
-<style id="daily-notice-layout-v2">
-#dailyChallengeNotice:not(.hidden){direction:ltr!important;display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;width:calc(100% - 34px)!important;max-width:760px!important;margin:0 auto 16px!important;padding:10px 14px!important;border:1px solid #dfc982!important;border-right:5px solid #b58a32!important;border-radius:16px!important;background:linear-gradient(110deg,#fff9e9,#f3f8eb)!important;box-shadow:0 3px 0 #b58a3226,0 6px 13px #80601a10!important}
-#dailyChallengeNotice .daily-challenge-notice-icon{display:none!important}
-#dailyChallengeNotice .daily-challenge-notice-link{order:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;margin:0!important;padding:8px 13px!important;border:1px solid #b9d5b4!important;border-bottom:4px solid #287447!important;border-radius:12px!important;background:linear-gradient(145deg,#f7fcf3,#e4f2df)!important;color:#205b37!important;font-size:.85rem!important;font-weight:900!important;box-shadow:0 3px 0 #1c67331c!important;white-space:nowrap!important;text-decoration:none!important}
-#dailyChallengeNotice .daily-challenge-notice-copy{direction:rtl!important;order:2!important;display:flex!important;flex:1 1 auto!important;flex-direction:column!important;min-width:0!important;gap:3px!important;margin:0!important;text-align:right!important}
-#dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:1rem!important;line-height:1.45!important;color:#76571e!important;font-weight:900!important}
-#dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.78rem!important;line-height:1.5!important;color:#59695b!important}
-@media(max-width:520px){#dailyChallengeNotice:not(.hidden){width:calc(100% - 30px)!important;padding:9px 10px!important;gap:8px!important}#dailyChallengeNotice .daily-challenge-notice-link{padding:7px 10px!important;font-size:.77rem!important}#dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:.86rem!important}#dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.7rem!important}}
-#studentMenu .student-home-grid .student-action:nth-child(6){border:1px solid #c7dfc1!important;border-bottom:5px solid #378653!important;background:linear-gradient(145deg,#fff 0%,#f2f8ed 100%)!important;box-shadow:0 5px 0 #1b6b3515,0 9px 17px #173f2210!important}
-</style><style id="student-dashboard-equal-buttons">
+<style id="student-dashboard-equal-buttons">
 /* توحيد أبعاد بطاقات الأزرار الرئيسية */
 #studentMenu .student-home-grid{align-items:stretch!important;grid-auto-rows:1fr!important}
 #studentMenu .student-home-grid .student-action{
@@ -2215,100 +2206,48 @@ body>header .top{min-height:62px!important}
 
 </script>
 
-<style id="daily-challenge-notice-raised-v3">
-/* بطاقة تحدي اليوم: رفع النص وتقريب زر المشاركة وتقليل الفراغ السفلي */
-#dailyChallengeNotice:not(.hidden){
-  direction:ltr!important;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:flex-start!important;
-  justify-content:flex-start!important;
-  gap:10px!important;
-  min-height:0!important;
-  height:auto!important;
-  padding:9px 12px 7px!important;
-}
-#dailyChallengeNotice .daily-challenge-notice-link{
-  order:1!important;
-  align-self:flex-start!important;
-  margin:0!important;
-  flex:0 0 auto!important;
-}
-#dailyChallengeNotice .daily-challenge-notice-copy{
-  order:2!important;
-  align-self:flex-start!important;
-  margin:0!important;
-  padding:0!important;
-  transform:none!important;
-  min-width:0!important;
-  flex:1 1 auto!important;
-  gap:2px!important;
-  text-align:right!important;
-}
-#dailyChallengeNotice .daily-challenge-notice-copy strong{
-  margin:0!important;
-  line-height:1.4!important;
-}
-#dailyChallengeNotice .daily-challenge-notice-copy span{
-  margin:0!important;
-  line-height:1.45!important;
-}
-@media(max-width:520px){
-  #dailyChallengeNotice:not(.hidden){
-    gap:8px!important;
-    padding:8px 10px 6px!important;
-  }
-  #dailyChallengeNotice .daily-challenge-notice-link{
-    padding:7px 10px!important;
-  }
-}
-</style>
 
-<style id="daily-challenge-notice-top-alignment-v4">
-/* محاذاة نص تنبيه التحدي مع زر المشاركة من أعلى البطاقة */
-#dailyChallengeNotice:not(.hidden){
-  display:grid!important;
-  grid-template-columns:max-content minmax(0,1fr)!important;
-  grid-template-rows:auto!important;
-  align-items:start!important;
-  align-content:start!important;
-  justify-content:initial!important;
-  height:auto!important;
-  min-height:0!important;
-  padding:10px 12px!important;
-  gap:8px 10px!important;
+
+
+
+<style id="daily-challenge-notice-clean-layout-v5">
+/* تنسيق موحّد لبطاقة التحدي: النص والزر في صف واحد ومن أعلى البطاقة */
+html body #dashboard #dailyChallengeNotice:not(.hidden){
+ display:flex!important;flex-direction:row!important;align-items:flex-start!important;
+ justify-content:space-between!important;direction:ltr!important;gap:12px!important;
+ width:calc(100% - 30px)!important;max-width:760px!important;height:auto!important;min-height:0!important;
+ margin:0 auto 16px!important;padding:12px 14px!important;
+ border:1px solid #dfc982!important;border-right:5px solid #b58a32!important;border-radius:17px!important;
+ background:linear-gradient(110deg,#fff9e9,#f3f8eb)!important;
+ box-shadow:0 4px 0 #b58a3226,0 7px 15px #80601a10!important;
 }
-#dailyChallengeNotice .daily-challenge-notice-link{
-  grid-column:1!important;
-  grid-row:1!important;
-  align-self:start!important;
-  justify-self:start!important;
-  margin:0!important;
+html body #dashboard #dailyChallengeNotice .daily-challenge-notice-icon{display:none!important}
+html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy{
+ display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
+ align-items:stretch!important;justify-content:flex-start!important;align-self:flex-start!important;order:2!important;
+ grid-column:auto!important;grid-row:auto!important;width:auto!important;min-width:0!important;height:auto!important;
+ margin:0!important;padding:0!important;gap:3px!important;text-align:right!important;direction:rtl!important;
 }
-#dailyChallengeNotice .daily-challenge-notice-copy{
-  grid-column:2!important;
-  grid-row:1!important;
-  align-self:start!important;
-  justify-self:stretch!important;
-  display:flex!important;
-  flex-direction:column!important;
-  justify-content:flex-start!important;
-  align-items:stretch!important;
-  height:auto!important;
-  min-height:0!important;
-  margin:0!important;
-  padding:0!important;
-  transform:none!important;
+html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy strong{
+ display:block!important;margin:0!important;color:#76571e!important;font-size:1rem!important;
+ font-weight:900!important;line-height:1.4!important;
 }
-#dailyChallengeNotice .daily-challenge-notice-copy strong,
-#dailyChallengeNotice .daily-challenge-notice-copy span{
-  margin:0!important;
+html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy span{
+ display:block!important;margin:0!important;color:#59695b!important;font-size:.78rem!important;line-height:1.5!important;
+}
+html body #dashboard #dailyChallengeNotice .daily-challenge-notice-link{
+ display:inline-flex!important;flex:0 0 auto!important;order:1!important;grid-column:auto!important;grid-row:auto!important;
+ align-self:flex-start!important;justify-self:auto!important;margin:0!important;padding:8px 11px!important;
+ border:1px solid #b9d5b4!important;border-bottom:4px solid #287447!important;border-radius:12px!important;
+ background:linear-gradient(145deg,#f7fcf3,#e4f2df)!important;color:#205b37!important;
+ font-size:.78rem!important;font-weight:900!important;line-height:1.4!important;white-space:nowrap!important;
+ text-decoration:none!important;box-shadow:0 3px 0 #1c67331c!important;
 }
 @media(max-width:520px){
-  #dailyChallengeNotice:not(.hidden){
-    padding:9px 10px!important;
-    gap:8px!important;
-  }
+ html body #dashboard #dailyChallengeNotice:not(.hidden){gap:8px!important;padding:9px 10px!important}
+ html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:.86rem!important}
+ html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.7rem!important}
+ html body #dashboard #dailyChallengeNotice .daily-challenge-notice-link{padding:7px 9px!important;font-size:.75rem!important}
 }
 </style>
 
