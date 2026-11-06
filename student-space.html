@@ -2264,6 +2264,54 @@ body>header .top{min-height:62px!important}
 }
 </style>
 
+<style id="daily-challenge-notice-top-alignment-v4">
+/* محاذاة نص تنبيه التحدي مع زر المشاركة من أعلى البطاقة */
+#dailyChallengeNotice:not(.hidden){
+  display:grid!important;
+  grid-template-columns:max-content minmax(0,1fr)!important;
+  grid-template-rows:auto!important;
+  align-items:start!important;
+  align-content:start!important;
+  justify-content:initial!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:10px 12px!important;
+  gap:8px 10px!important;
+}
+#dailyChallengeNotice .daily-challenge-notice-link{
+  grid-column:1!important;
+  grid-row:1!important;
+  align-self:start!important;
+  justify-self:start!important;
+  margin:0!important;
+}
+#dailyChallengeNotice .daily-challenge-notice-copy{
+  grid-column:2!important;
+  grid-row:1!important;
+  align-self:start!important;
+  justify-self:stretch!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  align-items:stretch!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+}
+#dailyChallengeNotice .daily-challenge-notice-copy strong,
+#dailyChallengeNotice .daily-challenge-notice-copy span{
+  margin:0!important;
+}
+@media(max-width:520px){
+  #dailyChallengeNotice:not(.hidden){
+    padding:9px 10px!important;
+    gap:8px!important;
+  }
+}
+</style>
+
 <style id="daily-challenge-notice-home-only-v1">
 /* إظهار تنبيه التحدي اليومي في الصفحة الرئيسية فقط */
 #dashboard:has(#studentMenu.hidden) #dailyChallengeNotice{
