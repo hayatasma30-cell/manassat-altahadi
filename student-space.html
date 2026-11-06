@@ -2210,44 +2210,92 @@ body>header .top{min-height:62px!important}
 
 
 
-<style id="daily-challenge-notice-clean-layout-v5">
-/* تنسيق موحّد لبطاقة التحدي: النص والزر في صف واحد ومن أعلى البطاقة */
+<style id="daily-challenge-notice-fixed-positions-v6">
+/* تثبيت موضع النص والزر مباشرة أعلى البطاقة */
 html body #dashboard #dailyChallengeNotice:not(.hidden){
- display:flex!important;flex-direction:row!important;align-items:flex-start!important;
- justify-content:space-between!important;direction:ltr!important;gap:12px!important;
- width:calc(100% - 30px)!important;max-width:760px!important;height:auto!important;min-height:0!important;
- margin:0 auto 16px!important;padding:12px 14px!important;
- border:1px solid #dfc982!important;border-right:5px solid #b58a32!important;border-radius:17px!important;
+ position:relative!important;
+ display:block!important;
+ direction:ltr!important;
+ box-sizing:border-box!important;
+ width:calc(100% - 30px)!important;
+ max-width:760px!important;
+ min-height:96px!important;
+ height:auto!important;
+ margin:0 auto 16px!important;
+ padding:12px 14px!important;
+ border:1px solid #dfc982!important;
+ border-right:5px solid #b58a32!important;
+ border-radius:17px!important;
  background:linear-gradient(110deg,#fff9e9,#f3f8eb)!important;
  box-shadow:0 4px 0 #b58a3226,0 7px 15px #80601a10!important;
 }
-html body #dashboard #dailyChallengeNotice .daily-challenge-notice-icon{display:none!important}
-html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy{
- display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
- align-items:stretch!important;justify-content:flex-start!important;align-self:flex-start!important;order:2!important;
- grid-column:auto!important;grid-row:auto!important;width:auto!important;min-width:0!important;height:auto!important;
- margin:0!important;padding:0!important;gap:3px!important;text-align:right!important;direction:rtl!important;
+html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-icon{display:none!important}
+html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-link{
+ position:absolute!important;
+ top:12px!important;
+ left:14px!important;
+ right:auto!important;
+ order:0!important;
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ margin:0!important;
+ padding:8px 11px!important;
+ border:1px solid #b9d5b4!important;
+ border-bottom:4px solid #287447!important;
+ border-radius:12px!important;
+ background:linear-gradient(145deg,#f7fcf3,#e4f2df)!important;
+ color:#205b37!important;
+ font-size:.78rem!important;
+ font-weight:900!important;
+ line-height:1.4!important;
+ white-space:nowrap!important;
+ text-decoration:none!important;
+ box-shadow:0 3px 0 #1c67331c!important;
 }
-html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy strong{
- display:block!important;margin:0!important;color:#76571e!important;font-size:1rem!important;
- font-weight:900!important;line-height:1.4!important;
+html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy{
+ position:absolute!important;
+ top:12px!important;
+ right:14px!important;
+ left:145px!important;
+ bottom:auto!important;
+ order:0!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:stretch!important;
+ justify-content:flex-start!important;
+ width:auto!important;
+ min-width:0!important;
+ height:auto!important;
+ min-height:0!important;
+ margin:0!important;
+ padding:0!important;
+ gap:3px!important;
+ text-align:right!important;
+ direction:rtl!important;
+ transform:none!important;
 }
-html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy span{
- display:block!important;margin:0!important;color:#59695b!important;font-size:.78rem!important;line-height:1.5!important;
+html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy strong{
+ display:block!important;
+ margin:0!important;
+ color:#76571e!important;
+ font-size:1rem!important;
+ font-weight:900!important;
+ line-height:1.4!important;
 }
-html body #dashboard #dailyChallengeNotice .daily-challenge-notice-link{
- display:inline-flex!important;flex:0 0 auto!important;order:1!important;grid-column:auto!important;grid-row:auto!important;
- align-self:flex-start!important;justify-self:auto!important;margin:0!important;padding:8px 11px!important;
- border:1px solid #b9d5b4!important;border-bottom:4px solid #287447!important;border-radius:12px!important;
- background:linear-gradient(145deg,#f7fcf3,#e4f2df)!important;color:#205b37!important;
- font-size:.78rem!important;font-weight:900!important;line-height:1.4!important;white-space:nowrap!important;
- text-decoration:none!important;box-shadow:0 3px 0 #1c67331c!important;
+html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
+ display:block!important;
+ margin:0!important;
+ color:#59695b!important;
+ font-size:.78rem!important;
+ line-height:1.5!important;
 }
 @media(max-width:520px){
- html body #dashboard #dailyChallengeNotice:not(.hidden){gap:8px!important;padding:9px 10px!important}
- html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy strong{font-size:.86rem!important}
- html body #dashboard #dailyChallengeNotice .daily-challenge-notice-copy span{font-size:.7rem!important}
- html body #dashboard #dailyChallengeNotice .daily-challenge-notice-link{padding:7px 9px!important;font-size:.75rem!important}
+ html body #dashboard #dailyChallengeNotice:not(.hidden){min-height:92px!important;padding:9px 10px!important}
+ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-link{top:9px!important;left:10px!important;padding:7px 9px!important;font-size:.75rem!important}
+ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy{top:9px!important;right:10px!important;left:112px!important;gap:2px!important}
+ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy strong{font-size:.86rem!important}
+ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{font-size:.7rem!important;line-height:1.45!important}
 }
 </style>
 
