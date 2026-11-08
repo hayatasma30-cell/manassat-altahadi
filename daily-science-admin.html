@@ -212,6 +212,7 @@ const savedView=localStorage.getItem(dailyLastViewKey)||"home";
 const pageView=allowedViews.includes(requestedView)?requestedView:(allowedViews.includes(savedView)?savedView:"home");
 localStorage.setItem(dailyLastViewKey,pageView);
 function setPageView(){
+ $("reuseMethodSection").classList.toggle("hide",pageView!=="copy");
  $("homeMenu").classList.toggle("hide",pageView!=="home");
  $("today").classList.toggle("hide",pageView!=="today");
  $("library").classList.toggle("hide",pageView!=="library");
