@@ -3240,7 +3240,7 @@ const handleIncomeCalendarClick=async e=>{
        countEl.textContent=parts.join(" · ");
      }
      tick();if(window.tahadiNextTeacherLessonTicker)clearInterval(window.tahadiNextTeacherLessonTicker);window.tahadiNextTeacherLessonTicker=setInterval(tick,60000);
-   }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";dayEl.textContent="—";timeEl.textContent="—";modeEl.textContent="—";countEl.textContent="—";if(statusEl)statusEl.textContent="سبب التعذر: "+(error&&error.message?error.message:"خطأ غير معروف");console.warn("next teacher lesson",error);}
+   }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";dayEl.textContent="—";timeEl.textContent="—";modeEl.textContent="—";countEl.textContent="—";statusEl.textContent="";console.warn("next teacher lesson",error);}
  }
  loadNextTeacherLesson();setInterval(loadNextTeacherLesson,60*1000);
 
