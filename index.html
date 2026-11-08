@@ -1612,6 +1612,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </div>
 <div id="weeklyGroupLessonsPage" class="weekly-group-subpage" hidden>
 <button type="button" class="back" data-weekly-page-back>← صفحة المجموعة</button><h3>🗓️ حصص المجموعة الأسبوعية</h3>
+<div id="weeklyGroupLessonList" class="list"><div class="data-item">ستظهر هنا حصص هذه المجموعة.</div></div>
 <div class="panel" id="weeklyGroupSeriesPanel">
 <p class="muted">اختاري سلسلة الحصص المتكررة الموجودة مسبقًا حتى تظهر حصصها لأعضاء هذه المجموعة فقط.</p>
 <label class="editor-field">المجموعة<select id="weeklySeriesGroup"><option value="">اختاري المجموعة</option></select></label>
@@ -3940,6 +3941,11 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   $("weeklyGroupStudentsPage").hidden=!selected||currentSubpage!=="students";
   $("weeklyGroupLessonsPage").hidden=!selected||currentSubpage!=="lessons";
   if(selected){$("weeklyGroupDetailTitle").textContent=selected.group_name+" — "+selected.level+" · "+modeLabel(selected.delivery_mode);}
+  const lessonHost=$("weeklyGroupLessonList");
+  if(lessonHost){
+    const linkedLessons=(state.lessons||[]).filter(x=>selected&&selected.recurrence_group_id&&x.recurrence_group_id===selected.recurrence_group_id).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||"")));
+    lessonHost.innerHTML=!selected?'<div class="data-item">اختاري مجموعة أولًا.</div>':!selected.recurrence_group_id?'<div class="data-item">هذه المجموعة غير مرتبطة بسلسلة حصص. اختاري سلسلة الحصص أدناه لربطها.</div>':linkedLessons.length?'<h4>الحصص المسجلة لهذه المجموعة ('+linkedLessons.length+')</h4>'+linkedLessons.map(x=>'<article class="data-item"><strong>'+esc(x.lesson_date||"تاريخ غير محدد")+'</strong><div class="small">'+esc(x.lesson_time||"توقيت غير محدد")+'</div><div class="small">'+esc(x.subject||"حصة جماعية")+'</div></article>').join(""):'<div class="data-item">لا توجد حصص مرتبطة بهذه السلسلة حاليًا.</div>';
+  }
   if(selected)list.hidden=false;
   const currentGroup=groupSelect.value,currentSeriesGroup=seriesGroup.value,currentSeries=seriesSelect.value;
   groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+active.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
