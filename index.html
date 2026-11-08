@@ -3479,6 +3479,31 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 
 
 
+<style id="tahadi-platform-sections-final-fix">
+#homeView .platform-sections-content[hidden]{display:none!important}
+#homeView details.platform-sections[open]>.platform-sections-content{display:grid!important;visibility:visible!important;opacity:1!important}
+</style>
+<script id="tahadi-platform-sections-final-fix-js">
+(function(){
+ function init(){
+  document.querySelectorAll("#homeView details.platform-sections").forEach(function(d){
+   var summary=d.querySelector(":scope > summary"),content=d.querySelector(":scope > .platform-sections-content");
+   if(!summary||!content||d.dataset.finalSectionsFix==="1")return;
+   d.dataset.finalSectionsFix="1";
+   content.hidden=!d.open;
+   summary.addEventListener("click",function(e){
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    d.open=!d.open;
+    content.hidden=!d.open;
+    content.style.setProperty("display",d.open?"grid":"none","important");
+    if(d.open){content.style.setProperty("visibility","visible","important");content.style.setProperty("opacity","1","important");}
+   },true);
+  });
+ }
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();
+</script>
 <script id="tahadi-home-click-recovery-v2">
 /* معالج احتياطي مستقل لأزرار الصفحة الرئيسية والقوائم */
 (function(){
