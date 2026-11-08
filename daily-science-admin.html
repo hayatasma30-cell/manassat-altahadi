@@ -58,11 +58,45 @@ const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access
 async function call(action,extra={}){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر الاتصال بالمنصة.");return d}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function localDateValue(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
+const dailyDraftKey="tahadi_daily_science_unsent_draft_v1";
+const dailyDraftFields=["title","infoDate","topic","targetLevel","targetAudience","reviewCycle","dailyInfo","question","published"];
+let dailyDraftTimer=0;
+function saveDailyScienceDraft(){
+ try{
+  const editor=$("editor");
+  if(!editor||editor.classList.contains("hide"))return;
+  const values={};
+  dailyDraftFields.forEach(id=>{const el=$(id);if(el)values[id]=el.type==="checkbox"?el.checked:el.value});
+  localStorage.setItem(dailyDraftKey,JSON.stringify({savedAt:Date.now(),values,editorOpen:true,scrollY:window.scrollY||0,editingFactId:editingFactId||""}));
+ }catch(e){console.warn("تعذر حفظ مسودة المعلومة",e)}
+}
+function queueDailyScienceDraft(){clearTimeout(dailyDraftTimer);dailyDraftTimer=setTimeout(saveDailyScienceDraft,120)}
+function restoreDailyScienceDraft(){
+ try{
+  const raw=localStorage.getItem(dailyDraftKey);if(!raw)return false;
+  const draft=JSON.parse(raw);if(!draft||!draft.values||Date.now()-Number(draft.savedAt||0)>30*86400000){localStorage.removeItem(dailyDraftKey);return false}
+  const values=draft.values;
+  dailyDraftFields.forEach(id=>{const el=$(id);if(!el||!(id in values))return;if(el.type==="checkbox")el.checked=!!values[id];else el.value=values[id]??""});
+  editingFactId=draft.editingFactId||"";
+  $("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة");
+  $("editor").classList.toggle("hide",!draft.editorOpen);
+  if(editingFactId){$("saveBtn").textContent="حفظ التعديلات";$("cancelEditBtn").classList.remove("hide");$("editor").querySelector("h2").textContent="تعديل المعلومة العلمية"}
+  else{$("saveBtn").textContent="حفظ ونشر";$("cancelEditBtn").classList.add("hide");$("editor").querySelector("h2").textContent="إضافة معلومة علمية"}
+  $("status").textContent="استُعيدت مسودتك تلقائيًا. لم تُنشر بعد؛ أكملي العمل ثم اضغطي حفظ ونشر.";
+  requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,Number(draft.scrollY)||0),behavior:"auto"}));
+  return true;
+ }catch(e){console.warn("تعذر استرجاع مسودة المعلومة",e);return false}
+}
+window.restoreDailyScienceDraft=restoreDailyScienceDraft;
+dailyDraftFields.forEach(id=>{const el=$(id);if(el){el.addEventListener("input",queueDailyScienceDraft);el.addEventListener("change",queueDailyScienceDraft)}});
+window.addEventListener("pagehide",saveDailyScienceDraft);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)saveDailyScienceDraft()});
+
 function cleanLeadingTitle(value,title){const text=String(value??"");const lines=text.split(/\r?\n/);if(lines.length&&lines[0].trim().replace(/[：:：.!؟]+$/g,"")===String(title??"").trim().replace(/[：:：.!؟]+$/g,""))return lines.slice(1).join("\n").replace(/^\n/,"");return text}
 function card(x){const info=cleanLeadingTitle(x.daily_information,x.title);return '<article class="item"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'</div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+esc(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+esc(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>'}
 function draw(){facts.sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)));$("todayContent").innerHTML=facts.length?card(facts[0]):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';filter()}
 function filter(){const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,a=facts.filter(x=>(!topic||x.topic===topic)&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level].join(" ").toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة لبحثك.</div>';$("libraryCount").textContent="عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.length}
-async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];fillTopics();draw()}catch(e){$("todayContent").textContent=e.message}}
+async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];fillTopics();restoreDailyScienceDraft();draw()}catch(e){$("todayContent").textContent=e.message}}
 $("libraryBtn").onclick=()=>{$("library").classList.toggle("hide");$("today").classList.toggle("hide")};$("search").oninput=filter;$("topicFilter").onchange=filter;$("addBtn").onclick=()=>{
  const hasDraft=[$("title").value,$("topic").value,$("targetLevel").value,$("targetAudience").value,$("dailyInfo").value,$("question").value].some(v=>String(v||"").trim()!=="");
  if(!hasDraft)resetEditor();
@@ -74,7 +108,7 @@ $("libraryBtn").onclick=()=>{$("library").classList.toggle("hide");$("today").cl
  $("editor").scrollIntoView({behavior:"smooth",block:"start"});
  if(!$("title").value.trim())$("title").focus({preventScroll:true});
 };
-function resetEditor(){$("editor").classList.remove("hide");editingFactId="";$("title").value="";$("infoDate").value=localDateValue();$("topic").value="";$("targetLevel").value="";$("targetAudience").value="";$("reviewCycle").value="";$("cycleWrap").classList.add("hide");$("dailyInfo").value="";$("question").value="";$("published").checked=true;$("saveBtn").textContent="حفظ ونشر";$("cancelEditBtn").classList.add("hide");$("editor").querySelector("h2").textContent="إضافة معلومة علمية";$("status").textContent="";}
+function resetEditor(){try{localStorage.removeItem(dailyDraftKey)}catch(e){}$("editor").classList.remove("hide");editingFactId="";$("title").value="";$("infoDate").value=localDateValue();$("topic").value="";$("targetLevel").value="";$("targetAudience").value="";$("reviewCycle").value="";$("cycleWrap").classList.add("hide");$("dailyInfo").value="";$("question").value="";$("published").checked=true;$("saveBtn").textContent="حفظ ونشر";$("cancelEditBtn").classList.add("hide");$("editor").querySelector("h2").textContent="إضافة معلومة علمية";$("status").textContent="";}
 function editFact(id){const x=facts.find(y=>String(y.id)===String(id));if(!x)return;editingFactId=x.id;$("title").value=x.title||"";$("infoDate").value=x.info_date||"";$("topic").value=x.topic||"";$("targetLevel").value=x.target_level||"الكل";$("targetAudience").value=x.target_audience||"الكل";$("reviewCycle").value=x.review_cycle||"";$("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة");$("dailyInfo").value=x.daily_information||"";$("question").value=x.scientific_question||"";$("published").checked=x.is_published!==false;$("saveBtn").textContent="حفظ التعديلات";$("cancelEditBtn").classList.remove("hide");$("editor").querySelector("h2").textContent="تعديل المعلومة العلمية";$("status").textContent="تعدّلين الآن: "+(x.title||"معلومة علمية");$("editor").classList.remove("hide");$("editor").scrollIntoView({behavior:"smooth",block:"start"});}
 $("cancelEditBtn").onclick=resetEditor;
 async function handleFactActions(e){const edit=e.target.closest("[data-edit-fact]"),del=e.target.closest("[data-delete-fact]");if(edit){editFact(edit.dataset.editFact);return;}if(del){const x=facts.find(y=>String(y.id)===String(del.dataset.deleteFact));if(!x||!confirm("هل تريدين حذف هذه المعلومة نهائيًا؟\\n"+(x.title||"")))return;del.disabled=true;try{const d=await call("daily_science_delete",{id:x.id});$("status").textContent=d.message||"تم حذف المعلومة.";await load();}catch(err){alert(err.message);del.disabled=false;}}}
