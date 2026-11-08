@@ -321,6 +321,52 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 }
 </style>
 
+<style id="student-home-two-cards-compact-v2">
+@media(max-width:520px){
+  /* بطاقة الترحيب: ارتفاع أقل مع بقاء الاسم واضحًا */
+  html body #dashboard>.student-identity.student-identity-compact{
+    min-height:0!important;height:auto!important;
+    padding:8px 11px!important;margin:3px 0 8px!important;
+    border-radius:15px!important;border-right-width:4px!important;
+    box-shadow:0 2px 0 #17643b10,0 5px 10px #173f2209!important;
+  }
+  html body #dashboard .student-identity-compact .student-identity-info{gap:2px!important}
+  html body #dashboard .student-welcome-title{font-size:.72rem!important;line-height:1.3!important}
+  html body #dashboard .student-identity-compact .student-name-line{gap:9px!important;margin:1px 0!important}
+  html body #dashboard #studentName{font-size:1.02rem!important;line-height:1.25!important;margin:0!important}
+  html body #dashboard .student-identity-compact .student-profile-shortcut{
+    width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;flex-basis:38px!important;padding:6px!important
+  }
+  html body #dashboard>.student-identity.student-identity-compact>img.student-identity-logo{
+    width:43px!important;height:43px!important;max-width:43px!important;max-height:43px!important;flex-basis:43px!important
+  }
+  html body #dashboard #studentLevel{font-size:.64rem!important;padding:3px 8px!important;line-height:1.25!important;margin-top:2px!important}
+
+  /* لوحة الفائزين: بطاقة أقصر دون حذف اسم الفائز أو تفاصيله */
+  html body #studentMenu #studentWinnersBoard{
+    padding:8px 10px!important;margin:0 0 9px!important;
+    border-radius:14px!important;border-right-width:4px!important;
+    box-shadow:0 2px 0 #9b792015,0 4px 9px #80601a09!important;
+  }
+  html body #studentMenu .student-winners-heading{
+    gap:7px!important;margin:0 0 6px!important;min-height:30px!important;
+  }
+  html body #studentMenu .student-winners-heading>span{
+    width:30px!important;height:30px!important;flex:0 0 30px!important;
+    border-radius:9px!important;font-size:17px!important;
+  }
+  html body #studentMenu .student-winners-heading strong{font-size:.84rem!important;line-height:1.3!important}
+  html body #studentMenu .student-winners-heading small{font-size:.64rem!important;line-height:1.3!important;margin-top:1px!important}
+  html body #studentMenu .student-winners-list{margin-top:4px!important;gap:5px!important}
+  html body #studentMenu .student-winner-item{
+    min-height:0!important;margin:0!important;padding:6px 9px!important;border-radius:11px!important;
+  }
+  html body #studentMenu .student-winner-item strong{font-size:.84rem!important;line-height:1.35!important}
+  html body #studentMenu .student-winner-item small{font-size:.66rem!important;line-height:1.35!important;margin-top:2px!important}
+  html body #studentMenu .student-winners-list .item{margin:4px 0!important;padding:6px 9px!important}
+}
+</style>
+
 </head>
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
