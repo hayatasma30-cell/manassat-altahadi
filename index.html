@@ -1561,7 +1561,8 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="panel">
 <p class="muted">أنشئي مجموعات الدعم الأسبوعية حسب المستوى وطريقة الدراسة، ثم أضيفي إليها التلاميذ يدويًا. التسجيل في حصة فردية أو دورة لا يضيف التلميذ إلى هذه المجموعات.</p>
 <div class="data-item" style="margin:12px 0">
-<strong>➕ إنشاء مجموعة أسبوعية</strong>
+<strong id="weeklyGroupFormTitle">➕ إنشاء مجموعة أسبوعية</strong>
+<input id="weeklyGroupEditId" type="hidden">
 <div class="editor-fields">
 <label class="editor-field">اسم المجموعة<input id="weeklyGroupName" maxlength="100" placeholder="مثال: مجموعة السنة الأولى — حضوري"></label>
 <label class="editor-field">المستوى<select id="weeklyGroupLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select></label>
@@ -1569,7 +1570,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <label class="editor-field">يوم الحصة<select id="weeklyGroupWeekday"><option value="">غير محدد</option><option value="0">الأحد</option><option value="1">الإثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></label>
 <label class="editor-field">التوقيت<input id="weeklyGroupTime" maxlength="40" placeholder="مثال: 16:00 - 18:00"></label>
 </div>
-<button id="weeklyGroupCreateBtn" class="primary" type="button" style="margin-top:12px;width:100%">حفظ المجموعة</button>
+<div class="student-actions" style="display:flex;gap:8px;margin-top:12px"><button id="weeklyGroupCreateBtn" class="primary" type="button" style="flex:1">حفظ المجموعة</button><button id="weeklyGroupCancelEdit" class="secondary" type="button" hidden>إلغاء التعديل</button></div>
 <div id="weeklyGroupStatus" class="status" role="status"></div>
 </div>
 <div class="section-heading"><h3>المجموعات المسجلة</h3><button id="weeklyGroupsRefresh" class="secondary" type="button">تحديث</button></div>
@@ -3884,19 +3885,23 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   if(!state.groups.length){list.innerHTML='<div class="data-item">لم تُنشأ مجموعات أسبوعية بعد.</div>';return;}
   list.innerHTML=state.groups.map(g=>{
    const members=state.members.filter(m=>m.group_id===g.id);
-   return '<article class="data-item"><strong>'+esc(g.group_name)+'</strong><div class="small">المستوى: '+esc(g.level)+' · '+modeLabel(g.delivery_mode)+'</div><div class="small">الموعد: '+dayLabel(g.weekday)+' · '+esc(g.lesson_time||"لم يُحدد")+'</div><div class="small">عدد الأعضاء: '+members.length+'</div><div class="student-actions">'+(members.length?members.map(m=>'<div class="payment-meta"><span>'+esc(m.students?.full_name||"تلميذ")+'</span><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div>').join(""):'<span class="muted">لا يوجد تلاميذ في هذه المجموعة بعد.</span>')+'</div></article>';
+   return '<article class="data-item"><strong>'+esc(g.group_name)+'</strong><div class="small">المستوى: '+esc(g.level)+' · '+modeLabel(g.delivery_mode)+'</div><div class="small">الموعد: '+dayLabel(g.weekday)+' · '+esc(g.lesson_time||"لم يُحدد")+'</div><div class="small">عدد الأعضاء: '+members.length+'</div>'+(g.is_active?'':'<span class="muted">مجموعة متوقفة</span>')+'<div class="student-actions" style="display:flex;gap:8px;margin:10px 0"><button class="secondary" type="button" data-weekly-edit="'+esc(g.id)+'">تعديل المجموعة</button>'+(g.is_active?'<button class="secondary" type="button" data-weekly-delete="'+esc(g.id)+'">حذف المجموعة</button>':'')+'</div><div class="student-actions">'+(members.length?members.map(m=>'<div class="payment-meta"><span>'+esc(m.students?.full_name||"تلميذ")+'</span><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div>').join(""):'<span class="muted">لا يوجد تلاميذ في هذه المجموعة بعد.</span>')+'</div></article>';
   }).join("");
  }
  async function load(){ $("weeklyGroupsList").innerHTML='<div class="data-item">جارٍ تحميل البيانات…</div>';try{state=await call("weekly_groups_list");render();}catch(e){$("weeklyGroupsList").innerHTML='<div class="data-item">'+esc(e.message)+'</div>';}}
  document.addEventListener("click",e=>{
   if(e.target.closest('[data-view="weeklyGroupsView"]'))setTimeout(load,100);
+  const edit=e.target.closest("[data-weekly-edit]");if(edit){const g=state.groups.find(x=>x.id===edit.dataset.weeklyEdit);if(!g)return;$("weeklyGroupEditId").value=g.id;$("weeklyGroupName").value=g.group_name;$("weeklyGroupLevel").value=g.level;$("weeklyGroupMode").value=g.delivery_mode;$("weeklyGroupWeekday").value=g.weekday===null?"":String(g.weekday);$("weeklyGroupTime").value=g.lesson_time||"";$("weeklyGroupFormTitle").textContent="✏️ تعديل المجموعة";$("weeklyGroupCreateBtn").textContent="حفظ التعديلات";$("weeklyGroupCancelEdit").hidden=false;$("weeklyGroupName").focus();window.scrollTo({top:$("weeklyGroupName").getBoundingClientRect().top+window.scrollY-100,behavior:"smooth"});}
+  const del=e.target.closest("[data-weekly-delete]");if(del){(async()=>{if(!confirm("سيتم إيقاف هذه المجموعة وإخراج أعضائها منها. ستبقى سجلات الحصص محفوظة. هل تريدين المتابعة؟"))return;try{await call("weekly_group_delete",{group_id:del.dataset.weeklyDelete});resetGroupForm();await load();status("weeklyGroupStatus","تم حذف المجموعة من المجموعات النشطة مع الاحتفاظ بسجلات الحصص.");}catch(err){alert(err.message);}})();}
   const remove=e.target.closest("[data-weekly-remove]");if(remove){(async()=>{if(!confirm("هل تريدين إخراج هذا التلميذ من المجموعة؟"))return;try{await call("weekly_group_member_remove",{member_id:remove.dataset.weeklyRemove});await load();}catch(err){alert(err.message);}})();}
  });
  $("weeklyGroupsRefresh")?.addEventListener("click",load);
+ function resetGroupForm(){ $("weeklyGroupEditId").value="";$("weeklyGroupName").value="";$("weeklyGroupLevel").value="السنة الأولى متوسط";$("weeklyGroupMode").value="in_person";$("weeklyGroupWeekday").value="";$("weeklyGroupTime").value="";$("weeklyGroupFormTitle").textContent="➕ إنشاء مجموعة أسبوعية";$("weeklyGroupCreateBtn").textContent="حفظ المجموعة";$("weeklyGroupCancelEdit").hidden=true; }
+ $("weeklyGroupCancelEdit")?.addEventListener("click",resetGroupForm);
  $("weeklyGroupCreateBtn")?.addEventListener("click",async()=>{
   const name=$("weeklyGroupName").value.trim();if(!name){status("weeklyGroupStatus","اكتبي اسم المجموعة.",true);return;}
   const b=$("weeklyGroupCreateBtn");b.disabled=true;
-  try{await call("weekly_group_save",{group_name:name,level:$("weeklyGroupLevel").value,delivery_mode:$("weeklyGroupMode").value,weekday:$("weeklyGroupWeekday").value===""?null:Number($("weeklyGroupWeekday").value),lesson_time:$("weeklyGroupTime").value.trim()});$("weeklyGroupName").value="";status("weeklyGroupStatus","تم إنشاء المجموعة بنجاح.");await load();}catch(e){status("weeklyGroupStatus",e.message,true);}finally{b.disabled=false;}
+  try{const id=$("weeklyGroupEditId").value;await call("weekly_group_save",{id:id||undefined,group_name:name,level:$("weeklyGroupLevel").value,delivery_mode:$("weeklyGroupMode").value,weekday:$("weeklyGroupWeekday").value===""?null:Number($("weeklyGroupWeekday").value),lesson_time:$("weeklyGroupTime").value.trim()});resetGroupForm();status("weeklyGroupStatus",id?"تم حفظ تعديلات المجموعة.":"تم إنشاء المجموعة بنجاح.");await load();}catch(e){status("weeklyGroupStatus",e.message,true);}finally{b.disabled=false;}
  });
  $("weeklySeriesLinkBtn")?.addEventListener("click",async()=>{
   const group_id=$("weeklySeriesGroup").value,recurrence_group_id=$("weeklySeriesSelect").value;if(!group_id||!recurrence_group_id){status("weeklySeriesStatus","اختاري المجموعة وسلسلة الحصص.",true);return;}
