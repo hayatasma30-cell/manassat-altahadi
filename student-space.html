@@ -1068,17 +1068,14 @@ footer{padding:24px 14px!important;color:var(--muted)!important}
   #studentLevel{font-size:.62rem!important;margin-top:1px!important}
   #dashboard .profile-quick-action{min-height:34px!important;padding:4px 7px!important;font-size:.68rem!important}
   #studentMenu{margin:0!important}
-  #studentMenu .student-home-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin:0!important}
-  #studentMenu .student-home-grid .student-action{
-    min-height:69px!important;height:69px!important;padding:5px 3px!important;gap:3px!important;
-    flex-direction:column!important;justify-content:center!important;text-align:center!important;
-    border-radius:12px!important;border-bottom-width:3px!important
-  }
-  #studentMenu .student-home-grid .student-action-icon{width:25px!important;height:25px!important;flex:0 0 25px!important;font-size:.85rem!important;border-radius:8px!important}
-  #studentMenu .student-home-grid .student-action>span:nth-child(2){flex:0 1 auto!important;min-width:0!important}
-  #studentMenu .student-home-grid .student-action strong{font-size:.68rem!important;line-height:1.2!important;text-align:center!important}
-  #studentMenu .student-home-grid .student-action small,#studentMenu .student-home-grid .student-arrow{display:none!important}
-  #studentMenu .student-home-grid .student-action:nth-child(7){grid-column:2!important}
+  #studentMenu .student-home-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;margin:0!important}
+   #studentMenu .student-home-grid .student-action{min-height:68px!important;height:auto!important;padding:10px 13px!important;gap:10px!important;flex-direction:row!important;justify-content:flex-start!important;text-align:right!important;border-radius:14px!important}
+   #studentMenu .student-home-grid .student-action-icon{width:38px!important;height:38px!important;flex:0 0 38px!important;font-size:1.05rem!important;border-radius:11px!important}
+   #studentMenu .student-home-grid .student-action>span:nth-child(2){flex:1 1 auto!important;min-width:0!important}
+   #studentMenu .student-home-grid .student-action strong{font-size:.88rem!important;line-height:1.45!important;text-align:right!important}
+   #studentMenu .student-home-grid .student-action small{display:block!important;font-size:.7rem!important;line-height:1.45!important}
+   #studentMenu .student-home-grid .student-arrow{display:block!important;flex:0 0 auto!important;margin-inline-start:auto!important}
+   #studentMenu .student-home-grid .student-action:nth-child(n){grid-column:1!important}
   #studentMenu #studentHelpBtn,#studentMenu #logoutBtn{min-height:32px!important;padding:5px 9px!important;font-size:.72rem!important}
   #studentMenu .student-help-card,#studentMenu .student-help-toggle{margin:5px 0!important}
   #studentMenu .student-logout-area{margin:5px 0!important;padding:0!important}
@@ -1953,6 +1950,38 @@ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
  #studentMenu .student-home-grid .student-arrow,#dashboard .student-actions .student-arrow,#dashboard .student-home-grid .student-arrow,#dashboard .student-submenu-grid .student-arrow{display:block!important;position:static!important;margin-inline-start:auto!important;flex:0 0 auto!important}
  #dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"]){grid-template-columns:minmax(0,1fr)!important;max-width:100%!important}
  #dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"])>.student-action{min-height:68px!important;flex-direction:row!important;align-items:center!important;text-align:right!important}
+}
+</style>
+
+
+<style id="student-home-menu-mobile-final-20261108">
+@media(max-width:700px){
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services{
+  display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+  grid-auto-flow:row!important;grid-auto-rows:auto!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  gap:10px!important;margin:0!important;padding:0!important;
+  justify-items:stretch!important;align-items:stretch!important;
+ }
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action{
+  display:flex!important;grid-column:1/-1!important;grid-row:auto!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  height:auto!important;min-height:68px!important;max-height:none!important;
+  margin:0!important;padding:10px 13px!important;
+  flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;
+  gap:10px!important;text-align:right!important;
+ }
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action:nth-child(n){
+  grid-column:1/-1!important;justify-self:stretch!important;
+ }
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action>span:nth-child(2){
+  flex:1 1 auto!important;width:auto!important;min-width:0!important;text-align:right!important;
+ }
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services .student-action-icon{
+  width:38px!important;height:38px!important;min-width:38px!important;flex:0 0 38px!important;
+ }
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services .student-action small,
+ html body #studentMenu .student-actions.student-home-grid.student-direct-services .student-arrow{display:block!important}
 }
 </style>
 
