@@ -124,6 +124,7 @@ window.openDailyScienceEditor=function(){
   const byId=id=>document.getElementById(id);
   const editor=byId("editor");
   if(!editor){alert("تعذر فتح استمارة المعلومة. أعيدي تحميل الصفحة.");return;}
+  if(localStorage.getItem("tahadi_daily_science_unsent_draft_v1")){if(window.restoreDailyScienceDraft)window.restoreDailyScienceDraft();editor.classList.remove("hide");editor.scrollIntoView({behavior:"smooth",block:"start"});return;}
   editor.classList.remove("hide");
   const date=new Date();
   byId("title").value="";
