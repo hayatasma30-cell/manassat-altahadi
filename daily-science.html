@@ -59,7 +59,7 @@ function showTopics(){selectedTopic="";$("topicList").classList.remove("hide");$
 function openTopic(title){selectedTopic=title;$("topicList").classList.add("hide");$("topicBack").classList.remove("hide");$("selectedTopicTitle").textContent="📁 "+title;$("search").classList.remove("hide");filter()}
 function filter(){const q=$("search").value.toLowerCase(),a=facts.filter(x=>x.topic===selectedTopic&&(x.title+" "+x.topic+" "+x.scientific_question).toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||"لا توجد معلومات في هذا الموضوع حاليًا."}
 $("backTopics").onclick=showTopics;
-async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];draw();showTopics()}catch(e){$("todayContent").textContent=e.message}}
+async function load(){try{const d=await call("daily_science_list");facts=(d.items||[]).filter(x=>x.is_published!==false);topics=(d.topics||[]).filter(t=>facts.some(x=>x.topic===t.title));draw();showTopics()}catch(e){$("todayContent").textContent=e.message}}
 $("libraryBtn").onclick=()=>{$("library").classList.toggle("hide");$("today").classList.toggle("hide")};$("search").oninput=filter;
 load();
 </script>
