@@ -180,7 +180,7 @@ function restoreDailyScienceDraft(){
   dailyDraftFields.forEach(id=>{const el=$(id);if(!el||!(id in values))return;if(el.type==="checkbox")el.checked=!!values[id];else el.value=values[id]??""});
   editingFactId=draft.editingFactId||"";
   $("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة");
-  $("editor").classList.toggle("hide",!draft.editorOpen);
+  $("editor").classList.remove("hide");
   if(editingFactId){$("saveBtn").textContent="حفظ التعديلات";$("cancelEditBtn").classList.remove("hide");$("editor").querySelector("h2").textContent="تعديل المعلومة العلمية"}
   else{$("saveBtn").textContent="حفظ ونشر";$("cancelEditBtn").classList.add("hide");$("editor").querySelector("h2").textContent="إضافة معلومة علمية"}
   $("status").textContent="استُعيدت مسودتك تلقائيًا. لم تُنشر بعد؛ أكملي العمل ثم اضغطي حفظ ونشر.";
@@ -214,6 +214,7 @@ function setPageView(){
  $("today").classList.toggle("hide",pageView!=="today");
  $("library").classList.toggle("hide",pageView!=="library");
  $("editor").classList.toggle("hide",pageView!=="add");
+ if(pageView==="add")$("editor").classList.remove("hide");
  $("menuBtn").classList.toggle("hide",pageView==="home");
 }
 async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];fillTopics();if(pageView==="add"){const editId=new URLSearchParams(location.search).get("edit");if(editId)editFact(editId);else if(!restoreDailyScienceDraft())resetEditor();}draw()}catch(e){$("todayContent").textContent=e.message}}
