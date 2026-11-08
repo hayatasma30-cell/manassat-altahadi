@@ -1572,7 +1572,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </style>
 <section id="weeklyGroupsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>👥 المجموعات الأسبوعية</h2></div>
-<div id="weeklyGroupsDirectory" class="weekly-groups-directory"><button id="weeklyNewGroupBtn" class="primary" type="button" style="width:100%;margin:0 0 16px">＋ إنشاء مجموعة جديدة</button><p class="muted">اختاري المجموعة لفتح صفحتها وإدارة شؤونها.</p><input id="weeklyGroupSearch" type="search" placeholder="🔍 ابحثي باسم المجموعة أو المستوى..." style="width:100%;margin:8px 0 12px"><div class="weekly-group-filters" role="group" aria-label="تصفية المجموعات"><button type="button" class="secondary active" data-weekly-filter="all">الكل</button><button type="button" class="secondary" data-weekly-filter="in_person">حضوري</button><button type="button" class="secondary" data-weekly-filter="zoom">Zoom</button></div><div id="weeklyGroupButtons" class="weekly-group-buttons"></div></div>
+<div id="weeklyGroupsDirectory" class="weekly-groups-directory"><button id="weeklyNewGroupBtn" class="primary" type="button" style="width:100%;margin:0 0 16px">＋ إنشاء مجموعة جديدة</button><p class="muted">اختاري المجموعة لفتح صفحتها وإدارة شؤونها.</p><input id="weeklyGroupSearch" type="search" placeholder="🔍 ابحثي باسم المجموعة أو المستوى..." style="width:100%;margin:8px 0 12px"><div id="weeklyGroupButtons" class="weekly-group-buttons"></div></div>
 <div id="weeklyGroupDetailNav" hidden style="margin:12px 0"><button id="weeklyGroupsBackBtn" class="back" type="button">← كل المجموعات</button><h3 id="weeklyGroupDetailTitle"></h3></div>
 <div class="panel" id="weeklyGroupMainPanel" hidden>
 <div id="weeklyGroupActionMenu" class="weekly-group-action-menu">
@@ -3912,12 +3912,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   const directory=$("weeklyGroupsDirectory"),buttons=$("weeklyGroupButtons"),detailNav=$("weeklyGroupDetailNav");
   const active=state.groups.filter(g=>g.is_active).sort((a,b)=>{const level=n=>String(n.level).includes("الأولى")?1:String(n.level).includes("الثانية")?2:String(n.level).includes("الثالثة")?3:4;const ta=String(a.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[],tb=String(b.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[];return level(a)-level(b)||Number(a.weekday??99)-Number(b.weekday??99)||String(ta[0]||"99:99").localeCompare(String(tb[0]||"99:99"));});
   const term=String($("weeklyGroupSearch")?.value||"").trim().toLocaleLowerCase("ar");
-  const filter=document.querySelector("[data-weekly-filter].active")?.dataset.weeklyFilter||"all";
-  const visible=active.filter(g=>{
-    const mode=String(g.delivery_mode||"").toLowerCase();
-    const modeMatches=filter==="all"||(filter==="zoom"?mode==="zoom":mode==="in_person"||mode==="حضوري"||mode==="in-person");
-    return modeMatches&&(!term||(String(g.group_name||"")+" "+String(g.level||"")).toLocaleLowerCase("ar").includes(term));
-  });
+  const visible=active.filter(g=>!term||(String(g.group_name||"")+" "+String(g.level||"")).toLocaleLowerCase("ar").includes(term));
   buttons.innerHTML=visible.length?visible.map(g=>{
     const count=state.members.filter(m=>m.group_id===g.id).length;
     const times=String(g.lesson_time||"").match(/\\d{1,2}:\\d{2}/g)||[];
@@ -3959,7 +3954,6 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   const remove=e.target.closest("[data-weekly-remove]");if(remove){(async()=>{if(!confirm("هل تريدين إخراج هذا التلميذ من المجموعة؟"))return;try{await call("weekly_group_member_remove",{member_id:remove.dataset.weeklyRemove});await load();}catch(err){alert(err.message);}})();}
  });
  $("weeklyGroupSearch")?.addEventListener("input",render);
- document.querySelectorAll("[data-weekly-filter]").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll("[data-weekly-filter]").forEach(x=>x.classList.toggle("active",x===btn));render();}));
  $("weeklyGroupsRefresh")?.addEventListener("click",load);
  function resetGroupForm(){ $("weeklyGroupEditId").value="";$("weeklyGroupLevel").value="السنة الأولى متوسط";$("weeklyGroupMode").value="in_person";$("weeklyGroupWeekday").value="";$("weeklyGroupStartTime").value="";$("weeklyGroupEndTime").value="";$("weeklyGroupFormTitle").textContent="➕ إنشاء مجموعة أسبوعية";$("weeklyGroupCreateBtn").textContent="حفظ المجموعة";$("weeklyGroupCancelEdit").hidden=true; }
  $("weeklyGroupCancelEdit")?.addEventListener("click",resetGroupForm);
