@@ -95,7 +95,7 @@ input,textarea,select{border-radius:12px}
 }
 
 
-.library-topic-grid{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 14px}.library-topic-choice{flex:1 1 calc(50% - 9px);min-width:145px;min-height:50px;padding:10px 13px;border:1px solid #c9ddc5;border-bottom:3px solid #23834b;border-radius:13px;background:linear-gradient(145deg,#fff,#f1f8ee);color:#14532d;font:inherit;font-weight:700;text-align:right;cursor:pointer;box-shadow:0 3px 0 #14532d12}.library-topic-choice:active{transform:translateY(2px)}#libraryTopicBack{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 12px;color:#14532d}#libraryTopicNav.hide,#libraryTopicBack.hide{display:none!important}@media(max-width:600px){.library-topic-choice{flex-basis:100%}}\n.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.library-topic-grid{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 14px}.library-topic-choice{flex:1 1 calc(50% - 9px);min-width:145px;min-height:50px;padding:10px 13px;border:1px solid #c9ddc5;border-bottom:3px solid #23834b;border-radius:13px;background:linear-gradient(145deg,#fff,#f1f8ee);color:#14532d;font:inherit;font-weight:700;text-align:right;cursor:pointer;box-shadow:0 3px 0 #14532d12}.library-topic-choice:active{transform:translateY(2px)}.library-topic-choice[data-topic-id]:not([data-topic-id=""]){touch-action:pan-y}.library-topic-choice.topic-dragging{opacity:.55;border:2px dashed #398253;box-shadow:0 10px 24px #153d2020}.topic-drag-hint{color:#6b9876;font-size:.85em}#libraryTopicBack{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 12px;color:#14532d}#libraryTopicNav.hide,#libraryTopicBack.hide{display:none!important}@media(max-width:600px){.library-topic-choice{flex-basis:100%}}\n.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
 .stat-tile{background:#f1f7ee;border:1px solid #dce9d8;border-radius:13px;padding:9px;text-align:center}
 .stat-tile strong{display:block;color:#14532d;font-size:1.15rem}
 .stat-tile span{color:#657568;font-size:.75rem}
@@ -255,10 +255,19 @@ function fillLibraryFilters(){const sets=[["levelFilter",[...new Set(facts.map(x
 let activeLibraryTopic="";
 function renderLibraryTopics(){
  const host=$("libraryTopicNav");if(!host)return;
- const names=[...new Set([...topics.map(t=>String(t.title||"").trim()),...facts.map(x=>String(x.topic||"").trim())].filter(Boolean))];
+ const saved=[...topics].sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
+ const known=new Set(saved.map(t=>String(t.title||"").trim()));
+ const extra=[...new Set(facts.map(x=>String(x.topic||"").trim()).filter(name=>name&&!known.has(name)))].map(title=>({id:"",title}));
+ const rows=[...saved,...extra];
  host.className=activeLibraryTopic?"hide":"library-topic-grid";
- host.innerHTML=names.map(name=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(name)+'">📁 '+esc(name)+'　‹</button>').join("")||'<div class="empty-state">لم تُضَف مواضيع بعد.</div>';
- host.querySelectorAll("[data-library-topic]").forEach(btn=>btn.onclick=()=>{activeLibraryTopic=btn.dataset.libraryTopic;$("librarySelectedTopic").textContent="📁 "+activeLibraryTopic;$("libraryTopicBack").classList.remove("hide");host.classList.add("hide");filter()});
+ host.innerHTML=rows.map(t=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(t.title)+'" data-topic-id="'+esc(t.id||"")+'">📁 '+esc(t.title)+'　<span class="topic-drag-hint">'+(t.id?"⠿ ":"")+'</span>‹</button>').join("")||'<div class="empty-state">لم تُضَف مواضيع بعد.</div>';
+ host.querySelectorAll("[data-library-topic]").forEach(btn=>{
+  btn.addEventListener("click",e=>{
+   if(suppressTopicClick){e.preventDefault();e.stopImmediatePropagation();return;}
+   activeLibraryTopic=btn.dataset.libraryTopic;$("librarySelectedTopic").textContent="📁 "+activeLibraryTopic;$("libraryTopicBack").classList.remove("hide");host.classList.add("hide");filter();
+  });
+ });
+ bindTopicDrag();
 }
 $("libraryBackTopics").onclick=()=>{activeLibraryTopic="";$("libraryTopicBack").classList.add("hide");renderLibraryTopics();filter()};
 function filter(){
@@ -270,7 +279,63 @@ function filter(){
 }
 function refreshLibrary(){drawStats();fillLibraryFilters();renderLibraryTopics();filter()}
 let factDragState=null,factDragTimer=null,factDragStart=null;
-function factDragEligible(){return !activeLibraryTopic&&!$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&$("sortFilter").value==="manual"&&facts.length>1}
+function factDragEligible(){return !!activeLibraryTopic&&!$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&$("sortFilter").value==="manual"&&facts.filter(x=>String(x.topic||"")===activeLibraryTopic).length>1}
+let topicDragStart=null,topicDragState=null,topicDragTimer=null,suppressTopicClick=false;
+function bindTopicDrag(){
+ const host=$("libraryTopicNav");
+ host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id=''])").forEach(el=>{
+  el.style.touchAction="pan-y";
+  el.addEventListener("pointerdown",e=>{
+   if(e.target.closest("a,input,select,textarea"))return;
+   topicDragStart={x:e.clientX,y:e.clientY,el,pointerId:e.pointerId};
+   topicDragTimer=setTimeout(()=>{
+    if(!topicDragStart)return;
+    topicDragState={el,pointerId:e.pointerId,moved:false};
+    el.classList.add("topic-dragging");
+    try{el.setPointerCapture(e.pointerId)}catch(_){}
+    if(navigator.vibrate)navigator.vibrate(25);
+   },260);
+  });
+  el.addEventListener("pointermove",e=>{
+   if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId)return;
+   if(!topicDragState){
+    if(Math.abs(e.clientX-topicDragStart.x)>10||Math.abs(e.clientY-topicDragStart.y)>10){clearTimeout(topicDragTimer);topicDragStart=null;}
+    return;
+   }
+   e.preventDefault();
+   const siblings=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id='']):not(.topic-dragging)")];
+   const target=siblings.find(node=>{const r=node.getBoundingClientRect();return e.clientY<r.top+r.height/2});
+   if(target)host.insertBefore(el,target);else{
+    const last=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id=''])")].pop();
+    if(last)host.insertBefore(el,last.nextSibling);
+   }
+   topicDragState.moved=true;
+  });
+  const finish=async e=>{
+   if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId)return;
+   clearTimeout(topicDragTimer);
+   const state=topicDragState;topicDragStart=null;topicDragState=null;
+   el.classList.remove("topic-dragging");
+   if(!state||!state.moved)return;
+   suppressTopicClick=true;
+   setTimeout(()=>{suppressTopicClick=false},500);
+   const ids=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id=''])")].map(x=>x.dataset.topicId);
+   $("status").textContent="جارٍ حفظ ترتيب المواضيع…";
+   try{
+    await call("daily_science_topics_reorder",{ids});
+    const positions=new Map(ids.map((id,index)=>[String(id),index]));
+    topics.sort((a,b)=>(positions.get(String(a.id))??9999)-(positions.get(String(b.id))??9999));
+    topics.forEach((x,index)=>x.sort_order=index);
+    $("status").textContent="تم حفظ ترتيب المواضيع، وسيظهر للتلاميذ بنفس الترتيب.";
+   }catch(err){
+    $("status").textContent=err.message;
+    await load();
+   }
+  };
+  el.addEventListener("pointerup",finish);
+  el.addEventListener("pointercancel",finish);
+ });
+}
 function bindFactDrag(){
  const host=$("cards");
  host.querySelectorAll(".item[data-fact-id]").forEach(el=>{
@@ -304,14 +369,17 @@ function bindFactDrag(){
    const state=factDragState;factDragStart=null;factDragState=null;
    el.classList.remove("fact-dragging");
    if(!state||!state.moved){return;}
-   const ids=[...host.querySelectorAll(".item[data-fact-id]")].map(x=>x.dataset.factId);
+   const topicIds=[...host.querySelectorAll(".item[data-fact-id]")].map(x=>String(x.dataset.factId));
+   const topicSet=new Set(facts.filter(x=>String(x.topic||"")===activeLibraryTopic).map(x=>String(x.id)));
+   let cursor=0;
+   const ids=facts.map(x=>topicSet.has(String(x.id))?topicIds[cursor++]:String(x.id));
    const status=$("status");status.textContent="جارٍ حفظ الترتيب الجديد…";
    try{
     await call("daily_science_reorder",{ids});
     const positions=new Map(ids.map((id,index)=>[String(id),index]));
     facts.sort((a,b)=>positions.get(String(a.id))-positions.get(String(b.id)));
     facts.forEach((x,index)=>x.sort_order=index);
-    status.textContent="تم حفظ الترتيب الجديد، وسيظهر للتلاميذ بنفس الترتيب.";
+    status.textContent="تم حفظ ترتيب المعلومات داخل الموضوع، وسيظهر للتلاميذ بنفس الترتيب.";
    }catch(err){
     status.textContent=err.message;
     await load();
@@ -344,7 +412,7 @@ function editFact(id){const x=facts.find(y=>String(y.id)===String(id));if(!x)ret
 $("cancelEditBtn").onclick=()=>{location.href="daily-science-admin.html?view=library"};
 async function handleFactActions(e){const toggle=e.target.closest("[data-toggle-publish]"),edit=e.target.closest("[data-edit-fact]"),del=e.target.closest("[data-delete-fact]");if(toggle){const x=facts.find(y=>String(y.id)===String(toggle.dataset.togglePublish));if(!x)return;toggle.disabled=true;try{const d=await call("daily_science_save",{id:x.id,title:x.title||"",info_date:x.info_date||localDateValue(),topic:x.topic||"",scientific_question:x.scientific_question||"",scientific_problem:x.scientific_problem||"",explanation:x.explanation||"",conclusion:x.conclusion||"",daily_information:x.daily_information||"",target_level:x.target_level||"الكل",target_audience:x.target_audience||"الكل",review_cycle:x.review_cycle||"",is_published:x.is_published===false});await load();$("status").textContent=d.message||"تم تحديث حالة النشر.";}catch(err){alert(err.message);toggle.disabled=false;}return;}if(edit){location.href="daily-science-admin.html?view=add&edit="+encodeURIComponent(edit.dataset.editFact);return;}if(del){const x=facts.find(y=>String(y.id)===String(del.dataset.deleteFact));if(!x||!confirm("هل تريدين حذف هذه المعلومة نهائيًا؟\\n"+(x.title||"")))return;del.disabled=true;try{const d=await call("daily_science_delete",{id:x.id});$("status").textContent=d.message||"تم حذف المعلومة.";await load();}catch(err){alert(err.message);del.disabled=false;}}}
 $("cards").addEventListener("click",handleFactActions);$("todayContent").addEventListener("click",handleFactActions);
-$("addTopicBtn").onclick=async()=>{try{const title=$("newTopic").value.trim();if(!title)throw Error("اكتبي اسم الموضوع.");const d=await call("daily_science_topic_save",{title});topics.unshift(d.topic);fillTopics();$("topic").value=d.topic.title;$("newTopic").value="";$("status").textContent=d.message}catch(e){$("status").textContent=e.message}};
+$("addTopicBtn").onclick=async()=>{try{const title=$("newTopic").value.trim();if(!title)throw Error("اكتبي اسم الموضوع.");const d=await call("daily_science_topic_save",{title});topics.push(d.topic);topics.sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));fillTopics();$("topic").value=d.topic.title;$("newTopic").value="";$("status").textContent=d.message}catch(e){$("status").textContent=e.message}};
 function fillReuseMethods(){const el=$("reuseMethodSelect");if(!el)return;el.innerHTML='<option value="">اختاري معلومة سابقة لنسخ محتواها</option>'+facts.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.title||"معلومة دون عنوان")+' — '+esc(x.target_level||"")+'</option>').join("");}
 $("reuseMethodBtn").onclick=()=>{const id=$("reuseMethodSelect").value;if(!id){$("status").textContent="اختاري أولًا المعلومة التي تريدين استعمالها.";return;}const x=facts.find(y=>String(y.id)===String(id));if(!x)return;const level=$("targetLevel").value;editingFactId="";$("title").value=x.title||"";$("topic").value=x.topic||"";$("dailyInfo").value=x.daily_information||"";$("question").value=x.scientific_question||"";richSet("dailyInfo",x.daily_information||"");richSet("question",x.scientific_question||"");$("targetAudience").value=x.target_audience||"الكل";$("reviewCycle").value=x.review_cycle||"";$("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة");$("targetLevel").value=level;$("infoDate").value=localDateValue();$("published").checked=x.is_published!==false;$("saveBtn").textContent="حفظ كنسخة جديدة";$("cancelEditBtn").classList.add("hide");$("editor").querySelector("h2").textContent="إضافة نسخة جديدة من المعلومة";$("status").textContent="تم نسخ المحتوى. اختاري المستوى الجديد وعدّلي السؤال حسب الحاجة؛ ستُحفظ نسخة مستقلة.";saveDailyScienceDraft();};
 function fillTopics(){$("topic").innerHTML='<option value="">اختاري موضوعًا</option>'+topics.map(t=>'<option value="'+esc(t.title)+'">'+esc(t.title)+'</option>').join("");const tf=$("topicFilter");if(tf){const selected=tf.value;tf.innerHTML='<option value="">كل الموضوعات</option>'+topics.map(t=>'<option value="'+esc(t.title)+'">'+esc(t.title)+'</option>').join("");tf.value=selected}}
