@@ -1566,43 +1566,58 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <style>
 .weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
 </style>
+<style>
+.weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
+</style>
 <section id="weeklyGroupsView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>👥 إدارة المجموعات الأسبوعية</h2></div>
-<div id="weeklyGroupsDirectory" class="weekly-groups-directory"><p class="muted">اختاري المجموعة لفتح صفحتها وإدارة تلاميذها وحصصها.</p><div id="weeklyGroupButtons" class="weekly-group-buttons"></div><button id="weeklyNewGroupBtn" class="primary" type="button" style="width:100%;margin-top:12px">＋ إنشاء مجموعة جديدة</button></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>👥 المجموعات الأسبوعية</h2></div>
+<div id="weeklyGroupsDirectory" class="weekly-groups-directory"><p class="muted">اختاري المجموعة لفتح صفحتها، ثم اختاري العملية التي تريدينها.</p><div id="weeklyGroupButtons" class="weekly-group-buttons"></div><button id="weeklyNewGroupBtn" class="primary" type="button" style="width:100%;margin-top:12px">＋ إنشاء مجموعة جديدة</button></div>
 <div id="weeklyGroupDetailNav" hidden style="margin:12px 0"><button id="weeklyGroupsBackBtn" class="back" type="button">← كل المجموعات</button><h3 id="weeklyGroupDetailTitle"></h3></div>
 <div class="panel" id="weeklyGroupMainPanel" hidden>
-<p class="muted">أنشئي مجموعات الدعم الأسبوعية حسب المستوى وطريقة الدراسة، ثم أضيفي إليها التلاميذ يدويًا. التسجيل في حصة فردية أو دورة لا يضيف التلميذ إلى هذه المجموعات.</p>
+<div id="weeklyGroupActionMenu" class="weekly-group-action-menu">
+<p class="muted">اختاري ما تريدين إدارته داخل هذه المجموعة.</p>
+<button type="button" class="weekly-group-action" data-weekly-page="info">📋 معلومات المجموعة وإعداداتها <span>‹</span></button>
+<button type="button" class="weekly-group-action" data-weekly-page="students">👥 إدارة التلاميذ <span>‹</span></button>
+<button type="button" class="weekly-group-action" data-weekly-page="lessons">🗓️ حصص المجموعة الأسبوعية <span>‹</span></button>
+</div>
+<div id="weeklyGroupInfoPage" class="weekly-group-subpage" hidden>
+<button type="button" class="back" data-weekly-page-back>← صفحة المجموعة</button>
+<h3>📋 معلومات المجموعة وإعداداتها</h3>
+<div class="section-heading"><h3>بيانات المجموعة</h3><button id="weeklyGroupsRefresh" class="secondary" type="button">تحديث</button></div>
+<div id="weeklyGroupsList" class="list"><div class="data-item">جارٍ تحميل المجموعة…</div></div>
 <div class="data-item" style="margin:12px 0">
-<strong id="weeklyGroupFormTitle">➕ إنشاء مجموعة أسبوعية</strong>
-<input id="weeklyGroupEditId" type="hidden">
+<strong id="weeklyGroupFormTitle">➕ إنشاء مجموعة أسبوعية</strong><input id="weeklyGroupEditId" type="hidden">
 <div class="editor-fields">
 <label class="editor-field">المستوى<select id="weeklyGroupLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select></label>
 <label class="editor-field">طريقة الدراسة<select id="weeklyGroupMode"><option value="in_person">حضوري</option><option value="zoom">Zoom</option></select></label>
-<label class="editor-field">يوم الحصة<select id="weeklyGroupWeekday"><option value="">غير محدد</option><option value="0">الأحد</option><option value="1">الإثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></label>
+<label class="editor-field">يوم الحصة<select id="weeklyGroupWeekday"><option value="">اختاري اليوم</option><option value="0">الأحد</option><option value="1">الإثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></label>
 <label class="editor-field">بداية الحصة<input id="weeklyGroupStartTime" type="time" required></label>
 <label class="editor-field">نهاية الحصة<input id="weeklyGroupEndTime" type="time" required></label>
 </div>
 <div class="student-actions" style="display:flex;gap:8px;margin-top:12px"><button id="weeklyGroupCreateBtn" class="primary" type="button" style="flex:1">حفظ المجموعة</button><button id="weeklyGroupCancelEdit" class="secondary" type="button" hidden>إلغاء التعديل</button></div>
 <div id="weeklyGroupStatus" class="status" role="status"></div>
 </div>
-<div class="section-heading"><h3>المجموعات المسجلة</h3><button id="weeklyGroupsRefresh" class="secondary" type="button">تحديث</button></div>
-<div id="weeklyGroupsList" class="list"><div class="data-item">جارٍ تحميل المجموعات…</div></div>
 </div>
-<div class="panel" id="weeklyGroupSeriesPanel" style="margin-top:14px" hidden>
-<h3>ربط المجموعة بحصصها الأسبوعية</h3>
+<div id="weeklyGroupStudentsPage" class="weekly-group-subpage" hidden>
+<button type="button" class="back" data-weekly-page-back>← صفحة المجموعة</button><h3>👥 إدارة تلاميذ المجموعة</h3>
+<div class="panel" id="weeklyGroupMembersPanel">
+<label class="editor-field">المجموعة<select id="weeklyMemberGroup"><option value="">اختاري المجموعة</option></select></label>
+<label class="editor-field">البحث عن التلاميذ<input id="weeklyMemberSearch" type="search" placeholder="اكتبي اسم التلميذ للبحث…"></label>
+<div id="weeklyMemberStudentChoices" class="list" style="max-height:260px;overflow:auto;margin-top:8px"><div class="data-item">اختاري المجموعة أولًا.</div></div>
+<button id="weeklyMemberAddBtn" class="primary" type="button" style="width:100%;margin-top:10px">إضافة التلاميذ المحددين إلى المجموعة</button>
+<div id="weeklyMemberStatus" class="status" role="status"></div>
+</div>
+</div>
+<div id="weeklyGroupLessonsPage" class="weekly-group-subpage" hidden>
+<button type="button" class="back" data-weekly-page-back>← صفحة المجموعة</button><h3>🗓️ حصص المجموعة الأسبوعية</h3>
+<div class="panel" id="weeklyGroupSeriesPanel">
 <p class="muted">اختاري سلسلة الحصص المتكررة الموجودة مسبقًا حتى تظهر حصصها لأعضاء هذه المجموعة فقط.</p>
 <label class="editor-field">المجموعة<select id="weeklySeriesGroup"><option value="">اختاري المجموعة</option></select></label>
 <label class="editor-field">سلسلة الحصص المتكررة<select id="weeklySeriesSelect"><option value="">اختاري سلسلة الحصص</option></select></label>
 <button id="weeklySeriesLinkBtn" class="primary" type="button" style="width:100%;margin-top:10px">ربط السلسلة بالمجموعة</button>
 <div id="weeklySeriesStatus" class="status" role="status"></div>
 </div>
-<div class="panel" id="weeklyGroupMembersPanel" style="margin-top:14px" hidden>
-<h3>إضافة تلميذ إلى مجموعة</h3>
-<label class="editor-field">المجموعة<select id="weeklyMemberGroup"><option value="">اختاري المجموعة</option></select></label>
-<label class="editor-field">البحث عن التلاميذ<input id="weeklyMemberSearch" type="search" placeholder="اكتبي اسم التلميذ للبحث…"></label>
-<div id="weeklyMemberStudentChoices" class="list" style="max-height:260px;overflow:auto;margin-top:8px"><div class="data-item">اختاري المجموعة أولًا.</div></div>
-<button id="weeklyMemberAddBtn" class="primary" type="button" style="width:100%;margin-top:10px">إضافة التلاميذ المحددين إلى المجموعة</button>
-<div id="weeklyMemberStatus" class="status" role="status"></div>
+</div>
 </div>
 </section>
 <section id="subscriptionsView" class="view">
