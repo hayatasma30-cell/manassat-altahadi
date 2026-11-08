@@ -18,13 +18,19 @@ header div{color:#e0eee1;font-size:.92rem;margin-top:3px}
 .box h2{font-size:1.25rem;color:var(--green);margin:0 0 16px}
 #today{margin-top:20px}
 #todayContent:empty:before{content:"لا توجد معلومة منشورة بعد.";color:var(--muted)}
-.item{background:linear-gradient(150deg,#fff 0%,#fcfdf9 100%);border:1px solid #dfe8dc;border-radius:18px;padding:clamp(14px,3vw,21px);margin:12px 0;box-shadow:0 4px 12px #173f2208}
-.item h3{font-size:1.12rem;color:#174b2e;margin:12px 0 10px}
-.item p{white-space:pre-wrap;overflow-wrap:anywhere;text-align:right;margin:12px 0;line-height:2.05}
+.item{background:linear-gradient(150deg,#fff 0%,#fcfdf9 100%);border:1px solid #dfe8dc;border-radius:18px;padding:clamp(13px,2.7vw,19px);margin:10px 0;box-shadow:0 4px 12px #173f2208}
+.item h3{font-size:1.08rem;color:#174b2e;margin:10px 0 13px;padding-bottom:9px;border-bottom:1px solid #edf1e9}
+.item-section{margin:12px 0 15px}
+.section-label{display:block;color:#245b39;font-size:.98rem;margin-bottom:4px}
+.item .item-section p{white-space:pre-wrap;overflow-wrap:anywhere;text-align:right;margin:0;line-height:1.95}
+.question-section{padding-top:10px;border-top:1px dashed #e3eadf}
+.delete-btn{color:#9f3038;border-color:#e5caca;border-bottom-color:#d8b8b8}
+.item p{white-space:pre-wrap;overflow-wrap:anywhere;text-align:right;margin:8px 0;line-height:1.95}
 .item p b{color:#245b39}
 .tag{display:inline-flex;align-items:center;gap:5px;background:#edf6e9;color:#285c39;border:1px solid #dcebd8;border-radius:999px;padding:4px 11px;font-size:.82rem}
 .item-meta{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
-.item-actions{border-top:1px solid #edf1e9;padding-top:12px;margin-top:12px}
+.item-actions{border-top:1px solid #edf1e9;padding-top:10px;margin-top:10px;justify-content:flex-start}
+.item-actions .btn{min-height:38px;padding:7px 13px;font-size:.9rem}
 .field{display:block;margin:13px 0 5px;font-weight:700;color:#244b34}
 input,textarea,select{width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:12px;padding:11px 13px;background:#fff;color:var(--ink);font:inherit;min-height:44px}
 input:focus,textarea:focus,select:focus{outline:2px solid #b7d8b8;outline-offset:1px}
@@ -40,7 +46,7 @@ textarea{min-height:190px;line-height:2;resize:vertical;padding:14px!important;w
 #addTopicBtn{white-space:nowrap}
 #newTopic{flex:1;min-width:150px}
 .empty-state{padding:20px;text-align:center;color:var(--muted);background:#fafcf8;border:1px dashed #d6e2d2;border-radius:14px}
-@media(max-width:600px){.wrap{padding:12px}.toolbar>.btn{flex:1 1 auto}.editor-grid,.library-tools{grid-template-columns:1fr}.box{border-radius:18px}.item{border-radius:16px}.item-actions .btn{min-width:112px}}
+@media(max-width:600px){.wrap{padding:12px}.toolbar>.btn{flex:1 1 auto}.editor-grid,.library-tools{grid-template-columns:1fr}.box{border-radius:18px}.item{border-radius:16px}.item-actions{justify-content:flex-start}.item-actions .btn{min-width:105px;flex:0 0 auto}.item h3{margin:8px 0 11px}.item-section{margin:10px 0 13px}.item .item-section p{line-height:1.9}}
 </style></head>
 <body><header><b>💡 تعلّم اليوم</b><div>معلومة علمية يومية ومكتبة منظّمة حسب الموضوع</div></header><main class="wrap">
 <div class="toolbar"><button class="btn" onclick="location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn" id="libraryBtn">📚 مكتبة المعلومات</button><button class="btn primary hide" id="addBtn">＋ إضافة معلومة</button></div>
@@ -52,7 +58,8 @@ const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access
 async function call(action,extra={}){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر الاتصال بالمنصة.");return d}
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function localDateValue(){const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-")}
-function card(x){return '<article class="item"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'</div><h3>'+esc(x.title||"معلومة علمية")+'</h3><p><b>المعلومة العلمية</b><br>'+esc(x.daily_information)+'</p><p><b>السؤال</b><br>'+esc(x.scientific_question)+'</p><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn" type="button" data-delete-fact="'+esc(x.id)+'" style="color:#a12626;border-color:#e5caca">🗑 حذف</button></div></article>'}
+function cleanLeadingTitle(value,title){const text=String(value??"");const lines=text.split(/\r?\n/);if(lines.length&&lines[0].trim().replace(/[：:：.!؟]+$/g,"")===String(title??"").trim().replace(/[：:：.!؟]+$/g,""))return lines.slice(1).join("\\n").replace(/^\\n/,"");return text}
+function card(x){const info=cleanLeadingTitle(x.daily_information,x.title);return '<article class="item"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'</div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+esc(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+esc(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>'}
 function draw(){facts.sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)));$("todayContent").innerHTML=facts.length?card(facts[0]):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';filter()}
 function filter(){const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,a=facts.filter(x=>(!topic||x.topic===topic)&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level].join(" ").toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة لبحثك.</div>';$("libraryCount").textContent="عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.length}
 async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];fillTopics();draw()}catch(e){$("todayContent").textContent=e.message}}
