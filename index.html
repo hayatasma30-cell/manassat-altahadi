@@ -1654,7 +1654,7 @@ window.addEventListener("unhandledrejection",function(e){
   }
   function showStatus(message, kind) { status.textContent = message; status.className = "status show " + kind; }
   const teacherPagePositionKey="tahadi_teacher_page_position_v2";
-  function saveTeacherPagePosition(){try{if(window.__tahadiRestoringTeacherPage)return;const challengePanel=document.getElementById("dailyChallengeEmbedded"),challengeFrame=document.getElementById("dailyChallengeFrame"),testPanel=document.querySelector("#electronicTestsView .electronic-test-panel:not([hidden])");let frameHash="",challengeY=0;if(challengeFrame&&challengeFrame.src&&challengeFrame.src!=="about:blank"){try{frameHash=challengeFrame.contentWindow.location.hash.replace("#","")||new URL(challengeFrame.src,location.href).hash.replace("#","");challengeY=challengeFrame.contentWindow.scrollY||challengeFrame.contentWindow.document.documentElement.scrollTop||0;}catch(_){frameHash=new URL(challengeFrame.src,location.href).hash.replace("#","");}}const previous=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}");const visibleView=document.querySelector(".view.active");const currentView=visibleView&&visibleView.id?visibleView.id:(activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView");const y=challengePanel&&!challengePanel.hidden&&window.scrollY===0&&Number(previous.y)>0?Number(previous.y):(window.scrollY||0);const state=JSON.stringify({view:currentView,y,challengeY,lessonPage:typeof selectedLessonPage!=="undefined"?selectedLessonPage:null,lessonSubpage:typeof selectedLessonSubpage!=="undefined"?selectedLessonSubpage:null,lessonMode:typeof selectedLessonMode!=="undefined"?selectedLessonMode:null,lessonWorkspace:typeof window.tahadiGetLessonWorkspaceState==="function"?window.tahadiGetLessonWorkspaceState():null,challengePage:challengePanel&&!challengePanel.hidden?(frameHash||"editor"):"",testPage:testPanel?.dataset.testPanel||""});sessionStorage.setItem(teacherPagePositionKey,state);localStorage.setItem(teacherPagePositionKey,state);}catch(_){}}
+  function saveTeacherPagePosition(){try{if(window.__tahadiRestoringTeacherPage||window.__tahadiLoggingOut)return;const challengePanel=document.getElementById("dailyChallengeEmbedded"),challengeFrame=document.getElementById("dailyChallengeFrame"),testPanel=document.querySelector("#electronicTestsView .electronic-test-panel:not([hidden])");let frameHash="",challengeY=0;if(challengeFrame&&challengeFrame.src&&challengeFrame.src!=="about:blank"){try{frameHash=challengeFrame.contentWindow.location.hash.replace("#","")||new URL(challengeFrame.src,location.href).hash.replace("#","");challengeY=challengeFrame.contentWindow.scrollY||challengeFrame.contentWindow.document.documentElement.scrollTop||0;}catch(_){frameHash=new URL(challengeFrame.src,location.href).hash.replace("#","");}}const previous=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}");const visibleView=document.querySelector(".view.active");const currentView=visibleView&&visibleView.id?visibleView.id:(activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView");const y=challengePanel&&!challengePanel.hidden&&window.scrollY===0&&Number(previous.y)>0?Number(previous.y):(window.scrollY||0);const state=JSON.stringify({view:currentView,y,challengeY,lessonPage:typeof selectedLessonPage!=="undefined"?selectedLessonPage:null,lessonSubpage:typeof selectedLessonSubpage!=="undefined"?selectedLessonSubpage:null,lessonMode:typeof selectedLessonMode!=="undefined"?selectedLessonMode:null,lessonWorkspace:typeof window.tahadiGetLessonWorkspaceState==="function"?window.tahadiGetLessonWorkspaceState():null,challengePage:challengePanel&&!challengePanel.hidden?(frameHash||"editor"):"",testPage:testPanel?.dataset.testPanel||""});sessionStorage.setItem(teacherPagePositionKey,state);localStorage.setItem(teacherPagePositionKey,state);}catch(_){}}
   window.addEventListener("scroll",saveTeacherPagePosition,{passive:true});
   document.addEventListener("click",()=>setTimeout(saveTeacherPagePosition,220),true);
   document.addEventListener("change",()=>setTimeout(saveTeacherPagePosition,180),true);
@@ -3004,11 +3004,13 @@ const handleIncomeCalendarClick=async e=>{
   $("requestFilter").addEventListener("change", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); }); $("requestStudyModeFilter").addEventListener("change", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); });
   $("requestSearch").addEventListener("input", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); });
   async function logout() {
+    saveTeacherPagePosition();
+    window.__tahadiLoggingOut=true;
     const token = localStorage.getItem("tahadi_teacher_token");
     if (token) { try { await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"logout"})}); } catch (_) {} }
-    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); localStorage.removeItem("tahadi_last_view_persistent"); sessionStorage.removeItem("tahadi_last_view");
+    localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires");
     $("sessionActions").style.display="none"; $("topLogout").hidden=true;
-    showView("homeView"); showStatus("تم تسجيل الخروج.", "ok");
+    showView("loginView"); showStatus("تم تسجيل الخروج. عند الدخول مجددًا ستعودين إلى آخر صفحة كنتِ تعملين فيها.", "ok");
   }
   $("logoutBtn").addEventListener("click", logout); $("topLogout").addEventListener("click", logout);
   const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
@@ -3046,7 +3048,24 @@ const handleIncomeCalendarClick=async e=>{
       if (!response.ok || !result.ok) throw new Error(result.error || "تعذر تسجيل الدخول.");
       if (!result.profile || result.profile.role !== "teacher") throw new Error("هذا الفضاء مخصص للأستاذة فقط.");
       localStorage.setItem("tahadi_teacher_token",result.token); localStorage.setItem("tahadi_teacher_expires",result.expires_at);
-      await loadDashboard(result.token); showStatus("تم تسجيل الدخول بنجاح.", "ok"); showView("homeView");
+      window.__tahadiLoggingOut=false;
+      await loadDashboard(result.token);
+      const savedPosition=(()=>{try{return JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){return {};}})();
+      const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view")||"homeView";
+      const targetView=document.getElementById(lastView)?.classList.contains("view")?lastView:"homeView";
+      showView(targetView,{preserveScroll:true});
+      if(targetView==="dailyLessonsView"&&typeof setLessonHome==="function"){
+        setLessonHome();
+        if(savedPosition.lessonMode&&typeof setLessonMode==="function")setLessonMode(savedPosition.lessonMode,"list");
+        if(savedPosition.lessonWorkspace&&typeof window.tahadiRestoreLessonSubpage==="function"){const ws=savedPosition.lessonWorkspace;window.tahadiRestoreLessonSubpage(savedPosition.lessonSubpage||ws.subpage||"all",ws.selectedDate,ws.cursor,ws.calendarView,ws.dayPageOpen);}
+        else if(savedPosition.lessonSubpage&&savedPosition.lessonSubpage!=="all"){setLessonPage("library");setLessonSubpage(savedPosition.lessonSubpage);}
+        else if(savedPosition.lessonPage&&typeof setLessonPage==="function")setLessonPage(savedPosition.lessonPage);
+      }
+      if(targetView==="electronicTestsView"&&savedPosition.testPage){const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==savedPosition.testPage);}
+      window.scrollTo({top:Math.max(0,Number(savedPosition.y)||0),behavior:"auto"});
+      window.__tahadiLoggingOut=false;
+      showStatus("تم تسجيل الدخول بنجاح، وأعدناكِ إلى آخر صفحة كنتِ تعملين فيها.", "ok");
+      setTimeout(saveTeacherPagePosition,250);
     } catch (e) { showStatus(e instanceof Error ? e.message : "تعذر الاتصال بالخدمة.", "error"); }
     finally { btn.disabled=false; btn.textContent="دخول"; }
   });
