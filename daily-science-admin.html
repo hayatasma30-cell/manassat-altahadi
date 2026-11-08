@@ -102,6 +102,24 @@ input,textarea,select{border-radius:12px}
 .publish-tag{background:#edf7ee;border-color:#d5e9d7;color:#23613b}
 .draft-tag{background:#fff7e8;border-color:#f0dfb9;color:#805a1c}
 @media(max-width:700px){.library-tools{grid-template-columns:1fr}.library-tools input{grid-column:auto}.library-stats{gap:6px}.stat-tile{padding:8px 4px}.stat-tile strong{font-size:1.02rem}.stat-tile span{font-size:.69rem}}
+
+/* تنظيم استمارة المعلومة العلمية */
+#editor{max-width:900px;margin-inline:auto}
+.editor-section{background:#fbfdf9;border:1px solid #e4ecdf;border-radius:15px;padding:13px 15px;margin:12px 0}
+.editor-section-title{font-weight:800;color:#185532;font-size:.96rem;padding-bottom:8px;border-bottom:1px solid #e8efe4;margin-bottom:8px}
+#editor .field{margin:10px 0 5px;font-size:.92rem}
+#editor input:not([type=checkbox]),#editor select{min-height:45px;background:#fff}
+#editor textarea{display:block;width:100%;min-height:230px;line-height:2.05;padding:14px 15px!important;background:#fff;font-size:1rem}
+#editor #question{min-height:125px}
+.topic-add-row{margin-top:9px}
+.topic-add-row input{min-width:0;flex:1}
+.editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.editor-publish{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 13px;background:#f2f8ef;border:1px solid #dfebd9;border-radius:13px;margin:13px 0;color:#355b40}
+.editor-publish label{display:flex;align-items:center;gap:7px;font-weight:700}
+.editor-publish span{font-size:.82rem;color:#718074}
+.editor-actions{margin-top:12px}
+@media(max-width:700px){.editor-section{padding:11px;border-radius:13px;margin:10px 0}.editor-grid{grid-template-columns:1fr;gap:3px}#editor textarea{min-height:215px;font-size:.96rem}#editor #question{min-height:115px}.editor-publish{align-items:flex-start;flex-direction:column;gap:3px}.editor-actions .btn{flex:1 1 100%}}
+
 </style></head>
 <body><header><div class="header-inner"><b>🌿 منصة التحدي | تعلّم اليوم</b><div>معلومات علمية يومية، منظمة وسهلة الإدارة</div></div></header><main class="wrap">
 <div class="toolbar"><button class="btn" onclick="try{localStorage.removeItem('tahadi_last_teacher_external_page')}catch(e){}location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn hide" id="menuBtn" type="button" onclick="location.href='daily-science-admin.html'">⌂ القائمة الرئيسية</button></div>
@@ -110,7 +128,29 @@ input,textarea,select{border-radius:12px}
 <button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=library'"><span class="menu-icon">📚</span><span class="menu-copy"><strong>مكتبة المعلومات</strong><small>عرض المعلومات وتعديلها</small></span><span class="menu-chevron">‹</span></button>
 </div></section>
 <section class="box hide" id="today"><h2>معلومة اليوم</h2><div id="todayContent">جارٍ التحميل…</div></section>
-<section class="box hide" id="editor"><h2>إضافة معلومة علمية</h2><label class="field">العنوان</label><input id="title"><input id="infoDate" type="hidden"><label class="field">الموضوع</label><select id="topic" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري موضوعًا</option></select><div class="toolbar"><input id="newTopic" placeholder="اكتبي اسم موضوع جديد" style="flex:1"><button class="btn" id="addTopicBtn" type="button">＋ إضافة موضوع</button></div><label class="field">تحديد المستوى</label><select id="targetLevel" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option value="الكل">كل المستويات</option></select><label class="field">اختيار الفئة</label><select id="targetAudience" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري الفئة</option><option>حصص فردية</option><option>حصص جماعية</option><option>حصص فردية وجماعية</option><option>الكل</option><option>دورة المراجعة</option></select><div id="cycleWrap" class="hide"><label class="field">اختيار الدورة</label><select id="reviewCycle" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري الدورة</option><option>الدورة الأولى</option><option>الدورة الثانية</option><option>الدورة الثالثة</option><option>الدورة الرابعة</option></select></div><label class="field">المعلومة</label><textarea id="dailyInfo" placeholder="اكتبي المعلومة العلمية هنا"></textarea><label class="field">السؤال</label><textarea id="question" placeholder="اكتبي السؤال المرتبط بالمعلومة هنا"></textarea><p><label><input id="published" type="checkbox" checked style="width:auto"> نشر المعلومة للتلاميذ</label></p><div class="toolbar"><button class="btn" id="previewDraftBtn" type="button">👁 معاينة</button><button class="btn primary" id="saveBtn">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div><p id="status" class="status"></p></section>
+<section class="box hide" id="editor">
+<h2>إضافة معلومة علمية</h2>
+<div class="editor-section"><div class="editor-section-title">1. تعريف المعلومة</div>
+<label class="field" for="title">عنوان المعلومة</label><input id="title" placeholder="اكتبي عنوانًا مختصرًا وواضحًا">
+<input id="infoDate" type="hidden">
+<label class="field" for="topic">الموضوع العلمي</label>
+<select id="topic"><option value="">اختاري موضوعًا</option></select>
+<div class="toolbar topic-add-row"><input id="newTopic" placeholder="إضافة موضوع علمي جديد"><button class="btn" id="addTopicBtn" type="button">＋ إضافة موضوع</button></div>
+</div>
+<div class="editor-section"><div class="editor-section-title">2. تحديد الجمهور المستهدف</div>
+<div class="editor-grid">
+<div><label class="field" for="targetLevel">المستوى الدراسي</label><select id="targetLevel"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option value="الكل">كل المستويات</option></select></div>
+<div><label class="field" for="targetAudience">الفئة</label><select id="targetAudience"><option value="">اختاري الفئة</option><option>حصص فردية</option><option>حصص جماعية</option><option>حصص فردية وجماعية</option><option>الكل</option><option>دورة المراجعة</option></select></div>
+</div>
+<div id="cycleWrap" class="hide"><label class="field" for="reviewCycle">الدورة</label><select id="reviewCycle"><option value="">اختاري الدورة</option><option>الدورة الأولى</option><option>الدورة الثانية</option><option>الدورة الثالثة</option><option>الدورة الرابعة</option></select></div>
+</div>
+<div class="editor-section"><div class="editor-section-title">3. المحتوى العلمي</div>
+<label class="field" for="dailyInfo">المعلومة العلمية</label><textarea id="dailyInfo" class="science-editor" placeholder="اكتبي المعلومة العلمية كاملة، مع تنظيمها في فقرات عند الحاجة..."></textarea>
+<label class="field" for="question">السؤال الموجّه للتلميذ</label><textarea id="question" class="question-editor" placeholder="اكتبي سؤالًا واضحًا مرتبطًا بالمعلومة، يساعد التلميذ على الفهم والتحليل..."></textarea>
+</div>
+<div class="editor-publish"><label><input id="published" type="checkbox" checked> نشر المعلومة للتلاميذ</label><span>يمكنك معاينتها قبل النشر.</span></div>
+<div class="toolbar editor-actions"><button class="btn" id="previewDraftBtn" type="button">👁 معاينة</button><button class="btn primary" id="saveBtn" type="button">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div>
+<p id="status" class="status"></p></section>
 <section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="libraryStats" class="library-stats"></div><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><select id="topicFilter"><option value="">كل الموضوعات</option></select><select id="levelFilter"><option value="">كل المستويات</option></select><select id="audienceFilter"><option value="">كل الفئات</option></select><select id="statusFilter"><option value="">كل الحالات</option><option value="published">منشورة</option><option value="draft">مسودة / مخفية</option></select></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section><div id="previewOverlay" class="preview-overlay hide" style="position:fixed;inset:0;background:#102d1fcc;z-index:9999;display:grid;place-items:center;padding:16px"><div style="width:min(680px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:18px"><h2 id="previewTitle"></h2><div class="item-meta" id="previewMeta"></div><h3>المعلومة العلمية</h3><p id="previewInfo" style="white-space:pre-wrap;line-height:1.9"></p><h3>السؤال</h3><p id="previewQuestion" style="white-space:pre-wrap;line-height:1.9"></p><button class="btn" type="button" id="closePreview">إغلاق المعاينة</button></div></div>
 </main>
 <script>
