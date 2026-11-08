@@ -3477,39 +3477,8 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 
 </style>
 
-<style id="tahadi-platform-sections-visibility-fix">
-#homeView details.platform-sections[open] > .platform-sections-content{
- display:grid!important;visibility:visible!important;opacity:1!important;
- height:auto!important;max-height:none!important;overflow:visible!important;
- position:relative!important;clip:auto!important;content-visibility:visible!important;
-}
-#homeView details.platform-sections:not([open]) > .platform-sections-content{display:none!important}
-#homeView details.platform-sections > .platform-sections-entry{display:flex!important;visibility:visible!important}
-</style>
-<script id="tahadi-platform-sections-visibility-fix-js">
-(function(){
- function bindPlatformSections(){
-  document.querySelectorAll("#homeView details.platform-sections").forEach(function(details){
-   if(details.dataset.visibilityFixBound==="1")return;
-   details.dataset.visibilityFixBound="1";
-   var content=details.querySelector(":scope > .platform-sections-content");
-   function sync(){
-    if(!content)return;
-    content.hidden=!details.open;
-    content.style.setProperty("display",details.open?"grid":"none","important");
-    content.style.setProperty("visibility","visible","important");
-    content.style.setProperty("height","auto","important");
-    content.style.setProperty("max-height","none","important");
-    content.style.setProperty("overflow","visible","important");
-   }
-   details.addEventListener("toggle",sync);
-   sync();
-  });
- }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindPlatformSections);
- else bindPlatformSections();
-})();
-</script>
+
+
 <script id="tahadi-home-click-recovery-v2">
 /* معالج احتياطي مستقل لأزرار الصفحة الرئيسية والقوائم */
 (function(){
