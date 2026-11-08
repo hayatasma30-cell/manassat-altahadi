@@ -221,7 +221,7 @@ function renderLibraryTopics(){
 }
 $("libraryBackTopics").onclick=()=>{activeLibraryTopic="";$("libraryTopicBack").classList.add("hide");renderLibraryTopics();filter()};
 function filter(){
- const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value;
+ const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value,sort=$("sortFilter").value;
  let a=facts.filter(x=>(!activeLibraryTopic||String(x.topic||"")===activeLibraryTopic)&&(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));
  a=[...a];if(sort==="newest")a.sort((x,y)=>String(y.info_date||"").localeCompare(String(x.info_date||"")));else if(sort==="oldest")a.sort((x,y)=>String(x.info_date||"").localeCompare(String(y.info_date||"")));else a.sort((x,y)=>(Number(x.sort_order)||0)-(Number(y.sort_order)||0));$("cards").innerHTML=activeLibraryTopic?(a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة في هذا الموضوع.</div>'):'<div class="empty-state">اختاري موضوعًا لعرض المعلومات التابعة له.</div>';
  $("libraryCount").textContent=activeLibraryTopic?"عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.filter(x=>String(x.topic||"")===activeLibraryTopic).length:"عدد المعلومات: "+facts.length+" — اختاري موضوعًا";
@@ -229,7 +229,7 @@ function filter(){
 }
 function refreshLibrary(){drawStats();fillLibraryFilters();renderLibraryTopics();filter()}
 let factDragState=null,factDragTimer=null,factDragStart=null;
-function factDragEligible(){return !activeLibraryTopic&&!$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&facts.length>1}
+function factDragEligible(){return !activeLibraryTopic&&!$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&$("sortFilter").value==="manual"&&facts.length>1}
 function bindFactDrag(){
  const host=$("cards");
  host.querySelectorAll(".item[data-fact-id]").forEach(el=>{
