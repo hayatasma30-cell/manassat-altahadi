@@ -367,9 +367,20 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 }
 </style>
 
+<style id="student-logout-in-green-header-v1">
+.student-header-brand{min-width:0;flex:1}
+.student-header-logout{display:none!important;flex:0 0 auto!important;margin:0 0 0 auto!important;padding:7px 11px!important;min-height:34px!important;border:1px solid #d9eadb!important;border-bottom:3px solid #0b3820!important;border-radius:10px!important;background:linear-gradient(145deg,#f5fff4,#dcefe0)!important;color:#14532d!important;font-size:.76rem!important;font-weight:800!important;white-space:nowrap!important;box-shadow:0 2px 0 #092e1a40!important}
+body:has(#dashboard:not(.hidden)) .student-header-logout{display:inline-flex!important}
+.student-header-logout:active{transform:translateY(2px)!important;box-shadow:none!important}
+@media(max-width:520px){
+ body>header .top{gap:8px!important}
+ .student-header-logout{padding:6px 9px!important;min-height:31px!important;font-size:.7rem!important;border-radius:9px!important}
+}
+</style>
+
 </head>
 <body>
-<header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
+<header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div class="student-header-brand"><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div><button id="logoutBtn" class="student-header-logout" type="button">خروج</button></div></header>
 <main class="wrap">
 <section class="hero"><h1 class="student-hero-title">مرحبًا بك في منصة التحدي <img class="student-hero-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></h1><p>نتائجك، تنبيهاتك، ومتابعة اشتراكاتك في مكان واحد.</p></section>
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><div id="studentCodeLogin"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button></div><button id="teacherNameLoginBtn" type="button" class="secondary hidden" style="width:100%;margin-top:12px">دخول الأستاذة باسم التلميذ دون رمز</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
@@ -432,7 +443,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 
 
 
-</div><button type="button" id="studentHelpBtn">❔ مساعدة: دليل استخدام فضاء التلميذ</button><div class="student-logout-area"><button id="logoutBtn" type="button">خروج من فضاء التلميذ</button></div></div>
+</div><button type="button" id="studentHelpBtn">❔ مساعدة: دليل استخدام فضاء التلميذ</button></div>
 <section class="card student-section hidden" data-panel="learningFolder"><h2>📚 الدروس والاختبارات</h2><div class="student-actions student-submenu-grid">
 <a class="student-action" href="daily-science.html"><span class="student-action-icon">💡</span><span><strong>اكتشف وتعلّم</strong><small>معلومة علمية ومكتبة موضوعية</small></span><span class="student-arrow">‹</span></a>
 <button class="student-action" data-section="reviewCourses" type="button"><span class="student-action-icon">📖</span><span><strong>الدورات والملخصات</strong><small>دوراتي وملخصاتي وموارد التعلم</small></span><span class="student-arrow">‹</span></button>
