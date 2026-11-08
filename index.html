@@ -3884,7 +3884,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
  function render(){
   const list=$("weeklyGroupsList"),groupSelect=$("weeklyMemberGroup"),seriesGroup=$("weeklySeriesGroup"),seriesSelect=$("weeklySeriesSelect");
   const directory=$("weeklyGroupsDirectory"),buttons=$("weeklyGroupButtons"),detailNav=$("weeklyGroupDetailNav");
-  const active=state.groups.filter(g=>g.is_active);
+  const active=state.groups.filter(g=>g.is_active).sort((a,b)=>{const level=n=>String(n.level).includes("الأولى")?1:String(n.level).includes("الثانية")?2:String(n.level).includes("الثالثة")?3:4;const ta=String(a.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[],tb=String(b.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[];return level(a)-level(b)||Number(a.weekday??99)-Number(b.weekday??99)||String(ta[0]||"99:99").localeCompare(String(tb[0]||"99:99"));});
   buttons.innerHTML=active.length?active.map(g=>'<button type="button" class="weekly-group-open" data-weekly-open="'+esc(g.id)+'"><span>'+esc(g.group_name)+'</span><small>'+esc(g.level)+' · '+modeLabel(g.delivery_mode)+'</small><small>'+dayLabel(g.weekday)+' · '+esc(g.lesson_time||"موعد غير محدد")+'</small></button>').join(""):'<div class="data-item">لا توجد مجموعات نشطة بعد. أنشئي أول مجموعة.</div>';
   const selected=state.groups.find(g=>g.id===selectedGroupId&&g.is_active);
   directory.hidden=!!selected;
@@ -3919,9 +3919,18 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
  function resetGroupForm(){ $("weeklyGroupEditId").value="";$("weeklyGroupLevel").value="السنة الأولى متوسط";$("weeklyGroupMode").value="in_person";$("weeklyGroupWeekday").value="";$("weeklyGroupStartTime").value="";$("weeklyGroupEndTime").value="";$("weeklyGroupFormTitle").textContent="➕ إنشاء مجموعة أسبوعية";$("weeklyGroupCreateBtn").textContent="حفظ المجموعة";$("weeklyGroupCancelEdit").hidden=true; }
  $("weeklyGroupCancelEdit")?.addEventListener("click",resetGroupForm);
  $("weeklyGroupCreateBtn")?.addEventListener("click",async()=>{
-  const level=$("weeklyGroupLevel").value,mode=$("weeklyGroupMode").value;const name="مجموعة "+level+" — "+(mode==="zoom"?"Zoom":"حضوري"); const startTime=$("weeklyGroupStartTime").value,endTime=$("weeklyGroupEndTime").value;if(!startTime||!endTime){status("weeklyGroupStatus","حددي بداية الحصة ونهايتها من قائمة الوقت.",true);return;}if(endTime<=startTime){status("weeklyGroupStatus","وقت نهاية الحصة يجب أن يكون بعد وقت بدايتها.",true);return;}
+  const level=$("weeklyGroupLevel").value,mode=$("weeklyGroupMode").value;
+  const name="مجموعة "+level+" — "+(mode==="zoom"?"Zoom":"حضوري");
+  const weekdayValue=$("weeklyGroupWeekday").value;
+  const startTime=$("weeklyGroupStartTime").value,endTime=$("weeklyGroupEndTime").value;
+  if(weekdayValue===""){status("weeklyGroupStatus","اختاري يوم الحصة.",true);return;}
+  if(!startTime||!endTime){status("weeklyGroupStatus","حددي بداية الحصة ونهايتها من قائمة الوقت.",true);return;}
+  if(endTime<=startTime){status("weeklyGroupStatus","وقت نهاية الحصة يجب أن يكون بعد وقت بدايتها.",true);return;}
+  const id=$("weeklyGroupEditId").value;
+  const duplicate=state.groups.find(g=>g.is_active&&g.id!==id&&g.level===level&&g.delivery_mode===mode&&Number(g.weekday)===Number(weekdayValue)&&String(g.lesson_time||"").replace(/\s/g,"")===String(startTime+"-"+endTime).replace(/\s/g,""));
+  if(duplicate){status("weeklyGroupStatus","هذه المجموعة موجودة مسبقًا بنفس المستوى وطريقة الدراسة واليوم والتوقيت. افتحي المجموعة الموجودة لتعديلها.",true);return;}
   const b=$("weeklyGroupCreateBtn");b.disabled=true;
-  try{const id=$("weeklyGroupEditId").value;await call("weekly_group_save",{id:id||undefined,group_name:name,level,delivery_mode:mode,weekday:$("weeklyGroupWeekday").value===""?null:Number($("weeklyGroupWeekday").value),lesson_time:startTime+" - "+endTime});resetGroupForm();status("weeklyGroupStatus",id?"تم حفظ تعديلات المجموعة.":"تم إنشاء المجموعة بنجاح.");await load();if(id)selectedGroupId=id;render();}catch(e){status("weeklyGroupStatus",e.message,true);}finally{b.disabled=false;}
+  try{await call("weekly_group_save",{id:id||undefined,group_name:name,level,delivery_mode:mode,weekday:Number(weekdayValue),lesson_time:startTime+" - "+endTime});resetGroupForm();status("weeklyGroupStatus",id?"تم حفظ تعديلات المجموعة.":"تم إنشاء المجموعة بنجاح.");await load();if(id)selectedGroupId=id;render();}catch(e){status("weeklyGroupStatus",e.message,true);}finally{b.disabled=false;}
  });
  $("weeklySeriesLinkBtn")?.addEventListener("click",async()=>{
   const group_id=$("weeklySeriesGroup").value,recurrence_group_id=$("weeklySeriesSelect").value;if(!group_id||!recurrence_group_id){status("weeklySeriesStatus","اختاري المجموعة وسلسلة الحصص.",true);return;}
