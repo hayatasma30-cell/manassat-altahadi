@@ -111,17 +111,7 @@ function setPageView(){
  $("menuBtn").classList.toggle("hide",pageView==="home");
 }
 async function load(){try{const d=await call("daily_science_list");facts=d.items||[];topics=d.topics||[];fillTopics();if(pageView==="add"){const editId=new URLSearchParams(location.search).get("edit");if(editId)editFact(editId);else if(!restoreDailyScienceDraft())resetEditor();}draw()}catch(e){$("todayContent").textContent=e.message}}
-$("search").oninput=filter;$("topicFilter").onchange=filter;$("addBtn").onclick=()=>{
- const hasDraft=[$("title").value,$("topic").value,$("targetLevel").value,$("targetAudience").value,$("dailyInfo").value,$("question").value].some(v=>String(v||"").trim()!=="");
- if(!hasDraft)resetEditor();
- else{
-  $("editor").classList.remove("hide");
-  $("status").textContent="تم الاحتفاظ بالمسودة المسترجعة. أكملي من حيث توقفتِ ثم اضغطي حفظ ونشر.";
- }
- $("editor").classList.remove("hide");
- $("editor").scrollIntoView({behavior:"smooth",block:"start"});
- if(!$("title").value.trim())$("title").focus({preventScroll:true});
-};
+$("search").oninput=filter; $("topicFilter").onchange=filter;
 function resetEditor(){try{localStorage.removeItem(dailyDraftKey)}catch(e){}$("editor").classList.remove("hide");editingFactId="";$("title").value="";$("infoDate").value=localDateValue();$("topic").value="";$("targetLevel").value="";$("targetAudience").value="";$("reviewCycle").value="";$("cycleWrap").classList.add("hide");$("dailyInfo").value="";$("question").value="";$("published").checked=true;$("saveBtn").textContent="حفظ ونشر";$("cancelEditBtn").classList.add("hide");$("editor").querySelector("h2").textContent="إضافة معلومة علمية";$("status").textContent="";}
 function editFact(id){const x=facts.find(y=>String(y.id)===String(id));if(!x)return;editingFactId=x.id;$("title").value=x.title||"";$("infoDate").value=x.info_date||"";$("topic").value=x.topic||"";$("targetLevel").value=x.target_level||"الكل";$("targetAudience").value=x.target_audience||"الكل";$("reviewCycle").value=x.review_cycle||"";$("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة");$("dailyInfo").value=x.daily_information||"";$("question").value=x.scientific_question||"";$("published").checked=x.is_published!==false;$("saveBtn").textContent="حفظ التعديلات";$("cancelEditBtn").classList.remove("hide");$("editor").querySelector("h2").textContent="تعديل المعلومة العلمية";$("status").textContent="تعدّلين الآن: "+(x.title||"معلومة علمية");$("editor").classList.remove("hide");$("editor").scrollIntoView({behavior:"smooth",block:"start"});}
 $("cancelEditBtn").onclick=()=>{location.href="daily-science-admin.html?view=library"};
