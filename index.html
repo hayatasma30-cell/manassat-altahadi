@@ -1422,6 +1422,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <a class="menu-btn" href="student-space.html?v=20261105-enrollment191" style="text-decoration:none"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
 <a class="menu-btn" href="teacher-questions.html" style="text-decoration:none"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>الأسئلة والأجوبة الكتابية — للأستاذة فقط</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="weeklyGroupsView"><span class="menu-icon">👥</span><span class="menu-copy"><strong>المجموعات الأسبوعية</strong><small>إدارة مجموعات الدعم الحضوري وZoom</small></span><span class="chev">‹</span></button>
 </div></details>
 <details class="section-category"><summary><span class="category-title">💼 الاشتراكات والمداخيل وإدارة المنصة</span><small>الاشتراكات والمدفوعات والحسابات والملخص والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الاشتراكات</strong><small>عرض الاشتراكات وحالاتها</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>مراجعة المدفوعات ووصولات الدفع</small></span><span class="chev">‹</span></button>
@@ -1554,6 +1555,33 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div id="lessonWizardReview" data-step="3" class="lesson-wizard-review" hidden></div><div class="lesson-wizard-actions"><button id="lessonWizardPrev" type="button" class="secondary" hidden>السابق</button><button id="lessonWizardNext" type="button" class="primary">التالي</button><button id="saveLessonBtn" class="primary lesson-save-button" type="button" hidden>حفظ الحصة</button></div><div id="lessonStatus" class="status"></div>
 </div>
 <div id="lessonListPanel" class="panel lesson-management-panel" style="margin-top:14px" hidden><div class="lesson-list-heading"><h3 id="lessonListTitle" style="margin:0">إدارة الحصص</h3><div class="lesson-calendar-actions"><button id="toggleLessonsCalendarBtn" class="secondary" type="button">📅 عرض التقويم</button></div></div><nav id="lessonSubpageNav" class="lesson-subpage-nav" aria-label="صفحات إدارة الحصص"><button type="button" data-lesson-subpage="all" class="active">📚 كل الحصص</button><button type="button" data-lesson-subpage="in_person">🏫 الحضوري</button><button type="button" data-lesson-subpage="zoom">💻 حصص Zoom</button><button type="button" data-lesson-subpage="courses">📝 الدورات</button></nav><button id="lessonSubpageBack" type="button" class="secondary" hidden>← العودة إلى أقسام إدارة الحصص</button><div id="lessonsCalendarPanel" hidden><div id="lessonNextCountdown" class="lesson-next-countdown" aria-live="polite"><strong>الحصة القادمة</strong><p>جارٍ حساب موعد الحصة القادمة…</p><button id="armLessonAlarmBtn" type="button" class="secondary">🔔 تفعيل المنبه للحصة القادمة</button></div><div id="lessonCalendarViewButtons" class="lesson-calendar-view-buttons"><button type="button" class="secondary active" data-lesson-calendar-view="month">شهري</button><button type="button" class="secondary" data-lesson-calendar-view="week">أسبوعي</button><button type="button" class="secondary" data-lesson-calendar-view="day">يومي</button></div><div class="lesson-calendar-toolbar"><button id="lessonCalendarPrev" class="secondary" type="button">← السابق</button><strong id="lessonCalendarMonth"></strong><button id="lessonCalendarNext" class="secondary" type="button">التالي →</button></div><div class="lesson-calendar-grid view-month" id="lessonCalendarGrid"></div><div id="lessonCalendarDayDetails"></div></div><div id="lessonListFilters" class="lesson-filters-grid"><div class="lesson-filter-field"><label for="lessonListScopeSelect">القائمة</label><select id="lessonListScopeSelect"><option value="library">مكتبة الحصص</option><option value="scheduled">الحصص المسجلة</option><option value="cancelled">الحصص الملغاة</option></select></div><div class="lesson-filter-field"><label for="lessonListModeSelect">طريقة التدريس</label><select id="lessonListModeSelect"><option value="zoom">زووم</option><option value="in_person" selected>حضوري</option></select></div><div class="lesson-filter-field lesson-category-field"><label for="lessonCategoryFilterSelect">تصنيف الحصة</label><select id="lessonCategoryFilterSelect"><option value="all">كل الحصص</option><option value="عادية">الحصص العادية</option><option value="دورة مراجعة">دورات المراجعة</option></select></div></div><p id="lessonListModeHint" class="muted">عرض حصص الزووم.</p><p id="lessonCategoryFilterHint" class="muted">عرض كل التصنيفات.</p><div id="dailyLessonsList" class="list" style="margin-top:14px"></div></div>
+</section>
+<section id="weeklyGroupsView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>👥 إدارة المجموعات الأسبوعية</h2></div>
+<div class="panel">
+<p class="muted">أنشئي مجموعات الدعم الأسبوعية حسب المستوى وطريقة الدراسة، ثم أضيفي إليها التلاميذ يدويًا. التسجيل في حصة فردية أو دورة لا يضيف التلميذ إلى هذه المجموعات.</p>
+<div class="data-item" style="margin:12px 0">
+<strong>➕ إنشاء مجموعة أسبوعية</strong>
+<div class="editor-fields">
+<label class="editor-field">اسم المجموعة<input id="weeklyGroupName" maxlength="100" placeholder="مثال: مجموعة السنة الأولى — حضوري"></label>
+<label class="editor-field">المستوى<select id="weeklyGroupLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select></label>
+<label class="editor-field">طريقة الدراسة<select id="weeklyGroupMode"><option value="in_person">حضوري</option><option value="zoom">Zoom</option></select></label>
+<label class="editor-field">يوم الحصة<select id="weeklyGroupWeekday"><option value="">غير محدد</option><option value="0">الأحد</option><option value="1">الإثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></label>
+<label class="editor-field">التوقيت<input id="weeklyGroupTime" maxlength="40" placeholder="مثال: 16:00 - 18:00"></label>
+</div>
+<button id="weeklyGroupCreateBtn" class="primary" type="button" style="margin-top:12px;width:100%">حفظ المجموعة</button>
+<div id="weeklyGroupStatus" class="status" role="status"></div>
+</div>
+<div class="section-heading"><h3>المجموعات المسجلة</h3><button id="weeklyGroupsRefresh" class="secondary" type="button">تحديث</button></div>
+<div id="weeklyGroupsList" class="list"><div class="data-item">جارٍ تحميل المجموعات…</div></div>
+</div>
+<div class="panel" style="margin-top:14px">
+<h3>إضافة تلميذ إلى مجموعة</h3>
+<label class="editor-field">المجموعة<select id="weeklyMemberGroup"><option value="">اختاري المجموعة</option></select></label>
+<label class="editor-field">التلميذ<select id="weeklyMemberStudent"><option value="">اختاري التلميذ</option></select></label>
+<button id="weeklyMemberAddBtn" class="primary" type="button" style="width:100%;margin-top:10px">إضافة إلى المجموعة</button>
+<div id="weeklyMemberStatus" class="status" role="status"></div>
+</div>
 </section>
 <section id="subscriptionsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 الاشتراكات</h2></div><div class="panel"><p class="muted">الاشتراكات المسجلة للتلاميذ وحالتها ومبالغها.</p><div id="subscriptionModeFilters" class="daily-mode-switch" role="group" aria-label="تصفية الاشتراكات حسب طريقة الدراسة"><button type="button" class="primary" data-sub-mode="all">الكل</button><button type="button" class="secondary" data-sub-mode="zoom">💻 زووم</button><button type="button" class="secondary" data-sub-mode="in_person">🏫 حضوري</button></div><div id="subscriptionsList" class="list" style="margin-top:14px"></div></div>
@@ -3815,5 +3843,45 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 })();
 </script>
 <script src="./writing-tools.js" defer></script>
+<script>
+(()=> {
+ const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
+ const $=id=>document.getElementById(id);
+ let state={groups:[],members:[],students:[]};
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const modeLabel=v=>v==="zoom"?"Zoom":"حضوري";
+ const dayLabel=v=>["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][Number(v)]||"اليوم غير محدد";
+ async function call(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");if(!token)throw Error("سجلي الدخول إلى فضاء الأستاذة أولًا.");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d;}
+ function status(id,msg,error=false){const el=$(id);if(el){el.textContent=msg;el.className="status "+(error?"error":"success");}}
+ function render(){
+  const list=$("weeklyGroupsList"),groupSelect=$("weeklyMemberGroup"),studentSelect=$("weeklyMemberStudent");
+  const currentGroup=groupSelect.value,currentStudent=studentSelect.value;
+  groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+state.groups.filter(g=>g.is_active).map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
+  studentSelect.innerHTML='<option value="">اختاري التلميذ</option>'+state.students.filter(x=>x.status!=="inactive").map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' — '+esc(x.level)+'</option>').join("");
+  if(state.groups.some(g=>g.id===currentGroup))groupSelect.value=currentGroup;
+  if(state.students.some(x=>x.id===currentStudent))studentSelect.value=currentStudent;
+  if(!state.groups.length){list.innerHTML='<div class="data-item">لم تُنشأ مجموعات أسبوعية بعد.</div>';return;}
+  list.innerHTML=state.groups.map(g=>{
+   const members=state.members.filter(m=>m.group_id===g.id);
+   return '<article class="data-item"><strong>'+esc(g.group_name)+'</strong><div class="small">المستوى: '+esc(g.level)+' · '+modeLabel(g.delivery_mode)+'</div><div class="small">الموعد: '+dayLabel(g.weekday)+' · '+esc(g.lesson_time||"لم يُحدد")+'</div><div class="small">عدد الأعضاء: '+members.length+'</div><div class="student-actions">'+(members.length?members.map(m=>'<div class="payment-meta"><span>'+esc(m.students?.full_name||"تلميذ")+'</span><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div>').join(""):'<span class="muted">لا يوجد تلاميذ في هذه المجموعة بعد.</span>')+'</div></article>';
+  }).join("");
+ }
+ async function load(){ $("weeklyGroupsList").innerHTML='<div class="data-item">جارٍ تحميل البيانات…</div>';try{state=await call("weekly_groups_list");render();}catch(e){$("weeklyGroupsList").innerHTML='<div class="data-item">'+esc(e.message)+'</div>';}}
+ document.addEventListener("click",e=>{
+  if(e.target.closest('[data-view="weeklyGroupsView"]'))setTimeout(load,100);
+  const remove=e.target.closest("[data-weekly-remove]");if(remove){(async()=>{if(!confirm("هل تريدين إخراج هذا التلميذ من المجموعة؟"))return;try{await call("weekly_group_member_remove",{member_id:remove.dataset.weeklyRemove});await load();}catch(err){alert(err.message);}})();}
+ });
+ $("weeklyGroupsRefresh")?.addEventListener("click",load);
+ $("weeklyGroupCreateBtn")?.addEventListener("click",async()=>{
+  const name=$("weeklyGroupName").value.trim();if(!name){status("weeklyGroupStatus","اكتبي اسم المجموعة.",true);return;}
+  const b=$("weeklyGroupCreateBtn");b.disabled=true;
+  try{await call("weekly_group_save",{group_name:name,level:$("weeklyGroupLevel").value,delivery_mode:$("weeklyGroupMode").value,weekday:$("weeklyGroupWeekday").value===""?null:Number($("weeklyGroupWeekday").value),lesson_time:$("weeklyGroupTime").value.trim()});$("weeklyGroupName").value="";status("weeklyGroupStatus","تم إنشاء المجموعة بنجاح.");await load();}catch(e){status("weeklyGroupStatus",e.message,true);}finally{b.disabled=false;}
+ });
+ $("weeklyMemberAddBtn")?.addEventListener("click",async()=>{
+  const group_id=$("weeklyMemberGroup").value,student_id=$("weeklyMemberStudent").value;if(!group_id||!student_id){status("weeklyMemberStatus","اختاري المجموعة والتلميذ.",true);return;}
+  const b=$("weeklyMemberAddBtn");b.disabled=true;try{await call("weekly_group_member_add",{group_id,student_id});status("weeklyMemberStatus","تمت إضافة التلميذ إلى المجموعة.");await load();}catch(e){status("weeklyMemberStatus",e.message,true);}finally{b.disabled=false;}
+ });
+})();
+</script>
 </body>
 </html>
