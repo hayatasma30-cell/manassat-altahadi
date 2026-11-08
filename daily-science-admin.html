@@ -120,7 +120,7 @@ input,textarea,select{border-radius:12px}
 .editor-actions{margin-top:12px}
 @media(max-width:700px){.editor-section{padding:11px;border-radius:13px;margin:10px 0}.editor-grid{grid-template-columns:1fr;gap:3px}#editor textarea{min-height:215px;font-size:.96rem}#editor #question{min-height:115px}.editor-publish{align-items:flex-start;flex-direction:column;gap:3px}.editor-actions .btn{flex:1 1 100%}}
 
-.rich-editor-wrap{margin:6px 0 14px}.rich-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;background:#f2f7ef;border:1px solid #dce8d8;border-radius:12px 12px 0 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{min-height:34px;border:1px solid #cbdcc8;border-radius:8px;background:#fff;color:#244b34;padding:4px 7px;font:600 12px Tahoma,Arial,sans-serif}.rich-toolbar button{cursor:pointer}.rich-toolbar label{display:flex;align-items:center;gap:4px}.rich-toolbar input[type=color]{width:25px;height:25px;min-height:25px;padding:0;border:0;background:transparent}.rich-editable{min-height:220px;padding:13px 14px;border:1px solid #cbd8c8;border-top:0;border-radius:0 0 12px 12px;background:#fff;color:#18382a;font:16px/2 Tahoma,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;outline:none}.rich-editable:focus{box-shadow:0 0 0 2px #b7d8b8}.rich-editable:empty:before{content:attr(data-placeholder);color:#9aa69a}.rich-source{display:none!important}@media(max-width:700px){.rich-toolbar{gap:4px;padding:6px}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{font-size:11px;min-height:32px;padding:3px 5px}.rich-editable{min-height:210px;font-size:15px}}</style></head>
+.rich-editor-wrap{margin:6px 0 14px}.rich-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;background:#f2f7ef;border:1px solid #dce8d8;border-radius:12px 12px 0 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{min-height:34px;border:1px solid #cbdcc8;border-radius:8px;background:#fff;color:#244b34;padding:4px 7px;font:600 12px Tahoma,Arial,sans-serif}.rich-toolbar button{cursor:pointer}.rich-toolbar label{display:flex;align-items:center;gap:4px}.rich-toolbar input[type=color]{width:25px;height:25px;min-height:25px;padding:0;border:0;background:transparent}.rich-editable{min-height:220px;padding:13px 14px;border:1px solid #cbd8c8;border-top:0;border-radius:0 0 12px 12px;background:#fff;color:#18382a;font:16px/2 Tahoma,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;outline:none}.rich-editable:focus{box-shadow:0 0 0 2px #b7d8b8}.rich-editable:empty:before{content:attr(data-placeholder);color:#9aa69a}.rich-source{display:none!important}@media(max-width:700px){.rich-toolbar{gap:4px;padding:6px}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{font-size:11px;min-height:32px;padding:3px 5px}.rich-editable{min-height:210px;font-size:15px}}.item[data-fact-id]{cursor:grab;user-select:none;-webkit-user-select:none}.item.fact-dragging{opacity:.58;transform:scale(.99);border:2px dashed #398253;cursor:grabbing;box-shadow:0 12px 28px #153d2020}.item[data-fact-id] .item-actions{user-select:auto;-webkit-user-select:auto}</style></head>
 <body><header><div class="header-inner"><b>🌿 منصة التحدي | تعلّم اليوم</b><div>معلومات علمية يومية، منظمة وسهلة الإدارة</div></div></header><main class="wrap">
 <div class="toolbar"><button class="btn" onclick="try{localStorage.removeItem('tahadi_last_teacher_external_page')}catch(e){}location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn hide" id="menuBtn" type="button" onclick="location.href='daily-science-admin.html?view=home'">⌂ القائمة الرئيسية</button></div>
 <section class="box" id="homeMenu"><h2>تعلّم اليوم</h2><div class="menu-grid">
@@ -206,13 +206,66 @@ function scienceHTML(value){const s=String(value??"");return s.startsWith(RICH_M
 function cleanLeadingTitle(value,title){const text=String(value??"");const lines=text.split(/\r?\n/);if(lines.length&&lines[0].trim().replace(/[：:：.!؟]+$/g,"")===String(title??"").trim().replace(/[：:：.!؟]+$/g,""))return lines.slice(1).join("\n").replace(/^\n/,"");return text}
 function card(x){
  const info=cleanLeadingTitle(x.daily_information,x.title),pub=x.is_published!==false;
- return '<article class="item"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'<span class="tag '+(pub?'publish-tag':'draft-tag')+'">'+(pub?'✓ منشورة':'◷ مسودة / مخفية')+'</span></div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+scienceHTML(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+scienceHTML(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn" type="button" data-toggle-publish="'+esc(x.id)+'">'+(pub?'إخفاء':'نشر')+'</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>';
+ return '<article class="item" data-fact-id="'+esc(x.id)+'"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'<span class="tag '+(pub?'publish-tag':'draft-tag')+'">'+(pub?'✓ منشورة':'◷ مسودة / مخفية')+'</span></div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+scienceHTML(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+scienceHTML(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn" type="button" data-toggle-publish="'+esc(x.id)+'">'+(pub?'إخفاء':'نشر')+'</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>';
 }
-function draw(){facts.sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)));$("todayContent").innerHTML=facts.length?card(facts[0]):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';refreshLibrary()}
+function draw(){const latest=[...facts].sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)))[0];$("todayContent").innerHTML=latest?card(latest):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';refreshLibrary()}
 function drawStats(){const total=facts.length,published=facts.filter(x=>x.is_published!==false).length,drafts=total-published;$("libraryStats").innerHTML='<div class="stat-tile"><strong>'+total+'</strong><span>إجمالي المعلومات</span></div><div class="stat-tile"><strong>'+published+'</strong><span>منشورة</span></div><div class="stat-tile"><strong>'+drafts+'</strong><span>مسودة / مخفية</span></div>'}
 function fillLibraryFilters(){const sets=[["levelFilter",[...new Set(facts.map(x=>x.target_level).filter(Boolean))],"كل المستويات"],["audienceFilter",[...new Set(facts.map(x=>x.target_audience).filter(Boolean))],"كل الفئات"]];for(const [id,values,label] of sets){const el=$(id),selected=el.value;el.innerHTML='<option value="">'+label+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join("");el.value=selected}}
-function filter(){const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value,a=facts.filter(x=>(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة لبحثك.</div>';$("libraryCount").textContent="عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.length}
+function filter(){const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value,a=facts.filter(x=>(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة لبحثك.</div>';$("libraryCount").textContent="عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.length;bindFactDrag()}
 function refreshLibrary(){drawStats();fillLibraryFilters();filter()}
+let factDragState=null,factDragTimer=null,factDragStart=null;
+function factDragEligible(){return !$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&facts.length>1}
+function bindFactDrag(){
+ const host=$("cards");
+ host.querySelectorAll(".item[data-fact-id]").forEach(el=>{
+  el.style.touchAction="pan-y";
+  el.addEventListener("pointerdown",e=>{
+   if(e.target.closest("button,a,input,select,textarea")||!factDragEligible())return;
+   factDragStart={x:e.clientX,y:e.clientY,el,pointerId:e.pointerId};
+   factDragTimer=setTimeout(()=>{
+    if(!factDragStart)return;
+    factDragState={el,pointerId:e.pointerId,moved:false};
+    el.classList.add("fact-dragging");
+    try{el.setPointerCapture(e.pointerId)}catch(_){}
+    if(navigator.vibrate)navigator.vibrate(25);
+   },230);
+  });
+  el.addEventListener("pointermove",e=>{
+   if(!factDragStart||factDragStart.el!==el||factDragStart.pointerId!==e.pointerId)return;
+   if(!factDragState){
+    if(Math.abs(e.clientX-factDragStart.x)>9||Math.abs(e.clientY-factDragStart.y)>9){clearTimeout(factDragTimer);factDragStart=null;}
+    return;
+   }
+   e.preventDefault();
+   const siblings=[...host.querySelectorAll(".item[data-fact-id]:not(.fact-dragging)")];
+   const target=siblings.find(node=>{const r=node.getBoundingClientRect();return e.clientY<r.top+r.height/2});
+   if(target)host.insertBefore(el,target);else host.appendChild(el);
+   factDragState.moved=true;
+  });
+  const finish=async e=>{
+   if(!factDragStart||factDragStart.el!==el||factDragStart.pointerId!==e.pointerId)return;
+   clearTimeout(factDragTimer);
+   const state=factDragState;factDragStart=null;factDragState=null;
+   el.classList.remove("fact-dragging");
+   if(!state||!state.moved){return;}
+   const ids=[...host.querySelectorAll(".item[data-fact-id]")].map(x=>x.dataset.factId);
+   const status=$("status");status.textContent="جارٍ حفظ الترتيب الجديد…";
+   try{
+    await call("daily_science_reorder",{ids});
+    const positions=new Map(ids.map((id,index)=>[String(id),index]));
+    facts.sort((a,b)=>positions.get(String(a.id))-positions.get(String(b.id)));
+    facts.forEach((x,index)=>x.sort_order=index);
+    status.textContent="تم حفظ الترتيب الجديد، وسيظهر للتلاميذ بنفس الترتيب.";
+   }catch(err){
+    status.textContent=err.message;
+    await load();
+   }
+  };
+  el.addEventListener("pointerup",finish);
+  el.addEventListener("pointercancel",finish);
+ });
+}
+
 const dailyLastViewKey="tahadi_daily_science_last_view_v1";
 const requestedView=new URLSearchParams(location.search).get("view");
 const allowedViews=["home","add","copy","library","today"];
