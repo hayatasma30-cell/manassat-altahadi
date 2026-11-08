@@ -207,29 +207,47 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 
 <style id="student-profile-before-name-final">
 #dashboard .student-identity-compact .student-name-line{
- direction:rtl!important;display:flex!important;flex-direction:row!important;
- justify-content:flex-start!important;align-items:center!important;
- gap:12px!important;width:100%!important;min-width:0!important;
+ direction:rtl!important;
+ display:flex!important;
+ flex-direction:row!important;
+ justify-content:flex-start!important;
+ align-items:center!important;
+ gap:12px!important;
+ width:100%!important;
+ min-width:0!important;
 }
 #dashboard .student-identity-compact .student-name-line .student-profile-shortcut{
- order:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
- box-sizing:border-box!important;flex:0 0 46px!important;
- width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;
- margin:0!important;padding:8px!important;line-height:1!important;
- border:1.5px solid #237447!important;border-radius:50%!important;
+ order:0!important;
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ box-sizing:border-box!important;
+ flex:0 0 46px!important;
+ width:46px!important;height:46px!important;
+ min-width:46px!important;min-height:46px!important;
+ margin:0!important;padding:8px!important;
+ line-height:1!important;
+ border:1.5px solid #237447!important;
+ border-radius:50%!important;
  background:linear-gradient(145deg,#fbfff9,#edf7e9)!important;
- color:#187044!important;box-shadow:0 3px 8px #174b2c14!important;
+ color:#187044!important;
+ box-shadow:0 3px 8px #174b2c14!important;
 }
 #dashboard .student-identity-compact .student-name-line .student-profile-shortcut svg{
  display:block!important;width:100%!important;height:100%!important;
 }
-#dashboard .student-identity-compact .student-name-line .student-profile-shortcut:active{
- transform:scale(.96)!important;box-shadow:0 1px 3px #174b2c12!important;
-}
 #dashboard .student-identity-compact .student-name-line #studentName{
- order:1!important;flex:0 1 auto!important;width:auto!important;
- max-width:calc(100% - 58px)!important;min-width:0!important;
- margin:0!important;text-align:right!important;line-height:1.35!important;
+ order:1!important;
+ display:flex!important;
+ align-items:center!important;
+ flex:0 1 auto!important;
+ width:auto!important;
+ max-width:calc(100% - 58px)!important;
+ min-width:0!important;
+ min-height:46px!important;
+ margin:0!important;padding:0!important;
+ text-align:right!important;
+ line-height:1.2!important;
 }
 @media(max-width:500px){
  #dashboard .student-identity-compact .student-name-line{gap:10px!important}
@@ -237,7 +255,9 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   flex-basis:42px!important;width:42px!important;height:42px!important;
   min-width:42px!important;min-height:42px!important;padding:7px!important;
  }
- #dashboard .student-identity-compact .student-name-line #studentName{max-width:calc(100% - 52px)!important}
+ #dashboard .student-identity-compact .student-name-line #studentName{
+  min-height:42px!important;max-width:calc(100% - 52px)!important;
+ }
 }
 </style>
 </head>
