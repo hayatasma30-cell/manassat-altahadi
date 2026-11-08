@@ -36,19 +36,19 @@ header div{font-size:.88rem;line-height:1.6}
  .toolbar .btn{flex:1 1 auto;font-size:.88rem;padding:8px 10px}
  .box{padding:12px;margin:10px 0;border-radius:16px}
  .box h2{font-size:1.03rem;margin-bottom:10px}
- #todayContent .item,#cards .item{padding:13px 12px;border-radius:14px}
+ #todayContent .item,#cards .item{padding:15px 13px;border-radius:14px}
  .item .tag{font-size:.75rem;margin-bottom:9px;padding:4px 9px}
  .item h3{font-size:1.05rem;margin:4px 0 12px}
- .item p{font-size:.94rem;line-height:1.85;margin:10px 0;text-align:right}
+ .item p{font-size:1rem;line-height:2;margin:12px 0;text-align:right}
  #topicList .btn{flex:1 1 calc(50% - 8px);font-size:.84rem}
 }
 </style>
 
 </head>
 <body><header><b>💡 تعلّم اليوم</b><div>معلومة علمية يومية ومكتبة منظّمة حسب الموضوع</div></header><main class="wrap">
-<div class="toolbar"><button class="btn" onclick="location.href='student-space.html'+(teacherPreview?'?teacher_preview='+encodeURIComponent(previewStudentId):'')">← العودة إلى فضائي</button><button class="btn" id="libraryBtn">📚 مكتبة المعلومات</button></div>
+<div class="toolbar"><button class="btn" onclick="location.href='student-space.html'+(teacherPreview?'?teacher_preview='+encodeURIComponent(previewStudentId):'')">← العودة إلى فضائي</button><button class="btn" id="libraryBtn">📚 مكتبتي العلمية</button></div>
 <section class="box" id="today"><h2>معلومة اليوم</h2><div id="todayContent">جارٍ التحميل…</div></section>
-<section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="topicList" class="toolbar" style="margin:10px 0"></div><div id="topicBack" class="hide"><button class="btn" id="backTopics">← كل المواضيع</button><strong id="selectedTopicTitle"></strong></div><input id="search" placeholder="بحث حسب العنوان أو الموضوع"><div id="cards"></div></section></main>
+<section class="box hide" id="library"><h2>📚 مكتبتي العلمية</h2><div id="topicList" class="toolbar" style="margin:10px 0"></div><div id="topicBack" class="hide"><button class="btn" id="backTopics">← كل المواضيع</button><strong id="selectedTopicTitle"></strong></div><input id="search" placeholder="بحث حسب العنوان أو الموضوع"><div id="cards"></div></section></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access",params=new URLSearchParams(location.search),previewStudentId=params.get("student_id")||"",teacherPreview=params.get("teacher_preview")==="1"&&!!previewStudentId,token=teacherPreview?(localStorage.getItem("tahadi_teacher_token")||""):(localStorage.getItem("tahadi_student_session")||""), $=id=>document.getElementById(id);let facts=[],topics=[],selectedTopic="";
 async function call(action,extra={}){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...(teacherPreview?{preview_student_id:previewStudentId}:{}),...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر الاتصال بالمنصة.");return d}
