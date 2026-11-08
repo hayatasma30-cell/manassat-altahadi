@@ -120,7 +120,48 @@ input,textarea,select{border-radius:12px}
 .editor-actions{margin-top:12px}
 @media(max-width:700px){.editor-section{padding:11px;border-radius:13px;margin:10px 0}.editor-grid{grid-template-columns:1fr;gap:3px}#editor textarea{min-height:215px;font-size:.96rem}#editor #question{min-height:115px}.editor-publish{align-items:flex-start;flex-direction:column;gap:3px}.editor-actions .btn{flex:1 1 100%}}
 
-.rich-editor-wrap{margin:6px 0 14px}.rich-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;background:#f2f7ef;border:1px solid #dce8d8;border-radius:12px 12px 0 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{min-height:34px;border:1px solid #cbdcc8;border-radius:8px;background:#fff;color:#244b34;padding:4px 7px;font:600 12px Tahoma,Arial,sans-serif}.rich-toolbar button{cursor:pointer}.rich-toolbar label{display:flex;align-items:center;gap:4px}.rich-toolbar input[type=color]{width:25px;height:25px;min-height:25px;padding:0;border:0;background:transparent}.rich-editable{min-height:220px;padding:13px 14px;border:1px solid #cbd8c8;border-top:0;border-radius:0 0 12px 12px;background:#fff;color:#18382a;font:16px/2 Tahoma,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;outline:none}.rich-editable:focus{box-shadow:0 0 0 2px #b7d8b8}.rich-editable:empty:before{content:attr(data-placeholder);color:#9aa69a}.rich-source{display:none!important}@media(max-width:700px){.rich-toolbar{gap:4px;padding:6px}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{font-size:11px;min-height:32px;padding:3px 5px}.rich-editable{min-height:210px;font-size:15px}}.item[data-fact-id]{cursor:grab;user-select:none;-webkit-user-select:none}.item.fact-dragging{opacity:.58;transform:scale(.99);border:2px dashed #398253;cursor:grabbing;box-shadow:0 12px 28px #153d2020}.item[data-fact-id] .item-actions{user-select:auto;-webkit-user-select:auto}</style></head>
+.rich-editor-wrap{margin:6px 0 14px}.rich-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;background:#f2f7ef;border:1px solid #dce8d8;border-radius:12px 12px 0 0}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{min-height:34px;border:1px solid #cbdcc8;border-radius:8px;background:#fff;color:#244b34;padding:4px 7px;font:600 12px Tahoma,Arial,sans-serif}.rich-toolbar button{cursor:pointer}.rich-toolbar label{display:flex;align-items:center;gap:4px}.rich-toolbar input[type=color]{width:25px;height:25px;min-height:25px;padding:0;border:0;background:transparent}.rich-editable{min-height:220px;padding:13px 14px;border:1px solid #cbd8c8;border-top:0;border-radius:0 0 12px 12px;background:#fff;color:#18382a;font:16px/2 Tahoma,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;outline:none}.rich-editable:focus{box-shadow:0 0 0 2px #b7d8b8}.rich-editable:empty:before{content:attr(data-placeholder);color:#9aa69a}.rich-source{display:none!important}@media(max-width:700px){.rich-toolbar{gap:4px;padding:6px}.rich-toolbar button,.rich-toolbar select,.rich-toolbar label{font-size:11px;min-height:32px;padding:3px 5px}.rich-editable{min-height:210px;font-size:15px}}.item[data-fact-id]{cursor:grab;user-select:none;-webkit-user-select:none}.item.fact-dragging{opacity:.58;transform:scale(.99);border:2px dashed #398253;cursor:grabbing;box-shadow:0 12px 28px #153d2020}.item[data-fact-id] .item-actions{user-select:auto;-webkit-user-select:auto}
+/* تصغير بطاقات إحصائيات المكتبة: ثلاثة مربعات في صف واحد */
+#library #libraryStats.library-stats{
+ display:grid!important;
+ grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:7px!important;
+ width:100%!important;
+ margin:0 0 10px!important;
+}
+#library #libraryStats .stat-tile{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ width:auto!important;
+ min-width:0!important;
+ min-height:64px!important;
+ height:auto!important;
+ padding:6px 3px!important;
+ margin:0!important;
+ border-radius:11px!important;
+}
+#library #libraryStats .stat-tile strong{
+ display:block!important;
+ font-size:1.05rem!important;
+ line-height:1.25!important;
+ margin:0 0 2px!important;
+}
+#library #libraryStats .stat-tile span{
+ display:block!important;
+ font-size:.68rem!important;
+ line-height:1.35!important;
+ white-space:normal!important;
+}
+@media(max-width:700px){
+ #library #libraryStats.library-stats{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+ #library #libraryStats .stat-tile{min-height:58px!important;padding:5px 2px!important}
+ #library #libraryStats .stat-tile strong{font-size:1rem!important}
+ #library #libraryStats .stat-tile span{font-size:.64rem!important}
+}
+
+</style></head>
 <body><header><div class="header-inner"><b>🌿 منصة التحدي | تعلّم اليوم</b><div>معلومات علمية يومية، منظمة وسهلة الإدارة</div></div></header><main class="wrap">
 <div class="toolbar"><button class="btn" onclick="try{localStorage.removeItem('tahadi_last_teacher_external_page')}catch(e){}location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn hide" id="menuBtn" type="button" onclick="location.href='daily-science-admin.html?view=home'">⌂ القائمة الرئيسية</button></div>
 <section class="box" id="homeMenu"><h2>تعلّم اليوم</h2><div class="menu-grid">
