@@ -1566,7 +1566,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </section>
 <style>
 .weekly-group-filters{display:flex;gap:8px;margin:8px 0 14px}.weekly-group-filters button{flex:1;padding:9px 6px;border-radius:12px}.weekly-group-filters button.active{background:#176b42;color:white;border-color:#176b42}.weekly-level-group{margin:18px 0}.weekly-level-group>h3{font-size:1rem;color:#174b32;margin:0 0 9px}.weekly-level-group>h3 small{color:#718078;font-weight:400}.weekly-group-warning{font-style:normal;font-size:11px;color:#9a5a14;background:#fff1d9;border-radius:8px;padding:3px 7px}.weekly-group-open{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:right;padding:14px 16px;margin:8px 0;border:1px solid #cbdccf;border-radius:15px;background:#fbfdfb;color:#174b32;box-shadow:0 4px 0 #dce8dd}.weekly-group-open span{font-weight:700}.weekly-group-open small{color:#718078;font-size:.86rem}
-.weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
+.weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage[hidden],#weeklyGroupMainPanel[hidden],#weeklyGroupActionMenu[hidden],#weeklyGroupInfoPage[hidden],#weeklyGroupStudentsPage[hidden],#weeklyGroupLessonsPage[hidden],#weeklyGroupEditorPanel[hidden],#weeklyGroupsDirectory[hidden],#weeklyGroupDetailNav[hidden]{display:none!important}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
 </style>
 <style>
 .weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
@@ -1587,7 +1587,8 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <h3>📋 معلومات المجموعة وإعداداتها</h3>
 <div class="section-heading"><h3>بيانات المجموعة</h3><button id="weeklyGroupsRefresh" class="secondary" type="button">تحديث</button></div>
 <div id="weeklyGroupsList" class="list"><div class="data-item">جارٍ تحميل المجموعة…</div></div>
-<div class="data-item" style="margin:12px 0">
+<div id="weeklyGroupEditorPanel" class="data-item" style="margin:12px 0" hidden>
+<button type="button" class="back" data-weekly-editor-back>← معلومات المجموعة</button>
 <strong id="weeklyGroupFormTitle">➕ إنشاء مجموعة أسبوعية</strong><input id="weeklyGroupEditId" type="hidden">
 <div class="editor-fields">
 <label class="editor-field">المستوى<select id="weeklyGroupLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select></label>
@@ -3904,7 +3905,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 (()=> {
  const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
  const $=id=>document.getElementById(id);
- let state={groups:[],members:[],students:[]}; let selectedGroupId=null; let currentSubpage="menu";
+ let state={groups:[],members:[],students:[],lessons:[],series:[]}; let selectedGroupId=null; let currentSubpage="menu"; let editorOpen=false;
  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const modeLabel=v=>v==="zoom"?"Zoom":"حضوري";
  const dayLabel=v=>["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][Number(v)]||"اليوم غير محدد";
@@ -3941,6 +3942,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   $("weeklyGroupStudentsPage").hidden=!selected||currentSubpage!=="students";
   $("weeklyGroupLessonsPage").hidden=!selected||currentSubpage!=="lessons";
   if(selected){$("weeklyGroupDetailTitle").textContent=selected.group_name+" — "+selected.level+" · "+modeLabel(selected.delivery_mode);}
+  const editorPanel=$("weeklyGroupEditorPanel");if(editorPanel)editorPanel.hidden=!editorOpen;
   const lessonHost=$("weeklyGroupLessonList");
   if(lessonHost){
     const linkedLessons=(state.lessons||[]).filter(x=>selected&&selected.recurrence_group_id&&x.recurrence_group_id===selected.recurrence_group_id).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||"")));
@@ -3962,12 +3964,14 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
  async function load(){ $("weeklyGroupsList").innerHTML='<div class="data-item">جارٍ تحميل البيانات…</div>';try{state=await call("weekly_groups_list");render();}catch(e){$("weeklyGroupsList").innerHTML='<div class="data-item">'+esc(e.message)+'</div>';}}
  document.addEventListener("click",e=>{
   if(e.target.closest('[data-view="weeklyGroupsView"]')){selectedGroupId=null;currentSubpage="menu";setTimeout(load,100);}
-  const openGroup=e.target.closest("[data-weekly-open]");if(openGroup){selectedGroupId=openGroup.dataset.weeklyOpen;currentSubpage="menu";resetGroupForm();render();return;}
-  if(e.target.closest("#weeklyGroupsBackBtn")){selectedGroupId=null;currentSubpage="menu";resetGroupForm();render();return;}
+  const openGroup=e.target.closest("[data-weekly-open]");if(openGroup){selectedGroupId=openGroup.dataset.weeklyOpen;currentSubpage="menu";editorOpen=false;resetGroupForm();render();return;}
+  if(e.target.closest("#weeklyGroupsBackBtn")){selectedGroupId=null;currentSubpage="menu";editorOpen=false;resetGroupForm();render();return;}
   const page=e.target.closest("[data-weekly-page]");if(page){currentSubpage=page.dataset.weeklyPage;render();return;}
+  if(e.target.closest("[data-weekly-editor-back]")){editorOpen=false;resetGroupForm();render();return;}
   if(e.target.closest("[data-weekly-page-back]")){currentSubpage="menu";render();return;}
-  if(e.target.closest("#weeklyNewGroupBtn")){selectedGroupId=null;currentSubpage="info";resetGroupForm();render();$("weeklyGroupsDirectory").hidden=true;$("weeklyGroupDetailNav").hidden=false;$("weeklyGroupDetailTitle").textContent="إنشاء مجموعة جديدة";$("weeklyGroupMainPanel").hidden=false;$("weeklyGroupInfoPage").hidden=false;$("weeklyGroupsList").hidden=true;$("weeklyGroupFormTitle").scrollIntoView({behavior:"smooth",block:"center"});return;}
-  const edit=e.target.closest("[data-weekly-edit]");if(edit){const g=state.groups.find(x=>x.id===edit.dataset.weeklyEdit);if(!g)return;currentSubpage="info";render();$("weeklyGroupsList").hidden=false;$("weeklyGroupEditId").value=g.id;$("weeklyGroupLevel").value=g.level;$("weeklyGroupMode").value=g.delivery_mode;$("weeklyGroupWeekday").value=g.weekday===null?"":String(g.weekday);$("weeklyGroupStartTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[0]||"";$("weeklyGroupEndTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[1]||"";$("weeklyGroupFormTitle").textContent="✏️ تعديل المجموعة";$("weeklyGroupCreateBtn").textContent="حفظ التعديلات";$("weeklyGroupCancelEdit").hidden=false;window.scrollTo({top:$("weeklyGroupFormTitle").getBoundingClientRect().top+window.scrollY-100,behavior:"smooth"});}
+  if(e.target.closest("#weeklyNewGroupBtn")){selectedGroupId=null;currentSubpage="info";editorOpen=true;resetGroupForm();render();$("weeklyGroupsDirectory").hidden=true;$("weeklyGroupDetailNav").hidden=false;$("weeklyGroupDetailTitle").textContent="إنشاء مجموعة جديدة";$("weeklyGroupMainPanel").hidden=false;$("weeklyGroupInfoPage").hidden=false;$("weeklyGroupsList").hidden=true;$("weeklyGroupFormTitle").scrollIntoView({behavior:"smooth",block:"center"});return;}
+  const edit=e.target.closest("[data-weekly-edit]");if(edit){const g=state.groups.find(x=>x.id===edit.dataset.weeklyEdit);if(!g)return;currentSubpage="info";editorOpen=true;render();$("weeklyGroupsList").hidden=false;$("weeklyGroupEditId").value=g.id;$("weeklyGroupLevel").value=g.level;$("weeklyGroupMode").value=g.delivery_mode;$("weeklyGroupWeekday").value=g.weekday===null?"":String(g.weekday);$("weeklyGroupStartTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[0]||"";$("weeklyGroupEndTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[1]||"";$("weeklyGroupFormTitle").textContent="✏️ تعديل المجموعة";$("weeklyGroupCreateBtn").textContent="حفظ التعديلات";$("weeklyGroupCancelEdit").hidden=false;window.scrollTo({top:$("weeklyGroupFormTitle").getBoundingClientRect().top+window.scrollY-100,behavior:"smooth"});}
+  if(e.target.closest("#weeklyGroupCancelEdit")){editorOpen=false;resetGroupForm();render();return;}
   const del=e.target.closest("[data-weekly-delete]");if(del){(async()=>{if(!confirm("سيتم إيقاف هذه المجموعة وإخراج أعضائها منها. ستبقى سجلات الحصص محفوظة. هل تريدين المتابعة؟"))return;try{await call("weekly_group_delete",{group_id:del.dataset.weeklyDelete});resetGroupForm();selectedGroupId=null;await load();status("weeklyGroupStatus","تم حذف المجموعة من المجموعات النشطة مع الاحتفاظ بسجلات الحصص.");}catch(err){alert(err.message);}})();}
   const remove=e.target.closest("[data-weekly-remove]");if(remove){(async()=>{if(!confirm("هل تريدين إخراج هذا التلميذ من المجموعة؟"))return;try{await call("weekly_group_member_remove",{member_id:remove.dataset.weeklyRemove});await load();}catch(err){alert(err.message);}})();}
  });
