@@ -3017,7 +3017,7 @@ const handleIncomeCalendarClick=async e=>{
   $("logoutBtn").addEventListener("click", logout); $("topLogout").addEventListener("click", logout);
   const savedToken = localStorage.getItem("tahadi_teacher_token"), expiry = localStorage.getItem("tahadi_teacher_expires");
   if (savedToken && expiry && new Date(expiry).getTime() > Date.now()) {
-    let savedPosition={};try{savedPosition=JSON.parse(localStorage.getItem("tahadi_teacher_logout_checkpoint_v1")||sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
+    let savedPosition={};try{savedPosition=JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem("tahadi_teacher_logout_checkpoint_v1")||"{}")||{};}catch(_){}
     /* Challenge manager now opens as a standalone page; discard the obsolete iframe restore state. */
     if(savedPosition.challengePage){savedPosition.challengePage="";savedPosition.challengeY=0;const clean=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,clean);localStorage.setItem(teacherPagePositionKey,clean);}
     if(new URLSearchParams(location.search).get("from")==="challenge"){savedPosition.challengePage="";const cleanPosition=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,cleanPosition);localStorage.setItem(teacherPagePositionKey,cleanPosition);}
@@ -3052,7 +3052,7 @@ const handleIncomeCalendarClick=async e=>{
       localStorage.setItem("tahadi_teacher_token",result.token); localStorage.setItem("tahadi_teacher_expires",result.expires_at);
       window.__tahadiLoggingOut=false;
       await loadDashboard(result.token);
-      const savedPosition=(()=>{try{return JSON.parse(localStorage.getItem("tahadi_teacher_logout_checkpoint_v1")||sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){return {};}})();
+      const savedPosition=(()=>{try{return JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem("tahadi_teacher_logout_checkpoint_v1")||"{}")||{};}catch(_){return {};}})();
       const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view")||"homeView";
       const targetView=document.getElementById(lastView)?.classList.contains("view")?lastView:"homeView";
       showView(targetView,{preserveScroll:true});
