@@ -9,7 +9,7 @@
     const saved=JSON.parse(sessionStorage.getItem("tahadi_teacher_page_position_v2")||localStorage.getItem("tahadi_teacher_page_position_v2")||"null");
     if(token&&expiry&&new Date(expiry).getTime()>Date.now()&&saved&&saved.view&&saved.view!=="homeView"){
       document.documentElement.classList.add("tahadi-restoring");
-      window.__tahadiRestoreFallback=setTimeout(()=>document.documentElement.classList.remove("tahadi-restoring"),5000);
+      window.__tahadiRestoreFallback=setTimeout(()=>document.documentElement.classList.remove("tahadi-restoring"),15000);
     }
   }catch(_){}
 })();
