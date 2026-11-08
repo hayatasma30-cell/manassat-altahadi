@@ -95,7 +95,7 @@ input,textarea,select{border-radius:12px}
 }
 
 
-.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.library-topic-grid{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 14px}.library-topic-choice{flex:1 1 calc(50% - 9px);min-width:145px;min-height:50px;padding:10px 13px;border:1px solid #c9ddc5;border-bottom:3px solid #23834b;border-radius:13px;background:linear-gradient(145deg,#fff,#f1f8ee);color:#14532d;font:inherit;font-weight:700;text-align:right;cursor:pointer;box-shadow:0 3px 0 #14532d12}.library-topic-choice:active{transform:translateY(2px)}#libraryTopicBack{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 12px;color:#14532d}#libraryTopicNav.hide,#libraryTopicBack.hide{display:none!important}@media(max-width:600px){.library-topic-choice{flex-basis:100%}}\n.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
 .stat-tile{background:#f1f7ee;border:1px solid #dce9d8;border-radius:13px;padding:9px;text-align:center}
 .stat-tile strong{display:block;color:#14532d;font-size:1.15rem}
 .stat-tile span{color:#657568;font-size:.75rem}
@@ -153,7 +153,7 @@ input,textarea,select{border-radius:12px}
 <div class="editor-publish"><label><input id="published" type="checkbox" checked> نشر المعلومة للتلاميذ</label><span>يمكنك معاينتها قبل النشر.</span></div>
 <div class="toolbar editor-actions"><button class="btn" id="previewDraftBtn" type="button">👁 معاينة</button><button class="btn primary" id="saveBtn" type="button">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div>
 <p id="status" class="status"></p></section>
-<section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="libraryStats" class="library-stats"></div><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><select id="topicFilter"><option value="">كل الموضوعات</option></select><select id="levelFilter"><option value="">كل المستويات</option></select><select id="audienceFilter"><option value="">كل الفئات</option></select><select id="statusFilter"><option value="">كل الحالات</option><option value="published">منشورة</option><option value="draft">مسودة / مخفية</option></select></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section><div id="previewOverlay" class="preview-overlay hide" style="position:fixed;inset:0;background:#102d1fcc;z-index:9999;display:grid;place-items:center;padding:16px"><div style="width:min(680px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:18px"><h2 id="previewTitle"></h2><div class="item-meta" id="previewMeta"></div><h3>المعلومة العلمية</h3><p id="previewInfo" style="white-space:pre-wrap;line-height:1.9"></p><h3>السؤال</h3><p id="previewQuestion" style="white-space:pre-wrap;line-height:1.9"></p><button class="btn" type="button" id="closePreview">إغلاق المعاينة</button></div></div>
+<section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="libraryStats" class="library-stats"></div><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><select id="topicFilter"><option value="">كل الموضوعات</option></select><select id="levelFilter"><option value="">كل المستويات</option></select><select id="audienceFilter"><option value="">كل الفئات</option></select><select id="statusFilter"><option value="">كل الحالات</option><option value="published">منشورة</option><option value="draft">مسودة / مخفية</option></select></div><div id="libraryTopicNav"></div><div id="libraryTopicBack" class="hide"><button class="btn" type="button" id="libraryBackTopics">← كل المواضيع</button><strong id="librarySelectedTopic"></strong></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section><div id="previewOverlay" class="preview-overlay hide" style="position:fixed;inset:0;background:#102d1fcc;z-index:9999;display:grid;place-items:center;padding:16px"><div style="width:min(680px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:18px"><h2 id="previewTitle"></h2><div class="item-meta" id="previewMeta"></div><h3>المعلومة العلمية</h3><p id="previewInfo" style="white-space:pre-wrap;line-height:1.9"></p><h3>السؤال</h3><p id="previewQuestion" style="white-space:pre-wrap;line-height:1.9"></p><button class="btn" type="button" id="closePreview">إغلاق المعاينة</button></div></div>
 </main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access",token=localStorage.getItem("tahadi_teacher_token")||"",teacher=true,$=id=>document.getElementById(id);let facts=[],topics=[],editingFactId="";
@@ -211,10 +211,25 @@ function card(x){
 function draw(){const latest=[...facts].sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)))[0];$("todayContent").innerHTML=latest?card(latest):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';refreshLibrary()}
 function drawStats(){const total=facts.length,published=facts.filter(x=>x.is_published!==false).length,drafts=total-published;$("libraryStats").innerHTML='<div class="stat-tile"><strong>'+total+'</strong><span>إجمالي المعلومات</span></div><div class="stat-tile"><strong>'+published+'</strong><span>منشورة</span></div><div class="stat-tile"><strong>'+drafts+'</strong><span>مسودة / مخفية</span></div>'}
 function fillLibraryFilters(){const sets=[["levelFilter",[...new Set(facts.map(x=>x.target_level).filter(Boolean))],"كل المستويات"],["audienceFilter",[...new Set(facts.map(x=>x.target_audience).filter(Boolean))],"كل الفئات"]];for(const [id,values,label] of sets){const el=$(id),selected=el.value;el.innerHTML='<option value="">'+label+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join("");el.value=selected}}
-function filter(){const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value,a=facts.filter(x=>(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة لبحثك.</div>';$("libraryCount").textContent="عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.length;bindFactDrag()}
-function refreshLibrary(){drawStats();fillLibraryFilters();filter()}
+let activeLibraryTopic="";
+function renderLibraryTopics(){
+ const host=$("libraryTopicNav");if(!host)return;
+ const names=[...new Set([...topics.map(t=>String(t.title||"").trim()),...facts.map(x=>String(x.topic||"").trim())].filter(Boolean))];
+ host.className=activeLibraryTopic?"hide":"library-topic-grid";
+ host.innerHTML=names.map(name=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(name)+'">📁 '+esc(name)+'　‹</button>').join("")||'<div class="empty-state">لم تُضَف مواضيع بعد.</div>';
+ host.querySelectorAll("[data-library-topic]").forEach(btn=>btn.onclick=()=>{activeLibraryTopic=btn.dataset.libraryTopic;$("librarySelectedTopic").textContent="📁 "+activeLibraryTopic;$("libraryTopicBack").classList.remove("hide");host.classList.add("hide");filter()});
+}
+$("libraryBackTopics").onclick=()=>{activeLibraryTopic="";$("libraryTopicBack").classList.add("hide");renderLibraryTopics();filter()};
+function filter(){
+ const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value;
+ const a=facts.filter(x=>(!activeLibraryTopic||String(x.topic||"")===activeLibraryTopic)&&(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));
+ $("cards").innerHTML=activeLibraryTopic?(a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة في هذا الموضوع.</div>'):'<div class="empty-state">اختاري موضوعًا لعرض المعلومات التابعة له.</div>';
+ $("libraryCount").textContent=activeLibraryTopic?"عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.filter(x=>String(x.topic||"")===activeLibraryTopic).length:"عدد المعلومات: "+facts.length+" — اختاري موضوعًا";
+ bindFactDrag();
+}
+function refreshLibrary(){drawStats();fillLibraryFilters();renderLibraryTopics();filter()}
 let factDragState=null,factDragTimer=null,factDragStart=null;
-function factDragEligible(){return !$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&facts.length>1}
+function factDragEligible(){return !activeLibraryTopic&&!$("search").value.trim()&&!$("topicFilter").value&&!$("levelFilter").value&&!$("audienceFilter").value&&!$("statusFilter").value&&facts.length>1}
 function bindFactDrag(){
  const host=$("cards");
  host.querySelectorAll(".item[data-fact-id]").forEach(el=>{
