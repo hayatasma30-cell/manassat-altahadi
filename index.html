@@ -3913,9 +3913,17 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   const active=state.groups.filter(g=>g.is_active).sort((a,b)=>{const level=n=>String(n.level).includes("الأولى")?1:String(n.level).includes("الثانية")?2:String(n.level).includes("الثالثة")?3:4;const ta=String(a.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[],tb=String(b.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[];return level(a)-level(b)||Number(a.weekday??99)-Number(b.weekday??99)||String(ta[0]||"99:99").localeCompare(String(tb[0]||"99:99"));});
   const term=String($("weeklyGroupSearch")?.value||"").trim().toLocaleLowerCase("ar");
   const filter=document.querySelector("[data-weekly-filter].active")?.dataset.weeklyFilter||"all";
-  const visible=active.filter(g=>(filter==="all"||g.delivery_mode===filter)&&(!term||(String(g.group_name)+" "+String(g.level)).toLocaleLowerCase("ar").includes(term)));
-  const levels=["السنة الأولى متوسط","السنة الثانية متوسط","السنة الثالثة متوسط","السنة الرابعة متوسط"];
-  buttons.innerHTML=visible.length?levels.map(level=>{const items=visible.filter(g=>g.level===level);return items.length?'<section class="weekly-level-group"><h3>'+esc(level)+' <small>· '+items.length+' مجموعة</small></h3>'+items.map(g=>{const count=state.members.filter(m=>m.group_id===g.id).length;const times=String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[];const missing=g.weekday===null||g.weekday===undefined||times.length<2;return '<button type="button" class="weekly-group-open" data-weekly-open="'+esc(g.id)+'"><span>'+esc(modeLabel(g.delivery_mode))+(missing?' <em class="weekly-group-warning">موعد ناقص</em>':'')+'</span><small>'+dayLabel(g.weekday)+' · '+esc(g.lesson_time||"موعد غير محدد")+'</small><small>👥 '+count+' تلميذ</small></button>';}).join("")+'</section>':'';}).join(""):'<div class="data-item">لا توجد مجموعات مطابقة للبحث أو التصفية.</div>';
+  const visible=active.filter(g=>{
+    const mode=String(g.delivery_mode||"").toLowerCase();
+    const modeMatches=filter==="all"||(filter==="zoom"?mode==="zoom":mode==="in_person"||mode==="حضوري"||mode==="in-person");
+    return modeMatches&&(!term||(String(g.group_name||"")+" "+String(g.level||"")).toLocaleLowerCase("ar").includes(term));
+  });
+  buttons.innerHTML=visible.length?visible.map(g=>{
+    const count=state.members.filter(m=>m.group_id===g.id).length;
+    const times=String(g.lesson_time||"").match(/\\d{1,2}:\\d{2}/g)||[];
+    const missing=g.weekday===null||g.weekday===undefined||times.length<2;
+    return '<button type="button" class="weekly-group-open" data-weekly-open="'+esc(g.id)+'"><span>'+esc(g.level||"مستوى غير محدد")+' — '+esc(modeLabel(g.delivery_mode))+(missing?' <em class="weekly-group-warning">موعد ناقص</em>':'')+'</span><small>'+dayLabel(g.weekday)+' · '+esc(g.lesson_time||"موعد غير محدد")+'</small><small>👥 '+count+' تلميذ</small></button>';
+  }).join(""):'<div class="data-item">لا توجد مجموعات مطابقة للبحث أو التصفية.</div>';
   const selected=state.groups.find(g=>g.id===selectedGroupId&&g.is_active);
   directory.hidden=!!selected;
   detailNav.hidden=!selected;
