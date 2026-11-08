@@ -102,7 +102,12 @@ function cleanLeadingTitle(value,title){const text=String(value??"");const lines
 function card(x){const info=cleanLeadingTitle(x.daily_information,x.title);return '<article class="item"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'</div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+esc(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+esc(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>'}
 function draw(){facts.sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)));$("todayContent").innerHTML=facts.length?card(facts[0]):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';filter()}
 function filter(){const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,a=facts.filter(x=>(!topic||x.topic===topic)&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level].join(" ").toLowerCase().includes(q));$("cards").innerHTML=a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة لبحثك.</div>';$("libraryCount").textContent="عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.length}
-const pageView=new URLSearchParams(location.search).get("view")||"home";
+const dailyLastViewKey="tahadi_daily_science_last_view_v1";
+const requestedView=new URLSearchParams(location.search).get("view");
+const allowedViews=["home","add","library","today"];
+const savedView=localStorage.getItem(dailyLastViewKey)||"home";
+const pageView=allowedViews.includes(requestedView)?requestedView:(allowedViews.includes(savedView)?savedView:"home");
+localStorage.setItem(dailyLastViewKey,pageView);
 function setPageView(){
  $("homeMenu").classList.toggle("hide",pageView!=="home");
  $("today").classList.toggle("hide",pageView!=="today");
