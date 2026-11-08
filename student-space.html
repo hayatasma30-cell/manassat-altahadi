@@ -205,6 +205,31 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 @media(max-width:500px){.student-name-line .student-profile-shortcut{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;flex-basis:34px!important}}
 </style>
 
+<style id="student-profile-before-name-final">
+#dashboard .student-identity-compact .student-name-line{
+ direction:rtl!important;
+ display:flex!important;
+ flex-direction:row!important;
+ justify-content:flex-start!important;
+ align-items:center!important;
+ gap:9px!important;
+ width:100%!important;
+}
+#dashboard .student-identity-compact .student-name-line .student-profile-shortcut{
+ order:0!important;
+ flex:0 0 36px!important;
+ width:36px!important;height:36px!important;min-width:36px!important;
+ margin:0!important;
+}
+#dashboard .student-identity-compact .student-name-line #studentName{
+ order:1!important;
+ flex:0 1 auto!important;
+ width:auto!important;
+ max-width:calc(100% - 45px)!important;
+ min-width:0!important;
+ text-align:right!important;
+}
+</style>
 </head>
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
