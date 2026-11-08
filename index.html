@@ -3920,6 +3920,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   $("weeklyGroupStudentsPage").hidden=!selected||currentSubpage!=="students";
   $("weeklyGroupLessonsPage").hidden=!selected||currentSubpage!=="lessons";
   if(selected){$("weeklyGroupDetailTitle").textContent=selected.group_name+" — "+selected.level+" · "+modeLabel(selected.delivery_mode);}
+  if(selected)list.hidden=false;
   const currentGroup=groupSelect.value,currentSeriesGroup=seriesGroup.value,currentSeries=seriesSelect.value;
   groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+active.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
   if(selected)groupSelect.value=selected.id;else if(active.some(g=>g.id===currentGroup))groupSelect.value=currentGroup;
