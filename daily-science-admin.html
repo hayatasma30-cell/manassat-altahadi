@@ -95,7 +95,7 @@ input,textarea,select{border-radius:12px}
 }
 
 
-.library-topic-grid{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 14px}.library-topic-choice{flex:1 1 calc(50% - 9px);min-width:145px;min-height:50px;padding:10px 13px;border:1px solid #c9ddc5;border-bottom:3px solid #23834b;border-radius:13px;background:linear-gradient(145deg,#fff,#f1f8ee);color:#14532d;font:inherit;font-weight:700;text-align:right;cursor:pointer;box-shadow:0 3px 0 #14532d12}.library-topic-choice:active{transform:translateY(2px)}.library-topic-choice[data-topic-id]:not([data-topic-id=""]){touch-action:pan-y}.library-topic-choice.topic-dragging{opacity:.55;border:2px dashed #398253;box-shadow:0 10px 24px #153d2020}.topic-drag-hint{color:#6b9876;font-size:.85em}#libraryTopicBack{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 12px;color:#14532d}#libraryTopicNav.hide,#libraryTopicBack.hide{display:none!important}@media(max-width:600px){.library-topic-choice{flex-basis:100%}}\n.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
+.library-topic-grid{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0 14px}.library-topic-choice{flex:1 1 calc(50% - 9px);min-width:145px;min-height:50px;padding:10px 13px;border:1px solid #c9ddc5;border-bottom:3px solid #23834b;border-radius:13px;background:linear-gradient(145deg,#fff,#f1f8ee);color:#14532d;font:inherit;font-weight:700;text-align:right;cursor:pointer;box-shadow:0 3px 0 #14532d12}.library-topic-choice:active{transform:translateY(2px)}.library-topic-choice[data-topic-id]:not([data-topic-id=""]){touch-action:pan-y}.library-topic-choice.topic-dragging{opacity:.55;border:2px dashed #398253;box-shadow:0 10px 24px #153d2020}.topic-drag-hint{color:#6b9876;font-size:.85em}.topic-drag-hint,.fact-drag-handle{display:inline-flex;align-items:center;justify-content:center;min-width:28px;min-height:28px;padding:2px 5px;border-radius:8px;background:#eaf4e8;color:#32734a;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none}.fact-drag-handle{font-size:1rem}#libraryTopicBack{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 12px;color:#14532d}#libraryTopicNav.hide,#libraryTopicBack.hide{display:none!important}@media(max-width:600px){.library-topic-choice{flex-basis:100%}}\n.library-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 12px}
 .stat-tile{background:#f1f7ee;border:1px solid #dce9d8;border-radius:13px;padding:9px;text-align:center}
 .stat-tile strong{display:block;color:#14532d;font-size:1.15rem}
 .stat-tile span{color:#657568;font-size:.75rem}
@@ -247,7 +247,7 @@ function scienceHTML(value){const s=String(value??"");return s.startsWith(RICH_M
 function cleanLeadingTitle(value,title){const text=String(value??"");const lines=text.split(/\r?\n/);if(lines.length&&lines[0].trim().replace(/[：:：.!؟]+$/g,"")===String(title??"").trim().replace(/[：:：.!؟]+$/g,""))return lines.slice(1).join("\n").replace(/^\n/,"");return text}
 function card(x){
  const info=cleanLeadingTitle(x.daily_information,x.title),pub=x.is_published!==false;
- return '<article class="item" data-fact-id="'+esc(x.id)+'"><div class="item-meta"><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'<span class="tag '+(pub?'publish-tag':'draft-tag')+'">'+(pub?'✓ منشورة':'◷ مسودة / مخفية')+'</span></div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+scienceHTML(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+scienceHTML(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn" type="button" data-toggle-publish="'+esc(x.id)+'">'+(pub?'إخفاء':'نشر')+'</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>';
+ return '<article class="item" data-fact-id="'+esc(x.id)+'"><div class="item-meta"><span class="fact-drag-handle" title="اسحبي لترتيب المعلومة" aria-label="اسحبي لترتيب المعلومة">⠿</span><span class="tag">📚 '+esc(x.topic||"دون تصنيف")+'</span><span class="tag">📅 '+esc(x.info_date||"")+'</span>'+(x.target_level?'<span class="tag">'+esc(x.target_level)+'</span>':'')+'<span class="tag '+(pub?'publish-tag':'draft-tag')+'">'+(pub?'✓ منشورة':'◷ مسودة / مخفية')+'</span></div><h3>'+esc(x.title||"معلومة علمية")+'</h3><section class="item-section"><b class="section-label">المعلومة العلمية</b><p>'+scienceHTML(info)+'</p></section><section class="item-section question-section"><b class="section-label">السؤال</b><p>'+scienceHTML(x.scientific_question)+'</p></section><div class="toolbar item-actions"><button class="btn" type="button" data-edit-fact="'+esc(x.id)+'">✏️ تعديل</button><button class="btn" type="button" data-toggle-publish="'+esc(x.id)+'">'+(pub?'إخفاء':'نشر')+'</button><button class="btn delete-btn" type="button" data-delete-fact="'+esc(x.id)+'">🗑 حذف</button></div></article>';
 }
 function draw(){const latest=[...facts].sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)))[0];$("todayContent").innerHTML=latest?card(latest):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';refreshLibrary()}
 function drawStats(){const total=facts.length,published=facts.filter(x=>x.is_published!==false).length,drafts=total-published;$("libraryStats").innerHTML='<div class="stat-tile"><strong>'+total+'</strong><span>إجمالي المعلومات</span></div><div class="stat-tile"><strong>'+published+'</strong><span>منشورة</span></div><div class="stat-tile"><strong>'+drafts+'</strong><span>مسودة / مخفية</span></div>'}
@@ -260,7 +260,7 @@ function renderLibraryTopics(){
  const extra=[...new Set(facts.map(x=>String(x.topic||"").trim()).filter(name=>name&&!known.has(name)))].map(title=>({id:"",title}));
  const rows=[...saved,...extra];
  host.className=activeLibraryTopic?"hide":"library-topic-grid";
- host.innerHTML=rows.map(t=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(t.title)+'" data-topic-id="'+esc(t.id||"")+'">📁 '+esc(t.title)+'　<span class="topic-drag-hint">'+(t.id?"⠿ ":"")+'</span>‹</button>').join("")||'<div class="empty-state">لم تُضَف مواضيع بعد.</div>';
+ host.innerHTML=rows.map(t=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(t.title)+'" data-topic-id="'+esc(t.id||"")+'">📁 '+esc(t.title)+'　'+(t.id?'<span class="topic-drag-hint" title="اسحبي لترتيب الموضوع" aria-label="اسحبي لترتيب الموضوع">⠿</span>':'')+'　‹</button>').join("")||'<div class="empty-state">لم تُضَف مواضيع بعد.</div>';
  host.querySelectorAll("[data-library-topic]").forEach(btn=>{
   btn.addEventListener("click",e=>{
    if(suppressTopicClick){e.preventDefault();e.stopImmediatePropagation();return;}
@@ -284,9 +284,10 @@ let topicDragStart=null,topicDragState=null,topicDragTimer=null,suppressTopicCli
 function bindTopicDrag(){
  const host=$("libraryTopicNav");
  host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id=''])").forEach(el=>{
-  el.style.touchAction="pan-y";
-  el.addEventListener("pointerdown",e=>{
-   if(e.target.closest("a,input,select,textarea"))return;
+  const handle=el.querySelector(".topic-drag-hint");if(!handle)return;
+  handle.style.touchAction="none";
+  handle.addEventListener("pointerdown",e=>{
+   e.preventDefault();
    topicDragStart={x:e.clientX,y:e.clientY,el,pointerId:e.pointerId};
    topicDragTimer=setTimeout(()=>{
     if(!topicDragStart)return;
@@ -339,9 +340,11 @@ function bindTopicDrag(){
 function bindFactDrag(){
  const host=$("cards");
  host.querySelectorAll(".item[data-fact-id]").forEach(el=>{
-  el.style.touchAction="pan-y";
-  el.addEventListener("pointerdown",e=>{
-   if(e.target.closest("button,a,input,select,textarea")||!factDragEligible())return;
+  const handle=el.querySelector(".fact-drag-handle");if(!handle)return;
+  handle.style.touchAction="none";
+  handle.addEventListener("pointerdown",e=>{
+   if(!factDragEligible())return;
+   e.preventDefault();
    factDragStart={x:e.clientX,y:e.clientY,el,pointerId:e.pointerId};
    factDragTimer=setTimeout(()=>{
     if(!factDragStart)return;
