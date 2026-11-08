@@ -2437,4 +2437,75 @@ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
  window.addEventListener("resize",function(){document.querySelectorAll("textarea").forEach(fit)});
 })();
 </script>
+
+<style id="student-full-width-vertical-navigation-final">
+/* آخر طبقة تنسيق: قوائم فضاء التلميذ عمودية وموحدة على الهاتف */
+@media(max-width:700px){
+ #studentMenu .student-home-grid,
+ #dashboard .student-actions,
+ #dashboard .student-home-grid,
+ #dashboard .student-submenu-grid,
+ #dashboard .student-section .student-submenu-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-auto-rows:auto!important;
+  width:100%!important;max-width:100%!important;
+  gap:10px!important;margin:12px 0!important;
+  padding:0!important;justify-items:stretch!important;
+ }
+ #studentMenu .student-home-grid>.student-action,
+ #dashboard .student-actions>.student-action,
+ #dashboard .student-home-grid>.student-action,
+ #dashboard .student-submenu-grid>.student-action,
+ #dashboard .student-section .student-submenu-grid>.student-action{
+  display:flex!important;flex-direction:row!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:auto!important;min-height:68px!important;max-height:none!important;
+  grid-column:1!important;justify-self:stretch!important;
+  margin:0!important;padding:10px 13px!important;gap:10px!important;
+  text-align:right!important;border-radius:14px!important;
+ }
+ #studentMenu .student-home-grid .student-action-icon,
+ #dashboard .student-actions .student-action-icon,
+ #dashboard .student-home-grid .student-action-icon,
+ #dashboard .student-submenu-grid .student-action-icon{
+  width:38px!important;height:38px!important;min-width:38px!important;
+  flex:0 0 38px!important;font-size:1.05rem!important;
+ }
+ #studentMenu .student-home-grid .student-action>span:nth-child(2),
+ #dashboard .student-actions .student-action>span:nth-child(2),
+ #dashboard .student-home-grid .student-action>span:nth-child(2),
+ #dashboard .student-submenu-grid .student-action>span:nth-child(2){
+  flex:1 1 auto!important;min-width:0!important;max-height:none!important;
+  width:auto!important;text-align:right!important;
+ }
+ #studentMenu .student-home-grid .student-action strong,
+ #dashboard .student-actions .student-action strong,
+ #dashboard .student-home-grid .student-action strong,
+ #dashboard .student-submenu-grid .student-action strong{
+  display:block!important;font-size:.88rem!important;line-height:1.45!important;
+ }
+ #studentMenu .student-home-grid .student-action small,
+ #dashboard .student-actions .student-action small,
+ #dashboard .student-home-grid .student-action small,
+ #dashboard .student-submenu-grid .student-action small{
+  display:block!important;font-size:.7rem!important;line-height:1.45!important;
+ }
+ #studentMenu .student-home-grid .student-arrow,
+ #dashboard .student-actions .student-arrow,
+ #dashboard .student-home-grid .student-arrow,
+ #dashboard .student-submenu-grid .student-arrow{
+  display:block!important;position:static!important;
+  margin-inline-start:auto!important;flex:0 0 auto!important;
+ }
+ #dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"]){
+  grid-template-columns:minmax(0,1fr)!important;max-width:100%!important;
+ }
+ #dashboard .student-submenu-grid:has(>[data-section="subscriptions"]):has(>[data-section="payments"])>.student-action{
+  min-height:68px!important;flex-direction:row!important;align-items:center!important;text-align:right!important;
+ }
+}
+</style>
+
 </body></html>
