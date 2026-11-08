@@ -10,6 +10,27 @@
   const dirty=new WeakSet();
   let restoring=false,timer=0;
   const safe=fn=>{try{fn()}catch(e){console.warn("[Tahadi workspace]",e)}};
+  // Expand every textarea to show its complete content while typing.
+  function fitTextarea(el){
+    if(!el||el.tagName!=="TEXTAREA")return;
+    el.style.overflowY="hidden";
+    el.style.height="auto";
+    el.style.height=Math.max(el.scrollHeight,el.offsetHeight?0:el.scrollHeight)+"px";
+  }
+  function scanTextareas(root){
+    if(!root)return;
+    if(root.matches&&root.matches("textarea"))fitTextarea(root);
+    if(root.querySelectorAll)root.querySelectorAll("textarea").forEach(fitTextarea);
+  }
+  document.addEventListener("input",e=>fitTextarea(e.target),true);
+  document.addEventListener("change",e=>fitTextarea(e.target),true);
+  window.addEventListener("resize",()=>scanTextareas(document));
+  const textareaObserver=new MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{
+    if(node.nodeType===1)scanTextareas(node);
+  })));
+  textareaObserver.observe(document.documentElement,{childList:true,subtree:true});
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>scanTextareas(document),{once:true});
+  else scanTextareas(document);
   function save(){
     if(restoring)return;
     safe(()=>{
