@@ -209,24 +209,35 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 #dashboard .student-identity-compact .student-name-line{
  direction:rtl!important;display:flex!important;flex-direction:row!important;
  justify-content:flex-start!important;align-items:center!important;
- gap:10px!important;width:100%!important;min-width:0!important;
+ gap:12px!important;width:100%!important;min-width:0!important;
 }
 #dashboard .student-identity-compact .student-name-line .student-profile-shortcut{
  order:0!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
- box-sizing:border-box!important;flex:0 0 30px!important;
- width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;
- margin:0!important;padding:0!important;line-height:1!important;
- border:1px solid #d8e8d5!important;border-radius:50%!important;
- background:#eaf4e7!important;color:#246a43!important;
- box-shadow:none!important;font-size:.95rem!important;
+ box-sizing:border-box!important;flex:0 0 46px!important;
+ width:46px!important;height:46px!important;min-width:46px!important;min-height:46px!important;
+ margin:0!important;padding:8px!important;line-height:1!important;
+ border:1.5px solid #237447!important;border-radius:50%!important;
+ background:linear-gradient(145deg,#fbfff9,#edf7e9)!important;
+ color:#187044!important;box-shadow:0 3px 8px #174b2c14!important;
+}
+#dashboard .student-identity-compact .student-name-line .student-profile-shortcut svg{
+ display:block!important;width:100%!important;height:100%!important;
 }
 #dashboard .student-identity-compact .student-name-line .student-profile-shortcut:active{
- transform:scale(.96)!important;box-shadow:none!important;
+ transform:scale(.96)!important;box-shadow:0 1px 3px #174b2c12!important;
 }
 #dashboard .student-identity-compact .student-name-line #studentName{
  order:1!important;flex:0 1 auto!important;width:auto!important;
- max-width:calc(100% - 40px)!important;min-width:0!important;
+ max-width:calc(100% - 58px)!important;min-width:0!important;
  margin:0!important;text-align:right!important;line-height:1.35!important;
+}
+@media(max-width:500px){
+ #dashboard .student-identity-compact .student-name-line{gap:10px!important}
+ #dashboard .student-identity-compact .student-name-line .student-profile-shortcut{
+  flex-basis:42px!important;width:42px!important;height:42px!important;
+  min-width:42px!important;min-height:42px!important;padding:7px!important;
+ }
+ #dashboard .student-identity-compact .student-name-line #studentName{max-width:calc(100% - 52px)!important}
 }
 </style>
 </head>
@@ -236,7 +247,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <section class="hero"><h1 class="student-hero-title">مرحبًا بك في منصة التحدي <img class="student-hero-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></h1><p>نتائجك، تنبيهاتك، ومتابعة اشتراكاتك في مكان واحد.</p></section>
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><div id="studentCodeLogin"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button></div><button id="teacherNameLoginBtn" type="button" class="secondary hidden" style="width:100%;margin-top:12px">دخول الأستاذة باسم التلميذ دون رمز</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
 <section id="dashboard" class="hidden"><div id="teacherPreviewBanner" class="hidden" aria-hidden="true"><button id="exitTeacherPreview" type="button" hidden></button></div>
-<div class="panel student-identity student-identity-compact"><div class="student-identity-info"><div class="student-welcome-title">مرحبًا بك في منصة التحدي</div><div class="student-name-line"><button type="button" class="student-profile-shortcut" onclick="openStudentSection('profile')" aria-label="ملفي الشخصي" title="ملفي الشخصي">👤</button><h2 id="studentName"></h2></div><span id="studentLevel" class="tag"></span></div><img class="student-identity-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></div>
+<div class="panel student-identity student-identity-compact"><div class="student-identity-info"><div class="student-welcome-title">مرحبًا بك في منصة التحدي</div><div class="student-name-line"><button type="button" class="student-profile-shortcut" onclick="openStudentSection('profile')" aria-label="ملفي الشخصي" title="ملفي الشخصي"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="24" cy="16" r="8" fill="currentColor"/><path d="M8.5 39c1.8-8 7.3-12 15.5-12s13.7 4 15.5 12c.3 1.3-.7 2.5-2 2.5h-27c-1.3 0-2.3-1.2-2-2.5Z" fill="currentColor"/></svg></button><h2 id="studentName"></h2></div><span id="studentLevel" class="tag"></span></div><img class="student-identity-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></div>
 <div id="dailyChallengeNotice" class="daily-challenge-notice hidden" role="status" aria-live="polite"><a href="./daily-challenge.html" class="daily-challenge-notice-link">شارك الآن ←</a><div class="daily-challenge-notice-copy"><strong>تحدي اليوم متاح الآن!</strong><span id="dailyChallengeNoticeText">لديك تحدٍّ جديد في العلوم الطبيعية.</span></div></div>
 <section id="studentWinnersBoard" class="student-winners-board" aria-live="polite"><div class="student-winners-heading"><span>🏆</span><div><strong>لوحة الفائزين</strong><small>نحتفي بمتألقي تحديات العلوم الطبيعية</small></div></div><div id="studentWinnersList" class="student-winners-list"><p>جارٍ تحميل أسماء الفائزين…</p></div></section>
 <div id="studentHelpOverlay" class="student-help-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="studentHelpTitle"><div class="student-help-card">
