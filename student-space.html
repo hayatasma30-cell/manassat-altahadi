@@ -240,6 +240,14 @@
 @media(max-width:520px){.student-winners-board{padding:11px 12px;margin-bottom:10px;border-radius:14px}.student-winners-heading>span{width:35px;height:35px;font-size:19px}.student-winners-heading strong{font-size:14px}.student-winners-list{grid-template-columns:1fr;gap:6px}.student-winner-item{padding:8px 10px}}
 </style>
 <style id="student-winner-self-inline-v1">.student-winner-self{border-color:#dfc47d!important;background:linear-gradient(110deg,#fff9e8,#f7f8ee)!important}.student-winner-self small{color:#806020!important;font-weight:700!important}.student-winner-self .winner-congrats{white-space:nowrap;font-size:.88em;display:inline-block}</style>
+
+<style id="tahadi-global-full-content-fix">
+/* عرض المحتوى كاملاً في جميع أقسام المنصة */
+textarea{box-sizing:border-box!important;width:100%;max-width:100%;height:auto;min-height:5.5rem;max-height:none!important;overflow-y:hidden!important;white-space:pre-wrap;overflow-wrap:anywhere;resize:vertical;line-height:1.8!important}
+input,select,textarea{max-width:100%;box-sizing:border-box}
+.data-item,.panel,.note,.list,.editor-panel,.student-card,.question-card{overflow-wrap:anywhere}
+.data-item p,.panel p,.note,.list p,.student-card p,.question-card p{white-space:normal;overflow-wrap:anywhere;word-break:normal}
+</style>
 </head>
 <body>
 <header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div></div></header>
@@ -2354,4 +2362,17 @@ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
 }
 </style>
 
+
+<script id="tahadi-auto-expand-textareas">
+(function(){
+ if(window.__tahadiAutoExpandTextareas)return;window.__tahadiAutoExpandTextareas=true;
+ function fit(el){if(!(el instanceof HTMLTextAreaElement))return;el.style.height="auto";el.style.height=Math.max(el.scrollHeight,el.offsetHeight||0)+"px";}
+ function scan(root){if(root.matches&&root.matches("textarea"))fit(root);root.querySelectorAll&&root.querySelectorAll("textarea").forEach(fit);}
+ document.addEventListener("input",function(e){if(e.target&&e.target.matches("textarea"))fit(e.target)},true);
+ document.addEventListener("change",function(e){if(e.target&&e.target.matches("textarea"))fit(e.target)},true);
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){scan(document)});else scan(document);
+ new MutationObserver(function(records){records.forEach(function(r){r.addedNodes.forEach(function(n){if(n.nodeType===1)scan(n)})})}).observe(document.documentElement,{childList:true,subtree:true});
+ window.addEventListener("resize",function(){document.querySelectorAll("textarea").forEach(fit)});
+})();
+</script>
 </body></html>
