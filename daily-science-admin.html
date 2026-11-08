@@ -287,34 +287,27 @@ function bindTopicDrag(){
   const handle=el.querySelector(".topic-drag-hint");if(!handle)return;
   handle.style.touchAction="none";
   handle.addEventListener("pointerdown",e=>{
-   e.preventDefault();
-   topicDragStart={x:e.clientX,y:e.clientY,el,pointerId:e.pointerId};
-   topicDragTimer=setTimeout(()=>{
-    if(!topicDragStart)return;
-    topicDragState={el,pointerId:e.pointerId,moved:false};
-    el.classList.add("topic-dragging");
-    try{el.setPointerCapture(e.pointerId)}catch(_){}
-    if(navigator.vibrate)navigator.vibrate(25);
-   },260);
+   e.preventDefault();e.stopPropagation();
+   topicDragStart={el,pointerId:e.pointerId};
+   topicDragState={el,pointerId:e.pointerId,moved:false};
+   el.classList.add("topic-dragging");
+   try{handle.setPointerCapture(e.pointerId)}catch(_){}
+   if(navigator.vibrate)navigator.vibrate(25);
   });
-  el.addEventListener("pointermove",e=>{
-   if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId)return;
-   if(!topicDragState){
-    if(Math.abs(e.clientX-topicDragStart.x)>10||Math.abs(e.clientY-topicDragStart.y)>10){clearTimeout(topicDragTimer);topicDragStart=null;}
-    return;
-   }
+  handle.addEventListener("pointermove",e=>{
+   if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId||!topicDragState)return;
    e.preventDefault();
    const siblings=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id='']):not(.topic-dragging)")];
    const target=siblings.find(node=>{const r=node.getBoundingClientRect();return e.clientY<r.top+r.height/2});
-   if(target)host.insertBefore(el,target);else{
-    const last=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id=''])")].pop();
+   if(target)host.insertBefore(el,target);
+   else{
+    const last=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id='']):not(.topic-dragging)")].pop();
     if(last)host.insertBefore(el,last.nextSibling);
    }
    topicDragState.moved=true;
   });
   const finish=async e=>{
    if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId)return;
-   clearTimeout(topicDragTimer);
    const state=topicDragState;topicDragStart=null;topicDragState=null;
    el.classList.remove("topic-dragging");
    if(!state||!state.moved)return;
@@ -333,8 +326,8 @@ function bindTopicDrag(){
     await load();
    }
   };
-  el.addEventListener("pointerup",finish);
-  el.addEventListener("pointercancel",finish);
+  handle.addEventListener("pointerup",finish);
+  handle.addEventListener("pointercancel",finish);
  });
 }
 function bindFactDrag(){
@@ -344,22 +337,15 @@ function bindFactDrag(){
   handle.style.touchAction="none";
   handle.addEventListener("pointerdown",e=>{
    if(!factDragEligible())return;
-   e.preventDefault();
-   factDragStart={x:e.clientX,y:e.clientY,el,pointerId:e.pointerId};
-   factDragTimer=setTimeout(()=>{
-    if(!factDragStart)return;
-    factDragState={el,pointerId:e.pointerId,moved:false};
-    el.classList.add("fact-dragging");
-    try{el.setPointerCapture(e.pointerId)}catch(_){}
-    if(navigator.vibrate)navigator.vibrate(25);
-   },230);
+   e.preventDefault();e.stopPropagation();
+   factDragStart={el,pointerId:e.pointerId};
+   factDragState={el,pointerId:e.pointerId,moved:false};
+   el.classList.add("fact-dragging");
+   try{handle.setPointerCapture(e.pointerId)}catch(_){}
+   if(navigator.vibrate)navigator.vibrate(25);
   });
-  el.addEventListener("pointermove",e=>{
-   if(!factDragStart||factDragStart.el!==el||factDragStart.pointerId!==e.pointerId)return;
-   if(!factDragState){
-    if(Math.abs(e.clientX-factDragStart.x)>9||Math.abs(e.clientY-factDragStart.y)>9){clearTimeout(factDragTimer);factDragStart=null;}
-    return;
-   }
+  handle.addEventListener("pointermove",e=>{
+   if(!factDragStart||factDragStart.el!==el||factDragStart.pointerId!==e.pointerId||!factDragState)return;
    e.preventDefault();
    const siblings=[...host.querySelectorAll(".item[data-fact-id]:not(.fact-dragging)")];
    const target=siblings.find(node=>{const r=node.getBoundingClientRect();return e.clientY<r.top+r.height/2});
@@ -368,10 +354,9 @@ function bindFactDrag(){
   });
   const finish=async e=>{
    if(!factDragStart||factDragStart.el!==el||factDragStart.pointerId!==e.pointerId)return;
-   clearTimeout(factDragTimer);
    const state=factDragState;factDragStart=null;factDragState=null;
    el.classList.remove("fact-dragging");
-   if(!state||!state.moved){return;}
+   if(!state||!state.moved)return;
    const topicIds=[...host.querySelectorAll(".item[data-fact-id]")].map(x=>String(x.dataset.factId));
    const topicSet=new Set(facts.filter(x=>String(x.topic||"")===activeLibraryTopic).map(x=>String(x.id)));
    let cursor=0;
@@ -388,8 +373,8 @@ function bindFactDrag(){
     await load();
    }
   };
-  el.addEventListener("pointerup",finish);
-  el.addEventListener("pointercancel",finish);
+  handle.addEventListener("pointerup",finish);
+  handle.addEventListener("pointercancel",finish);
  });
 }
 
