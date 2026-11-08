@@ -1349,8 +1349,8 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
   <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
   <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
 </section>
-<details class="platform-sections">
-<summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></summary>
+<div class="platform-sections">
+<button type="button" class="platform-sections-entry" id="platformSectionsToggle" aria-expanded="false"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></button>
 <div class="platform-sections-content">
 <details class="section-category"><summary><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="student-space.html?v=20261105-enrollment191" style="text-decoration:none"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
@@ -1370,7 +1370,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 <button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
 </div></details>
 </div>
-</details>
+</div>
 <div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
 </section>
 <section id="learningResourcesView" class="view">
@@ -3479,29 +3479,28 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 
 
 
-<style id="tahadi-platform-sections-final-fix">
-#homeView .platform-sections-content[hidden]{display:none!important}
-#homeView details.platform-sections[open]>.platform-sections-content{display:grid!important;visibility:visible!important;opacity:1!important}
+
+
+<style id="platform-sections-button-fix">
+#homeView .platform-sections-entry{width:100%;font:inherit;text-align:right}
+#homeView .platform-sections-content{display:none!important}
+#homeView .platform-sections.is-open>.platform-sections-content{display:grid!important;visibility:visible!important;opacity:1!important}
+#homeView .platform-sections.is-open>.platform-sections-entry .entry-arrow{transform:rotate(45deg)}
 </style>
-<script id="tahadi-platform-sections-final-fix-js">
+<script id="platform-sections-button-fix-js">
 (function(){
- function init(){
-  document.querySelectorAll("#homeView details.platform-sections").forEach(function(d){
-   var summary=d.querySelector(":scope > summary"),content=d.querySelector(":scope > .platform-sections-content");
-   if(!summary||!content||d.dataset.finalSectionsFix==="1")return;
-   d.dataset.finalSectionsFix="1";
-   content.hidden=!d.open;
-   summary.addEventListener("click",function(e){
-    e.preventDefault();
-    e.stopImmediatePropagation();
-    d.open=!d.open;
-    content.hidden=!d.open;
-    content.style.setProperty("display",d.open?"grid":"none","important");
-    if(d.open){content.style.setProperty("visibility","visible","important");content.style.setProperty("opacity","1","important");}
-   },true);
+ function bind(){
+  var root=document.getElementById("platformSectionsToggle");
+  if(!root||root.dataset.bound==="1")return;
+  root.dataset.bound="1";
+  root.addEventListener("click",function(){
+   var wrap=root.closest(".platform-sections");if(!wrap)return;
+   var open=wrap.classList.toggle("is-open");
+   root.setAttribute("aria-expanded",String(open));
+   var arrow=root.querySelector(".entry-arrow");if(arrow)arrow.textContent=open?"×":"＋";
   });
  }
- if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })();
 </script>
 <script id="tahadi-home-click-recovery-v2">
