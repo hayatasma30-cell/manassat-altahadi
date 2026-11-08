@@ -3873,7 +3873,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 (()=> {
  const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
  const $=id=>document.getElementById(id);
- let state={groups:[],members:[],students:[]}; let selectedGroupId=null;
+ let state={groups:[],members:[],students:[]}; let selectedGroupId=null; let currentSubpage="menu";
  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const modeLabel=v=>v==="zoom"?"Zoom":"حضوري";
  const dayLabel=v=>["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][Number(v)]||"اليوم غير محدد";
@@ -3897,8 +3897,10 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   directory.hidden=!!selected;
   detailNav.hidden=!selected;
   $("weeklyGroupMainPanel").hidden=!selected;
-  $("weeklyGroupSeriesPanel").hidden=!selected;
-  $("weeklyGroupMembersPanel").hidden=!selected;
+  $("weeklyGroupActionMenu").hidden=!selected||currentSubpage!=="menu";
+  $("weeklyGroupInfoPage").hidden=!selected||currentSubpage!=="info";
+  $("weeklyGroupStudentsPage").hidden=!selected||currentSubpage!=="students";
+  $("weeklyGroupLessonsPage").hidden=!selected||currentSubpage!=="lessons";
   if(selected){$("weeklyGroupDetailTitle").textContent=selected.group_name+" — "+selected.level+" · "+modeLabel(selected.delivery_mode);}
   const currentGroup=groupSelect.value,currentSeriesGroup=seriesGroup.value,currentSeries=seriesSelect.value;
   groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+active.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
@@ -3914,11 +3916,13 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
  }
  async function load(){ $("weeklyGroupsList").innerHTML='<div class="data-item">جارٍ تحميل البيانات…</div>';try{state=await call("weekly_groups_list");render();}catch(e){$("weeklyGroupsList").innerHTML='<div class="data-item">'+esc(e.message)+'</div>';}}
  document.addEventListener("click",e=>{
-  if(e.target.closest('[data-view="weeklyGroupsView"]')){selectedGroupId=null;setTimeout(load,100);}
-  const openGroup=e.target.closest("[data-weekly-open]");if(openGroup){selectedGroupId=openGroup.dataset.weeklyOpen;render();return;}
-  if(e.target.closest("#weeklyGroupsBackBtn")){selectedGroupId=null;resetGroupForm();render();return;}
-  if(e.target.closest("#weeklyNewGroupBtn")){selectedGroupId=null;render();$("weeklyGroupsDirectory").hidden=true;$("weeklyGroupDetailNav").hidden=false;$("weeklyGroupDetailTitle").textContent="إنشاء مجموعة جديدة";$("weeklyGroupMainPanel").hidden=false;$("weeklyGroupSeriesPanel").hidden=true;$("weeklyGroupMembersPanel").hidden=true;$("weeklyGroupFormTitle").scrollIntoView({behavior:"smooth",block:"center"});return;}
-  const edit=e.target.closest("[data-weekly-edit]");if(edit){const g=state.groups.find(x=>x.id===edit.dataset.weeklyEdit);if(!g)return;$("weeklyGroupEditId").value=g.id;$("weeklyGroupLevel").value=g.level;$("weeklyGroupMode").value=g.delivery_mode;$("weeklyGroupWeekday").value=g.weekday===null?"":String(g.weekday);$("weeklyGroupStartTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[0]||"";$("weeklyGroupEndTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[1]||"";$("weeklyGroupFormTitle").textContent="✏️ تعديل المجموعة";$("weeklyGroupCreateBtn").textContent="حفظ التعديلات";$("weeklyGroupCancelEdit").hidden=false;window.scrollTo({top:$("weeklyGroupFormTitle").getBoundingClientRect().top+window.scrollY-100,behavior:"smooth"});}
+  if(e.target.closest('[data-view="weeklyGroupsView"]')){selectedGroupId=null;currentSubpage="menu";setTimeout(load,100);}
+  const openGroup=e.target.closest("[data-weekly-open]");if(openGroup){selectedGroupId=openGroup.dataset.weeklyOpen;currentSubpage="menu";resetGroupForm();render();return;}
+  if(e.target.closest("#weeklyGroupsBackBtn")){selectedGroupId=null;currentSubpage="menu";resetGroupForm();render();return;}
+  const page=e.target.closest("[data-weekly-page]");if(page){currentSubpage=page.dataset.weeklyPage;render();return;}
+  if(e.target.closest("[data-weekly-page-back]")){currentSubpage="menu";render();return;}
+  if(e.target.closest("#weeklyNewGroupBtn")){selectedGroupId=null;currentSubpage="info";resetGroupForm();render();$("weeklyGroupsDirectory").hidden=true;$("weeklyGroupDetailNav").hidden=false;$("weeklyGroupDetailTitle").textContent="إنشاء مجموعة جديدة";$("weeklyGroupMainPanel").hidden=false;$("weeklyGroupInfoPage").hidden=false;$("weeklyGroupsList").hidden=true;$("weeklyGroupFormTitle").scrollIntoView({behavior:"smooth",block:"center"});return;}
+  const edit=e.target.closest("[data-weekly-edit]");if(edit){const g=state.groups.find(x=>x.id===edit.dataset.weeklyEdit);if(!g)return;currentSubpage="info";render();$("weeklyGroupsList").hidden=false;$("weeklyGroupEditId").value=g.id;$("weeklyGroupLevel").value=g.level;$("weeklyGroupMode").value=g.delivery_mode;$("weeklyGroupWeekday").value=g.weekday===null?"":String(g.weekday);$("weeklyGroupStartTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[0]||"";$("weeklyGroupEndTime").value=(String(g.lesson_time||"").match(/\d{1,2}:\d{2}/g)||[])[1]||"";$("weeklyGroupFormTitle").textContent="✏️ تعديل المجموعة";$("weeklyGroupCreateBtn").textContent="حفظ التعديلات";$("weeklyGroupCancelEdit").hidden=false;window.scrollTo({top:$("weeklyGroupFormTitle").getBoundingClientRect().top+window.scrollY-100,behavior:"smooth"});}
   const del=e.target.closest("[data-weekly-delete]");if(del){(async()=>{if(!confirm("سيتم إيقاف هذه المجموعة وإخراج أعضائها منها. ستبقى سجلات الحصص محفوظة. هل تريدين المتابعة؟"))return;try{await call("weekly_group_delete",{group_id:del.dataset.weeklyDelete});resetGroupForm();selectedGroupId=null;await load();status("weeklyGroupStatus","تم حذف المجموعة من المجموعات النشطة مع الاحتفاظ بسجلات الحصص.");}catch(err){alert(err.message);}})();}
   const remove=e.target.closest("[data-weekly-remove]");if(remove){(async()=>{if(!confirm("هل تريدين إخراج هذا التلميذ من المجموعة؟"))return;try{await call("weekly_group_member_remove",{member_id:remove.dataset.weeklyRemove});await load();}catch(err){alert(err.message);}})();}
  });
