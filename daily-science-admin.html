@@ -49,7 +49,7 @@ textarea{min-height:190px;line-height:2;resize:vertical;padding:14px!important;w
 @media(max-width:600px){.wrap{padding:12px}.toolbar>.btn{flex:1 1 auto}.editor-grid,.library-tools{grid-template-columns:1fr}.box{border-radius:18px}.item{border-radius:16px}.item-actions{justify-content:flex-start}.item-actions .btn{min-width:105px;flex:0 0 auto}.item h3{margin:8px 0 11px}.item-section{margin:10px 0 13px}.item .item-section p{line-height:1.9}}
 </style></head>
 <body><header><b>💡 تعلّم اليوم</b><div>معلومة علمية يومية ومكتبة منظّمة حسب الموضوع</div></header><main class="wrap">
-<div class="toolbar"><button class="btn" onclick="location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn" id="libraryBtn">📚 مكتبة المعلومات</button><button class="btn primary hide" id="addBtn">＋ إضافة معلومة</button></div>
+<div class="toolbar"><button class="btn" onclick="location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn" id="libraryBtn">📚 مكتبة المعلومات</button><button class="btn primary hide" id="addBtn" type="button" onclick="window.openDailyScienceEditor()">＋ إضافة معلومة</button></div>
 <section class="box" id="today"><h2>معلومة اليوم</h2><div id="todayContent">جارٍ التحميل…</div></section>
 <section class="box hide" id="editor"><h2>إضافة معلومة علمية</h2><label class="field">العنوان</label><input id="title"><input id="infoDate" type="hidden"><label class="field">الموضوع</label><select id="topic" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري موضوعًا</option></select><div class="toolbar"><input id="newTopic" placeholder="اكتبي اسم موضوع جديد" style="flex:1"><button class="btn" id="addTopicBtn" type="button">＋ إضافة موضوع</button></div><label class="field">تحديد المستوى</label><select id="targetLevel" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option value="الكل">كل المستويات</option></select><label class="field">اختيار الفئة</label><select id="targetAudience" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري الفئة</option><option>حصص فردية</option><option>حصص جماعية</option><option>حصص فردية وجماعية</option><option>الكل</option><option>دورة المراجعة</option></select><div id="cycleWrap" class="hide"><label class="field">اختيار الدورة</label><select id="reviewCycle" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري الدورة</option><option>الدورة الأولى</option><option>الدورة الثانية</option><option>الدورة الثالثة</option><option>الدورة الرابعة</option></select></div><label class="field">المعلومة</label><textarea id="dailyInfo" placeholder="اكتبي المعلومة العلمية هنا"></textarea><label class="field">السؤال</label><textarea id="question" placeholder="اكتبي السؤال المرتبط بالمعلومة هنا"></textarea><p><label><input id="published" type="checkbox" checked style="width:auto"> نشر المعلومة للتلاميذ</label></p><div class="toolbar"><button class="btn primary" id="saveBtn">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div><p id="status" class="status"></p></section>
 <section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><select id="topicFilter" aria-label="تصفية حسب الموضوع"><option value="">كل الموضوعات</option></select></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section></main>
@@ -74,6 +74,31 @@ function fillTopics(){$("topic").innerHTML='<option value="">اختاري موض
 $("targetAudience").onchange=()=>{$("cycleWrap").classList.toggle("hide",$("targetAudience").value!=="دورة المراجعة")};
 $("saveBtn").onclick=async()=>{try{if(!$("topic").value)throw Error("اختاري موضوعًا قبل الحفظ.");if(!$("targetLevel").value)throw Error("حددي المستوى.");if(!$("targetAudience").value)throw Error("اختاري الفئة.");if($("targetAudience").value==="دورة المراجعة"&&!$("reviewCycle").value)throw Error("اختاري دورة المراجعة.");if(!$("dailyInfo").value.trim()||!$("question").value.trim())throw Error("اكتبي المعلومة والسؤال.");const d=await call("daily_science_save",{id:editingFactId||undefined,title:$("title").value,info_date:$("infoDate").value,topic:$("topic").value,scientific_question:$("question").value,scientific_problem:"",explanation:"",conclusion:"",daily_information:$("dailyInfo").value,target_level:$("targetLevel").value,target_audience:$("targetAudience").value,review_cycle:$("reviewCycle").value,is_published:$("published").checked});$("status").textContent=d.message;resetEditor();await load()}catch(e){$("status").textContent=e.message}};
 $("addBtn").classList.remove("hide");$("infoDate").value=localDateValue();if(!token){$("todayContent").textContent="يلزم تسجيل الدخول إلى فضاء الأستاذة.";$("addBtn").classList.add("hide");}else{load();}
+</script>
+<script>
+window.openDailyScienceEditor=function(){
+  const byId=id=>document.getElementById(id);
+  const editor=byId("editor");
+  if(!editor){alert("تعذر فتح استمارة المعلومة. أعيدي تحميل الصفحة.");return;}
+  editor.classList.remove("hide");
+  const date=new Date();
+  byId("title").value="";
+  byId("infoDate").value=[date.getFullYear(),String(date.getMonth()+1).padStart(2,"0"),String(date.getDate()).padStart(2,"0")].join("-");
+  byId("topic").value="";
+  byId("targetLevel").value="";
+  byId("targetAudience").value="";
+  byId("reviewCycle").value="";
+  byId("cycleWrap").classList.add("hide");
+  byId("dailyInfo").value="";
+  byId("question").value="";
+  byId("published").checked=true;
+  byId("saveBtn").textContent="حفظ ونشر";
+  byId("cancelEditBtn").classList.add("hide");
+  editor.querySelector("h2").textContent="إضافة معلومة علمية";
+  byId("status").textContent="";
+  editor.scrollIntoView({behavior:"smooth",block:"start"});
+  byId("title").focus();
+};
 </script>
 <script src="./workspace-autosave.js" defer></script>
 </body></html>
