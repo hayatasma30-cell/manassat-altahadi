@@ -1576,6 +1576,14 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div id="weeklyGroupsList" class="list"><div class="data-item">جارٍ تحميل المجموعات…</div></div>
 </div>
 <div class="panel" style="margin-top:14px">
+<h3>ربط المجموعة بحصصها الأسبوعية</h3>
+<p class="muted">اختاري سلسلة الحصص المتكررة الموجودة مسبقًا حتى تظهر حصصها لأعضاء هذه المجموعة فقط.</p>
+<label class="editor-field">المجموعة<select id="weeklySeriesGroup"><option value="">اختاري المجموعة</option></select></label>
+<label class="editor-field">سلسلة الحصص المتكررة<select id="weeklySeriesSelect"><option value="">اختاري سلسلة الحصص</option></select></label>
+<button id="weeklySeriesLinkBtn" class="primary" type="button" style="width:100%;margin-top:10px">ربط السلسلة بالمجموعة</button>
+<div id="weeklySeriesStatus" class="status" role="status"></div>
+</div>
+<div class="panel" style="margin-top:14px">
 <h3>إضافة تلميذ إلى مجموعة</h3>
 <label class="editor-field">المجموعة<select id="weeklyMemberGroup"><option value="">اختاري المجموعة</option></select></label>
 <label class="editor-field">التلميذ<select id="weeklyMemberStudent"><option value="">اختاري التلميذ</option></select></label>
@@ -3854,12 +3862,16 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
  async function call(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");if(!token)throw Error("سجلي الدخول إلى فضاء الأستاذة أولًا.");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d;}
  function status(id,msg,error=false){const el=$(id);if(el){el.textContent=msg;el.className="status "+(error?"error":"success");}}
  function render(){
-  const list=$("weeklyGroupsList"),groupSelect=$("weeklyMemberGroup"),studentSelect=$("weeklyMemberStudent");
-  const currentGroup=groupSelect.value,currentStudent=studentSelect.value;
+  const list=$("weeklyGroupsList"),groupSelect=$("weeklyMemberGroup"),studentSelect=$("weeklyMemberStudent"),seriesGroup=$("weeklySeriesGroup"),seriesSelect=$("weeklySeriesSelect");
+  const currentGroup=groupSelect.value,currentStudent=studentSelect.value,currentSeriesGroup=seriesGroup.value,currentSeries=seriesSelect.value;
   groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+state.groups.filter(g=>g.is_active).map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
   studentSelect.innerHTML='<option value="">اختاري التلميذ</option>'+state.students.filter(x=>x.status!=="inactive").map(x=>'<option value="'+esc(x.id)+'">'+esc(x.full_name)+' — '+esc(x.level)+'</option>').join("");
   if(state.groups.some(g=>g.id===currentGroup))groupSelect.value=currentGroup;
   if(state.students.some(x=>x.id===currentStudent))studentSelect.value=currentStudent;
+  seriesGroup.innerHTML='<option value="">اختاري المجموعة</option>'+state.groups.filter(g=>g.is_active).map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
+  seriesSelect.innerHTML='<option value="">اختاري سلسلة الحصص</option>'+((state.series||[]).map(x=>'<option value="'+esc(x.recurrence_group_id)+'">'+esc(x.level)+' — '+modeLabel(x.delivery_mode)+' — '+esc(x.lesson_date)+' '+esc(x.lesson_time||"")+'</option>').join(""));
+  if(state.groups.some(g=>g.id===currentSeriesGroup))seriesGroup.value=currentSeriesGroup;
+  if((state.series||[]).some(x=>x.recurrence_group_id===currentSeries))seriesSelect.value=currentSeries;
   if(!state.groups.length){list.innerHTML='<div class="data-item">لم تُنشأ مجموعات أسبوعية بعد.</div>';return;}
   list.innerHTML=state.groups.map(g=>{
    const members=state.members.filter(m=>m.group_id===g.id);
@@ -3876,6 +3888,10 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   const name=$("weeklyGroupName").value.trim();if(!name){status("weeklyGroupStatus","اكتبي اسم المجموعة.",true);return;}
   const b=$("weeklyGroupCreateBtn");b.disabled=true;
   try{await call("weekly_group_save",{group_name:name,level:$("weeklyGroupLevel").value,delivery_mode:$("weeklyGroupMode").value,weekday:$("weeklyGroupWeekday").value===""?null:Number($("weeklyGroupWeekday").value),lesson_time:$("weeklyGroupTime").value.trim()});$("weeklyGroupName").value="";status("weeklyGroupStatus","تم إنشاء المجموعة بنجاح.");await load();}catch(e){status("weeklyGroupStatus",e.message,true);}finally{b.disabled=false;}
+ });
+ $("weeklySeriesLinkBtn")?.addEventListener("click",async()=>{
+  const group_id=$("weeklySeriesGroup").value,recurrence_group_id=$("weeklySeriesSelect").value;if(!group_id||!recurrence_group_id){status("weeklySeriesStatus","اختاري المجموعة وسلسلة الحصص.",true);return;}
+  const b=$("weeklySeriesLinkBtn");b.disabled=true;try{await call("weekly_group_link_series",{group_id,recurrence_group_id});status("weeklySeriesStatus","تم ربط سلسلة الحصص بالمجموعة.");await load();}catch(e){status("weeklySeriesStatus",e.message,true);}finally{b.disabled=false;}
  });
  $("weeklyMemberAddBtn")?.addEventListener("click",async()=>{
   const group_id=$("weeklyMemberGroup").value,student_id=$("weeklyMemberStudent").value;if(!group_id||!student_id){status("weeklyMemberStatus","اختاري المجموعة والتلميذ.",true);return;}
