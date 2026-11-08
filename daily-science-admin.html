@@ -286,34 +286,35 @@ function bindTopicDrag(){
  host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id=''])").forEach(el=>{
   const handle=el.querySelector(".topic-drag-hint");if(!handle)return;
   handle.style.touchAction="none";
-  handle.addEventListener("pointerdown",e=>{
-   e.preventDefault();e.stopPropagation();
-   topicDragStart={el,pointerId:e.pointerId};
-   topicDragState={el,pointerId:e.pointerId,moved:false};
-   el.classList.add("topic-dragging");
-   try{handle.setPointerCapture(e.pointerId)}catch(_){}
-   if(navigator.vibrate)navigator.vibrate(25);
-  });
-  handle.addEventListener("pointermove",e=>{
-   if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId||!topicDragState)return;
-   e.preventDefault();
-   const under=document.elementFromPoint(e.clientX,e.clientY);
+  let touchActive=false;
+  const moveAt=(x,y)=>{
+   const under=document.elementFromPoint(x,y);
    const target=under&&under.closest(".library-topic-choice[data-topic-id]:not([data-topic-id='']):not(.topic-dragging)");
    if(target&&target.parentElement===host){
     const rect=target.getBoundingClientRect();
-    host.insertBefore(el,e.clientY<rect.top+rect.height/2?target:target.nextSibling);
+    host.insertBefore(el,y<rect.top+rect.height/2?target:target.nextSibling);
     topicDragState.moved=true;
-   }else{
-    const rows=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id='']):not(.topic-dragging)")];
-    if(rows.length){
-     const first=rows[0].getBoundingClientRect(),last=rows[rows.length-1].getBoundingClientRect();
-     if(e.clientY<first.top){host.insertBefore(el,rows[0]);topicDragState.moved=true;}
-     else if(e.clientY>last.bottom){host.appendChild(el);topicDragState.moved=true;}
-    }
+    return;
    }
-  });
-  const finish=async e=>{
-   if(!topicDragStart||topicDragStart.el!==el||topicDragStart.pointerId!==e.pointerId)return;
+   const rows=[...host.querySelectorAll(".library-topic-choice[data-topic-id]:not([data-topic-id='']):not(.topic-dragging)")];
+   if(!rows.length)return;
+   const first=rows[0].getBoundingClientRect(),last=rows[rows.length-1].getBoundingClientRect();
+   if(y<first.top){host.insertBefore(el,rows[0]);topicDragState.moved=true;}
+   else if(y>last.bottom){host.appendChild(el);topicDragState.moved=true;}
+  };
+  const onTouchMove=e=>{
+   if(!touchActive||!topicDragStart||topicDragStart.el!==el)return;
+   const touch=[...e.changedTouches].find(t=>t.identifier===topicDragStart.touchId);
+   if(!touch)return;
+   e.preventDefault();
+   moveAt(touch.clientX,touch.clientY);
+  };
+  const finish=async()=>{
+   if(!touchActive||!topicDragStart||topicDragStart.el!==el)return;
+   touchActive=false;
+   document.removeEventListener("touchmove",onTouchMove);
+   document.removeEventListener("touchend",onTouchEnd);
+   document.removeEventListener("touchcancel",onTouchEnd);
    const state=topicDragState;topicDragStart=null;topicDragState=null;
    el.classList.remove("topic-dragging");
    if(!state||!state.moved)return;
@@ -332,8 +333,24 @@ function bindTopicDrag(){
     await load();
    }
   };
-  handle.addEventListener("pointerup",finish);
-  handle.addEventListener("pointercancel",finish);
+  const onTouchEnd=e=>{
+   if(!topicDragStart||topicDragStart.el!==el)return;
+   if(e&&e.changedTouches&&![...e.changedTouches].some(t=>t.identifier===topicDragStart.touchId))return;
+   finish();
+  };
+  handle.addEventListener("touchstart",e=>{
+   if(!e.changedTouches.length)return;
+   const t=e.changedTouches[0];
+   e.preventDefault();e.stopPropagation();
+   touchActive=true;
+   topicDragStart={el,touchId:t.identifier};
+   topicDragState={el,moved:false};
+   el.classList.add("topic-dragging");
+   if(navigator.vibrate)navigator.vibrate(25);
+   document.addEventListener("touchmove",onTouchMove,{passive:false});
+   document.addEventListener("touchend",onTouchEnd);
+   document.addEventListener("touchcancel",onTouchEnd);
+  },{passive:false});
  });
 }
 function bindFactDrag(){
