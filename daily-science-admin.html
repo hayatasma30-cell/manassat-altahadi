@@ -1,20 +1,20 @@
 <!doctype html>
 <html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#14532d"><title>إدارة تعلّم اليوم | منصة التحدي</title>
 <style>
-:root{--green:#14532d;--green2:#217747;--ink:#18382a;--muted:#718075;--cream:#f8f6eb;--line:#e2e9dc;--pale:#edf6e9;--white:#fff}
+:root{--green:#14532d;--green2:#166534;--ink:#18382a;--muted:#69786d;--cream:#faf8ee;--line:#e3e9dc;--pale:#eef7ec;--white:#fff}
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.85 Tahoma,Arial,sans-serif}
-header{background:linear-gradient(120deg,#103f28,#17653a);color:#fff;padding:18px 20px;box-shadow:0 5px 18px #103f281c}
+body{margin:0;background:var(--cream);color:var(--ink);font:16px/1.75 Tahoma,Arial,sans-serif}
+header{background:linear-gradient(120deg,#103f28,var(--green2));color:#fff;padding:12px 16px;box-shadow:0 4px 18px #143e2518}
 .header-inner{max-width:980px;margin:auto}
-header b{display:block;font-size:1.25rem}
-header div{color:#e0eee1;font-size:.92rem;margin-top:3px}
-.wrap{max-width:980px;margin:auto;padding:18px}
+header b{display:block;font-size:1.15rem;font-weight:800}
+header div{color:#d6ead9;font-size:.82rem;margin-top:3px}
+.wrap{max-width:1120px;margin:auto;padding:18px}
 .toolbar{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
-.btn{border:1px solid #cbdcc8;border-bottom:4px solid #b7cbb1;border-radius:14px;padding:9px 15px;background:#fff;color:var(--green);box-shadow:0 4px 10px #173f2210;font:inherit;font-weight:700;cursor:pointer;min-height:42px;transition:transform .15s,box-shadow .15s}
+.btn{border:1px solid #b8d5b5;border-bottom:3px solid #6b9b68;border-radius:13px;padding:8px 13px;background:linear-gradient(145deg,#f5fbf1,#e3f1df);color:var(--green);box-shadow:0 4px 10px rgba(20,83,45,.10);font:inherit;font-weight:700;cursor:pointer;min-height:40px;transition:transform .15s,box-shadow .15s}
 .btn:active{transform:translateY(2px);box-shadow:0 2px 5px #173f2210}
-.primary{background:linear-gradient(135deg,#217747,#14532d);border-color:#267b49;border-bottom-color:#0d4223;color:#fff}
+.primary{background:linear-gradient(135deg,#1c7440,#14532d);border-color:#1b6a3c;border-bottom-color:#0d4223;color:#fff;box-shadow:0 7px 14px rgba(20,83,45,.16)}
 .hide{display:none!important}
-.box{background:#fff;border:1px solid var(--line);border-radius:22px;padding:clamp(15px,3vw,24px);margin:16px 0;box-shadow:0 6px 0 #dfe8d8,0 12px 28px #173f2209}
+.box{background:#fff;border:1px solid var(--line);border-radius:19px;padding:clamp(15px,3vw,22px);margin:16px 0;box-shadow:0 8px 24px #153d2010}
 .box h2{font-size:1.25rem;color:var(--green);margin:0 0 16px}
 #today{margin-top:16px}#today>h2{font-size:1.12rem;margin-bottom:12px}
 #todayContent:empty:before{content:"لا توجد معلومة منشورة بعد.";color:var(--muted)}
@@ -46,15 +46,15 @@ textarea{min-height:190px;line-height:2;resize:vertical;padding:14px!important;w
 #addTopicBtn{white-space:nowrap}
 #newTopic{flex:1;min-width:150px}
 .empty-state{padding:20px;text-align:center;color:var(--muted);background:#fafcf8;border:1px dashed #d6e2d2;border-radius:14px}
-@media(max-width:600px){.wrap{padding:12px}.toolbar>.btn{flex:1 1 auto}.editor-grid,.library-tools{grid-template-columns:1fr}.box{border-radius:18px}.item{border-radius:16px}.item-actions{justify-content:flex-start}.item-actions .btn{min-width:105px;flex:0 0 auto}.item h3{margin:8px 0 11px}.item-section{margin:10px 0 13px}.item .item-section p{line-height:1.9}}
- .menu-grid{display:grid;grid-template-columns:1fr;gap:14px}.menu-grid .btn{min-height:58px;font-size:1.05rem}@media(min-width:650px){.menu-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.wrap{padding:13px}.toolbar>.btn{flex:1 1 auto}.editor-grid,.library-tools{grid-template-columns:1fr}.box{border-radius:18px}.item{border-radius:16px}.item-actions{justify-content:flex-start}.item-actions .btn{min-width:105px;flex:0 0 auto}.item h3{margin:8px 0 11px}.item-section{margin:10px 0 13px}.item .item-section p{line-height:1.9}}
+ .menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.menu-grid .menu-btn{width:100%;min-height:104px;background:linear-gradient(145deg,#fff 0%,#fbfff9 100%);border:1.5px solid #b7d8b8;border-bottom:4px solid #56a96b;border-radius:17px;padding:14px;display:flex;align-items:center;gap:12px;text-align:right;color:var(--ink);box-shadow:0 5px 0 #1b6b3518,0 9px 18px #173f2218;font:inherit;font-weight:700;cursor:pointer;transition:transform .18s,box-shadow .18s}.menu-grid .menu-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #193d2020}.menu-icon{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:13px;background:#e8f5e5;border:1px solid #d8ead3;font-size:1.25rem}.menu-copy{flex:1}.menu-copy strong{display:block;font-size:.96rem}.menu-copy small{display:block;color:var(--muted);font-size:.76rem;font-weight:400;line-height:1.45;margin-top:3px}.menu-chevron{color:var(--green2);font-size:1.15rem}@media(max-width:700px){.menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.menu-grid .menu-btn{min-height:94px;padding:11px;gap:8px}.menu-icon{width:37px;height:37px;flex-basis:37px;border-radius:11px;font-size:1.1rem}.menu-copy strong{font-size:.88rem}.menu-copy small{font-size:.7rem}.menu-chevron{display:none}}@media(max-width:380px){.menu-grid{grid-template-columns:1fr}.menu-grid .menu-btn{min-height:72px;align-items:center}.menu-copy small{font-size:.76rem}}
 </style></head>
-<body><header><b>💡 تعلّم اليوم</b><div>معلومات علمية يومية، منظمة وسهلة الإدارة</div></header><main class="wrap">
+<body><header><div class="header-inner"><b>🌿 منصة التحدي | تعلّم اليوم</b><div>معلومات علمية يومية، منظمة وسهلة الإدارة</div></div></header><main class="wrap">
 <div class="toolbar"><button class="btn" onclick="location.href='index.html'">← العودة إلى فضاء الأستاذة</button><button class="btn hide" id="menuBtn" type="button" onclick="location.href='daily-science-admin.html'">⌂ القائمة الرئيسية</button></div>
 <section class="box" id="homeMenu"><h2>تعلّم اليوم</h2><div class="menu-grid">
-<button class="btn primary" type="button" onclick="location.href='daily-science-admin.html?view=add'">＋ إضافة معلومة</button>
-<button class="btn" type="button" onclick="location.href='daily-science-admin.html?view=library'">📚 مكتبة المعلومات</button>
-<button class="btn" type="button" onclick="location.href='daily-science-admin.html?view=today'">💡 معلومة اليوم</button>
+<button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=add'"><span class="menu-icon">✚</span><span class="menu-copy"><strong>إضافة معلومة</strong><small>إدخال معلومة علمية جديدة</small></span><span class="menu-chevron">‹</span></button>
+<button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=library'"><span class="menu-icon">📚</span><span class="menu-copy"><strong>مكتبة المعلومات</strong><small>عرض المعلومات وتعديلها</small></span><span class="menu-chevron">‹</span></button>
+<button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=today'"><span class="menu-icon">💡</span><span class="menu-copy"><strong>معلومة اليوم</strong><small>مشاهدة المعلومة المنشورة</small></span><span class="menu-chevron">‹</span></button>
 </div></section>
 <section class="box hide" id="today"><h2>معلومة اليوم</h2><div id="todayContent">جارٍ التحميل…</div></section>
 <section class="box hide" id="editor"><h2>إضافة معلومة علمية</h2><label class="field">العنوان</label><input id="title"><input id="infoDate" type="hidden"><label class="field">الموضوع</label><select id="topic" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري موضوعًا</option></select><div class="toolbar"><input id="newTopic" placeholder="اكتبي اسم موضوع جديد" style="flex:1"><button class="btn" id="addTopicBtn" type="button">＋ إضافة موضوع</button></div><label class="field">تحديد المستوى</label><select id="targetLevel" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option value="الكل">كل المستويات</option></select><label class="field">اختيار الفئة</label><select id="targetAudience" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري الفئة</option><option>حصص فردية</option><option>حصص جماعية</option><option>حصص فردية وجماعية</option><option>الكل</option><option>دورة المراجعة</option></select><div id="cycleWrap" class="hide"><label class="field">اختيار الدورة</label><select id="reviewCycle" style="width:100%;box-sizing:border-box;border:1px solid #cbd8c8;border-radius:10px;padding:10px;font:inherit"><option value="">اختاري الدورة</option><option>الدورة الأولى</option><option>الدورة الثانية</option><option>الدورة الثالثة</option><option>الدورة الرابعة</option></select></div><label class="field">المعلومة</label><textarea id="dailyInfo" placeholder="اكتبي المعلومة العلمية هنا"></textarea><label class="field">السؤال</label><textarea id="question" placeholder="اكتبي السؤال المرتبط بالمعلومة هنا"></textarea><p><label><input id="published" type="checkbox" checked style="width:auto"> نشر المعلومة للتلاميذ</label></p><div class="toolbar"><button class="btn primary" id="saveBtn">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div><p id="status" class="status"></p></section>
