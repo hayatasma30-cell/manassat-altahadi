@@ -1335,7 +1335,15 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 .lesson-calendar-day.today.state-done{border-top:3px solid #d59b28!important}
 .lesson-calendar-day.today.state-not-done{border-top:3px solid #d59b28!important}
 .lesson-calendar-day.today.state-overdue{border-top:3px solid #d59b28!important}
-</style><style id="hide-manual-refresh-controls">button[id^="refresh" i]{display:none!important}#paymentsRefreshStatus{display:none!important}</style></head>
+</style><style id="hide-manual-refresh-controls">button[id^="refresh" i]{display:none!important}#paymentsRefreshStatus{display:none!important}</style>
+<style id="tahadi-global-full-content-fix">
+/* عرض المحتوى كاملاً في جميع أقسام المنصة */
+textarea{box-sizing:border-box!important;width:100%;max-width:100%;height:auto;min-height:5.5rem;max-height:none!important;overflow-y:hidden!important;white-space:pre-wrap;overflow-wrap:anywhere;resize:vertical;line-height:1.8!important}
+input,select,textarea{max-width:100%;box-sizing:border-box}
+.data-item,.panel,.note,.list,.editor-panel,.student-card,.question-card{overflow-wrap:anywhere}
+.data-item p,.panel p,.note,.list p,.student-card p,.question-card p{white-space:normal;overflow-wrap:anywhere;word-break:normal}
+</style>
+</head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
 <main class="wrap">
@@ -3724,6 +3732,19 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 </script>
 <script>
 
+</script>
+
+<script id="tahadi-auto-expand-textareas">
+(function(){
+ if(window.__tahadiAutoExpandTextareas)return;window.__tahadiAutoExpandTextareas=true;
+ function fit(el){if(!(el instanceof HTMLTextAreaElement))return;el.style.height="auto";el.style.height=Math.max(el.scrollHeight,el.offsetHeight||0)+"px";}
+ function scan(root){if(root.matches&&root.matches("textarea"))fit(root);root.querySelectorAll&&root.querySelectorAll("textarea").forEach(fit);}
+ document.addEventListener("input",function(e){if(e.target&&e.target.matches("textarea"))fit(e.target)},true);
+ document.addEventListener("change",function(e){if(e.target&&e.target.matches("textarea"))fit(e.target)},true);
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",function(){scan(document)});else scan(document);
+ new MutationObserver(function(records){records.forEach(function(r){r.addedNodes.forEach(function(n){if(n.nodeType===1)scan(n)})})}).observe(document.documentElement,{childList:true,subtree:true});
+ window.addEventListener("resize",function(){document.querySelectorAll("textarea").forEach(fit)});
+})();
 </script>
 </body>
 </html>
