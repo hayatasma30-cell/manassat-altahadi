@@ -452,12 +452,12 @@ window.publishChallenge=async id=>{
  if(!item.starts_at){message("حددي موعد ظهور الاختبار للتلاميذ أولاً، ثم احفظي المسودة وأعيدي النشر.");return;}
  if(item.ends_at&&new Date(item.ends_at).getTime()<=new Date(item.starts_at).getTime()){message("موعد نهاية المشاركة يجب أن يكون بعد موعد ظهور الاختبار.");return;}
  const when=scheduleDate(item.starts_at);
- if(!confirm("سيُنشر الاختبار الآن، لكنه لن يظهر للتلاميذ إلا في الموعد التالي:\n"+when+"\nهل تريدين المتابعة؟"))return;
+ if(!await window.TahadiDialog.confirm("سيُنشر الاختبار الآن، لكنه لن يظهر للتلاميذ إلا في الموعد التالي:\n"+when+"\nهل تريدين المتابعة؟"))return;
  try{await call("teacher_publish",{id});message(new Date(item.starts_at).getTime()>Date.now()?"تم نشر الاختبار وجدولة ظهوره للتلاميذ في الموعد المحدد.":"تم نشر الاختبار وهو متاح للتلاميذ الآن.");load();}
  catch(e){message(e.message);}
 }
 window.notifyChallenge=async id=>{try{const d=await call("teacher_challenge_notify",{id});message(d.message||"تم إرسال التنبيه.");}catch(e){message(e.message)}};
-window.closeChallenge=async id=>{if(!confirm("إنهاء استقبال المشاركات في هذا التحدي؟"))return;try{await call("teacher_close",{id});message("تم إنهاء المشاركة.");load()}catch(e){message(e.message)}};
+window.closeChallenge=async id=>{if(!await window.TahadiDialog.confirm("إنهاء استقبال المشاركات في هذا التحدي؟"))return;try{await call("teacher_close",{id});message("تم إنهاء المشاركة.");load()}catch(e){message(e.message)}};
 let resultCache={id:null,questions:[],submissions:[]},resultFilter="all";
 function submissionProgress(x,written){
  if(!written.length)return "done";
@@ -506,8 +506,8 @@ window.gradeChallenge=async(id,submissionId,button)=>{
  try{const d=await call("teacher_grade",{id,submission_id:submissionId,grades,teacher_note});message(d.reviewed?"اكتمل التصحيح وحُفظت العلامة النهائية: "+d.final_score:"حُفظ التصحيح الجزئي. العلامة الحالية: "+d.final_score+"، ويمكنك إكمال بقية الإجابات.");await showResults(id)}
  catch(e){message(e.message)}finally{button.disabled=false}
 };
-window.grantExtraAttempt=async(id,student_id,studentName)=>{if(!confirm("إعادة محاولة "+studentName+"؟ ستُخفى المحاولة الحالية ونتيجتها وتصحيحها من العرض، ويبدأ التلميذ التحدي من الصفر. سيبقى السجل السابق محفوظًا للأستاذة فقط."))return;try{const d=await call("teacher_grant_attempt",{id,student_id});message(d.message||"تمت إعادة ضبط المحاولة.");await showResults(id,resultFilter);}catch(e){message(e.message)}};
-window.setWinner=async(id,submission_id)=>{if(!confirm("اعتماد هذا التلميذ فائزًا بالتحدي؟"))return;try{await call("teacher_winner",{id,submission_id});message("تم اعتماد الفائز.");}catch(e){message(e.message)}};
+window.grantExtraAttempt=async(id,student_id,studentName)=>{if(!await window.TahadiDialog.confirm("إعادة محاولة "+studentName+"؟ ستُخفى المحاولة الحالية ونتيجتها وتصحيحها من العرض، ويبدأ التلميذ التحدي من الصفر. سيبقى السجل السابق محفوظًا للأستاذة فقط."))return;try{const d=await call("teacher_grant_attempt",{id,student_id});message(d.message||"تمت إعادة ضبط المحاولة.");await showResults(id,resultFilter);}catch(e){message(e.message)}};
+window.setWinner=async(id,submission_id)=>{if(!await window.TahadiDialog.confirm("اعتماد هذا التلميذ فائزًا بالتحدي؟"))return;try{await call("teacher_winner",{id,submission_id});message("تم اعتماد الفائز.");}catch(e){message(e.message)}};
 $("backToLibrary").onclick=()=>{setEmbedPanel("list");load()};$("addQBottom").onclick=()=>{addQuestion();const cards=$("questions").children;cards[cards.length-1]?.scrollIntoView({behavior:"smooth",block:"center"});};$("newBtn").onclick=()=>{setEmbedPanel("editor");$("results").classList.add("hidden");reset()};$("backToChallengeList").onclick=()=>{ $("results").classList.add("hidden");setEmbedPanel("list");load()};$("cancelEdit").onclick=reset;
 $("saveBtn").onclick=async()=>{const button=$("saveBtn");if(button.disabled)return;button.disabled=true;try{const d=await call("teacher_save",{id:editingId,title:$("title").value,description:$("description").value,target_level:$("level").value,starts_at:$("starts").value?new Date($("starts").value).toISOString():null,ends_at:$("ends").value?new Date($("ends").value).toISOString():null,duration_minutes:Number($("duration").value),questions:readQuestions()});editingId=d.item.id;$("publishBtn").classList.remove("hidden");$("cancelEdit").classList.remove("hidden");$("formTitle").textContent="متابعة إعداد التحدي";message("حُفظت المسودة بنجاح. يمكنك متابعة إضافة الأسئلة هنا، ولن نعيدك إلى المكتبة.");}catch(e){message(e.message)}finally{button.disabled=false}};
 $("publishBtn").onclick=()=>publishChallenge(editingId);["librarySearch","libraryLevel","libraryStatus"].forEach(id=>$(id)?.addEventListener(id==="librarySearch"?"input":"change",renderChallengeLibrary));const initialPage=location.hash==="#editor"?"editor":location.hash==="#results"?"results":"list";
