@@ -1533,6 +1533,33 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="view-head"><button class="back" id="backToStudentLevels" type="button">→ مستويات التلاميذ</button><h2 id="studentLevelTitle">قائمة التلاميذ</h2></div><div class="panel"><div class="student-list-tools"><div><label for="studentSearchInput">🔎 البحث عن تلميذ</label><input id="studentSearchInput" type="search" autocomplete="off" placeholder="الاسم أو رقم الهاتف…"></div><div><label for="studentSortSelect">ترتيب القائمة</label><select id="studentSortSelect"><option value="name">الاسم أبجديًا</option><option value="newest">الأحدث تسجيلًا</option><option value="oldest">الأقدم تسجيلًا</option></select></div></div><div id="studentQuickStats" class="student-quick-stats"></div><p id="studentLevelDescription" class="muted"></p><div id="studentsList" class="list" style="margin-top:14px"></div></div>
 </section>
 <section id="electronicTestsView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📝 الاختبارات والتحديات</h2></div><style>.electronic-tests-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.electronic-tests-menu .menu-btn{min-height:90px}.electronic-test-panel[hidden],#electronicTestsHub[hidden]{display:none!important}.electronic-test-back{width:auto;min-height:40px;padding:8px 13px;border-radius:11px;background:#e8f3e6;color:#14532d}.electronic-test-panel{border-radius:20px;padding:clamp(16px,3vw,26px);box-shadow:0 10px 24px #183d2410}.electronic-test-panel>.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.electronic-test-panel .actions-row{display:flex;gap:10px;flex-wrap:wrap}.electronic-test-panel .actions-row button{flex:1 1 190px;min-height:48px;border-radius:13px;box-shadow:0 5px 0 #14532d24}.electronic-test-panel .data-item{border:1px solid #dfe8dc;border-radius:17px;padding:16px;background:#fff}.quiz-library-card{display:flex;flex-direction:column;align-items:stretch;gap:13px;margin:12px 0!important;padding:17px!important;border:1px solid #dce8d9!important;border-radius:19px!important;background:linear-gradient(145deg,#fff 0%,#fbfdf9 100%)!important;box-shadow:0 5px 0 #e1eadf,0 10px 22px #173d2410!important}.quiz-library-card .quiz-card-head{display:flex;align-items:flex-start;gap:11px}
+
+/* تصميم محسن ومرتب لإعدادات الاختبار */
+#electronicTestManageContent{direction:rtl;color:#244a35;padding:4px 0 10px}
+#electronicTestManageContent .quiz-manage-kicker{display:flex;align-items:center;gap:8px;margin:4px 0 12px;padding:10px 13px;border-radius:13px;background:#edf5e9;color:#245b3b;font-size:1rem}
+#electronicTestManageContent .quiz-manage-title{margin:12px 0 8px;color:#174c30;font-size:clamp(1.35rem,5vw,1.8rem);line-height:1.55;font-weight:800;overflow-wrap:anywhere}
+#electronicTestManageContent .quiz-manage-meta{display:inline-flex;align-items:center;margin:0 0 12px;padding:7px 12px;border-radius:30px;background:#f1f4ed;border:1px solid #e1e8dc;color:#657469;font-size:.88rem}
+#electronicTestManageContent .quiz-manage-description{margin:4px 0 18px;padding:12px 14px;border-right:3px solid #8eaf8d;border-radius:10px;background:#fafcf8;color:#647368;line-height:1.8}
+#electronicTestManageContent .quiz-manage-grid{margin:18px 0 16px;padding:15px;gap:14px;border:1px solid #e0e9dd;border-radius:18px;background:linear-gradient(145deg,#fff,#f8fbf6);box-shadow:0 4px 12px rgba(30,70,42,.045)}
+#electronicTestManageContent .quiz-manage-grid label{color:#28553b;font-weight:700;font-size:.95rem}
+#electronicTestManageContent .quiz-manage-grid input{height:52px;margin-top:8px;padding:10px 14px;border:1px solid #cbd9ca;border-radius:13px;background:#fff;color:#244a35;font:inherit;font-weight:600;outline:none}
+#electronicTestManageContent .quiz-manage-grid input:focus{border-color:#6f9d72;box-shadow:0 0 0 3px rgba(111,157,114,.14)}
+#electronicTestManageContent .quiz-manage-flags{display:grid;gap:9px;margin:14px 0 18px}
+#electronicTestManageContent .quiz-manage-flags label{display:flex;align-items:center;gap:11px;min-height:54px;margin:0!important;padding:12px 14px;border:1px solid #e0e9dd;border-radius:14px;background:#f8fbf6;color:#315b40;font-weight:650;line-height:1.5}
+#electronicTestManageContent .quiz-manage-flags input{width:19px!important;height:19px;flex:0 0 19px;accent-color:#247342}
+#electronicTestManageContent .quiz-manage-actions{gap:10px;margin-top:16px}
+#electronicTestManageContent .quiz-manage-actions button,#electronicTestManageContent .quiz-manage-actions a{min-height:51px;padding:13px 15px;border-radius:14px;font:inherit;font-weight:750;line-height:1.5;box-shadow:0 4px 0 rgba(20,83,45,.14)}
+#electronicTestManageContent .quiz-manage-actions button.primary{background:linear-gradient(135deg,#176b3d,#0e5931);color:#fff}
+#electronicTestManageContent .quiz-manage-actions a{background:#edf6ea;color:#205c39;border:1px solid #d2e3cf}
+#electronicTestManageContent .quiz-manage-actions button.secondary{background:#f2f2f2;color:#3e5144;border:1px solid #d8e1d7}
+#electronicTestManageContent .quiz-manage-status{min-height:22px;margin:13px 2px 0;padding:0 8px;color:#47704f;font-size:.9rem;line-height:1.6}
+#electronicTestsView [data-test-panel="manage"]>.electronic-test-back{margin-bottom:16px!important}
+@media(max-width:560px){
+ #electronicTestManageContent .quiz-manage-grid{padding:12px;margin:14px 0}
+ #electronicTestManageContent .quiz-manage-title{font-size:1.4rem}
+ #electronicTestManageContent .quiz-manage-flags label{font-size:.92rem}
+}
+
 /* إصلاح عرض صفحة إدارة الاختبار على الهاتف ومنع التمرير الأفقي */
 #electronicTestsView{max-width:100%;min-width:0;overflow-x:clip;box-sizing:border-box}
 #electronicTestsView *{box-sizing:border-box}
@@ -3355,17 +3382,17 @@ const handleIncomeCalendarClick=async e=>{
     window.scrollTo({top:0,behavior:"instant"});
     const root=$("electronicTestManageContent"),s=r.quiz_settings||{duration_minutes:60,max_attempts:2,show_results:true,shuffle_questions:false};
     root.replaceChildren();
-    const heading=document.createElement("h3");heading.textContent="⚙️ إدارة الاختبار";root.appendChild(heading);
-    const title=document.createElement("h2");title.textContent=r.title;title.style.color="#14532d";root.appendChild(title);
-    const meta=document.createElement("p");meta.className="muted";meta.textContent=(r.level||"")+" • "+(r.is_published?"منشور للتلاميذ":"مسودة");root.appendChild(meta);
-    if(r.description){const desc=document.createElement("p");desc.textContent=r.description;root.appendChild(desc);}
+    const heading=document.createElement("h3");heading.className="quiz-manage-kicker";heading.textContent="⚙️ إعدادات الاختبار";root.appendChild(heading);
+    const title=document.createElement("h2");title.className="quiz-manage-title";title.textContent=r.title;root.appendChild(title);
+    const meta=document.createElement("p");meta.className="quiz-manage-meta";meta.textContent=(r.level||"")+" • "+(r.is_published?"منشور للتلاميذ":"مسودة");root.appendChild(meta);
+    if(r.description){const desc=document.createElement("p");desc.className="quiz-manage-description";desc.textContent=r.description;root.appendChild(desc);}
     const form=document.createElement("div");form.className="quiz-manage-grid";
     form.innerHTML='<label>المدة بالدقائق<input type="number" min="1" max="240" data-q-duration value="'+Number(s.duration_minutes||60)+'"></label><label>عدد المحاولات<input type="number" min="1" max="20" data-q-attempts value="'+Number(s.max_attempts||2)+'"></label>';
     root.appendChild(form);
-    const flags=document.createElement("div");flags.innerHTML='<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" data-q-results style="width:auto" '+(s.show_results!==false?'checked':'')+'> إظهار النتائج للتلميذ</label><label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" data-q-shuffle style="width:auto" '+(s.shuffle_questions?'checked':'')+'> خلط ترتيب الأسئلة</label>';root.appendChild(flags);
+    const flags=document.createElement("div");flags.className="quiz-manage-flags";flags.innerHTML='<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" data-q-results style="width:auto" '+(s.show_results!==false?'checked':'')+'> إظهار النتائج للتلميذ</label><label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" data-q-shuffle style="width:auto" '+(s.shuffle_questions?'checked':'')+'> خلط ترتيب الأسئلة</label>';root.appendChild(flags);
     const actions=document.createElement("div");actions.className="quiz-manage-actions";
     const save=document.createElement("button");save.className="primary";save.textContent="حفظ إعدادات الاختبار";
-    const status=document.createElement("p");status.className="muted";status.setAttribute("role","status");
+    const status=document.createElement("p");status.className="quiz-manage-status";status.setAttribute("role","status");
     save.addEventListener("click",async()=>{save.disabled=true;status.textContent="جارٍ حفظ الإعدادات…";try{const settings={duration_minutes:Number(form.querySelector("[data-q-duration]").value),max_attempts:Number(form.querySelector("[data-q-attempts]").value),show_results:flags.querySelector("[data-q-results]").checked,shuffle_questions:flags.querySelector("[data-q-shuffle]").checked};if(!Number.isInteger(settings.duration_minutes)||settings.duration_minutes<1||settings.duration_minutes>240||!Number.isInteger(settings.max_attempts)||settings.max_attempts<1||settings.max_attempts>20)throw Error("تحققي من المدة وعدد المحاولات.");await resourceRequest("teacher_save_resource",{id:r.id,title:r.title,level:r.level,resource_type:"quiz",resource_url:r.resource_url||"",description:r.description||"",is_published:!!r.is_published,quiz_settings:settings});r.quiz_settings=settings;status.textContent="تم حفظ الإعدادات بنجاح.";}catch(e){status.textContent=e.message||"تعذر الحفظ.";}finally{save.disabled=false;}});
     actions.appendChild(save);
     if(r.resource_url){const link=document.createElement("a");link.href=r.resource_url;link.target="_blank";link.rel="noopener";link.textContent="فتح الاختبار للتلاميذ ↗";actions.appendChild(link);if(r.resource_url.includes("test-nahl-03.html")||r.resource_url.includes("test-zalazil-3am.html")){const teacherLink=document.createElement("a"),u=new URL(r.resource_url,location.href);u.searchParams.set("teacher_preview","1");teacherLink.href=u.toString();teacherLink.target="_blank";teacherLink.rel="noopener";teacherLink.textContent="👩‍🏫 عرض الأسئلة مع الإجابات الصحيحة (دون توقيت)";actions.appendChild(teacherLink);}}
