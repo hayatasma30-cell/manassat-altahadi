@@ -2565,7 +2565,7 @@ window.addEventListener("unhandledrejection",function(e){
     const finish=value=>{overlay.remove();resolve(value);};
     overlay.querySelectorAll("[data-replacement-close]").forEach(b=>b.addEventListener("click",()=>finish(null)));
     overlay.addEventListener("click",e=>{if(e.target===overlay)finish(null);});
-    overlay.querySelector("[data-replacement-confirm]").addEventListener("click",()=>{
+    overlay.querySelector("[data-replacement-confirm]").addEventListener("click",async()=>{
       const radio=overlay.querySelector('input[name="replacementLessonChoice"]:checked');
       if(!radio){lessonMessage(kind==="replacement"?"اختاري الحصة التعويضية أولًا.":"اختاري سجل الحصة المنجزة أولًا.","error");return;}
       const selected=candidates[Number(radio.value)];
