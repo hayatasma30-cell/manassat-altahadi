@@ -700,7 +700,7 @@ for(const mode of ["in_person","zoom"]){
  }
 }
 for(const paidCycle of paymentCycles){const monthKey=String(paidCycle.cycle_month||paidCycle.subscription_month||paidCycle.payment_date||paidCycle.created_at||"").slice(0,7);if(!scheduledCycles.some(row=>row.cycle_mode===paidCycle.cycle_mode&&String(row.cycle_month||"").slice(0,7)===monthKey))scheduledCycles.push({...paidCycle,cycle_lessons:[]});}
-monthlyCycleRows=scheduledCycles.sort((a,b)=>String(a.cycle_mode||"").localeCompare(String(b.cycle_mode||""))||String(a.cycle_month||"").localeCompare(String(b.cycle_month||"")));
+monthlyCycleRows=scheduledCycles.sort((a,b)=>String(a.cycle_mode||"").localeCompare(String(b.cycle_mode||""))||String(a.cycle_lessons?.[0]?.lesson_date||a.cycle_month||"").localeCompare(String(b.cycle_lessons?.[0]?.lesson_date||b.cycle_month||"")));
 const cycleOrdinal=n=>["الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر"][n]||String(n+1);
 const subscriptionCardHtml=x=>{
  const isMonthly=isFourLessonSubscription(x)||String(x.service_type||"").toLowerCase()==="monthly_subscription";
