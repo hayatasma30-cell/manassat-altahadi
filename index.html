@@ -4241,7 +4241,8 @@ async function load(){
    },80);
  },true);
  window.addEventListener("popstate",function(event){
-   if(!event.state||!event.state.tahadiAutoBack)return;
+   var active=document.querySelector(".view.active");
+   if(!event.state||!active||event.state.tahadiView!==active.id)return;
    handlingPop=true;
    var back=findBack();
    if(back){
