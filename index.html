@@ -1899,7 +1899,7 @@ window.addEventListener("unhandledrejection",function(e){
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{if(typeof showIncomeHome==="function")showIncomeHome();});
   // دعم زر الرجوع في الهاتف داخل قسم المداخيل بدل مغادرة المنصة.
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{history.pushState({tahadiIncome:"home"},"",location.pathname+location.search+"#income");});
-  window.addEventListener("popstate",()=>{if(activeView!=="incomeView")return;const menu=$("incomeHomeMenu");const hasSubpage=incomePageIds.some(pid=>{const el=$(pid);return el&&el.classList.contains("income-current");});if(hasSubpage){showIncomeHome();}else{showView("homeView");}});
+  window.addEventListener("popstate",(event)=>{if(activeView!=="incomeView"||event.state&&event.state.tahadiNestedParent)return;const menu=$("incomeHomeMenu");const hasSubpage=incomePageIds.some(pid=>{const el=$(pid);return el&&el.classList.contains("income-current");});if(hasSubpage){showIncomeHome();}else{showView("homeView");}});
   // استعادة القسم السابق عند استعمال سهم الرجوع في الهاتف أو المتصفح.
   window.addEventListener("popstate",event=>{
     const destination=event.state&&event.state.tahadiView;
@@ -4221,7 +4221,7 @@ async function load(){
  if(window.__tahadiUnifiedMobileBack)return;
  window.__tahadiUnifiedMobileBack=true;
  var handlingPop=false, executingBack=false;
- var navSelector='[data-weekly-page],[data-weekly-inner-page],[data-income-page],[data-income-calendar-back],[data-compare-open],[data-question-page],[data-view],[data-subpage],[data-open-page],.menu-btn';
+ var navSelector='[data-weekly-open],#weeklyNewGroupBtn,[data-weekly-page],[data-weekly-inner-page],[data-lesson-page],[data-lesson-subpage],[data-calendar-day-back],[data-test-page],[data-course-page],[data-income-page],[data-compare-open],[data-question-page],[data-view],[data-subpage],[data-open-page],.menu-btn';
  var backSelector='button.back,.back,.student-back,[data-weekly-inner-back],[data-weekly-page-back],[data-weekly-editor-back],[data-income-calendar-back],[data-compare-back],[id*="Back"],[id*="back"]';
  function visible(el){return !!el&&!el.hidden&&el.getAttribute("aria-hidden")!=="true"&&!!(el.getClientRects().length);}
  function findBack(){
