@@ -4063,6 +4063,21 @@ async function load(){
   const del=e.target.closest("[data-weekly-delete]");if(del){(async()=>{if(!confirm("سيتم إيقاف هذه المجموعة وإخراج أعضائها منها. ستبقى سجلات الحصص محفوظة. هل تريدين المتابعة؟"))return;try{await call("weekly_group_delete",{group_id:del.dataset.weeklyDelete});resetGroupForm();selectedGroupId=null;await load();status("weeklyGroupStatus","تم حذف المجموعة من المجموعات النشطة مع الاحتفاظ بسجلات الحصص.");}catch(err){alert(err.message);}})();}
   const remove=e.target.closest("[data-weekly-remove]");if(remove){(async()=>{if(!confirm("هل تريدين إخراج هذا التلميذ من المجموعة؟"))return;try{await call("weekly_group_member_remove",{member_id:remove.dataset.weeklyRemove});await load();}catch(err){alert(err.message);}})();}
  });
+ function weeklyGroupsViewIsActive(){
+  const view=$("weeklyGroupsView");
+  return !!view&&(view.classList.contains("active")||view.style.display==="block"||(!view.hidden&&getComputedStyle(view).display!=="none"));
+ }
+ function refreshWeeklyGroupsIfVisible(){
+  if(!weeklyGroupsViewIsActive())return;
+  if(!localStorage.getItem("tahadi_teacher_token"))return;
+  load();
+ }
+ // عند استعادة الصفحة من المتصفح أو الرجوع إليها، أعد تحميل المجموعات من Supabase.
+ window.addEventListener("pageshow",()=>setTimeout(refreshWeeklyGroupsIfVisible,900));
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(refreshWeeklyGroupsIfVisible,250);});
+ window.addEventListener("focus",()=>setTimeout(refreshWeeklyGroupsIfVisible,250));
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(refreshWeeklyGroupsIfVisible,1800),{once:true});
+ else setTimeout(refreshWeeklyGroupsIfVisible,1800);
  $("weeklyGroupSearch")?.addEventListener("input",render);
  $("weeklyGroupsRefresh")?.addEventListener("click",load);
  function resetGroupForm(){ $("weeklyGroupEditId").value="";$("weeklyGroupLevel").value="السنة الأولى متوسط";$("weeklyGroupMode").value="in_person";$("weeklyGroupWeekday").value="";$("weeklyGroupStartTime").value="";$("weeklyGroupEndTime").value="";$("weeklyGroupFormTitle").textContent="➕ إنشاء مجموعة أسبوعية";$("weeklyGroupCreateBtn").textContent="حفظ المجموعة";$("weeklyGroupCancelEdit").hidden=true; }
