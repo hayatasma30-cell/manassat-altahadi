@@ -3362,7 +3362,7 @@ const handleIncomeCalendarClick=async e=>{
         const info=document.createElement("div");
         const title=document.createElement("strong");title.textContent=r.title;info.appendChild(title);
         const meta=document.createElement("div");meta.className="quiz-meta";meta.textContent=(r.level||"")+" • "+(r.is_published?"منشور للتلاميذ":"مسودة");info.appendChild(meta);
-        const manage=document.createElement("button");manage.type="button";manage.className="secondary";manage.textContent="إدارة الاختبار ←";manage.addEventListener("click",()=>openQuizManagement(r.id));
+        const manage=document.createElement("button");manage.type="button";manage.className="secondary";manage.setAttribute("data-quiz-manage-open","");manage.textContent="إدارة الاختبار ←";manage.addEventListener("click",()=>openQuizManagement(r.id));
         card.append(info,manage);list.appendChild(card);
       });
     }catch(e){list.textContent=e.message||"تعذر تحميل الاختبارات.";}
@@ -4223,7 +4223,7 @@ async function load(){
  if(window.__tahadiUnifiedMobileBack)return;
  window.__tahadiUnifiedMobileBack=true;
  var handlingPop=false, executingBack=false;
- var navSelector='[data-weekly-open],#weeklyNewGroupBtn,[data-weekly-page],[data-weekly-inner-page],[data-lesson-page],[data-lesson-subpage],[data-calendar-day-back],[data-test-page],[data-course-page],[data-income-page],[data-compare-open],[data-question-page],[data-view],[data-subpage],[data-open-page],.menu-btn';
+ var navSelector='[data-weekly-open],#weeklyNewGroupBtn,[data-weekly-page],[data-weekly-inner-page],[data-lesson-page],[data-lesson-subpage],[data-calendar-day-back],[data-test-page],[data-quiz-manage-open],[data-course-page],[data-income-page],[data-compare-open],[data-question-page],[data-view],[data-subpage],[data-open-page],.menu-btn';
  var backSelector='button.back,.back,.student-back,[data-weekly-inner-back],[data-weekly-page-back],[data-weekly-editor-back],[data-income-calendar-back],[data-compare-back],[id*="Back"],[id*="back"]';
  function visible(el){return !!el&&!el.hidden&&el.getAttribute("aria-hidden")!=="true"&&!!(el.getClientRects().length);}
  function findBack(){
@@ -4233,6 +4233,7 @@ async function load(){
      '[data-weekly-page-back]',
      '[data-income-calendar-back]',
      '[data-compare-back]',
+     '[data-test-back]',
      '.view.active [data-subpage-back]',
      '.view.active button.back:not([data-home])',
      '.view.active .back:not([data-home])',
