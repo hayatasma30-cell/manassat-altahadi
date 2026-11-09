@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#14532e"><title>اختبار العوامل الفيزيوكيميائية — السنة الثانية متوسط</title>
+<style>
+:root{--g:#276749;--g2:#14532d;--leaf:#3d8b61;--cream:#f7f5ec;--line:#d8dfd3;--ink:#203128}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#edf5e9 0,#f7f5ec 55%,#f0f3e9 100%);font:16px/1.9 Tahoma,Arial,sans-serif;color:var(--ink)}
+main{max-width:800px;margin:24px auto;padding:14px}
+.panel{background:linear-gradient(145deg,#fff 0%,#fcfdf9 100%);border:1px solid var(--line);border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 8px 0 #dce5d8,0 14px 28px #294c3218}
+.hero{border-top:7px solid var(--g);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;left:-22px;top:-30px;width:105px;height:105px;border:12px solid #dcebdc;border-radius:50%;opacity:.65;pointer-events:none}
+h1{font-size:clamp(1.35rem,4vw,1.8rem);line-height:1.5;color:var(--g2);margin:0 0 8px}
+h1:before{content:"❧ ";color:var(--leaf)}
+.muted{color:#647067}.hidden{display:none!important}label{display:block;margin:12px 0 5px;font-weight:700;color:#28583b}
+input,textarea{font:inherit;width:100%;padding:12px 14px;border:1px solid #b9cbb9;border-radius:12px;background:#fff;box-shadow:inset 0 2px 4px #173d1a0c;outline:none}
+input:focus,textarea:focus{border-color:var(--leaf);box-shadow:0 0 0 3px #3d8b6126}
+button{font:inherit;font-weight:700;border:1px solid #164b2b;border-radius:13px;padding:11px 19px;background:linear-gradient(180deg,#4b9567 0%,#276749 55%,#1c5436 100%);color:#fff;cursor:pointer;margin:5px;box-shadow:0 5px 0 #123f28,0 8px 13px #173d1a28;text-shadow:0 1px 1px #123f2866;transition:transform .12s ease,box-shadow .12s ease,filter .12s ease}
+button:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 7px 0 #123f28,0 11px 16px #173d1a2b}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #123f28,0 4px 8px #173d1a20}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+button.secondary{background:linear-gradient(180deg,#fff 0%,#e8f0e7 100%);border-color:#c4d3c3;color:#24432d;text-shadow:none;box-shadow:0 4px 0 #c5d3c2,0 7px 12px #173d1a12}
+button.secondary:hover{box-shadow:0 6px 0 #c5d3c2,0 9px 14px #173d1a18}
+button.secondary:active{box-shadow:0 1px 0 #c5d3c2;transform:translateY(3px)}
+.timer{font-weight:bold;color:#a33;font-size:1.2rem;background:#fff4ee;border:1px solid #f1d4c8;padding:4px 12px;border-radius:12px}
+.row,.actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.option{display:block;padding:11px 13px;border:1px solid var(--line);border-radius:13px;margin:10px 0;background:linear-gradient(145deg,#fff,#f7faf4);box-shadow:0 3px 0 #e0e8dc,0 5px 10px #2031280a;transition:border-color .12s,transform .12s}
+.option:hover{border-color:#8ab398;transform:translateY(-1px)}
+.option input{width:auto;margin-left:8px;accent-color:var(--g);transform:scale(1.12)}
+.danger{color:#a33}.progress{height:10px;background:#e4e9e4;border-radius:20px;overflow:hidden;margin:12px 0;box-shadow:inset 0 2px 3px #20312814}.bar{height:100%;background:linear-gradient(90deg,#7aa76d,#276749);width:0;border-radius:20px;transition:width .2s}
+.result{background:linear-gradient(145deg,#f0f7eb,#e2efdf);padding:15px;border-radius:14px;border:1px solid #cfdfca;box-shadow:0 4px 0 #d0e0ca}
+hr{border:0;border-top:1px solid #e1e8dd;margin:18px 0}
+@media(max-width:520px){main{padding:10px;margin:10px auto}.panel{padding:16px;border-radius:17px}.actions{gap:6px}.actions button{flex:1;min-width:95px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){button,.option,.bar{transition:none}}
+
+.review-card{border:2px solid;border-radius:16px;padding:14px 16px;margin:14px 0;box-shadow:0 5px 0 #dce5d8,0 8px 15px #2031280d;background:#fff}
+.review-correct{border-color:#25834b;background:linear-gradient(145deg,#f4fff5,#e7f7e9);box-shadow:0 5px 0 #b9dfc0,0 8px 15px #1b6a3210}
+.review-wrong{border-color:#c93c3c;background:linear-gradient(145deg,#fff7f6,#ffebea);box-shadow:0 5px 0 #efc4c1,0 8px 15px #8f222210}
+.review-title{display:block;font-size:1.04rem;margin-bottom:8px}
+.review-line{margin:6px 0}
+.review-label{font-weight:700}
+.review-correct .review-status{display:inline-block;background:#d2f0d8;color:#155b2c;border-radius:8px;padding:3px 9px;font-weight:700;margin-top:5px}
+.review-wrong .review-status{display:inline-block;background:#f9d7d5;color:#922626;border-radius:8px;padding:3px 9px;font-weight:700;margin-top:5px}
+</style></head><body><main>
+<section class="panel hero"><h1>اختبار تأثير العوامل الفيزيوكيميائية</h1><strong>السنة الثانية متوسط — علوم الطبيعة والحياة</strong><p class="muted" id="examInfo">المدة: 40 دقيقة | الأسئلة: 20 | العلامة النهائية: 20/20 — جميع الأسئلة اختيار من متعدد</p><p>يتم التحقق من هويتك تلقائيًا باستعمال جلسة فضاء التلميذ.</p><button id="start">الدخول إلى الاختبار</button><p id="loginError" class="danger"></p></section>
+<section id="exam" class="panel hidden"><div class="row"><strong id="studentLabel"></strong><span class="timer" id="timer">40:00</span></div><div class="progress"><div id="bar" class="bar"></div></div><div class="row muted"><span id="count"></span><span>لا تظهر الإجابات الصحيحة قبل الإنهاء</span></div><hr><div id="question"></div><div class="actions"><button class="secondary" id="prev">السابق</button><button id="next">السؤال التالي</button><button id="finish" class="hidden">إنهاء الاختبار</button></div><p id="examError" class="danger"></p></section>
+<section id="results" class="panel hidden"></section></main>
+<script>
+const API_URL="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
+const teacherPreviewMode=new URLSearchParams(location.search).get("teacher_preview")==="1";
+const MCQ=
+[
+  {
+    "n": 1,
+    "q": "فسّر تركز الحلزونات وديدان الأرض في الأوساط الرطبة.",
+    "opts": [
+      "تساعد الرطوبة على المحافظة على التوازن المائي للجسم واستمرار النشاط الحيوي.",
+      "تسمح الرطوبة بزيادة شدة الإضاءة الضرورية لنشاطها.",
+      "تؤدي الرطوبة إلى رفع درجة حرارة الوسط بصورة دائمة."
+    ],
+    "correct": 0,
+    "explanation": "الرطوبة تقلل فقدان الماء وتحافظ على التوازن المائي الضروري لاستمرار النشاط الحيوي."
+  },
+  {
+    "n": 2,
+    "q": "استنتج العلاقة بين الإضاءة ونشاط النباتات الخضراء.",
+    "opts": [
+      "تتحكم الإضاءة مباشرة في امتصاص الماء والأملاح المعدنية من التربة.",
+      "تؤثر الإضاءة في شدة التركيب الضوئي وبالتالي في إنتاج المادة العضوية.",
+      "تؤثر الإضاءة في نفاذية التربة وقدرتها على الاحتفاظ بالماء."
+    ],
+    "correct": 1,
+    "explanation": "تستعمل النباتات الخضراء الطاقة الضوئية في عملية التركيب الضوئي لإنتاج المادة العضوية."
+  },
+  {
+    "n": 3,
+    "q": "قارن بين العصافير والخفافيش من حيث فترة النشاط.",
+    "opts": [
+      "كلاهما حيوانات نهارية تختلف فقط في نظامها الغذائي.",
+      "العصافير حيوانات ليلية والخفافيش حيوانات نهارية.",
+      "العصافير حيوانات نهارية والخفافيش حيوانات ليلية."
+    ],
+    "correct": 2,
+    "explanation": "تنشط العصافير غالبًا نهارًا، بينما تنشط الخفافيش ليلًا."
+  },
+  {
+    "n": 4,
+    "q": "فسّر اختلاف توزع نبات الوزال ونبات اللاميون.",
+    "opts": [
+      "يرتبط اختلاف توزعهما باختلاف متطلباتهما من شدة الإضاءة.",
+      "يرتبط اختلاف توزعهما باختلاف قدرتهما على امتصاص الأكسجين.",
+      "يرتبط اختلاف توزعهما باختلاف حاجتهما إلى الأملاح المعدنية فقط."
+    ],
+    "correct": 0,
+    "explanation": "تختلف النباتات في متطلباتها الضوئية؛ فبعضها يفضل الإضاءة القوية وأخرى تنمو في الظل."
+  },
+  {
+    "n": 5,
+    "q": "استنتج أثر درجة الحرارة على النشاط الحيوي للنباتات.",
+    "opts": [
+      "تتحكم درجة الحرارة في نفاذية التربة دون التأثير في النبات.",
+      "تؤثر درجة الحرارة في النمو والتطور والإزهار والإثمار.",
+      "تؤثر درجة الحرارة في التركيب الضوئي فقط دون بقية الوظائف."
+    ],
+    "correct": 1,
+    "explanation": "تؤثر درجة الحرارة في سرعة التفاعلات الحيوية ومراحل نمو النبات وتطوره."
+  },
+  {
+    "n": 6,
+    "q": "فسّر حاجة نبات السلجم إلى البرودة من أجل التكاثر.",
+    "opts": [
+      "تمنع البرودة امتصاص الماء وتوقف النمو نهائيًا.",
+      "تؤدي البرودة إلى زيادة شدة الإضاءة الضرورية للإزهار.",
+      "تسمح الظروف الحرارية المنخفضة بتحفيز الانتقال إلى مرحلة التكاثر والإزهار."
+    ],
+    "correct": 2,
+    "explanation": "تحتاج بعض النباتات إلى فترة برودة لتحفيز الإزهار، وهي ظاهرة تعرف بالارتباع."
+  },
+  {
+    "n": 7,
+    "q": "استنتج أهمية طبيعة التربة في توزع النباتات.",
+    "opts": [
+      "تحدد خصائص التربة توفر الماء والعناصر المعدنية ومدى ملاءمتها لنمو النباتات.",
+      "تحدد التربة مدة الإضاءة اليومية التي تتلقاها النباتات.",
+      "تتحكم التربة وحدها في درجة حرارة الهواء المحيط بالنبات."
+    ],
+    "correct": 0,
+    "explanation": "تؤثر خصائص التربة في توفر الماء والأملاح المعدنية والتهوية، وبالتالي في نمو النباتات."
+  },
+  {
+    "n": 8,
+    "q": "رتّب المناطق المناخية الجزائرية حسب التدرج من الشمال نحو الجنوب.",
+    "opts": [
+      "مناخ الإستبس، المناخ المتوسطي، المناخ الصحراوي.",
+      "المناخ المتوسطي، مناخ الإستبس، المناخ الصحراوي.",
+      "المناخ الصحراوي، مناخ الإستبس، المناخ المتوسطي."
+    ],
+    "correct": 1,
+    "explanation": "يتدرج المناخ من المتوسطي شمالًا إلى الإستبس ثم الصحراوي جنوبًا."
+  },
+  {
+    "n": 9,
+    "q": "فسّر كثافة الغطاء النباتي في شمال الجزائر مقارنة بالجنوب.",
+    "opts": [
+      "قلة الأمطار وارتفاع المدى الحراري يساهمان في زيادة كثافة النباتات.",
+      "ارتفاع درجات الحرارة وحده يؤدي إلى زيادة الغطاء النباتي.",
+      "وفرة الأمطار واعتدال الحرارة نسبيًا يساهمان في نمو النباتات وتكاثرها."
+    ],
+    "correct": 2,
+    "explanation": "وفرة التساقطات واعتدال الحرارة نسبيًا في الشمال يوفران شروطًا أفضل للنمو النباتي."
+  },
+  {
+    "n": 10,
+    "q": "استنتج أثر تناقص التساقطات من الشمال نحو الجنوب على التنوع الحيوي.",
+    "opts": [
+      "يؤدي نقص الماء إلى الحد من نمو النباتات، مما يقلل الموارد الغذائية والمآوي المتاحة للحيوانات.",
+      "يؤدي نقص الماء إلى زيادة الإنتاج النباتي وبالتالي ارتفاع التنوع الحيوي.",
+      "لا يؤثر نقص التساقطات في توزع الكائنات الحية ما دامت التربة موجودة."
+    ],
+    "correct": 0,
+    "explanation": "يؤدي نقص الماء إلى تراجع الغطاء النباتي، فتقل الموارد الغذائية والمآوي للكائنات الحية."
+  },
+  {
+    "n": 11,
+    "q": "صنّف الدبال حسب مكونات التربة.",
+    "opts": [
+      "مكوّن معدني ناتج عن تفكك الصخور فقط.",
+      "مكوّن عضوي ناتج عن تحلل بقايا الكائنات الحية.",
+      "مكوّن غازي ناتج عن تنفس الكائنات الحية."
+    ],
+    "correct": 1,
+    "explanation": "الدبال مادة عضوية تتشكل من تحلل بقايا النباتات والحيوانات."
+  },
+  {
+    "n": 12,
+    "q": "حدّد مكونات التربة المعدنية من بين العناصر الآتية.",
+    "opts": [
+      "الدبال والأكسجين وثاني أكسيد الكربون.",
+      "بقايا النباتات والحيوانات ومحلول التربة.",
+      "الحصى والرمل والغضار والطمي والأملاح المعدنية."
+    ],
+    "correct": 2,
+    "explanation": "تضم المكونات المعدنية فتات الصخور بأحجامه المختلفة، إضافة إلى الأملاح المعدنية."
+  },
+  {
+    "n": 13,
+    "q": "ميّز بين نفاذية التربة وقدرتها على الاحتفاظ بالماء.",
+    "opts": [
+      "النفاذية تعبر عن مرور الماء عبر التربة، والاحتفاظ بالماء يعبر عن تخزين جزء منه.",
+      "النفاذية تعبر عن تخزين الماء، والاحتفاظ بالماء يعبر عن سرعة مروره.",
+      "الخاصيتان تعبران عن قدرة التربة على توفير الغازات فقط."
+    ],
+    "correct": 0,
+    "explanation": "النفاذية هي سهولة مرور الماء خلال التربة، أما الاحتفاظ فهو بقاء جزء من الماء بين حبيباتها."
+  },
+  {
+    "n": 14,
+    "q": "استنتج أهمية المسامية بالنسبة للتربة.",
+    "opts": [
+      "وجود الفراغات بين مكونات التربة يمنع مرور الماء والهواء كليًا.",
+      "وجود الفراغات بين مكونات التربة يسمح بمرور الماء والهواء واحتفاظها بجزء من الماء.",
+      "المسامية تعبر عن كمية الأملاح المعدنية الذائبة في التربة."
+    ],
+    "correct": 1,
+    "explanation": "المسامية ناتجة عن الفراغات بين الحبيبات، وتسمح بوجود الهواء والماء داخل التربة."
+  },
+  {
+    "n": 15,
+    "q": "فسّر انخفاض الإضاءة والحرارة عند تغطية السماء بالسحب.",
+    "opts": [
+      "تزيد السحب من امتصاص التربة للأشعة الشمسية.",
+      "تمنع السحب انعكاس الضوء عن سطح الأرض فقط.",
+      "تحجب السحب جزءًا من الإشعاع الشمسي الواصل إلى سطح الأرض."
+    ],
+    "correct": 2,
+    "explanation": "تحجب السحب وتعكس جزءًا من الإشعاع الشمسي، فينخفض ما يصل إلى سطح الأرض."
+  },
+  {
+    "n": 16,
+    "q": "استنتج سبب اختلاف الإضاءة والحرارة حسب خطوط العرض.",
+    "opts": [
+      "اختلاف زاوية سقوط أشعة الشمس يؤدي إلى اختلاف الطاقة الشمسية المستقبلة.",
+      "اختلاف خطوط العرض يؤدي إلى اختلاف طبيعة التربة فقط.",
+      "تزداد الطاقة الشمسية المستقبلة كلما ابتعدنا عن خط الاستواء."
+    ],
+    "correct": 0,
+    "explanation": "تؤثر زاوية سقوط الأشعة في تركيز الطاقة الشمسية على وحدة المساحة."
+  },
+  {
+    "n": 17,
+    "q": "فسّر بقاء البذور الجافة حية خلال الفترات غير الملائمة.",
+    "opts": [
+      "تواصل إنباتها ونموها رغم غياب الماء والظروف الملائمة.",
+      "تدخل في حالة سبات ينخفض خلالها نشاطها الحيوي إلى أن تتحسن الظروف.",
+      "تتحول إلى براعم كامنة داخل السيقان الترابية."
+    ],
+    "correct": 1,
+    "explanation": "تدخل البذور في سكون أو سبات، وينخفض نشاطها الحيوي إلى أن تتوفر شروط الإنبات."
+  },
+  {
+    "n": 18,
+    "q": "حدّد العضو الترابي الذي يمثل تكيفًا نباتيًا عند البطاطا.",
+    "opts": [
+      "البصلة.",
+      "الجذمور.",
+      "الدرنة."
+    ],
+    "correct": 2,
+    "explanation": "الدرنة ساق أرضية متحورة تختزن المواد الاحتياطية وتسمح بالتكاثر الخضري."
+  },
+  {
+    "n": 19,
+    "q": "فسّر لجوء بعض الحيوانات إلى السبات خلال فصل الشتاء.",
+    "opts": [
+      "انخفاض النشاط الحيوي يسمح بالاقتصاد في الطاقة عند صعوبة توفر الغذاء والظروف الملائمة.",
+      "زيادة النشاط الحيوي تسمح بتسريع النمو والتكاثر خلال البرد.",
+      "انتقال الحيوان إلى وسط آخر مع المحافظة على نشاطه المعتاد."
+    ],
+    "correct": 0,
+    "explanation": "يخفض السبات استهلاك الطاقة عندما تنخفض الحرارة ويصعب الحصول على الغذاء."
+  },
+  {
+    "n": 20,
+    "q": "قارن بين السبات والهجرة عند الحيوانات.",
+    "opts": [
+      "السبات انتقال إلى مناطق دافئة، والهجرة توقف مؤقت للنشاط الحيوي.",
+      "السبات انخفاض النشاط الحيوي للاقتصاد في الطاقة، والهجرة انتقال إلى مناطق أكثر ملاءمة.",
+      "كلاهما استراتيجيتان تعتمدان على توقف النشاط الحيوي بصورة كاملة."
+    ],
+    "correct": 1,
+    "explanation": "السبات خفض للنشاط الحيوي، أما الهجرة فهي انتقال مكاني إلى وسط أكثر ملاءمة."
+  }
+];
+const questions=MCQ.map(x=>({...x,type:"mcq"})).sort((a,b)=>a.n-b.n);
+const LETTERS=["A","B","C","D"];let current=0,deadline=0,timerId=null,attemptId=null,attemptToken=null,answers={},written={},finished=false;
+async function api(payload,token="",auth=""){const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",...(token?{"X-Quiz-Token":token}:{}),...(auth?{"Authorization":"Bearer "+auth}:{})},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"تعذر الاتصال بالخادم.");return d}
+const $=id=>document.getElementById(id);
+async function startPortalQuiz(){$("start").disabled=true;if(teacherPreviewMode){attemptId="teacher-preview";attemptToken="";finished=false;answers={};current=0;$("studentLabel").textContent="معاينة الأستاذة — دون توقيت";$("examInfo").textContent="وضع معاينة الأستاذة: يمكنك تصفح الأسئلة دون مؤقت، ولن تُحفظ هذه المعاينة ضمن نتائج التلاميذ.";$("exam").classList.remove("hidden");$("timer").classList.add("hidden");if(timerId)clearInterval(timerId);render();$("loginError").textContent="";window.scrollTo(0,0);$("start").disabled=false;return;}const sessionToken=localStorage.getItem("tahadi_student_session")||"";$("loginError").textContent="جارٍ التحقق من جلسة فضاء التلميذ…";if(!sessionToken){$("loginError").textContent="يجب فتح الاختبار من فضاء التلميذ بعد تسجيل الدخول.";$("start").disabled=false;return}try{const d=await api({action:"start_portal"},"",sessionToken);attemptId=d.attempt_id;attemptToken=d.attempt_token;deadline=Date.now()+Math.max(0,Number(d.duration_seconds||2400)-Math.floor((Date.now()-new Date(d.started_at).getTime())/1000))*1000;$("studentLabel").textContent=d.student.full_name;$("exam").classList.remove("hidden");$("start").disabled=false;render();$("timer").classList.remove("hidden");if(timerId)clearInterval(timerId);timerId=setInterval(tick,500);$("loginError").textContent="";window.scrollTo(0,0)}catch(e){$("loginError").textContent=e.message;$("start").disabled=false}}$("start").onclick=startPortalQuiz;
+function tick(){let left=Math.max(0,Math.ceil((deadline-Date.now())/1000));$("timer").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");if(left<=0)submit()}
+function render(){const q=questions[current];$("count").textContent="السؤال "+(current+1)+" من "+questions.length;$("bar").style.width=((current+1)/questions.length*100)+"%";let h="<h2>"+q.n+". "+q.q+"</h2>";h+='<div>';q.opts.forEach((o,i)=>{h+='<label class="option"><input type="radio" name="choice" value="'+LETTERS[i]+'" '+(answers[q.n]===LETTERS[i]?"checked":"")+' > '+LETTERS[i]+". "+o+"</label>"});h+="</div>";if(teacherPreviewMode)h+='<div class="result" style="margin-top:14px"><strong>الإجابة الصحيحة: </strong>'+LETTERS[q.correct]+". "+q.opts[q.correct]+'</div>';$("question").innerHTML=h;$("prev").classList.toggle("hidden",current===0);$("next").classList.toggle("hidden",current===questions.length-1);$("finish").classList.toggle("hidden",current!==questions.length-1);$("examError").textContent=""}
+function saveCurrent(){const q=questions[current];const x=document.querySelector('input[name="choice"]:checked');if(x)answers[q.n]=x.value;else delete answers[q.n]}
+$("prev").onclick=()=>{saveCurrent();current--;render()};$("next").onclick=()=>{saveCurrent();current++;render()};$("finish").onclick=async()=>{saveCurrent();if(await window.TahadiDialog.confirm("هل أنت متأكد من إنهاء الاختبار وإرسال الإجابات؟"))submit()};
+async function submit(){if(finished||!attemptId)return;finished=true;if(timerId)clearInterval(timerId);$("finish").disabled=true;try{const d=teacherPreviewMode?{score:questions.reduce((sum,q)=>sum+(answers[q.n]===LETTERS[q.correct]?1:0),0)}:await api({action:"submit",attempt_id:attemptId,selected_answers:answers,written_answers:{},question_bank:questions.map(q=>({n:q.n,q:q.q,opts:q.opts}))},attemptToken);$("exam").classList.add("hidden");const results=$("results");results.classList.remove("hidden");results.innerHTML='<h2>تم إرسال الاختبار بنجاح</h2><div class="result"><h1>علامتك: '+d.score+' / 20</h1><p>تم تصحيح الأسئلة العشرين آليًا، وكل سؤال عليه نقطة واحدة.</p></div><h3>التصحيح الآلي</h3>'+questions.filter(q=>q.type==="mcq").map(q=>{const chosen=answers[q.n];const isCorrect=chosen!==undefined&&String(chosen)===LETTERS[q.correct];const cardClass=isCorrect?"review-correct":"review-wrong";const chosenIndex=LETTERS.indexOf(chosen);const chosenText=chosenIndex>=0?q.opts[chosenIndex]:chosen||"لم تجب";return '<article class="review-card '+cardClass+'"><strong class="review-title">'+q.n+'. '+q.q+'</strong><p class="review-line"><span class="review-label">إجابتك:</span> '+(chosen?chosen+". "+chosenText:"لم تجب")+'</p><p class="review-line"><span class="review-label">الإجابة الصحيحة:</span> '+LETTERS[q.correct]+'. '+q.opts[q.correct]+'</p><p class="review-line"><span class="review-label">التعليل العلمي:</span> '+(q.explanation||"") +'</p><span class="review-status">'+(isCorrect?"✓ إجابة صحيحة":"✗ إجابة خاطئة أو بدون إجابة")+'</span></article>'}).join("")+'<p class="muted">'+(teacherPreviewMode?'هذه نتيجة معاينة محلية فقط، ولم تُسجّل محاولة أو نتيجة في قاعدة بيانات التلاميذ.':'تم حفظ نتيجتك وإجاباتك لدى الأستاذة.')+'</p>';window.scrollTo(0,0)}catch(e){finished=false;$("examError").textContent=e.message+" — لا تغلقي الصفحة، حاولي الإرسال مجددًا.";$("finish").disabled=false}}
+</script>
+<script src="./workspace-autosave.js" defer></script>
+<script src="./writing-tools.js" defer></script>
+<script src="./tahadi-dialogs.js" defer></script>
+</body></html>
