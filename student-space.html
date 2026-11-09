@@ -2244,4 +2244,50 @@ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
 <script src="./writing-tools.js" defer></script>
 <script src="./tahadi-dialogs.js" defer></script>
 
+
+<script id="tahadi-student-mobile-nested-back">
+(function(){
+ if(window.__tahadiStudentNestedBack)return;
+ window.__tahadiStudentNestedBack=true;
+ var restoring=false;
+ function activeTab(target){
+   if(target.matches("[data-question-page]")){
+     var active=document.querySelector('[data-panel="studentQuestions"] [data-question-page].active');
+     return active?{type:"question",key:active.dataset.questionPage}:null;
+   }
+   if(target.matches("[data-student-lesson-page]")){
+     var root=target.closest("[data-panel='lessons']");
+     var active=root&&root.querySelector("[data-student-lesson-page].active");
+     return active?{type:"lesson",key:active.dataset.studentLessonPage}:null;
+   }
+   return null;
+ }
+ document.addEventListener("click",function(e){
+   var target=e.target instanceof Element?e.target:null;if(!target||restoring)return;
+   var nav=target.closest("[data-question-page],[data-student-lesson-page]");
+   if(!nav)return;
+   var previous=activeTab(nav);
+   var beforeLength=history.length,beforeState=history.state;
+   setTimeout(function(){
+     if(restoring||history.length!==beforeLength||history.state!==beforeState)return;
+     try{
+       history.replaceState(Object.assign({},history.state||{},{tahadiStudentTabParent:previous}),"",location.href);
+       history.pushState(Object.assign({},history.state||{},{tahadiStudentTabEntry:true}),"",location.href);
+     }catch(_){}
+   },50);
+ },true);
+ window.addEventListener("popstate",function(event){
+   if(!event.state||!event.state.tahadiStudentTabParent)return;
+   var prior=event.state.tahadiStudentTabParent;
+   if(!prior)return;
+   var selector=prior.type==="question"?'[data-panel="studentQuestions"] [data-question-page]':'[data-panel="lessons"] [data-student-lesson-page]';
+   var buttons=document.querySelectorAll(selector);
+   for(var i=0;i<buttons.length;i++){
+     var key=prior.type==="question"?buttons[i].dataset.questionPage:buttons[i].dataset.studentLessonPage;
+     if(key===prior.key){restoring=true;buttons[i].click();restoring=false;break;}
+   }
+ });
+})();
+</script>
+
 </body></html>
