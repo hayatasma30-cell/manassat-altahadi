@@ -4215,5 +4215,44 @@ async function load(){
 })();
 </script>
 <script src="./tahadi-dialogs.js" defer></script>
+
+<script id="tahadi-unified-mobile-back">
+(function(){
+ if(window.__tahadiUnifiedMobileBack)return;
+ window.__tahadiUnifiedMobileBack=true;
+ var handlingPop=false, executingBack=false;
+ var navSelector='[data-weekly-page],[data-weekly-inner-page],[data-income-page],[data-income-calendar-back],[data-compare-open],[data-question-page],[data-view],[data-subpage],[data-open-page],.menu-btn';
+ var backSelector='button.back,.back,.student-back,[data-weekly-inner-back],[data-weekly-page-back],[data-weekly-editor-back],[data-income-calendar-back],[data-compare-back],[id*="Back"],[id*="back"]';
+ function visible(el){return !!el&&!el.hidden&&el.getAttribute("aria-hidden")!=="true"&&!!(el.getClientRects().length);}
+ function findBack(){var list=document.querySelectorAll(backSelector);for(var i=0;i<list.length;i++){if(visible(list[i]))return list[i];}return null;}
+ document.addEventListener("click",function(e){
+   var target=e.target instanceof Element?e.target:null;if(!target)return;
+   var back=target.closest(backSelector);
+   if(back&&!executingBack&&history.state&&history.state.tahadiAutoBack){
+     e.preventDefault();e.stopImmediatePropagation();history.back();return;
+   }
+   if(handlingPop||back)return;
+   var nav=target.closest(navSelector);if(!nav)return;
+   var beforeLength=history.length;
+   var beforeState=history.state;
+   setTimeout(function(){
+     if(handlingPop||history.length!==beforeLength||history.state!==beforeState)return;
+     try{history.pushState(Object.assign({},history.state||{},{tahadiAutoBack:true}),"",location.href);}catch(_){}
+   },80);
+ },true);
+ window.addEventListener("popstate",function(event){
+   if(!event.state||!event.state.tahadiAutoBack)return;
+   handlingPop=true;
+   var back=findBack();
+   if(back){
+     executingBack=true;
+     back.click();
+     executingBack=false;
+   }
+   setTimeout(function(){handlingPop=false;},0);
+ });
+})();
+</script>
+
 </body>
 </html>
