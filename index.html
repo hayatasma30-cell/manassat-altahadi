@@ -1352,7 +1352,7 @@ window.tahadiEnableSearchSuggestions=function(inputId,getValues){
 .lesson-calendar-day.today.state-done{border-top:3px solid #d59b28!important}
 .lesson-calendar-day.today.state-not-done{border-top:3px solid #d59b28!important}
 .lesson-calendar-day.today.state-overdue{border-top:3px solid #d59b28!important}
-</style><style id="hide-manual-refresh-controls">button[id^="refresh" i]{display:none!important}#paymentsRefreshStatus{display:none!important}</style>
+</style><style id="hide-manual-refresh-controls">button[id^="refresh" i],button[id*="Refresh" i]{display:none!important}#paymentsRefreshStatus{display:none!important}</style>
 <style id="tahadi-global-full-content-fix">
 /* عرض المحتوى كاملاً في جميع أقسام المنصة */
 textarea{box-sizing:border-box!important;width:100%;max-width:100%;height:auto;min-height:5.5rem;max-height:none!important;overflow-y:hidden!important;white-space:pre-wrap;overflow-wrap:anywhere;resize:vertical;line-height:1.8!important}
@@ -3898,6 +3898,30 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 </script>
 
 
+<script id="tahadi-global-auto-refresh">
+(function(){
+ if(window.__tahadiGlobalAutoRefreshV1)return;
+ window.__tahadiGlobalAutoRefreshV1=true;
+ const INTERVAL=30000;let busy=false,lastRun=0;
+ function run(){
+  if(busy||document.visibilityState!=="visible"||Date.now()-lastRun<INTERVAL-1000)return;
+  const view=document.querySelector(".view.active")||document.querySelector('.view[style*="display: block"]');
+  if(!view)return;
+  busy=true;lastRun=Date.now();
+  try{
+   view.querySelectorAll('button[id^="refresh" i],button[id*="Refresh" i]').forEach(button=>{
+    if(button.disabled||button.closest('[hidden]'))return;
+    button.click();
+   });
+  }catch(error){console.warn("Global automatic refresh:",error);}
+  setTimeout(()=>{busy=false;},1200);
+ }
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){lastRun=0;setTimeout(run,700);}});
+ window.addEventListener("pageshow",()=>{lastRun=0;setTimeout(run,1200);});
+ document.addEventListener("click",event=>{const target=event.target instanceof Element?event.target:null;if(target&&target.closest("[data-view], [data-home], [data-course-page], [data-test-page]"))setTimeout(()=>{lastRun=0;run();},900);},true);
+ setInterval(run,INTERVAL);
+})();
+</script>
 <script src="./workspace-autosave.js" defer></script>
 <script>
 /* استعادة التنقل من صفحة تسجيل الدفعة */
