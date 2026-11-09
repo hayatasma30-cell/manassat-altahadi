@@ -3996,9 +3996,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   const innerIds={info:["weeklyInfoMenu","weeklyInfoDataPage","weeklyGroupEditorPage"],students:["weeklyStudentsMenu","weeklyStudentsListPage","weeklyStudentsAddPage"],lessons:["weeklyLessonsMenu","weeklyLessonsListPage","weeklyLessonsLinkPage"]};
   Object.entries(innerIds).forEach(([kind,ids])=>ids.forEach((id,i)=>{const el=$(id);if(el)el.hidden=!selected||currentSubpage!==kind||(i===0?innerPage!=="menu":innerPage!==({info:["","info-data","info-edit"],students:["","students-list","students-add"],lessons:["","lessons-list","lessons-link"]}[kind][i]));}));
   const editorPage=$("weeklyGroupEditorPage");if(editorPage)editorPage.hidden=!selected||currentSubpage!=="info"||innerPage!=="info-edit";
-  const editorPanel=$("weeklyGroupEditorPanel");if(editorPanel)editorPanel.hidden=!editorOpen;
   if(selected){$("weeklyGroupDetailTitle").textContent=selected.group_name+" — "+selected.level+" · "+modeLabel(selected.delivery_mode);}
-  const editorPanel=$("weeklyGroupEditorPanel");if(editorPanel)editorPanel.hidden=!editorOpen;
   const lessonHost=$("weeklyGroupLessonList");
   if(lessonHost){
     const linkedLessons=(state.lessons||[]).filter(x=>selected&&selected.recurrence_group_id&&x.recurrence_group_id===selected.recurrence_group_id).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||"")));
@@ -4006,7 +4004,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   }
   if(selected)list.hidden=false;
   const memberList=$("weeklyGroupMembersList");
-  if(memberList){const currentMembers=state.members.filter(m=>m.group_id===selected.id);memberList.innerHTML=currentMembers.length?currentMembers.map(m=>'<article class="data-item"><strong>'+esc(m.students?.full_name||"تلميذ")+'</strong><div class="student-actions"><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div></article>').join(""):'<div class="data-item">لا يوجد تلاميذ مسجلون في هذه المجموعة بعد.</div>';}
+  if(memberList){const currentMembers=selected?state.members.filter(m=>m.group_id===selected.id):[];memberList.innerHTML=currentMembers.length?currentMembers.map(m=>'<article class="data-item"><strong>'+esc(m.students?.full_name||"تلميذ")+'</strong><div class="student-actions"><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div></article>').join(""):'<div class="data-item">لا يوجد تلاميذ مسجلون في هذه المجموعة بعد.</div>';}
   const currentGroup=groupSelect.value,currentSeriesGroup=seriesGroup.value,currentSeries=seriesSelect.value;
   groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+active.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
   if(selected)groupSelect.value=selected.id;else if(active.some(g=>g.id===currentGroup))groupSelect.value=currentGroup;
