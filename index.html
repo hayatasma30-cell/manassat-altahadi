@@ -4237,12 +4237,12 @@ async function load(){
    var beforeState=history.state;
    setTimeout(function(){
      if(handlingPop||history.length!==beforeLength||history.state!==beforeState)return;
-     try{history.pushState(Object.assign({},history.state||{},{tahadiAutoBack:true}),"",location.href);}catch(_){}
+     try{history.replaceState(Object.assign({},history.state||{},{tahadiNestedParent:true}),"",location.href);history.pushState(Object.assign({},history.state||{},{tahadiAutoBack:true}),"",location.href);}catch(_){}
    },80);
  },true);
  window.addEventListener("popstate",function(event){
-   var active=document.querySelector(".view.active");
-   if(!event.state||!active||event.state.tahadiView!==active.id)return;
+   if(!event.state||!event.state.tahadiNestedParent)return;
+   try{history.replaceState(Object.assign({},event.state,{tahadiNestedParent:false}),"",location.href);}catch(_){}
    handlingPop=true;
    var back=findBack();
    if(back){
