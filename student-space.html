@@ -2243,4 +2243,55 @@ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
 
 <script src="./writing-tools.js" defer></script>
 <script src="./tahadi-dialogs.js" defer></script>
+<style id="student-all-submenus-compact-20261109">
+/* توحيد العناوين الفرعية وكل القوائم التي تليها */
+#dashboard .student-section.hidden,
+#dashboard #studentDetail.hidden,
+#dashboard #studentMenu.hidden,
+#dashboard .question-subpage[hidden]{display:none!important}
+#dashboard .student-section:not(.hidden){box-sizing:border-box!important;padding:12px!important;margin:0 0 9px!important;border-radius:15px!important}
+#dashboard .student-section>h2{
+ font-size:.96rem!important;line-height:1.45!important;margin:0 0 9px!important;
+ padding:0 0 7px!important;border-bottom:1px solid #e5eee2!important;color:#174b30!important
+}
+#dashboard .student-section>p{font-size:.76rem!important;line-height:1.65!important;margin:5px 0 9px!important}
+#dashboard .student-section .student-actions,
+#dashboard .student-section .student-submenu-grid,
+#dashboard .student-section .student-home-grid{
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+ gap:7px!important;margin:8px 0!important
+}
+#dashboard .student-section .student-action{
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ min-height:49px!important;height:auto!important;padding:6px 8px!important;gap:6px!important;
+ border-radius:10px!important;border-bottom-width:3px!important;
+ box-shadow:0 2px 0 #14532d14,0 4px 8px #14532d0c!important
+}
+#dashboard .student-section .student-action-icon{
+ width:25px!important;height:25px!important;flex:0 0 25px!important;
+ border-radius:7px!important;font-size:.78rem!important
+}
+#dashboard .student-section .student-action strong{font-size:.7rem!important;line-height:1.3!important}
+#dashboard .student-section .student-action small{font-size:.56rem!important;line-height:1.25!important;margin-top:1px!important}
+#dashboard .student-section .student-arrow{font-size:.9rem!important}
+#dashboard .student-section .question-page-nav{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;margin:8px 0!important
+}
+#dashboard .student-section .question-page-btn,
+#dashboard .student-section .question-3d-btn,
+#dashboard .student-section .student-lesson-nav button{
+ min-height:32px!important;padding:5px 7px!important;border-radius:9px!important;
+ font-size:.68rem!important;box-shadow:0 2px 0 #14532d20!important
+}
+#dashboard .student-section .student-lesson-nav{gap:6px!important;margin:8px 0!important}
+#dashboard .student-section h3{font-size:.85rem!important;line-height:1.45!important;margin:8px 0!important}
+#dashboard .student-section .student-back,
+#dashboard #backToStudentMenu{min-height:32px!important;padding:5px 9px!important;font-size:.7rem!important}
+@media(max-width:360px){
+ #dashboard .student-section .student-action{min-height:46px!important;padding:5px 6px!important;gap:5px!important}
+ #dashboard .student-section .student-action strong{font-size:.66rem!important}
+ #dashboard .student-section .student-action small{font-size:.53rem!important}
+ #dashboard .student-section .question-page-btn{font-size:.61rem!important;padding:4px 3px!important}
+}
+</style>
 </body></html>
