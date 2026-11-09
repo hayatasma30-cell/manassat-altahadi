@@ -3045,6 +3045,9 @@ const handleIncomeCalendarClick=async e=>{
     if(combinedPanel&&e.target.matches("[data-roster-student]")){
       const id=e.target.dataset.rosterStudent,present=combinedPanel.querySelector('[data-present-student="'+CSS.escape(id)+'"]');
       if(present){present.disabled=!e.target.checked;if(!e.target.checked)present.checked=false;}
+      const priceWrap=combinedPanel.querySelector(".lesson-course-price-wrap");
+      const hasCourse=Array.from(combinedPanel.querySelectorAll("[data-roster-student]:checked")).some(box=>combinedPanel.querySelector('[data-billing-type="'+CSS.escape(box.dataset.rosterStudent)+'"]')?.value==="course");
+      if(priceWrap)priceWrap.hidden=!hasCourse;
       return;
     }
     if(combinedPanel&&e.target.matches("[data-billing-type]")){
