@@ -1864,10 +1864,25 @@ window.addEventListener("unhandledrejection",function(e){
   window.addEventListener("pagehide",saveTeacherPagePosition);
   window.addEventListener("beforeunload",saveTeacherPagePosition);
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveTeacherPagePosition();});
+  let tahadiHandlingPopState = false;
+  // اجعل سجل المتصفح يحتفظ بالصفحة الرئيسية لكل انتقال بين أقسام فضاء الأستاذة.
+  try {
+    if (!history.state || !history.state.tahadiView) {
+      history.replaceState({...history.state, tahadiView: activeView}, "", location.href);
+    }
+  } catch (_) {}
+  window.addEventListener("popstate", () => {
+    tahadiHandlingPopState = true;
+    setTimeout(() => { tahadiHandlingPopState = false; }, 0);
+  }, true);
   function showView(id, options={}) {
     const target = document.getElementById(id);
     if (!target || !target.classList.contains("view")) id = "homeView";
     if (id !== "homeView" && id !== "loginView" && !localStorage.getItem("tahadi_teacher_token")) id = "loginView";
+    const previousView = activeView;
+    if (id !== previousView && id !== "incomeView" && !options.fromHistory && !options.skipHistory && !tahadiHandlingPopState) {
+      try { history.pushState({...history.state, tahadiView:id}, "", location.href); } catch (_) {}
+    }
     document.querySelectorAll(".view").forEach(v => {
       const active = v.id === id;
       v.classList.toggle("active", active);
@@ -1885,6 +1900,11 @@ window.addEventListener("unhandledrejection",function(e){
   // دعم زر الرجوع في الهاتف داخل قسم المداخيل بدل مغادرة المنصة.
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{history.pushState({tahadiIncome:"home"},"",location.pathname+location.search+"#income");});
   window.addEventListener("popstate",()=>{if(activeView!=="incomeView")return;const menu=$("incomeHomeMenu");const hasSubpage=incomePageIds.some(pid=>{const el=$(pid);return el&&el.classList.contains("income-current");});if(hasSubpage){showIncomeHome();}else{showView("homeView");}});
+  // استعادة القسم السابق عند استعمال سهم الرجوع في الهاتف أو المتصفح.
+  window.addEventListener("popstate",event=>{
+    const destination=event.state&&event.state.tahadiView;
+    if(destination&&destination!==activeView)showView(destination,{fromHistory:true});
+  });
   $("schoolYearGoalsShortcut")?.addEventListener("click",event=>{event.preventDefault();event.stopPropagation();showView("incomeView");if(typeof window.tahadiOpenIncomePage==="function"){window.tahadiOpenIncomePage("schoolYearGoalsPage");}else{const note=$("schoolYearGoalSummary");if(note)note.textContent="تهيئة صفحة الأهداف لم تكتمل بعد. أعيدي المحاولة بعد لحظات.";}});
   // معالجان موحدان للقسمين: منع تكرار المعالجات القديمة وضمان فتح الصفحة وتحميل بياناتها.
   document.addEventListener("click",async function(event){
