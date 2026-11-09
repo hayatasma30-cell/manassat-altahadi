@@ -1566,7 +1566,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </section>
 <style>
 .weekly-group-filters{display:flex;gap:8px;margin:8px 0 14px}.weekly-group-filters button{flex:1;padding:9px 6px;border-radius:12px}.weekly-group-filters button.active{background:#176b42;color:white;border-color:#176b42}.weekly-level-group{margin:18px 0}.weekly-level-group>h3{font-size:1rem;color:#174b32;margin:0 0 9px}.weekly-level-group>h3 small{color:#718078;font-weight:400}.weekly-group-warning{font-style:normal;font-size:11px;color:#9a5a14;background:#fff1d9;border-radius:8px;padding:3px 7px}.weekly-group-open{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:right;padding:14px 16px;margin:8px 0;border:1px solid #cbdccf;border-radius:15px;background:#fbfdfb;color:#174b32;box-shadow:0 4px 0 #dce8dd}.weekly-group-open span{font-weight:700}.weekly-group-open small{color:#718078;font-size:.86rem}
-.weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage[hidden],#weeklyGroupMainPanel[hidden],#weeklyGroupActionMenu[hidden],#weeklyGroupInfoPage[hidden],#weeklyGroupStudentsPage[hidden],#weeklyGroupLessonsPage[hidden],#weeklyGroupEditorPanel[hidden],#weeklyGroupsDirectory[hidden],#weeklyGroupDetailNav[hidden]{display:none!important}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
+.weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage[hidden],#weeklyGroupMainPanel[hidden],#weeklyGroupActionMenu[hidden],#weeklyGroupInfoPage[hidden],#weeklyGroupStudentsPage[hidden],#weeklyGroupLessonsPage[hidden],#weeklyGroupEditorPanel[hidden],#weeklyGroupsDirectory[hidden],#weeklyGroupDetailNav[hidden],#weeklyInfoMenu[hidden],#weeklyInfoDataPage[hidden],#weeklyGroupEditorPage[hidden],#weeklyStudentsMenu[hidden],#weeklyStudentsListPage[hidden],#weeklyStudentsAddPage[hidden],#weeklyLessonsMenu[hidden],#weeklyLessonsListPage[hidden],#weeklyLessonsLinkPage[hidden]{display:none!important}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
 </style>
 <style>
 .weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
@@ -1610,6 +1610,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div id="weeklyGroupStatus" class="status" role="status"></div>
 </div>
 </div>
+</div>
 <div id="weeklyGroupStudentsPage" class="weekly-group-subpage" hidden>
 <button type="button" class="back" data-weekly-page-back>← صفحة المجموعة</button><h3>👥 إدارة تلاميذ المجموعة</h3>
 <div id="weeklyStudentsMenu" class="weekly-group-action-menu">
@@ -1649,6 +1650,28 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <label class="editor-field">سلسلة الحصص المتكررة<select id="weeklySeriesSelect"><option value="">اختاري سلسلة الحصص</option></select></label>
 <button id="weeklySeriesLinkBtn" class="primary" type="button" style="width:100%;margin-top:10px">ربط السلسلة بالمجموعة</button>
 <div id="weeklySeriesStatus" class="status" role="status"></div>
+</div>
+</div>
+</div>
+<div id="weeklyGroupLessonsPage" class="weekly-group-subpage" hidden>
+<button type="button" class="back" data-weekly-page-back>← صفحة المجموعة</button><h3>🗓️ حصص المجموعة الأسبوعية</h3>
+<div id="weeklyLessonsMenu" class="weekly-group-action-menu">
+<button type="button" class="weekly-group-action" data-weekly-inner-page="lessons-list">🗓️ عرض حصص المجموعة <span>‹</span></button>
+<button type="button" class="weekly-group-action" data-weekly-inner-page="lessons-link">🔗 ربط سلسلة الحصص <span>‹</span></button>
+</div>
+<div id="weeklyLessonsListPage" hidden>
+<button type="button" class="back" data-weekly-inner-back>← حصص المجموعة</button>
+<div id="weeklyGroupLessonList" class="list"><div class="data-item">ستظهر هنا حصص هذه المجموعة.</div></div>
+</div>
+<div id="weeklyLessonsLinkPage" hidden>
+<button type="button" class="back" data-weekly-inner-back>← حصص المجموعة</button>
+<div class="panel" id="weeklyGroupSeriesPanel">
+<p class="muted">اختاري سلسلة الحصص المتكررة الموجودة مسبقًا حتى تظهر حصصها لأعضاء هذه المجموعة فقط.</p>
+<label class="editor-field">المجموعة<select id="weeklySeriesGroup"><option value="">اختاري المجموعة</option></select></label>
+<label class="editor-field">سلسلة الحصص المتكررة<select id="weeklySeriesSelect"><option value="">اختاري سلسلة الحصص</option></select></label>
+<button id="weeklySeriesLinkBtn" class="primary" type="button" style="width:100%;margin-top:10px">ربط السلسلة بالمجموعة</button>
+<div id="weeklySeriesStatus" class="status" role="status"></div>
+</div>
 </div>
 </div>
 </div>
@@ -3983,7 +4006,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   }
   if(selected)list.hidden=false;
   const memberList=$("weeklyGroupMembersList");
-  if(memberList)memberList.innerHTML=members.length?members.map(m=>'<article class="data-item"><strong>'+esc(m.students?.full_name||"تلميذ")+'</strong><div class="student-actions"><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div></article>').join(""):'<div class="data-item">لا يوجد تلاميذ مسجلون في هذه المجموعة بعد.</div>';
+  if(memberList){const currentMembers=state.members.filter(m=>m.group_id===selected.id);memberList.innerHTML=currentMembers.length?currentMembers.map(m=>'<article class="data-item"><strong>'+esc(m.students?.full_name||"تلميذ")+'</strong><div class="student-actions"><button class="secondary" type="button" data-weekly-remove="'+esc(m.id)+'">إزالة من المجموعة</button></div></article>').join(""):'<div class="data-item">لا يوجد تلاميذ مسجلون في هذه المجموعة بعد.</div>';}
   const currentGroup=groupSelect.value,currentSeriesGroup=seriesGroup.value,currentSeries=seriesSelect.value;
   groupSelect.innerHTML='<option value="">اختاري المجموعة</option>'+active.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.group_name)+' — '+esc(g.level)+' / '+modeLabel(g.delivery_mode)+'</option>').join("");
   if(selected)groupSelect.value=selected.id;else if(active.some(g=>g.id===currentGroup))groupSelect.value=currentGroup;
