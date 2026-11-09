@@ -123,7 +123,7 @@ function questionCard(q,fromPage) {
 
 async function deleteQuestion(id){
  const q=questions.find(x=>String(x.id)===String(id));if(!q)return;
- if(!window.confirm("تأكيد حذف سؤال التلميذ: "+(q.students?.full_name||"تلميذ")+"؟\nسيُحذف السؤال نهائيًا ولا يمكن التراجع عن ذلك."))return;
+ if(!await window.TahadiDialog.confirm("تأكيد حذف سؤال التلميذ: "+(q.students?.full_name||"تلميذ")+"؟\nسيُحذف السؤال نهائيًا ولا يمكن التراجع عن ذلك."))return;
  const buttons=[...document.querySelectorAll(".delete-question")].filter(b=>b.dataset.id===String(id));buttons.forEach(b=>{b.disabled=true;b.textContent="جارٍ الحذف…";});
  try{await call("teacher_delete_student_question",{id});questions=questions.filter(x=>String(x.id)!==String(id));render();$("status").className="success";$("status").textContent="تم حذف السؤال بنجاح.";}
  catch(e){$("status").className="error";$("status").textContent=e.message;buttons.forEach(b=>{b.disabled=false;b.textContent="🗑️ حذف السؤال";});}
@@ -149,7 +149,7 @@ async function publishQuestion(id,is_published) {
  if(is_published&&q&&!String(q.teacher_reply||"").trim()){
   msg.className="error";msg.textContent="يجب حفظ إجابة الأستاذة أولًا قبل نشر السؤال في مكتبة التلاميذ.";return;
  }
- if(!window.confirm(is_published?"هل تريدين نشر السؤال وإجابته في مكتبة التلاميذ؟":"هل تريدين إخفاء السؤال من مكتبة التلاميذ؟"))return;
+ if(!await window.TahadiDialog.confirm(is_published?"هل تريدين نشر السؤال وإجابته في مكتبة التلاميذ؟":"هل تريدين إخفاء السؤال من مكتبة التلاميذ؟"))return;
  try {
   await call("teacher_publish_student_question",{id,is_published});
   if(q)q.is_published=is_published;
