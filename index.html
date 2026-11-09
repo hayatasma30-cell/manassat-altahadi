@@ -3074,7 +3074,7 @@ const handleIncomeCalendarClick=async e=>{
       }
       combinedSave.disabled=true;combinedSave.textContent="جارٍ الحفظ…";
       const billing_types={};for(const id of rosterIds){const select=panel.querySelector('[data-billing-type="'+CSS.escape(id)+'"]');billing_types[id]=select?.value||"per_lesson";}const hasCourse=Object.values(billing_types).includes("course"),course_price=Number(panel.querySelector("[data-course-price]")?.value||0);if(hasCourse&&(!Number.isFinite(course_price)||course_price<=0))throw Error("أدخلي سعر الدورة قبل الحفظ.");await lessonRequest({action:"lesson_roster_save",lesson_id:lessonId,student_ids:rosterIds,billing_types,course_price});
-      const attendanceResult=await lessonRequest({action:"lesson_attendance_save",lesson_id:lessonId,present_student_ids:presentIds,billing_types,course_price:coursePrice});
+      const attendanceResult=await lessonRequest({action:"lesson_attendance_save",lesson_id:lessonId,present_student_ids:presentIds,billing_types,course_price});
       const summary=attendanceResult.summary||{};
       const individual=combinedSave.dataset.individual==="1";
       lessonMessage("تم حفظ الحضور بنجاح. جارٍ الرجوع إلى تقويم الحصص…");
