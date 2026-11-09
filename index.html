@@ -1591,7 +1591,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </div>
 <div id="weeklyInfoDataPage" hidden>
 <button type="button" class="back" data-weekly-inner-back>← معلومات المجموعة</button>
-<div class="section-heading"><h3>بيانات المجموعة</h3><button id="weeklyGroupsRefresh" class="secondary" type="button">تحديث</button></div>
+<div class="section-heading"><h3>بيانات المجموعة</h3></div>
 <div id="weeklyGroupsList" class="list"><div class="data-item">جارٍ تحميل المجموعة…</div></div>
 </div>
 <div id="weeklyGroupEditorPage" hidden>
@@ -4076,10 +4076,16 @@ async function load(){
  window.addEventListener("pageshow",()=>setTimeout(refreshWeeklyGroupsIfVisible,900));
  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")setTimeout(refreshWeeklyGroupsIfVisible,250);});
  window.addEventListener("focus",()=>setTimeout(refreshWeeklyGroupsIfVisible,250));
+ // تحديث تلقائي سريع لقائمة المجموعات دون إزعاج صفحات التحرير أو التفاصيل.
+ setInterval(()=>{
+  if(document.visibilityState!=="visible"||!weeklyGroupsViewIsActive())return;
+  if(currentSubpage!=="menu"||selectedGroupId||editorOpen)return;
+  load();
+ },15000);
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(refreshWeeklyGroupsIfVisible,1800),{once:true});
  else setTimeout(refreshWeeklyGroupsIfVisible,1800);
  $("weeklyGroupSearch")?.addEventListener("input",render);
- $("weeklyGroupsRefresh")?.addEventListener("click",load);
+
  function resetGroupForm(){ $("weeklyGroupEditId").value="";$("weeklyGroupLevel").value="السنة الأولى متوسط";$("weeklyGroupMode").value="in_person";$("weeklyGroupWeekday").value="";$("weeklyGroupStartTime").value="";$("weeklyGroupEndTime").value="";$("weeklyGroupFormTitle").textContent="➕ إنشاء مجموعة أسبوعية";$("weeklyGroupCreateBtn").textContent="حفظ المجموعة";$("weeklyGroupCancelEdit").hidden=true; }
  $("weeklyGroupCancelEdit")?.addEventListener("click",resetGroupForm);
  $("weeklyGroupCreateBtn")?.addEventListener("click",async()=>{
