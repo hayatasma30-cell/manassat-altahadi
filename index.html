@@ -2929,12 +2929,13 @@ const handleIncomeCalendarClick=async e=>{
           else{
             const data=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
             const attendance=data.attendance||[];
-            const chargeable=[...new Set(attendance.filter(a=>a.is_chargeable===true).map(a=>String(a.student_id)))];
             const present=[...new Set(attendance.filter(a=>a.status==="present").map(a=>String(a.student_id)))];
-            count=attendance.some(a=>a.is_chargeable===true)?chargeable.length:present.length;
+            const courseIds=new Set(attendance.filter(a=>a.status==="present"&&a.billing_type==="course").map(a=>String(a.student_id)));
+            count=present.filter(id=>!courseIds.has(id)).length;
+            var courseAmount=Math.max(0,Number(data.course_price)||0)*courseIds.size;
           }
           const live=document.querySelector(selector);
-          if(live)live.textContent=(price*count).toLocaleString("fr-FR")+" دج";
+          if(live)live.textContent=(price*count+(typeof courseAmount==="number"?courseAmount:0)).toLocaleString("fr-FR")+" دج";
         }catch(err){
           const live=document.querySelector(selector);
           if(live)live.textContent="غير متاح";
