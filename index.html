@@ -3171,7 +3171,7 @@ const handleIncomeCalendarClick=async e=>{
         status.textContent="تم حفظ التلميذ، لكن إصدار الكود يحتاج إعادة المحاولة.";
       }else{
         result.innerHTML='<div class="data-item"><strong>✅ تمت إضافة '+escapeHtml(data.student.full_name)+' وإنشاء كود فضاء التلميذ بنجاح</strong><p>طريقة الدراسة: '+(data.student.study_mode==="in_person"?"حضوري":"زووم")+'</p><p style="font-weight:800;font-size:1.2rem;direction:ltr;text-align:center;letter-spacing:1px" id="createdStudentPortalCode">'+escapeHtml(codeData.code)+'</p><button type="button" class="secondary" id="copyCreatedStudentPortalCode">نسخ كود الدخول</button><p class="muted">احتفظي بهذا الكود وأرسليه للتلميذ. الكود محفوظ في ملفه.</p></div>';
-        $("copyCreatedStudentPortalCode").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(codeData.code);$("copyCreatedStudentPortalCode").textContent="تم نسخ الكود ✓";}catch(_){prompt("انسخي كود دخول فضاء التلميذ:",codeData.code);}});
+        $("copyCreatedStudentPortalCode").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(codeData.code);$("copyCreatedStudentPortalCode").textContent="تم نسخ الكود ✓";}catch(_){await window.TahadiDialog.prompt("انسخي كود دخول فضاء التلميذ:",codeData.code);}});
         status.textContent="تم حفظ التلميذ وإنشاء كود الدخول بنجاح.";
       }
       $("addStudentForm").reset();$("newStudentDate").value=new Date().toISOString().slice(0,10);
