@@ -3065,7 +3065,7 @@ const handleIncomeCalendarClick=async e=>{
     const combinedSave=e.target.closest("[data-combined-save]");
     if(combinedSave){(async()=>{try{
       const panel=combinedSave.closest(".lesson-roster-panel"),lessonId=combinedSave.dataset.combinedSave;
-      let rosterIds=[],presentIds=[];
+      let rosterIds=[],presentIds=[],coursePrice=0;
       if(combinedSave.dataset.individual==="1"){
         const id=panel.querySelector("[data-individual-student]").value;
         if(!id)throw Error("اختاري التلميذ الخاص بهذه الحصة الفردية.");
@@ -3078,7 +3078,7 @@ const handleIncomeCalendarClick=async e=>{
         if(presentIds.some(id=>!rosterIds.includes(id)))throw Error("حددي التلميذ ضمن قائمة الحصة أولًا.");
       }
       combinedSave.disabled=true;combinedSave.textContent="جارٍ الحفظ…";
-      const billing_types={};for(const id of rosterIds){const select=panel.querySelector('[data-billing-type="'+CSS.escape(id)+'"]');billing_types[id]=select?.value||"per_lesson";}const hasCourse=Object.values(billing_types).includes("course"),coursePrice=Number(panel.querySelector("[data-course-price]")?.value||0),course_price=coursePrice;if(hasCourse&&(!Number.isFinite(coursePrice)||coursePrice<=0))throw Error("أدخلي سعر الدورة قبل الحفظ.");await lessonRequest({action:"lesson_roster_save",lesson_id:lessonId,student_ids:rosterIds,billing_types,course_price});
+      const billing_types={};for(const id of rosterIds){const select=panel.querySelector('[data-billing-type="'+CSS.escape(id)+'"]');billing_types[id]=select?.value||"per_lesson";}const hasCourse=Object.values(billing_types).includes("course");coursePrice=Number(panel.querySelector("[data-course-price]")?.value||0);const course_price=coursePrice;if(hasCourse&&(!Number.isFinite(coursePrice)||coursePrice<=0))throw Error("أدخلي سعر الدورة قبل الحفظ.");await lessonRequest({action:"lesson_roster_save",lesson_id:lessonId,student_ids:rosterIds,billing_types,course_price});
       const attendanceResult=await lessonRequest({action:"lesson_attendance_save",lesson_id:lessonId,present_student_ids:presentIds,billing_types,course_price:coursePrice});
       const summary=attendanceResult.summary||{};
       const individual=combinedSave.dataset.individual==="1";
