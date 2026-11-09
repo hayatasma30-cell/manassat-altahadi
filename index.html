@@ -1695,14 +1695,13 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   <p class="muted" style="margin-top:0">اختاري القسم الذي تريدين الدخول إليه.</p>
   <div class="income-home-grid">
     <button type="button" data-income-page="incomeCalendarPage">🗓️ تقويم المداخيل</button>
-    <button type="button" data-income-page="incomeTotalsPage">💰 المداخيل الحالية</button>
+    <button type="button" data-income-page="incomeTotalsPage">💰 المداخيل الحالية والتفصيل الشهري</button>
     <button type="button" data-income-page="incomePaymentsPage">🧾 دفعات الشهر</button>
-    <button type="button" data-income-page="incomeMonthlyPage">📅 التفصيل الشهري</button>
     <button type="button" data-income-page="incomeComparePage">📊 مقارنة المواسم</button>
     <button type="button" data-income-page="incomeCalendar2025Page">🗂️ أرشيف 2025</button>
   </div>
 </div>
-<div id="incomeTotalsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>💰 المداخيل الحالية</h3></div><label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomeStats" class="stats"></div><button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button></div>
+<div id="incomeTotalsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>💰 المداخيل الحالية والتفصيل الشهري</h3></div><label for="incomeMonth">اختاري الشهر</label><input id="incomeMonth" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomeStats" class="stats"></div><button class="primary" id="refreshIncomeBtn" type="button">تحديث المداخيل</button><div class="income-monthly-breakdown" style="margin-top:22px"><h3>📅 التفصيل الشهري</h3><div id="incomeMonthly" class="list"></div></div></div>
 <div id="daily2025Page" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>📒 سجل المداخيل اليومي لعام 2025</h3></div>
 <p class="muted">سجلي مداخيل كل يوم. اختاري الإدخال الفردي لتسجيل عمل واحد، أو الإدخال الجماعي لتسجيل عدة مستويات وأعمال في نفس اليوم.</p>
 <div class="daily-mode-switch"><button class="primary" id="showDailySingleBtn" type="button">إدخال فردي</button><button class="secondary" id="showDailyGroupBtn" type="button">إدخال جماعي لليوم</button></div>
@@ -1739,7 +1738,6 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   </details>
   <p class="income-compare-footnote">تُحسب الحصص المنجزة فقط، ولا تدخل دفعات الاشتراكات في المقارنة.</p>
 </div>
-<div id="incomeMonthlyPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>📅 تفصيل المداخيل حسب الشهر</h3></div><div id="incomeMonthly" class="list"></div></div>
 <div id="schoolYearGoalsPage" class="panel income-subpage" hidden>
   <div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>🎯 أهداف السنة الدراسية 2026–2027</h3></div>
   <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
@@ -2220,7 +2218,7 @@ window.addEventListener("unhandledrejection",function(e){
     };
     const monthLabels=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     let manual2025={};
-    const incomePageIds=["incomeTotalsPage","schoolYearGoalsPage","daily2025Page","daily2026Page","manual2025Page","incomeComparePage","incomeCompareMonthlyPage","incomeCompareDailyPage","incomeMonthlyPage","incomePaymentsPage","incomeCalendarPage","incomeCalendar2025Page"];
+    const incomePageIds=["incomeTotalsPage","schoolYearGoalsPage","daily2025Page","daily2026Page","manual2025Page","incomeComparePage","incomeCompareMonthlyPage","incomeCompareDailyPage","incomePaymentsPage","incomeCalendarPage","incomeCalendar2025Page"];
     function showIncomeHome(){const menu=$("incomeHomeMenu");if(menu)menu.hidden=false;incomePageIds.forEach(pid=>{const page=$(pid);if(page){page.hidden=true;page.classList.remove("income-current");page.style.setProperty("display","none","important");}});}
     function showIncomePage(id){if(!incomePageIds.includes(id))id="incomeCalendarPage";const menu=$("incomeHomeMenu");if(menu)menu.hidden=true;incomePageIds.forEach(pid=>{const page=$(pid);if(page){const active=pid===id;page.hidden=!active;page.classList.toggle("income-current",active);page.style.setProperty("display",active?"block":"none","important");}});return id;}
     function openIncomePage(id){id=showIncomePage(id);if(id==="incomeCalendarPage")loadIncomeCalendar();else if(id==="schoolYearGoalsPage")loadSchoolYearGoal();else if(id==="incomeCalendar2025Page")loadIncomeCalendar2025();else if(id==="incomeComparePage")loadIncomeCompare();else if(id==="manual2025Page")loadDailyWork25();else if(id==="daily2025Page")loadDailyIncome(2025);else if(id==="daily2026Page")loadDailyIncome(2026);}window.tahadiOpenIncomePage=openIncomePage; 
