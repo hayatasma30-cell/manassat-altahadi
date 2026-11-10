@@ -17,7 +17,7 @@ h1{margin:0;color:var(--g);font-size:clamp(1.35rem,5vw,1.8rem)}.hero p{margin:6p
 .menu{display:grid;gap:12px}.action{display:flex;align-items:center;gap:12px;min-height:78px;padding:13px;text-decoration:none;color:var(--g);border:1px solid #b8d8b6;border-bottom:5px solid #23834b;border-radius:16px;background:linear-gradient(145deg,#fff,#eff9ed);box-shadow:0 5px 0 #14532d18,0 10px 18px #14532d10;transition:transform .14s;cursor:pointer;width:100%;font:inherit;text-align:right}
 .action:active{transform:translateY(3px)}.ico{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;border-radius:13px;background:#e4f3e0;font-size:1.35rem}
 .copy{flex:1;min-width:0}.copy strong{display:block;font-size:1rem}.copy small{display:block;color:var(--muted);font-size:.78rem;line-height:1.6;margin-top:3px}.arrow{font-size:1.5rem}
-.back{display:inline-flex;text-decoration:none;color:var(--g);background:#eaf5e7;border:1px solid #c9dfc7;border-bottom:4px solid #d4e6d0;border-radius:12px;padding:8px 13px;font-weight:bold;margin-bottom:10px}
+.back{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;color:var(--g);background:#eaf5e7;border:1px solid #c9dfc7;border-bottom:4px solid #d4e6d0;border-radius:12px;padding:8px 13px;font-weight:bold;margin-bottom:10px}
 .subpage[hidden],#mainMenu[hidden]{display:none!important}
 .note{padding:12px;border-radius:12px;background:#f5f8f1;color:#617064;font-size:.86rem}
 footer{text-align:center;color:var(--muted);font-size:.8rem;padding:18px}
@@ -27,7 +27,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:18px}
 <body>
 <header><strong>🌿 منصة التحدي</strong><div style="font-size:.8rem;color:#d8eadb">فضاء التلميذ • اختباراتي وتحدياتي</div></header>
 <main class="wrap">
-<a class="back" href="./student-space.html">← العودة إلى فضائي</a>
+<button class="back" id="returnToStudentSpace" type="button" onclick="window.location.assign('student-space.html')" style="font:inherit;cursor:pointer;touch-action:manipulation;position:relative;z-index:5;pointer-events:auto">← العودة إلى فضائي</button>
 <section class="hero" id="assessmentsMainHero"><h1>اختباراتي وتحدياتي</h1><p>اختباراتك الإلكترونية وتحدياتك اليومية ونتائجك في مكان واحد.</p></section>
 <section class="menu" id="mainMenu" aria-label="الأقسام الرئيسية">
 <button class="action" type="button" data-open="testsPage"><span class="ico">📝</span><span class="copy"><strong>الاختبارات الإلكترونية</strong><small>قائمة الاختبارات والتصحيح والنتائج</small></span><span class="arrow">‹</span></button>
