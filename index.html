@@ -1441,6 +1441,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <details class="section-category"><summary><span class="category-title">📘 المكتبة التعليمية</span><small>التعلّم اليومي ودورات المراجعة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة المكتبة العلمية</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="electronicTestsView"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات والتحديات</strong><small>إدارة الاختبارات الإلكترونية والتحديات اليومية</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="resourceLibraryView" type="button"><span class="menu-icon">📖</span><span class="menu-copy"><strong>مكتبة الدروس والموارد</strong><small>إضافة الدروس والملخصات والتمارين وإدارة الموارد</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="learningResourcesView" id="contentAccessShortcut" type="button"><span class="menu-icon">🔐</span><span class="menu-copy"><strong>إدارة إتاحة المحتوى</strong><small>قفل أو فتح الدروس والاختبارات والدورات والتحديات</small></span><span class="chev">‹</span></button>
 </div></details>
 <details class="section-category"><summary><span class="category-title">💼 الإدارة المالية</span><small>الاشتراكات والمدفوعات والحسابات والملخص والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>إدارة الاشتراكات</strong><small>متابعة اشتراكات التلاميذ والمبالغ والحالات</small></span><span class="chev">‹</span></button>
@@ -1463,7 +1464,8 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="actions-row" style="margin-top:12px"><button type="button" class="secondary" id="lockSelectedContent">🔒 قفل</button><button type="button" class="primary" id="unlockSelectedContent">🔓 فتح</button></div>
 <p id="selectiveAccessStatus" class="muted" role="status"></p><div id="selectiveAccessList" class="list"></div>
 </section>
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
+</section>
+<section id="resourceLibraryView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
 <div class="panel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
 <form id="learningResourceForm">
 <input id="resourceId" type="hidden">
@@ -3568,7 +3570,7 @@ const handleIncomeCalendarClick=async e=>{
   function resetResourceForm(){$("learningResourceForm").reset();$("resourceId").value="";$("resourceFormTitle").textContent="➕ إضافة مورد تعليمي";}
   $("cancelResourceEdit").addEventListener("click",resetResourceForm);
   $("refreshLearningResources").addEventListener("click",loadLearningResources);
-  document.querySelectorAll('[data-view="learningResourcesView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
+  document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
 })();
 
 /* ساعة المنصة والتذكيرات الشخصية */
