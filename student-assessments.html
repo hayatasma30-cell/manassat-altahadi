@@ -28,7 +28,7 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:18px}
 <header><strong>🌿 منصة التحدي</strong><div style="font-size:.8rem;color:#d8eadb">فضاء التلميذ • اختباراتي وتحدياتي</div></header>
 <main class="wrap">
 <a class="back" href="./student-space.html">← العودة إلى فضائي</a>
-<section class="hero"><h1>اختباراتي وتحدياتي</h1><p>اختباراتك الإلكترونية وتحدياتك اليومية ونتائجك في مكان واحد.</p></section>
+<section class="hero" id="assessmentsMainHero"><h1>اختباراتي وتحدياتي</h1><p>اختباراتك الإلكترونية وتحدياتك اليومية ونتائجك في مكان واحد.</p></section>
 <section class="menu" id="mainMenu" aria-label="الأقسام الرئيسية">
 <button class="action" type="button" data-open="testsPage"><span class="ico">📝</span><span class="copy"><strong>الاختبارات الإلكترونية</strong><small>قائمة الاختبارات والتصحيح والنتائج</small></span><span class="arrow">‹</span></button>
 <button class="action" type="button" data-open="challengesPage"><span class="ico">🏆</span><span class="copy"><strong>التحديات اليومية</strong><small>قائمة التحديات والتصحيح والنتائج</small></span><span class="arrow">‹</span></button>
@@ -64,8 +64,9 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:18px}
 <script>
 (function(){
  const main=document.getElementById("mainMenu");
+ const mainHero=document.getElementById("assessmentsMainHero");
  const pages=[...document.querySelectorAll(".subpage")];
- function open(id,push=true){main.hidden=!!id;pages.forEach(p=>p.hidden=p.id!==id);if(push){history.pushState({page:id||"home"},"",id?"#"+id:location.pathname+location.search)}window.scrollTo({top:0,behavior:"smooth"});}
+ function open(id,push=true){main.hidden=!!id;if(mainHero)mainHero.hidden=!!id;pages.forEach(p=>p.hidden=p.id!==id);if(push){history.pushState({page:id||"home"},"",id?"#"+id:location.pathname+location.search)}window.scrollTo({top:0,behavior:"smooth"});}
  document.querySelectorAll("[data-open]").forEach(b=>b.addEventListener("click",()=>open(b.dataset.open)));
  document.querySelectorAll("[data-back]").forEach(b=>b.addEventListener("click",()=>open(null)));
  window.addEventListener("popstate",()=>{const id=location.hash.slice(1);open(pages.some(p=>p.id===id)?id:null,false);});
