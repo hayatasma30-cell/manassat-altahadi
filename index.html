@@ -1460,7 +1460,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <h3 style="margin-top:0">🔐 إدارة إتاحة المحتوى</h3>
 <p class="muted">اختاري القسم أو المحتوى الذي تريدين إغلاقه، واكتبي رسالة توضيحية تظهر للتلميذ. تبقى بقية أقسام المنصة متاحة.</p>
 <label for="accessCategory">القسم</label><select id="accessCategory"><option value="resources">الدروس والموارد التعليمية</option><option value="lessons">الحصص</option><option value="quizzes">الاختبارات</option><option value="challenges">التحديات اليومية</option><option value="review_courses">دورات المراجعة</option><option value="courses">موارد الدورات</option><option value="summaries">الملخصات</option><option value="exercises">التمارين</option></select>
-<label for="accessItem">العنصر (اتركيه * لقفل القسم كاملًا)</label><select id="accessItem"><option value="*">القسم كاملًا</option></select>
+<label for="accessItem">اختاري عنصرًا واحدًا أو أكثر</label><select id="accessItem" multiple size="6" style="min-height:150px"></select><small class="muted">يمكنك تحديد عدة عناصر من القائمة. لا يتم قفل القسم كاملًا.</small>
 <label for="accessMessage">الرسالة التي تظهر للتلميذ</label><input id="accessMessage" maxlength="300" value="هذا المحتوى مغلق حاليًا. يرجى متابعة إعلانات الأستاذة.">
 <div class="actions-row" style="margin-top:12px"><button type="button" class="secondary" id="lockSelectedContent">🔒 قفل</button><button type="button" class="primary" id="unlockSelectedContent">🔓 فتح</button></div>
 <p id="selectiveAccessStatus" class="muted" role="status"></p><div id="selectiveAccessList" class="list"></div>
@@ -4148,11 +4148,43 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 })();
 </script>
 <script src="./writing-tools.js" defer></script><script>
-(()=>{const $=id=>document.getElementById(id);const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";let resources=[];
-async function req(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية");return d;}
-function fillItems(){const type=$("accessCategory").value,sel=$("accessItem");sel.innerHTML='<option value="*">القسم كاملًا</option>';resources.filter(x=>(type==="quizzes"?x.resource_type==="quiz":type==="resources"?x.resource_type!=="quiz":false)).forEach(x=>{const o=document.createElement("option");o.value=x.id;o.textContent=x.title+" — "+x.level;sel.appendChild(o);});}
-async function load(){try{const token=localStorage.getItem("tahadi_teacher_token");const rr=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_list_resources"})});const rd=await rr.json();if(!rr.ok||!rd.ok)throw Error(rd.error||"تعذر تحميل الموارد");const c=await req("content_access_list");resources=rd.resources||[];fillItems();const root=$("selectiveAccessList");root.innerHTML=(c.controls||[]).map(x=>'<article class="data-item"><strong>'+(x.scope_type==="section"?"قسم: ":"عنصر: ")+x.content_type+' — '+(x.content_id==="*"?"القسم كاملًا":(resources.find(y=>y.id===x.content_id)?.title||x.content_id))+'</strong><p>'+(x.is_locked?"🔒 مغلق":"🔓 مفتوح")+' — '+x.lock_message+'</p></article>').join("")||'<p class="muted">لا توجد عناصر مقفولة حاليًا.</p>';}catch(e){$("selectiveAccessStatus").textContent=e.message;}}
-async function set(locked){const type=$("accessCategory").value,id=$("accessItem").value;try{$("selectiveAccessStatus").textContent="جارٍ الحفظ…";await req("content_access_set",{scope_type:id==="*"?"section":"item",content_type:type,content_id:id,is_locked:locked,lock_message:$("accessMessage").value});$("selectiveAccessStatus").textContent=locked?"تم قفل الاختيار.":"تم فتح الاختيار.";await load();}catch(e){$("selectiveAccessStatus").textContent=e.message;}}
-$("accessCategory").addEventListener("change",fillItems);$("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));})();
+(()=>{const $=id=>document.getElementById(id);
+const base="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/";
+const token=()=>localStorage.getItem("tahadi_teacher_token");
+const names={resources:"المعلومات اليومية والموارد",lessons:"الحصص",quizzes:"الاختبارات",challenges:"التحديات اليومية",review_courses:"دورات المراجعة",courses:"موارد الدورات",summaries:"الملخصات",exercises:"التمارين"};
+let cache={};
+async function request(url,action,extra={}){const t=token();if(!t)throw Error("انتهت جلسة الأستاذة. سجلي الدخول من جديد.");const r=await fetch(base+url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل البيانات.");return d;}
+async function access(action,extra={}){return request("platform-access",action,extra);}
+function optionsFor(type){return cache[type]||[];}
+function fillItems(){const type=$("accessCategory").value,sel=$("accessItem"),rows=optionsFor(type),prior=new Set([...sel.selectedOptions].map(x=>x.value));sel.innerHTML="";rows.forEach(x=>{const o=document.createElement("option");o.value=String(x.id);o.textContent=x.title+(x.meta?" — "+x.meta:"");if(prior.has(o.value))o.selected=true;sel.appendChild(o);});if(!rows.length){const o=document.createElement("option");o.disabled=true;o.textContent="لا توجد عناصر متاحة في هذا القسم.";sel.appendChild(o);}}
+async function loadItems(type){$("selectiveAccessStatus").textContent="جارٍ تحميل العناصر…";try{
+ let rows=[];
+ if(type==="resources"||type==="quizzes"||type==="summaries"||type==="exercises"){
+  const d=await request("earthquakes-quiz","teacher_list_resources");
+  rows=(d.resources||[]).filter(x=>type==="quizzes"?x.resource_type==="quiz":type==="summaries"?x.resource_type==="summary":type==="exercises"?["exercise","solution"].includes(x.resource_type):x.resource_type!=="quiz").map(x=>({id:x.id,title:x.title,meta:x.level||""}));
+ }else if(type==="challenges"){
+  const d=await request("daily-challenge","teacher_list");
+  rows=(d.items||[]).map(x=>({id:x.id,title:x.title,meta:x.target_level||""}));
+ }else if(type==="resources"){
+  const d=await access("daily_science_list");rows=(d.items||[]).map(x=>({id:x.id,title:x.title||x.question||"معلومة علمية",meta:x.target_level||""}));
+ }else if(type==="lessons"){
+  const d=await access("daily_lessons_list",{scope:"library",delivery_mode:"all"});
+  rows=(d.lessons||[]).map(x=>({id:x.id,title:(x.lesson_type||"حصة")+" · "+(x.level||"") ,meta:(x.lesson_date||"")+" "+(x.lesson_time||"")}));
+ }else if(type==="review_courses"){
+  const d=await request("earthquakes-quiz","course_list_catalog");
+  rows=(d.courses||[]).map(x=>({id:x.course_key||x.id,title:x.course_title||x.level,meta:x.mode==="zoom"?"زووم":"حضوري"}));
+ }else if(type==="courses"){
+  const d=await request("earthquakes-quiz","course_list_catalog");
+  rows=(d.courses||[]).map(x=>({id:x.course_key||x.id,title:x.course_title||x.level,meta:"موارد الدورة"}));
+ }
+ cache[type]=rows;fillItems();$("selectiveAccessStatus").textContent=rows.length?"اختاري العناصر المراد قفلها أو فتحها.":"لا توجد عناصر متاحة في هذا القسم.";
+ }catch(e){cache[type]=[];fillItems();$("selectiveAccessStatus").textContent=e.message;}}
+async function loadControls(){try{const c=await access("content_access_list");const all=[...Object.entries(cache).flatMap(([type,rows])=>rows.map(x=>({type,...x})))];const root=$("selectiveAccessList");root.innerHTML=(c.controls||[]).map(x=>{const item=all.find(y=>y.type===x.content_type&&String(y.id)===String(x.content_id));return '<article class="data-item"><strong>'+((names[x.content_type]||x.content_type)+' — '+(item?item.title:x.content_id))+'</strong><p>'+(x.is_locked?"🔒 مغلق":"🔓 مفتوح")+' — '+(x.lock_message||"")+'</p></article>';}).join("")||'<p class="muted">لا توجد عناصر مقفولة حاليًا.</p>';}catch(e){$("selectiveAccessStatus").textContent=e.message;}}
+async function load(){await loadItems($("accessCategory").value);await loadControls();}
+async function set(locked){const type=$("accessCategory").value,ids=[...$("accessItem").selectedOptions].filter(o=>!o.disabled).map(o=>o.value);if(!ids.length){$("selectiveAccessStatus").textContent="اختاري عنصرًا واحدًا على الأقل.";return;}const buttons=[$("lockSelectedContent"),$("unlockSelectedContent")];buttons.forEach(b=>b.disabled=true);try{$("selectiveAccessStatus").textContent="جارٍ حفظ التغييرات…";for(const id of ids){await access("content_access_set",{scope_type:"item",content_type:type,content_id:id,is_locked:locked,lock_message:$("accessMessage").value});}$("selectiveAccessStatus").textContent=locked?"تم قفل العناصر المحددة فقط.":"تم فتح العناصر المحددة فقط.";await loadControls();}catch(e){$("selectiveAccessStatus").textContent=e.message;}finally{buttons.forEach(b=>b.disabled=false);}}
+$("accessCategory").addEventListener("change",()=>loadItems($("accessCategory").value));
+$("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));
+document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));
+})();
 </script></body>
 </html>
