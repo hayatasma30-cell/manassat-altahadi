@@ -1429,6 +1429,11 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   <div class="command-form-actions"><button id="saveTeacherReminder" class="primary" type="button">🔔 حفظ المنبّه</button><button id="enableTeacherNotifications" class="secondary" type="button">تفعيل الإشعارات</button></div><p id="teacherReminderStatus" class="muted" role="status">سيعمل المنبّه ما دامت المنصة مفتوحة على هذا الجهاز.</p></div>
   <div class="command-reminders-head"><h3>📌 تذكيراتي</h3><button id="clearCompletedTeacherReminders" class="secondary" type="button">حذف المنجَز</button></div><div id="teacherReminderList" class="command-reminder-list"><p class="muted">لا توجد تذكيرات بعد.</p></div>
 </section>
+<section id="platformContentControl" class="panel" style="margin:16px 0;border:1px solid #d6e5d2;border-radius:20px;background:linear-gradient(145deg,#fff,#f1f8ee);padding:17px">
+ <div style="display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap"><div><h3 style="margin:0;color:#174c30">🔐 التحكم في إتاحة محتوى المنصة</h3><p style="margin:4px 0;color:#718073;font-size:.88rem">اقفلي المحتوى أثناء التحضير، وافتحيه عند إطلاقه. تبقى حسابات التلاميذ ونتائجهم محفوظة ومتاحة.</p></div><strong id="platformContentState" style="padding:6px 12px;border-radius:30px;background:#e8f5e9;color:#17633a">جارٍ تحميل الحالة…</strong></div>
+ <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px"><button type="button" class="secondary" id="platformLockAllBtn">🔒 قفل المحتوى عن التلاميذ</button><button type="button" class="primary" id="platformUnlockAllBtn">🔓 إتاحة المحتوى للتلاميذ</button></div>
+ <p id="platformContentControlStatus" class="muted" role="status" style="margin:10px 0 0">يشمل القفل المحتوى التعليمي، مع إبقاء فضاء التلميذ وبياناته ونتائجه متاحة.</p>
+</section>
 <details class="platform-sections">
 <summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></summary>
 <div class="platform-sections-content">
@@ -4360,5 +4365,18 @@ async function load(){
 </script>
 
 <style id="tahadi-global-hidden-page-guard">/* اجعل كل صفحة فرعية مخفية تختفي فعليًا في كامل المنصة، حتى لو فرض تنسيق آخر display */body [hidden]{display:none!important;visibility:hidden!important;pointer-events:none!important}</style>
-</body>
+<script>
+(()=> {
+ const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";
+ const stateEl=document.getElementById("platformContentState"),statusEl=document.getElementById("platformContentControlStatus");
+ const lockBtn=document.getElementById("platformLockAllBtn"),unlockBtn=document.getElementById("platformUnlockAllBtn");
+ if(!lockBtn||!unlockBtn)return;
+ async function request(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");if(!token)throw new Error("سجّلي الدخول إلى فضاء الأستاذة أولًا.");const r=await fetch(endpoint,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر تنفيذ العملية.");return d;}
+ function paint(locked){stateEl.textContent=locked?"🔒 المحتوى مقفول عن التلاميذ":"🔓 المحتوى متاح للتلاميذ";stateEl.style.background=locked?"#fff4dc":"#e8f5e9";stateEl.style.color=locked?"#805d17":"#17633a";lockBtn.disabled=locked;unlockBtn.disabled=!locked;}
+ async function load(){try{const d=await request("platform_content_control_get");paint(d.control?.content_locked===true);}catch(e){stateEl.textContent="تعذر تحميل الحالة";statusEl.textContent=e.message;}}
+ async function set(locked){const question=locked?"سيتم قفل المحتوى التعليمي عن جميع التلاميذ. ستبقى حساباتهم ونتائجهم محفوظة. هل تريدين المتابعة؟":"سيصبح المحتوى متاحًا للتلاميذ. هل تريدين إطلاقه الآن؟";if(!confirm(question))return;lockBtn.disabled=true;unlockBtn.disabled=true;statusEl.textContent="جارٍ حفظ التغيير…";try{const d=await request("platform_content_control_set",{content_locked:locked});paint(d.control?.content_locked===true);statusEl.textContent=locked?"تم قفل المحتوى. يمكنك مواصلة التحضير من فضاء الأستاذة.":"تمت إتاحة المحتوى للتلاميذ."; }catch(e){statusEl.textContent=e.message;await load();}}
+ lockBtn.addEventListener("click",()=>set(true));unlockBtn.addEventListener("click",()=>set(false));
+ load();
+})();
+</script></body>
 </html>
