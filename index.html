@@ -1464,7 +1464,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>عرض المداخيل والحسابات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" id="schoolYearGoalsShortcut" type="button"><span class="menu-icon">🎯</span><span class="menu-copy"><strong>أهداف السنة الدراسية</strong><small>متابعة الهدف السنوي والشهري</small></span><span class="chev">‹</span></button>
-<button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
+
 </div></details>
 </div>
 </details>
@@ -1840,9 +1840,6 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   </section>
 </div>
 <div id="incomePaymentsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>🧾 دفعات الشهر</h3></div><label for="incomeMonthPayments">اختاري الشهر</label><input id="incomeMonthPayments" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomePayments" class="list"></div><div class="note">تُحسب الدفعات المسجلة فقط لتجنب احتساب المبلغ العائلي مرتين.</div></div></section>
-<section id="overviewView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📊 ملخص المنصة</h2></div><div class="panel"><p class="muted overview-intro">نظرة سريعة على وضع المنصة. اضغطي على البطاقة للانتقال إلى القسم المرتبط بها.</p><div id="stats" class="stats" aria-live="polite"></div><button class="primary" id="refreshBtn" type="button">↻ تحديث الإحصائيات</button></div>
-</section>
 <section id="telegramView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📝 التسجيلات والطلبات</h2></div><div class="panel"><p class="muted">طلبات التسجيل وتجديد الاشتراك الواردة عبر بوت تيليغرام. المراجعة والقبول أو الرفض تبقى في مجموعة إدارة منصة التحدي على تيليغرام.</p><div class="stats"><div class="stat"><strong id="requestCount">0</strong><span>طلبات قيد المراجعة</span></div><div class="stat"><strong id="requestTotal">0</strong><span>إجمالي الطلبات المعروضة</span></div></div><label for="requestSearch">البحث باسم التلميذ أو رقم الطلب</label><input id="requestSearch" type="search" placeholder="اكتبي الاسم أو رقم الطلب..." autocomplete="off" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><label for="requestStudyModeFilter">تصفية الطلبات حسب طريقة الدراسة</label><select id="requestStudyModeFilter" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin-bottom:12px"><option value="all">كل طرق الدراسة</option><option value="zoom">زووم</option><option value="in_person">حضوري</option><option value="unknown">غير محددة / طلب عائلي مختلط</option></select><label for="requestFilter">تصفية الطلبات حسب الحالة</label><select id="requestFilter" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink)"><option value="all">كل الطلبات</option><option value="pending">قيد المراجعة</option><option value="approved">مقبول</option><option value="rejected">مرفوض</option></select><div id="requestsList" class="list" style="margin-top:14px"></div><div class="note">هذا القسم للعرض والمتابعة فقط. استعملي أزرار قبول/رفض في تيليغرام حتى تبقى عملية المراجعة موحّدة.</div><button class="primary" id="refreshRequestsBtn" type="button">تحديث الطلبات</button></div>
 </section>
@@ -3318,7 +3315,6 @@ const handleIncomeCalendarClick=async e=>{
     catch (e) { if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true}); setTimeout(()=>window.scrollTo({top:keepY,behavior:"instant"}),80); showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
   }
   $("backToStudents").addEventListener("click", () => showView("studentsView"));
-  $("refreshBtn").addEventListener("click", refresh);
   $("refreshRequestsBtn").addEventListener("click", refresh);
   $("requestFilter").addEventListener("change", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); }); $("requestStudyModeFilter").addEventListener("change", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); });
   $("requestSearch").addEventListener("input", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); });
