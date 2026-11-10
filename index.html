@@ -1459,7 +1459,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🔐 إدارة إتاحة المحتوى</h2></div><section class="panel" id="selectiveContentAccess" style="margin:12px 0;border:1px solid #dce8d7">
 <h3 style="margin-top:0">🔐 إدارة إتاحة المحتوى</h3>
 <p class="muted">اختاري القسم أو المحتوى الذي تريدين إغلاقه، واكتبي رسالة توضيحية تظهر للتلميذ. تبقى بقية أقسام المنصة متاحة.</p>
-<label for="accessCategory">القسم</label><select id="accessCategory"><option value="resources">الدروس والموارد التعليمية</option><option value="lessons">الحصص</option><option value="quizzes">الاختبارات</option><option value="challenges">التحديات اليومية</option><option value="review_courses">دورات المراجعة</option><option value="courses">موارد الدورات</option><option value="summaries">الملخصات</option><option value="exercises">التمارين</option></select>
+<label for="accessCategory">القسم</label><select id="accessCategory"><option value="resources">الدروس والموارد التعليمية</option><option value="daily_science">المعلومات اليومية</option><option value="lessons">الحصص</option><option value="quizzes">الاختبارات</option><option value="challenges">التحديات اليومية</option><option value="review_courses">دورات المراجعة</option><option value="courses">موارد الدورات</option><option value="summaries">الملخصات</option><option value="exercises">التمارين</option></select>
 <label for="accessItem">اختاري عنصرًا واحدًا أو أكثر</label><select id="accessItem" multiple size="6" style="min-height:150px"></select><small class="muted">يمكنك تحديد عدة عناصر من القائمة. لا يتم قفل القسم كاملًا.</small>
 <label for="accessMessage">الرسالة التي تظهر للتلميذ</label><input id="accessMessage" maxlength="300" value="هذا المحتوى مغلق حاليًا. يرجى متابعة إعلانات الأستاذة.">
 <div class="actions-row" style="margin-top:12px"><button type="button" class="secondary" id="lockSelectedContent">🔒 قفل</button><button type="button" class="primary" id="unlockSelectedContent">🔓 فتح</button></div>
@@ -4151,7 +4151,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 (()=>{const $=id=>document.getElementById(id);
 const base="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/";
 const token=()=>localStorage.getItem("tahadi_teacher_token");
-const names={resources:"المعلومات اليومية والموارد",lessons:"الحصص",quizzes:"الاختبارات",challenges:"التحديات اليومية",review_courses:"دورات المراجعة",courses:"موارد الدورات",summaries:"الملخصات",exercises:"التمارين"};
+const names={resources:"الدروس والموارد التعليمية",daily_science:"المعلومات اليومية",lessons:"الحصص",quizzes:"الاختبارات",challenges:"التحديات اليومية",review_courses:"دورات المراجعة",courses:"موارد الدورات",summaries:"الملخصات",exercises:"التمارين"};
 let cache={};
 async function request(url,action,extra={}){const t=token();if(!t)throw Error("انتهت جلسة الأستاذة. سجلي الدخول من جديد.");const r=await fetch(base+url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+t},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تحميل البيانات.");return d;}
 async function access(action,extra={}){return request("platform-access",action,extra);}
@@ -4165,7 +4165,7 @@ async function loadItems(type){$("selectiveAccessStatus").textContent="جارٍ 
  }else if(type==="challenges"){
   const d=await request("daily-challenge","teacher_list");
   rows=(d.items||[]).map(x=>({id:x.id,title:x.title,meta:x.target_level||""}));
- }else if(type==="resources"){
+ }else if(type==="daily_science"){
   const d=await access("daily_science_list");rows=(d.items||[]).map(x=>({id:x.id,title:x.title||x.question||"معلومة علمية",meta:x.target_level||""}));
  }else if(type==="lessons"){
   const d=await access("daily_lessons_list",{scope:"library",delivery_mode:"all"});
