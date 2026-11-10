@@ -564,7 +564,7 @@ async function loadNotificationCount(){const preview=!!teacherPreviewId;const au
 {ids:["lessons","lessonsFolder","lessonsNotesFolder"],match:n=>["الحصص","الحضور"].includes(n.category)},
 {ids:["learningFolder"],match:n=>["المكتبة العلمية","الدورات والملخصات","معلومة اليوم"].includes(n.category)},
 {ids:["reviewCourses"],match:n=>n.category==="الدورات والملخصات"},
-{ids:["progressFolder","quizMenu","quizzes","mistakes"],match:n=>["الاختبارات","النتائج","تحدي اليوم"].includes(n.category)},
+{ids:["progressFolder","quizMenu","quizList","quizzes","mistakes"],match:n=>["الاختبارات","النتائج","تحدي اليوم"].includes(n.category)},
 {ids:["teacherNotes"],match:n=>n.category==="ملاحظات الأستاذة"},
 {ids:["servicesFolder","servicesPayments"],match:n=>["الاشتراكات","الدفعات"].includes(n.category)},
 {ids:["communicationFolder","studentQuestions"],match:n=>["رسائل","إعلانات","عام"].includes(n.category)}
