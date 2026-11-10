@@ -1466,10 +1466,20 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <p id="selectiveAccessStatus" class="muted" role="status"></p><div id="selectiveAccessList" class="list"></div>
 </section>
 </section>
-<section id="resourceLibraryView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
-<div class="panel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
-<form id="learningResourceForm">
-<input id="resourceId" type="hidden">
+<section id="resourceLibraryView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 المكتبة التعليمية</h2></div>
+<div id="resourceLibraryHub" class="panel"><p class="muted">اختاري القسم المطلوب. كل قسم يفتح صفحة مستقلة.</p><div class="resource-library-grid">
+<button class="menu-btn" type="button" data-resource-page="add"><span class="menu-icon">＋</span><span class="menu-copy"><strong>إضافة مورد</strong><small>إضافة درس أو ملخص أو تمرين</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" type="button" data-resource-page="all"><span class="menu-icon">📚</span><span class="menu-copy"><strong>كل مواردي</strong><small>عرض جميع الموارد وإدارتها</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" type="button" data-resource-page="lesson"><span class="menu-icon">📘</span><span class="menu-copy"><strong>دروسي</strong><small>الموارد من نوع درس</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" type="button" data-resource-page="summary"><span class="menu-icon">📝</span><span class="menu-copy"><strong>ملخصاتي</strong><small>ملخصات الدروس</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" type="button" data-resource-page="exercise"><span class="menu-icon">✍️</span><span class="menu-copy"><strong>تماريني</strong><small>التمارين والأنشطة</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" type="button" data-resource-page="video"><span class="menu-icon">🎬</span><span class="menu-copy"><strong>فيديوهاتي</strong><small>الفيديوهات والروابط التعليمية</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" type="button" data-resource-page="drafts"><span class="menu-icon">📂</span><span class="menu-copy"><strong>المسودات</strong><small>موارد غير منشورة للتلاميذ</small></span><span class="chev">‹</span></button>
+</div></div>
+<div id="resourceLibrarySubpage" hidden><div class="view-head"><button class="back" id="resourceLibraryBack" type="button">→ المكتبة التعليمية</button><h2 id="resourceSubpageTitle">كل مواردي</h2></div>
+<div class="panel" id="resourceFormPanel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
+<form id="learningResourceForm"><input id="resourceId" type="hidden">
 <label for="resourceTitle">عنوان المورد</label><input id="resourceTitle" required maxlength="180" placeholder="مثال: ملخص الزلازل والتشوهات التكتونية">
 <label for="resourceLevel">المستوى الدراسي</label><select id="resourceLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select>
 <label for="resourceType">نوع المورد</label><select id="resourceType"><option value="lesson">درس</option><option value="summary">ملخص</option><option value="exercise">تمرين</option><option value="video">فيديو</option><option value="link">رابط تعليمي</option></select>
@@ -1477,8 +1487,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <label for="resourceDescription">وصف مختصر (اختياري)</label><input id="resourceDescription" maxlength="1000" placeholder="محتوى المورد أو تعليمات للتلميذ">
 <label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="resourcePublished" type="checkbox" style="width:auto"> نشر المورد في فضاء التلميذ فورًا</label>
 <div class="actions-row"><button class="primary" id="saveLearningResource" type="submit">حفظ المورد</button><button class="secondary" id="cancelResourceEdit" type="button">إفراغ الحقول</button></div><p id="resourceFormStatus" class="muted" role="status"></p></form></div>
-<div class="panel"><div class="section-heading"><h3>الموارد المضافة</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div>
-</section>
+<div class="panel" id="resourceListPanel"><div class="section-heading"><h3>الموارد المضافة</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div></div></section>
 <section id="reviewCoursesView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 دورات المراجعة</h2></div>
 <div id="courseCatalogPanel" class="panel"><div class="section-heading"><div><h3>مكتبة الدورات</h3><p class="muted">أنشئي دورة جديدة أو افتحي دورة محفوظة لإدارة المشاركين والملخصات والتمارين.</p></div><button class="secondary" id="refreshCourseCatalog" type="button">تحديث</button></div><button class="primary" id="createReviewCourse" type="button">＋ إنشاء دورة جديدة</button><div id="courseCatalogList" class="list"><p class="muted">جارٍ تحميل الدورات…</p></div></div>
@@ -3549,12 +3558,23 @@ const handleIncomeCalendarClick=async e=>{
   $("resetCourseResource")?.addEventListener("click",()=>{$("courseResourceForm").reset();$("courseResourceId").value="";$("courseResourceStatus").textContent="";});
   $("refreshCourseResources")?.addEventListener("click",loadCourseResources);
   const resourceTypeNames={lesson:"درس",summary:"ملخص",exercise:"تمرين",video:"فيديو",link:"رابط تعليمي"};
+  let activeResourceFilter="all";
+  const resourcePageTitles={add:"إضافة مورد تعليمي",all:"كل مواردي",lesson:"دروسي",summary:"ملخصاتي",exercise:"تماريني",video:"فيديوهاتي",drafts:"المسودات"};
+  function openResourceHub(){ $("resourceLibraryHub").hidden=false; $("resourceLibrarySubpage").hidden=true; }
+  function openResourceSubpage(page){
+    activeResourceFilter=page; $("resourceLibraryHub").hidden=true; $("resourceLibrarySubpage").hidden=false;
+    $("resourceSubpageTitle").textContent=resourcePageTitles[page]||"كل مواردي";
+    $("resourceFormPanel").hidden=page!=="add"; $("resourceListPanel").hidden=page==="add";
+    if(page!=="add")loadLearningResources(); window.scrollTo({top:0,behavior:"smooth"});
+  }
+  document.querySelectorAll("[data-resource-page]").forEach(btn=>btn.addEventListener("click",()=>openResourceSubpage(btn.dataset.resourcePage)));
+  $("resourceLibraryBack")?.addEventListener("click",openResourceHub);
   async function loadLearningResources(){
     const list=$("learningResourcesList");if(!list)return;list.innerHTML='<p class="muted">جارٍ تحميل الموارد…</p>';
     try{
-      const d=await resourceRequest("teacher_list_resources");const rows=d.resources||[];
-      if(!rows.length){list.innerHTML='<div class="empty-state">لم تضيفي موارد بعد. ابدئي بإضافة أول درس أو ملخص.</div>';return;}
-      list.innerHTML=rows.map(r=>'<article class="data-item" data-resource-card="'+r.id+'" style="margin:10px 0"><div class="section-heading"><div style="display:flex;align-items:center;gap:10px;min-width:0"><button type="button" class="secondary resource-drag-handle" aria-label="اسحبي لترتيب المورد" title="اسحبي لترتيب المورد" style="min-width:42px;width:42px;height:42px;padding:0;font-size:22px;touch-action:none;cursor:grab">⠿</button><strong>'+escapeHtml(r.title)+'</strong></div><span class="badge">'+escapeHtml(resourceTypeNames[r.resource_type]||r.resource_type)+'</span></div><p class="small">'+escapeHtml(r.level)+' • '+(r.is_published?'<span style="color:#17683a">منشور للتلاميذ</span>':'<span style="color:#946b16">مسودة — لا يظهر للتلاميذ</span>')+'</p>'+(r.description?'<p>'+escapeHtml(r.description)+'</p>':'')+(r.resource_url?'<p dir="ltr"><a href="'+escapeHtml(r.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a></p>':'<p class="small">لم يرفق رابط بالعنصر.</p>')+'<div class="actions-row"><button type="button" class="secondary" data-edit-resource="'+r.id+'">تعديل</button><button type="button" class="secondary" data-toggle-resource="'+r.id+'" data-published="'+(!r.is_published)+'">'+(r.is_published?'إلغاء النشر':'نشر للتلاميذ')+'</button><button type="button" class="danger" data-delete-resource="'+r.id+'">حذف</button></div></article>').join("");
+      const d=await resourceRequest("teacher_list_resources");const rows=d.resources||[];const visibleRows=rows.filter(r=>activeResourceFilter==="all"||(activeResourceFilter==="drafts"?!r.is_published:activeResourceFilter==="video"?(r.resource_type==="video"||r.resource_type==="link"):r.resource_type===activeResourceFilter));
+      if(!visibleRows.length){list.innerHTML='<div class="empty-state">لم تضيفي موارد بعد. ابدئي بإضافة أول درس أو ملخص.</div>';return;}
+      list.innerHTML=visibleRows.map(r=>'<article class="data-item" data-resource-card="'+r.id+'" style="margin:10px 0"><div class="section-heading"><div style="display:flex;align-items:center;gap:10px;min-width:0"><button type="button" class="secondary resource-drag-handle" aria-label="اسحبي لترتيب المورد" title="اسحبي لترتيب المورد" style="min-width:42px;width:42px;height:42px;padding:0;font-size:22px;touch-action:none;cursor:grab">⠿</button><strong>'+escapeHtml(r.title)+'</strong></div><span class="badge">'+escapeHtml(resourceTypeNames[r.resource_type]||r.resource_type)+'</span></div><p class="small">'+escapeHtml(r.level)+' • '+(r.is_published?'<span style="color:#17683a">منشور للتلاميذ</span>':'<span style="color:#946b16">مسودة — لا يظهر للتلاميذ</span>')+'</p>'+(r.description?'<p>'+escapeHtml(r.description)+'</p>':'')+(r.resource_url?'<p dir="ltr"><a href="'+escapeHtml(r.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a></p>':'<p class="small">لم يرفق رابط بالعنصر.</p>')+'<div class="actions-row"><button type="button" class="secondary" data-edit-resource="'+r.id+'">تعديل</button><button type="button" class="secondary" data-toggle-resource="'+r.id+'" data-published="'+(!r.is_published)+'">'+(r.is_published?'إلغاء النشر':'نشر للتلاميذ')+'</button><button type="button" class="danger" data-delete-resource="'+r.id+'">حذف</button></div></article>').join("");
       list.querySelectorAll(".resource-drag-handle").forEach(handle=>{
         const card=handle.closest("[data-resource-card]");let active=false,touchId=null,moved=false;
         const move=(x,y)=>{const target=document.elementFromPoint(x,y)?.closest("[data-resource-card]");if(!target||target===card||target.parentElement!==list)return;const rect=target.getBoundingClientRect();list.insertBefore(card,y<rect.top+rect.height/2?target:target.nextSibling);moved=true;};
@@ -3563,7 +3583,7 @@ const handleIncomeCalendarClick=async e=>{
         const onEnd=e=>{if(!active)return;if(e?.changedTouches?.length&&![...e.changedTouches].some(x=>x.identifier===touchId))return;cleanup();if(!moved)return;list.dataset.reordering="1";const ids=[...list.querySelectorAll("[data-resource-card]")].map(x=>x.dataset.resourceCard);const status=$("resourceFormStatus");if(status)status.textContent="جارٍ حفظ الترتيب…";resourceRequest("teacher_reorder_resources",{ids}).then(()=>{if(status)status.textContent="تم حفظ الترتيب، وسيظهر للتلاميذ بنفس الطريقة.";}).catch(async err=>{if(status)status.textContent=err.message||"تعذر حفظ الترتيب.";await loadLearningResources();}).finally(()=>{delete list.dataset.reordering;});};
         handle.addEventListener("touchstart",e=>{if(!e.changedTouches.length)return;const t=e.changedTouches[0];e.preventDefault();e.stopPropagation();active=true;moved=false;touchId=t.identifier;card.classList.add("resource-dragging");if(navigator.vibrate)navigator.vibrate(20);document.addEventListener("touchmove",onMove,{passive:false});document.addEventListener("touchend",onEnd);document.addEventListener("touchcancel",onEnd);},{passive:false});
       });
-      list.querySelectorAll("[data-edit-resource]").forEach(btn=>btn.addEventListener("click",()=>{const r=rows.find(x=>x.id===btn.dataset.editResource);if(!r)return;$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=r.resource_type;$("resourceUrl").value=r.resource_url||"";$("resourceDescription").value=r.description||"";$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});}));
+      list.querySelectorAll("[data-edit-resource]").forEach(btn=>btn.addEventListener("click",()=>{const r=rows.find(x=>x.id===btn.dataset.editResource);if(!r)return;openResourceSubpage("add");$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=r.resource_type;$("resourceUrl").value=r.resource_url||"";$("resourceDescription").value=r.description||"";$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});}));
       list.querySelectorAll("[data-toggle-resource]").forEach(btn=>btn.addEventListener("click",async()=>{btn.disabled=true;try{const r=rows.find(x=>x.id===btn.dataset.toggleResource);await resourceRequest("teacher_save_resource",{...r,is_published:btn.dataset.published==="true"});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
       list.querySelectorAll("[data-delete-resource]").forEach(btn=>btn.addEventListener("click",async()=>{if(!await window.TahadiDialog.confirm("هل تريدين حذف هذا المورد نهائيًا؟"))return;btn.disabled=true;try{await resourceRequest("teacher_delete_resource",{id:btn.dataset.deleteResource});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
     }catch(e){list.innerHTML='<p class="error">'+escapeHtml(e.message)+'</p>';}
@@ -3572,7 +3592,7 @@ const handleIncomeCalendarClick=async e=>{
   function resetResourceForm(){$("learningResourceForm").reset();$("resourceId").value="";$("resourceFormTitle").textContent="➕ إضافة مورد تعليمي";}
   $("cancelResourceEdit").addEventListener("click",resetResourceForm);
   $("refreshLearningResources").addEventListener("click",loadLearningResources);
-  document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
+  document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>openResourceHub()));
 })();
 
 /* ساعة المنصة والتذكيرات الشخصية */
@@ -3872,7 +3892,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #lessonCalendarDayDetails .lesson-income-row{background:#f0f7ed}.lesson-income-row strong{color:#17633b!important;font-size:.88rem}
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
-</style>
+.resource-library-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.resource-library-grid .menu-btn{width:100%;min-width:0;text-align:right;min-height:76px;border-radius:15px}@media(max-width:520px){.resource-library-grid{grid-template-columns:1fr;gap:9px}}#resourceLibrarySubpage[hidden],#resourceFormPanel[hidden],#resourceListPanel[hidden]{display:none!important}</style>
 
 
 
