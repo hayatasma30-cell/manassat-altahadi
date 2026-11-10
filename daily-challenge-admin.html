@@ -487,6 +487,7 @@ window.filterSubmissionResults=key=>{resultFilter=key;renderSubmissionResults();
 window.showResults=async (id,filter="all")=>{try{
  const d=await call("teacher_submissions",{id});
  resultCache={id,questions:d.questions||[],submissions:d.submissions||[]};
+ await Promise.all((d.submissions||[]).map(x=>call("teacher_inbox_mark_read",{item_type:"challenge",item_id:x.id}).catch(e=>console.warn("تعذر حفظ قراءة المشاركة",e))));
  resultFilter=filter;
  $("results").classList.remove("hidden");setEmbedPanel("results");
  renderSubmissionResults();
