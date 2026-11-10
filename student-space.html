@@ -653,24 +653,33 @@ async function loadPublishedQuizzes(){
   if(!quizzes.length){listEl.innerHTML='<div class="empty">لا توجد اختبارات منشورة لمستواك الدراسي حاليًا.</div>';return;}
   const attempts=Array.isArray(source?.quiz_attempts)?source.quiz_attempts:[];
   const slugMap=url=>url?.includes("test-awamil-fiziyokimia-2am.html")?"physicochemical-factors-2am":url?.includes("test-zalazil-3am.html")?"earthquakes-tectonic-deformations-3am":url?.includes("test-nahl-03.html")?"nahl-community-03":"";
-  const rules=source?.content_access||[];
-  const cards=quizzes.map((q,index)=>{
-   const slug=slugMap(q.resource_url),lock=rules.find(x=>x.content_type==="quizzes"&&(x.content_id==="*"||x.content_id===slug||String(x.content_id)===String(q.id||"")));
+  const getState=q=>{
+   const slug=slugMap(q.resource_url);
+   const lock=rules.find(x=>x.content_type==="quizzes"&&(x.content_id==="*"||x.content_id===slug||String(x.content_id)===String(q.id||"")));
    const locked=!!lock||(String(q.resource_url||"").includes("test-awamil-fiziyokimia-2am.html")&&q.quiz_settings?.is_open!==true);
-   const previous=attempts.filter(a=>(slug&&a.quiz_slug===slug)||(!slug&&a.quiz_title===q.title)).sort((a,b)=>new Date(b.started_at||0)-new Date(a.started_at||0));
-   const completed=previous.some(a=>!!a.submitted_at),latest=previous.find(a=>!!a.submitted_at);
-   const status=locked?"🔒 مغلق":completed?"✓ تم الإنجاز":"🔓 مفتوح";
-   return '<article class="published-quiz-card '+(locked?"is-locked":"is-open")+'" style="padding:14px;margin:12px 0"><div class="published-quiz-top"><span class="published-quiz-symbol">📘</span><span class="published-quiz-state '+(locked?"locked":"open")+'">'+status+'</span></div><h3>'+safe(q.title)+'</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px"><button type="button" class="btn" data-quiz-enter="'+index+'" '+(locked||completed||!q.resource_url?'disabled':'')+'>'+(completed?"تم اجتيازه ✓":locked?"الاختبار مغلق 🔒":"اسم الاختبار ↗")+'</button><button type="button" class="btn secondary" data-quiz-info="'+index+'">معلومات الاختبار</button></div></article>';
+   const previous=attempts.filter(a=>(slug&&a.quiz_slug===slug)||(!slug&&a.quiz_title===q.title)).sort((a,b)=>new Date(b.submitted_at||b.started_at||0)-new Date(a.submitted_at||a.started_at||0));
+   const latest=previous.find(a=>!!a.submitted_at);
+   return {slug,lock,locked,latest,completed:!!latest};
+  };
+  const rules=source?.content_access||[];
+  const dateLabel=value=>{
+   if(!value)return "غير متوفر";
+   const d=new Date(value);if(Number.isNaN(d.getTime()))return "غير متوفر";
+   return new Intl.DateTimeFormat("ar-DZ",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:false}).format(d);
+  };
+  const cards=quizzes.map((q,index)=>{
+   const st=getState(q),status=st.locked?"🔒 مغلق":st.completed?"✓ تم الإنجاز":"🔓 مفتوح";
+   const stateClass=st.locked?"locked":st.completed?"completed":"open";
+   const enterLabel=st.completed?"تم اجتيازه ✓":st.locked?"الاختبار مغلق 🔒":"دخول الاختبار";
+   return '<article class="published-quiz-card '+stateClass+'"><div class="published-quiz-top"><span class="published-quiz-symbol">📘</span><span class="published-quiz-state '+stateClass+'">'+status+'</span></div><h3>'+safe(q.title)+'</h3><div class="published-quiz-actions"><button type="button" class="btn published-quiz-enter" data-quiz-enter="'+index+'" '+(st.locked||st.completed||!q.resource_url?'disabled':'')+'>'+enterLabel+'</button><button type="button" class="btn secondary" data-quiz-info="'+index+'">معلومات الاختبار</button></div></article>';
   }).join("");
   listEl.innerHTML=cards;
   listEl.querySelectorAll("[data-quiz-info]").forEach(btn=>btn.addEventListener("click",()=>{
-   const q=quizzes[Number(btn.dataset.quizInfo)],slug=slugMap(q.resource_url);
-   const lock=rules.find(x=>x.content_type==="quizzes"&&(x.content_id==="*"||x.content_id===slug||String(x.content_id)===String(q.id||"")));
-   const locked=!!lock||(String(q.resource_url||"").includes("test-awamil-fiziyokimia-2am.html")&&q.quiz_settings?.is_open!==true);
-   const previous=attempts.filter(a=>(slug&&a.quiz_slug===slug)||(!slug&&a.quiz_title===q.title)).sort((a,b)=>new Date(b.started_at||0)-new Date(a.started_at||0));
-   const completed=previous.some(a=>!!a.submitted_at),latest=previous.find(a=>!!a.submitted_at);
+   const q=quizzes[Number(btn.dataset.quizInfo)],st=getState(q);
    const duration=q.quiz_settings?.duration_minutes||(String(q.resource_url||"").includes("test-awamil-fiziyokimia-2am.html")?40:60);
-   listEl.innerHTML='<div class="published-quiz-card" style="padding:18px"><button type="button" class="btn secondary" id="quizInfoBack">← العودة إلى الاختبارات</button><h3 style="margin-top:18px">'+safe(q.title)+'</h3><p>'+safe(q.description||"لا يوجد وصف إضافي لهذا الاختبار.")+'</p><div class="published-quiz-meta"><span><small>المدة</small><b>'+safe(duration)+' دقيقة</b></span><span><small>المستوى</small><b>'+safe(q.level)+'</b></span><span><small>العلامة</small><b>تُحسب آليًا</b></span></div><p><b>الحالة:</b> '+(locked?"🔒 مغلق":completed?"✓ تم الإنجاز":"🔓 مفتوح")+'</p>'+(completed?'<p><b>آخر نتيجة:</b> '+safe(latest.auto_score??latest.teacher_score??"قيد التصحيح")+' / '+safe(latest.auto_max_score||20)+'<br><b>تاريخ الإنجاز:</b> '+safe(latest.submitted_at)+'</p>':"")+(locked?'<p class="published-quiz-notice">'+safe(lock?.lock_message||"هذا الاختبار مغلق حاليًا. انتظري إعلان الأستاذة عن فتحه.")+'</p>':completed?'<p class="published-quiz-notice">احتفظنا بنتيجتك وإجاباتك السابقة. لا يمكنك إعادة المحاولة إذا كانت محاولة واحدة.</p>':'<p class="published-quiz-notice">يمكنك الدخول إلى الاختبار من زر اسم الاختبار.</p>')+'</div>';
+   const score=st.latest?(st.latest.auto_score??st.latest.teacher_score??"قيد التصحيح"):"";
+   const maxScore=st.latest?(st.latest.auto_max_score||20):20;
+   listEl.innerHTML='<article class="published-quiz-card quiz-info-view"><button type="button" class="btn secondary quiz-info-back" id="quizInfoBack">← العودة إلى الاختبارات</button><h3>'+safe(q.title)+'</h3><p class="published-quiz-description">'+safe(q.description||"لا يوجد وصف إضافي لهذا الاختبار.")+'</p><div class="published-quiz-meta"><span><small>المدة</small><b>'+safe(duration)+' دقيقة</b></span><span><small>المستوى</small><b>'+safe(q.level)+'</b></span><span><small>العلامة</small><b>تُحسب آليًا</b></span></div><p class="quiz-info-status"><b>الحالة:</b> '+(st.locked?"🔒 مغلق":st.completed?"✓ تم الإنجاز":"🔓 مفتوح")+'</p>'+(st.completed?'<div class="quiz-result-panel"><p><b>آخر نتيجة</b></p><strong>'+safe(score)+' / '+safe(maxScore)+'</strong><p><b>تاريخ الإنجاز:</b> '+safe(dateLabel(st.latest.submitted_at))+'</p></div>':"")+(st.locked?'<p class="published-quiz-notice">'+safe(st.lock?.lock_message||"هذا الاختبار مغلق حاليًا. انتظري إعلان الأستاذة عن فتحه.")+'</p>':st.completed?'<p class="published-quiz-notice">احتفظنا بنتيجتك وإجاباتك السابقة. لا يمكنك إعادة المحاولة إذا كانت محاولة واحدة.</p>':'<p class="published-quiz-notice">الاختبار متاح الآن. يمكنك الدخول إليه من زر «دخول الاختبار» في قائمة الاختبارات.</p>')+'</article>';
    $("quizInfoBack").addEventListener("click",loadPublishedQuizzes);
   }));
   listEl.querySelectorAll("[data-quiz-enter]").forEach(btn=>btn.addEventListener("click",()=>{
@@ -2292,6 +2301,26 @@ html body #dashboard #dailyChallengeNotice>.daily-challenge-notice-copy span{
 .quiz-top-tools{display:grid;grid-template-columns:1fr;gap:9px;margin:0 0 19px!important}
 .quiz-top-tools .student-action{min-height:66px!important;border-radius:14px!important}
 .quiz-list-heading{padding-top:14px;border-top:1px solid #e8eee4}
+
+/* توحيد بطاقات الاختبارات في فضاء التلميذ */
+.published-quiz-card{padding:17px!important;margin:14px 0 24px!important;border:1px solid #dce8d8!important;border-radius:22px!important;background:#fbfdf9!important;box-shadow:0 7px 0 #e5eee1!important}
+.published-quiz-card.is-locked,.published-quiz-card.locked{border-top:6px solid #c5a044!important}
+.published-quiz-card.is-open,.published-quiz-card.open{border-top:6px solid #43885d!important}
+.published-quiz-card.completed{border-top:6px solid #43885d!important}
+.published-quiz-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.published-quiz-card h3{font-size:1.03rem!important;line-height:1.9!important;margin:8px 0 10px!important}
+.published-quiz-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.published-quiz-actions .btn{width:100%;min-height:58px;border-radius:14px!important;font-weight:800}
+.published-quiz-actions .published-quiz-enter:disabled{opacity:.58!important;cursor:not-allowed}
+.published-quiz-state.completed{color:#17633a;background:#e8f6e9;border:1px solid #cce6ce}
+.quiz-info-view{padding:20px!important}
+.quiz-info-back{display:block;margin:0 0 20px auto!important;min-width:190px}
+.quiz-info-status{margin:18px 0 10px;font-weight:700;color:#28583b}
+.quiz-result-panel{margin:15px 0;padding:15px;border:1px solid #dce8d8;border-radius:14px;background:#f4faf1;color:#28583b;line-height:1.9}
+.quiz-result-panel strong{display:block;font-size:1.35rem;margin:4px 0 10px}
+.quiz-result-panel p{margin:4px 0}
+@media(max-width:500px){.published-quiz-actions{grid-template-columns:1fr 1fr;gap:8px}.published-quiz-actions .btn{min-height:54px;padding:9px 6px;font-size:.85rem}.quiz-info-back{width:100%}}
+
 </style>
 
 <script src="./writing-tools.js" defer></script>
