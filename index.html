@@ -1447,6 +1447,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>عرض المداخيل والحسابات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" id="schoolYearGoalsShortcut" type="button"><span class="menu-icon">🎯</span><span class="menu-copy"><strong>أهداف السنة الدراسية</strong><small>متابعة الهدف السنوي والشهري</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="learningResourcesView" id="contentAccessShortcut" type="button"><span class="menu-icon">🔐</span><span class="menu-copy"><strong>إدارة إتاحة المحتوى</strong><small>قفل أو فتح الدروس والاختبارات والدورات والتحديات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
 </div></details>
 </div>
@@ -1454,9 +1455,9 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
 </section>
 <section id="learningResourcesView" class="view"><section class="panel" id="selectiveContentAccess" style="margin:12px 0;border:1px solid #dce8d7">
-<h3 style="margin-top:0">🔐 التحكم الانتقائي في إتاحة المحتوى</h3>
-<p class="muted">اختاري قسمًا لإغلاقه بالكامل، أو عنصرًا محددًا من المكتبة. يمكنك كتابة الرسالة التي تظهر للتلميذ.</p>
-<label for="accessCategory">القسم</label><select id="accessCategory"><option value="resources">الدروس والموارد التعليمية</option><option value="quizzes">الاختبارات</option><option value="challenges">التحديات اليومية</option><option value="review_courses">دورات المراجعة</option><option value="courses">موارد الدورات</option></select>
+<h3 style="margin-top:0">🔐 إدارة إتاحة المحتوى</h3>
+<p class="muted">اختاري القسم أو المحتوى الذي تريدين إغلاقه، واكتبي رسالة توضيحية تظهر للتلميذ. تبقى بقية أقسام المنصة متاحة.</p>
+<label for="accessCategory">القسم</label><select id="accessCategory"><option value="resources">الدروس والموارد التعليمية</option><option value="lessons">الحصص</option><option value="quizzes">الاختبارات</option><option value="challenges">التحديات اليومية</option><option value="review_courses">دورات المراجعة</option><option value="courses">موارد الدورات</option><option value="summaries">الملخصات</option><option value="exercises">التمارين</option></select>
 <label for="accessItem">العنصر (اتركيه * لقفل القسم كاملًا)</label><select id="accessItem"><option value="*">القسم كاملًا</option></select>
 <label for="accessMessage">الرسالة التي تظهر للتلميذ</label><input id="accessMessage" maxlength="300" value="هذا المحتوى مغلق حاليًا. يرجى متابعة إعلانات الأستاذة.">
 <div class="actions-row" style="margin-top:12px"><button type="button" class="secondary" id="lockSelectedContent">🔒 قفل</button><button type="button" class="primary" id="unlockSelectedContent">🔓 فتح</button></div>
