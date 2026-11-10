@@ -453,6 +453,23 @@ body:has(#dashboard:not(.hidden)) .student-header-logout{display:inline-flex!imp
   }
 })();
 </script>
+<script id="teacher-entry-click-guard-20261110">
+(function(){
+  const button=document.getElementById("teacherNameLoginBtn");
+  if(!button||button.dataset.teacherGuardBound==="1")return;
+  button.dataset.teacherGuardBound="1";
+  button.addEventListener("click",function(event){
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const error=document.getElementById("loginError");
+    if(typeof window.teacherNameLogin==="function"){
+      window.teacherNameLogin();
+    }else if(error){
+      error.textContent="تعذر تشغيل وظيفة الدخول. أعيدي تحميل الصفحة، وإذا استمرت المشكلة أرسلي هذه الرسالة للأستاذة.";
+    }
+  },true);
+})();
+</script>
 <section id="dashboard" class="hidden"><div id="teacherPreviewBanner" class="hidden" aria-hidden="true"><button id="exitTeacherPreview" type="button" hidden></button></div>
 <div class="panel student-identity student-identity-compact"><div class="student-identity-info"><div class="student-welcome-title">مرحبًا بك في منصة التحدي</div><div class="student-name-line"><button type="button" class="student-profile-shortcut" onclick="openStudentSection('profile')" aria-label="ملفي الشخصي" title="ملفي الشخصي"><svg viewBox="0 0 48 48" aria-hidden="true" focusable="false"><circle cx="24" cy="16" r="8" fill="currentColor"/><path d="M8.5 39c1.8-8 7.3-12 15.5-12s13.7 4 15.5 12c.3 1.3-.7 2.5-2 2.5h-27c-1.3 0-2.3-1.2-2-2.5Z" fill="currentColor"/></svg></button><h2 id="studentName"></h2></div><span id="studentLevel" class="tag"></span></div><img class="student-identity-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></div>
 
