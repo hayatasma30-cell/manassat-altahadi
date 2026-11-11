@@ -431,9 +431,53 @@ body:has(#dashboard:not(.hidden)) .student-header-logout{display:inline-flex!imp
  #dashboard .student-action small{font-size:.55rem!important}
 }
 </style>
+<style id="student-unified-teacher-layout">
+/* توحيد الهيكل البصري لفضاء التلميذ مع فضاء الأستاذة */
+:root{--g:#14532d;--g2:#166534;--g3:#21834c;--cream:#faf8ee;--ink:#18382a;--muted:#69786d;--line:#e3e9dc;--pale:#eef7ec}
+html{scroll-behavior:smooth}
+body{background:var(--cream)!important;color:var(--ink)!important}
+.topbar{background:linear-gradient(120deg,#103f28,var(--g2));color:#fff;padding:12px 16px;box-shadow:0 4px 18px #143e2518}
+.top-inner{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:800}
+.brand-logo{width:48px;height:48px;object-fit:contain;flex:0 0 48px;filter:drop-shadow(0 2px 3px #0002)}
+.brand-text{display:block}.brand-text small{display:block;font-size:.7rem;font-weight:400;color:#d6ead9}
+.teacher-chip{display:flex;align-items:center;gap:8px;font-size:.82rem}
+.avatar{width:37px;height:37px;border-radius:50%;display:grid;place-items:center;background:#e8f5e9;color:var(--g);font-size:1.2rem}
+.logout{width:auto;min-height:36px;margin:0;padding:7px 12px;border-radius:11px;background:#e8f5e9;color:var(--g);font-size:.82rem;box-shadow:0 3px 0 #0c3c2330}
+.wrap{max-width:1120px!important;margin:auto!important;padding:18px!important}
+#dashboard>.hero{background:linear-gradient(115deg,#fff9e7,#edf7e9)!important;border:1px solid #e7e5d5!important;border-radius:24px!important;padding:25px 22px!important;margin:8px 0 18px!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;margin:0!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services>.student-action{width:100%!important;min-height:104px!important;height:auto!important;padding:14px!important;display:flex!important;flex-direction:row!important;align-items:center!important;gap:12px!important;text-align:right!important;border:1.5px solid #b7d8b8!important;border-bottom:5px solid #56a96b!important;border-radius:21px!important;background:linear-gradient(145deg,#fff 0%,#fbfff9 100%)!important;color:var(--ink)!important;box-shadow:0 8px 0 #1b6b3520,0 14px 24px #173f2226!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services>.student-action .student-action-icon{width:52px!important;height:52px!important;min-width:52px!important;flex:0 0 52px!important;display:grid!important;place-items:center!important;border-radius:17px!important;background:linear-gradient(145deg,#eff9ec,#dff2dc)!important;font-size:1.45rem!important;box-shadow:0 5px 12px #193d201b!important;border:1px solid #fff!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services>.student-action>span:nth-child(2){flex:1 1 auto!important;min-width:0!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services .student-action strong{display:block!important;font-size:.98rem!important;line-height:1.45!important;color:var(--ink)!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services .student-action small{display:block!important;color:var(--muted)!important;font-size:.76rem!important;line-height:1.45!important;margin-top:2px!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services .student-arrow{margin-inline-start:auto!important;color:var(--g2)!important;font-size:1.35rem!important}
+#studentMenu .student-actions.student-home-grid.student-direct-services>.student-action:active{transform:translateY(4px)!important;box-shadow:0 3px 0 #193d2020,0 6px 12px #173f221a!important}
+#studentDetail>.student-back{min-height:40px!important;margin:0 0 13px!important;padding:8px 13px!important;border-radius:11px!important;background:#e8f3e6!important;color:var(--g)!important;border:1px solid #c7dfc3!important;box-shadow:0 3px 0 #14532d16!important}
+#studentDetail>.student-section{background:#fff!important;border:1px solid var(--line)!important;border-radius:19px!important;padding:18px!important;box-shadow:0 8px 24px #153d2010!important}
+#studentDetail>.student-section h2{margin-top:0!important;color:var(--g)!important}
+@media(max-width:760px){
+ .wrap{padding:14px!important}
+ #studentMenu .student-actions.student-home-grid.student-direct-services{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action{min-height:94px!important;padding:12px!important;gap:9px!important;border-radius:18px!important}
+ #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action .student-action-icon{width:43px!important;height:43px!important;min-width:43px!important;flex-basis:43px!important;font-size:1.2rem!important}
+}
+@media(max-width:480px){
+ .topbar{padding:10px 12px}
+ .brand{font-size:1rem;gap:7px}
+ .brand-logo{width:42px;height:42px;flex-basis:42px}
+ .brand-text small{font-size:.62rem}
+ .teacher-chip{font-size:.75rem;gap:6px}
+ .avatar{width:33px;height:33px}
+ .logout{min-height:32px;padding:5px 9px;font-size:.75rem}
+ #studentMenu .student-actions.student-home-grid.student-direct-services{grid-template-columns:1fr!important;gap:10px!important}
+ #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action{min-height:76px!important;padding:11px 13px!important;border-radius:16px!important}
+}
+</style>
 </head>
 <body>
-<header><div class="top"><img class="logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><div class="student-header-brand"><strong>منصة التحدي</strong><small>فضاء التلميذ • علوم الطبيعة والحياة</small></div><button id="logoutBtn" class="student-header-logout" type="button">خروج</button></div></header>
+<div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">🎓</div><span>فضاء التلميذ</span><button id="logoutBtn" class="logout" type="button">خروج ↗</button></div></div></div>
 <main class="wrap">
 <section class="hero"><h1 class="student-hero-title">مرحبًا بك في منصة التحدي <img class="student-hero-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"></h1><p>تحدياتك، نتائجك، ومتابعة اشتراكاتك في مكان واحد.</p></section>
 <section id="loginPanel" class="panel login"><h2>🔐 الدخول إلى فضاء التلميذ</h2><p class="muted">استعملي اسمك الكامل ورمز الدخول الذي تمنحك إياه الأستاذة.</p><label class="field" for="fullName">الاسم الكامل كما هو مسجل</label><input id="fullName" autocomplete="name" placeholder="اكتبي اسمك الكامل"><div id="studentCodeLogin"><label class="field" for="portalCode">رمز الدخول</label><input id="portalCode" autocomplete="one-time-code" placeholder="TAH-XXXXXXXXXX" dir="ltr" style="text-align:left;text-transform:uppercase"><button id="loginBtn" style="width:100%">دخول إلى فضائي</button></div><button id="teacherNameLoginBtn" type="button" class="secondary hidden" style="width:100%;margin-top:12px">دخول الأستاذة باسم التلميذ دون رمز</button><p id="loginError" class="error" role="status"></p><p class="muted">إذا لم يكن لديك رمز دخول، تواصلي مع الأستاذة حياة أسماء.</p></section>
