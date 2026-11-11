@@ -1858,7 +1858,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
     <summary><span>حصص تحتاج مراجعة</span><strong id="incomeCompareReviewCount">0</strong></summary>
     <div id="incomeCompareWarnings" aria-live="polite"></div>
   </details>
-  <p class="income-compare-footnote">تُحسب الحصص المنجزة فقط، ولا تدخل دفعات الاشتراكات في المقارنة.</p>
+  <p class="income-compare-footnote">تشمل المقارنة مستحقات الحصص المنجزة والمداخيل اليدوية المسجلة، ولا تشمل دفعات الاشتراكات.</p>
 </div>
 <div id="schoolYearGoalsPage" class="panel income-subpage" hidden>
   <div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>🎯 أهداف السنة الدراسية 2026–2027</h3></div>
@@ -2469,7 +2469,7 @@ window.addEventListener("unhandledrejection",function(e){
     document.addEventListener("click",e=>{const target=e.target;if(!(target instanceof Element))return;const b=target.closest("#incomeCalendar2025DayDetails button[data-income-2025-edit]");if(!b)return;e.preventDefault();e.stopPropagation();const id=b.getAttribute("data-income-2025-edit")||"",row=incomeCalendar2025Entries.find(x=>String(x.id)===id);const panel=$("income2025EditPanel");if(!row||!panel){$("incomeCalendar2025DayTitle").textContent="تعذر فتح التعديل: لم يتم العثور على بيانات الحصة.";return;}$("income2025EditId").value=String(row.id);$("income2025EditDate").value=row.work_date||"";$("income2025EditDescription").value=row.description||"";$("income2025EditAmount").value=Number(row.amount)||0;$("income2025EditNotes").value=row.notes||"";$("income2025EditStatus").textContent="";panel.hidden=false;panel.style.removeProperty("display");panel.scrollIntoView({behavior:"smooth",block:"center"});},true);
     $("closeIncome2025Edit").addEventListener("click",()=>{$("income2025EditPanel").hidden=true;});
     $("saveIncome2025Edit").addEventListener("click",async()=>{const id=$("income2025EditId").value,entry={work_date:$("income2025EditDate").value,description:$("income2025EditDescription").value.trim(),amount:Number($("income2025EditAmount").value),notes:$("income2025EditNotes").value.trim()},status=$("income2025EditStatus"),btn=$("saveIncome2025Edit");if(!id||!entry.work_date.startsWith("2025-")||!entry.description||!Number.isFinite(entry.amount)||entry.amount<0){status.textContent="تحققي من التاريخ والوصف والمبلغ.";return;}btn.disabled=true;status.textContent="جارٍ حفظ التعديل…";try{const token=localStorage.getItem("tahadi_teacher_token"),r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_income_update",id,entry})}),d=await r.json();if(!r.ok||!d.ok)throw Error(d.error||"تعذر تعديل الحصة.");const index=incomeCalendar2025Entries.findIndex(x=>String(x.id)===id);if(index>=0)incomeCalendar2025Entries[index]=d.entry;$("incomeCalendar2025Month").value=entry.work_date.slice(0,7);incomeCalendar2025Selected=entry.work_date;$("income2025EditPanel").hidden=true;renderIncomeCalendar2025();}catch(err){status.textContent=err.message||"تعذر حفظ التعديل.";}finally{btn.disabled=false;}});
-    let incomeCompare2025Entries=[],incomeCompare2026Entries=[],incomeCompare2027Entries=[],incomeCompareLessons=[],incomeCompareData=null;
+    let incomeCompareManualEntries=[],incomeCompareLessons=[],incomeCompareData=null;
     const incomeCompareMonths=["جانفي","فيفري","مارس","أفريل","ماي","جوان","جويلية","أوت","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
     const compareClass=(previous,current)=>current>previous?"زيادة":current<previous?"نقصان":"ثابت";
     const compareRow=(label,a,b)=>{const delta=b-a,pct=a>0?(delta/a)*100:null,pctText=pct===null?(b>0?"لا تُحسب النسبة لأن الموسم السابق صفر":"لا تُحسب النسبة لأن الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";const trend=delta>0?"up":delta<0?"down":"same";return '<article class="income-compare-month"><h4>'+label+'</h4><div class="income-compare-values"><div><span>2025/2026</span><strong>'+money(a)+'</strong></div><div><span>2026/2027</span><strong>'+money(b)+'</strong></div></div><div class="income-compare-delta '+trend+'"><strong>'+(delta>0?"+":"")+money(delta)+'</strong><span>'+compareClass(a,b)+' · '+pctText+'</span></div></article>';};
@@ -2495,6 +2495,12 @@ window.addEventListener("unhandledrejection",function(e){
         else if(count<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:x.lesson_type==="فردية"?"لم يُربط التلميذ بالحصة":"لا يوجد حضور مسجل"});
         addDate(d,unitPrice>0&&count>0?unitPrice*count:0);
       });
+      // أضيفي المداخيل اليدوية المحفوظة في Supabase إلى الشهر والموسم الموافقين.
+      incomeCompareManualEntries.forEach(x=>{
+        const d=String(x.work_date||"");
+        if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;
+        addDate(d,Number(x.amount)||0);
+      });
       const months=academicMonths.map(m=>({month:m,name:monthNames[m],a:totalsA[m]||0,b:totalsB[m]||0}));
       const totalA=months.reduce((n,x)=>n+x.a,0),totalB=months.reduce((n,x)=>n+x.b,0),diff=totalB-totalA;
       const pct=totalA>0?(diff/totalA)*100:null,pctText=pct===null?(totalB>0?"لا تُحسب النسبة لأن الموسم السابق صفر":"لا تُحسب النسبة لأن الموسمين صفر"):(pct>0?"+":"")+pct.toFixed(1)+"%";
@@ -2514,12 +2520,17 @@ window.addEventListener("unhandledrejection",function(e){
     async function loadIncomeCompare(){
       const box=$("incomeCompareStatus");box.textContent="جارٍ تحميل مستحقات الحصص للموسمين…";
       try{
-        const lessonData=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
+        const [lessonData,manual2025,manual2026]=await Promise.all([
+          lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"}),
+          dailyIncomeRequest("daily_income_data",{year:2025}),
+          dailyIncomeRequest("daily_income_data",{year:2026})
+        ]);
         const relevant=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&x.lesson_date>="2025-09-01"&&x.lesson_date<="2027-05-31");
         const ids=relevant.filter(x=>x.lesson_type==="جماعية").map(x=>x.id);let counts={};
         if(ids.length){const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:ids});counts=countData.counts||{};}
         incomeCompareLessons=relevant.map(x=>({...x,_presentCount:counts[x.id]?.present||0,_chargeableCount:counts[x.id]?.chargeable??counts[x.id]?.present??0}));
-        renderIncomeCompare();box.textContent="تم تحديث المقارنة من الحصص المنجزة فقط.";
+        incomeCompareManualEntries=[...(manual2025.entries||[]),...(manual2026.entries||[])];
+        renderIncomeCompare();box.textContent="تم تحديث المقارنة من الحصص المنجزة والمداخيل اليدوية المسجلة.";
       }catch(e){box.textContent="تعذر تحميل المقارنة: "+e.message;}
     }
     function academicMonthsOptions(){return [9,10,11,12,1,2,3,4,5].map(m=>'<option value="'+m+'">'+({9:"سبتمبر",10:"أكتوبر",11:"نوفمبر",12:"ديسمبر",1:"جانفي",2:"فيفري",3:"مارس",4:"أفريل",5:"ماي"}[m])+'</option>').join("");}
