@@ -21,7 +21,7 @@
 <meta charset="utf-8">
 <link rel="manifest" href="./manifest.json"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-11-11-learning-hierarchy-redesign-v1">
+<meta name="platform-build" content="2026-11-11-learning-hierarchy-wizard-v2">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -4358,19 +4358,38 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
 <div class="lib-editor-card">
   <div class="lib-editor-heading"><span class="lib-editor-icon">✏️</span><div><h3 id="libTeacherFormTitle">إضافة عنصر جديد</h3><p>أدخلي بيانات العنصر ثم احفظيه للانتقال إلى الخطوة التالية</p></div></div>
   <input id="libTeacherNodeId" type="hidden">
-  <div class="lib-form-grid">
-    <div class="lib-field"><label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select></div>
-    <div class="lib-field" id="libTeacherParentWrap"><label for="libTeacherParent">العنصر الأب</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select><small>يظهر هذا الحقل عند إضافة مورد أو نشاط أو ملخص تابع</small></div>
-    <div class="lib-field lib-field-wide"><label for="libTeacherTitle">عنوان العنصر <em>*</em></label><input id="libTeacherTitle" maxlength="180" placeholder="مثال: تأثير العوامل الفيزيوكيميائية" required></div>
-    <div class="lib-field lib-field-wide"><label for="libTeacherDescription">وصف مختصر <small>(اختياري)</small></label><textarea id="libTeacherDescription" rows="2" placeholder="اكتبي وصفًا موجزًا يساعد على التعرف على العنصر"></textarea></div>
-    <div class="lib-field lib-field-wide lib-content-field"><label for="libTeacherContent">المحتوى التعليمي أو ملخص النشاط</label><textarea id="libTeacherContent" rows="8" placeholder="اكتبي المحتوى التعليمي هنا... يمكنك تنظيمه إلى فقرات وعناوين"></textarea><small>خصصي هذا الحقل لكتابة الملخص أو النص التعليمي الكامل.</small></div>
-    <div class="lib-field lib-field-wide"><label for="libTeacherUrl">رابط مورد أو ملف <small>(اختياري)</small></label><input id="libTeacherUrl" type="url" placeholder="https://..."></div>
+  <div class="lib-wizard-progress" aria-label="مراحل إضافة العنصر">
+    <div class="lib-wizard-step is-active" data-wizard-indicator="1"><span>1</span><small>بيانات العنصر</small></div><i></i>
+    <div class="lib-wizard-step" data-wizard-indicator="2"><span>2</span><small>المحتوى والمصدر</small></div><i></i>
+    <div class="lib-wizard-step" data-wizard-indicator="3"><span>3</span><small>النشر والحفظ</small></div>
   </div>
-  <div class="lib-student-access"><div class="lib-access-heading"><span>👩‍🎓</span><div><strong>صلاحية الاطلاع</strong><small>اختاري التلاميذ الذين يمكنهم مشاهدة هذا المحتوى</small></div></div>
-    <label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع</label><select id="libTeacherStudents" multiple size="5"></select><small class="lib-help">يمكن تحديد أكثر من تلميذ. اضغطي مطولًا أو استخدمي خيارات التحديد في الجهاز.</small>
+  <div class="lib-wizard-panel is-active" data-wizard-panel="1">
+    <div class="lib-wizard-panel-title"><strong>المرحلة الأولى: بيانات العنصر</strong><small>حددي نوع المحتوى وعنوانه ومكانه في التسلسل التعليمي.</small></div>
+    <div class="lib-form-grid">
+      <div class="lib-field"><label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select></div>
+      <div class="lib-field" id="libTeacherParentWrap"><label for="libTeacherParent">العنصر الأب</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select><small>يظهر عند إضافة مورد أو نشاط أو ملخص تابع.</small></div>
+      <div class="lib-field lib-field-wide"><label for="libTeacherTitle">عنوان العنصر <em>*</em></label><input id="libTeacherTitle" maxlength="180" placeholder="مثال: تأثير العوامل الفيزيوكيميائية" required></div>
+      <div class="lib-field lib-field-wide"><label for="libTeacherDescription">وصف مختصر <small>(اختياري)</small></label><textarea id="libTeacherDescription" rows="2" placeholder="اكتبي وصفًا موجزًا يساعد على التعرف على العنصر"></textarea></div>
+    </div>
+    <div class="lib-wizard-actions"><span></span><button type="button" class="primary" data-wizard-next="2">التالي: المحتوى والمصدر ←</button></div>
   </div>
-  <label class="lib-publish-toggle" for="libTeacherPublished"><input id="libTeacherPublished" type="checkbox"><span><strong>نشر العنصر للتلاميذ المحددين</strong><small>إذا لم تفعّلي النشر، يبقى العنصر محفوظًا كمسودة خاصة بك.</small></span></label>
-  <div class="lib-form-actions"><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول</button></div>
+  <div class="lib-wizard-panel" data-wizard-panel="2" hidden>
+    <div class="lib-wizard-panel-title"><strong>المرحلة الثانية: المحتوى التعليمي</strong><small>أضيفي الملخص أو النص التعليمي، ويمكنك إرفاق رابط خارجي.</small></div>
+    <div class="lib-form-grid">
+      <div class="lib-field lib-field-wide lib-content-field"><label for="libTeacherContent">المحتوى التعليمي أو ملخص النشاط</label><textarea id="libTeacherContent" rows="10" placeholder="اكتبي المحتوى التعليمي هنا... يمكنك تنظيمه إلى فقرات وعناوين"></textarea><small>خصصي هذا الحقل لكتابة الملخص أو النص التعليمي الكامل.</small></div>
+      <div class="lib-field lib-field-wide"><label for="libTeacherUrl">رابط مورد أو ملف <small>(اختياري)</small></label><input id="libTeacherUrl" type="url" placeholder="https://..."></div>
+    </div>
+    <div class="lib-wizard-actions"><button type="button" class="secondary" data-wizard-back="1">→ السابق</button><button type="button" class="primary" data-wizard-next="3">التالي: صلاحية الاطلاع ←</button></div>
+  </div>
+  <div class="lib-wizard-panel" data-wizard-panel="3" hidden>
+    <div class="lib-wizard-panel-title"><strong>المرحلة الثالثة: صلاحية الاطلاع والنشر</strong><small>اختاري من يمكنه مشاهدة العنصر، أو اتركيه محفوظًا كمسودة.</small></div>
+    <div class="lib-student-access"><div class="lib-access-heading"><span>👩‍🎓</span><div><strong>صلاحية الاطلاع</strong><small>اختاري التلاميذ الذين يمكنهم مشاهدة هذا المحتوى</small></div></div>
+      <label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع</label><select id="libTeacherStudents" multiple size="5"></select><small class="lib-help">يمكن تحديد أكثر من تلميذ. اضغطي مطولًا أو استخدمي خيارات التحديد في الجهاز.</small>
+    </div>
+    <label class="lib-publish-toggle" for="libTeacherPublished"><input id="libTeacherPublished" type="checkbox"><span><strong>نشر العنصر للتلاميذ المحددين</strong><small>إذا لم تفعّلي النشر، يبقى العنصر محفوظًا كمسودة خاصة بك.</small></span></label>
+    <div class="lib-wizard-actions"><button type="button" class="secondary" data-wizard-back="2">→ السابق</button><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button></div>
+  </div>
+  <div class="lib-form-actions lib-wizard-reset"><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول والبدء من جديد</button></div>
 </div>
 <div class="lib-records-card"><div class="lib-section-heading"><span class="lib-step">2</span><div><strong>العناصر المسجلة</strong><small>استعرضي العناصر وأضيفي التوابع أو عدّليها</small></div></div><div id="libTeacherNodes"><p class="muted">اختاري المستوى الدراسي لعرض محتواه.</p></div></div>
 </section><script>
@@ -4388,12 +4407,14 @@ root.innerHTML=sorted.map(n=>{const parent=nodes.find(x=>x.id===n.parent_id);con
 root.querySelectorAll("[data-lib-add-child]").forEach(b=>b.addEventListener("click",()=>startChild(b.dataset.libAddChild,b.dataset.parentId)));root.querySelectorAll("[data-lib-edit]").forEach(b=>b.addEventListener("click",()=>editNode(b.dataset.libEdit)));
 root.querySelectorAll("[data-lib-delete]").forEach(b=>b.addEventListener("click",()=>deleteNode(b.dataset.libDelete)));
 }
-function resetForm(){ $("libTeacherNodeId").value="";$("libTeacherFormTitle").textContent="➕ إضافة عنصر";$("libTeacherTitle").value="";$("libTeacherDescription").value="";$("libTeacherContent").value="";$("libTeacherUrl").value="";$("libTeacherPublished").checked=false;$("libTeacherStudents").selectedIndex=-1;parentOptions();}
+function showEditorStep(step){document.querySelectorAll("#learningHierarchyView [data-wizard-panel]").forEach(p=>{const active=Number(p.dataset.wizardPanel)===Number(step);p.hidden=!active;p.classList.toggle("is-active",active);});document.querySelectorAll("#learningHierarchyView [data-wizard-indicator]").forEach(i=>{const n=Number(i.dataset.wizardIndicator);i.classList.toggle("is-active",n===Number(step));i.classList.toggle("is-done",n<Number(step));});const panel=document.querySelector(`#learningHierarchyView [data-wizard-panel="${step}"]`);if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});}\nfunction resetForm(){ $("libTeacherNodeId").value="";$("libTeacherFormTitle").textContent="➕ إضافة عنصر";$("libTeacherTitle").value="";$("libTeacherDescription").value="";$("libTeacherContent").value="";$("libTeacherUrl").value="";$("libTeacherPublished").checked=false;$("libTeacherStudents").selectedIndex=-1;parentOptions();showEditorStep(1);}
 function startChild(type,parentId){resetForm();$("libTeacherType").value=type;parentOptions();$("libTeacherParent").value=parentId;const parent=nodes.find(n=>String(n.id)===String(parentId));$("libTeacherStatus").textContent="الخطوة التالية: إضافة "+types[type]+" داخل «"+(parent?.title||"العنصر المحدد")+"».";window.scrollTo({top:$("learningHierarchyView").offsetTop,behavior:"smooth"});$("libTeacherTitle").focus();}
-function editNode(id){const n=nodes.find(x=>x.id===id);if(!n)return;$("libTeacherNodeId").value=n.id;$("libTeacherFormTitle").textContent="✏️ تعديل العنصر";$("libTeacherType").value=n.node_type;parentOptions();$("libTeacherParent").value=n.parent_id||"";$("libTeacherTitle").value=n.title||"";$("libTeacherDescription").value=n.description||"";$("libTeacherContent").value=n.content_text||"";$("libTeacherUrl").value=n.resource_url||"";$("libTeacherPublished").checked=!!n.is_published;const selected=new Set(n.visible_student_ids||[]);Array.from($("libTeacherStudents").options).forEach(o=>o.selected=selected.has(o.value));window.scrollTo({top:$("learningHierarchyView").offsetTop,behavior:"smooth"});}
+function editNode(id){const n=nodes.find(x=>x.id===id);if(!n)return;showEditorStep(1);$("libTeacherNodeId").value=n.id;$("libTeacherFormTitle").textContent="✏️ تعديل العنصر";$("libTeacherType").value=n.node_type;parentOptions();$("libTeacherParent").value=n.parent_id||"";$("libTeacherTitle").value=n.title||"";$("libTeacherDescription").value=n.description||"";$("libTeacherContent").value=n.content_text||"";$("libTeacherUrl").value=n.resource_url||"";$("libTeacherPublished").checked=!!n.is_published;const selected=new Set(n.visible_student_ids||[]);Array.from($("libTeacherStudents").options).forEach(o=>o.selected=selected.has(o.value));window.scrollTo({top:$("learningHierarchyView").offsetTop,behavior:"smooth"});}
 async function deleteNode(id){const n=nodes.find(x=>x.id===id);if(!n||!confirm("سيتم حذف هذا العنصر وكل العناصر التابعة له. هل تريدين المتابعة؟"))return;try{await api("teacher_delete_library_node",{id});await load();$("libTeacherStatus").textContent="تم حذف العنصر وفروعه.";}catch(e){$("libTeacherStatus").textContent=e.message;}}
 async function load(){const level=$("libTeacherLevel").value;if(!level)return;try{$("libTeacherStatus").textContent="جارٍ تحميل المحتوى…";const [a,b]=await Promise.all([api("teacher_list_library_nodes",{level}),api("teacher_list_resource_students",{level})]);nodes=a.nodes||[];students=b.students||[];$("libTeacherStudents").innerHTML=students.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.full_name)+'</option>').join("");parentOptions();renderNodes();$("libTeacherStatus").textContent="تم تحميل "+nodes.length+" عنصرًا و"+students.length+" تلميذًا في هذا المستوى.";}catch(e){$("libTeacherStatus").textContent=e.message;}}
 $("libTeacherLevel").addEventListener("change",()=>{resetForm();load();});
+document.querySelectorAll("#learningHierarchyView [data-wizard-next]").forEach(b=>b.addEventListener("click",()=>{const next=Number(b.dataset.wizardNext);if(next===2){const title=$("libTeacherTitle").value.trim(),type=$("libTeacherType").value;if(!title){$("libTeacherStatus").textContent="اكتبي عنوان العنصر أولًا للمتابعة.";$("libTeacherTitle").focus();return;}if(parentTypes[type]&&!$("libTeacherParent").value){$("libTeacherStatus").textContent="اختاري العنصر الأب أولًا للمتابعة.";return;}}showEditorStep(next);$("libTeacherStatus").textContent="";}));
+document.querySelectorAll("#learningHierarchyView [data-wizard-back]").forEach(b=>b.addEventListener("click",()=>showEditorStep(Number(b.dataset.wizardBack))));
 $("libTeacherType").addEventListener("change",parentOptions);
 $("libTeacherReset").addEventListener("click",resetForm);
 $("libTeacherSave").addEventListener("click",async()=>{const level=$("libTeacherLevel").value,type=$("libTeacherType").value,title=$("libTeacherTitle").value.trim();if(!level||title.length<2){$("libTeacherStatus").textContent="اختاري المستوى واكتبي عنوانًا صحيحًا.";return;}const parent=parentTypes[type]?$("libTeacherParent").value:null;if(parentTypes[type]&&!parent){$("libTeacherStatus").textContent="اختاري العنصر الأب أولًا.";return;}const btn=$("libTeacherSave");btn.disabled=true;try{await api("teacher_save_library_node",{id:$("libTeacherNodeId").value||undefined,level,node_type:type,parent_id:parent,title,description:$("libTeacherDescription").value,content_text:$("libTeacherContent").value,resource_url:$("libTeacherUrl").value,is_published:$("libTeacherPublished").checked,visible_student_ids:Array.from($("libTeacherStudents").selectedOptions).map(o=>o.value)});resetForm();await load();$("libTeacherStatus").textContent="تم حفظ العنصر بنجاح.";}catch(e){$("libTeacherStatus").textContent=e.message;}finally{btn.disabled=false;}});
@@ -4462,6 +4483,43 @@ document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.ad
  .lib-student-access{padding:12px}
  .lib-form-actions{grid-template-columns:1fr 1fr}
  .lib-form-actions button{font-size:.88rem;padding:10px 8px!important}
+}
+</style>
+
+
+<style id="learning-hierarchy-wizard-v2">
+#learningHierarchyView .lib-wizard-progress{display:flex;align-items:center;justify-content:center;gap:7px;margin:4px 0 20px;padding:13px 10px;background:#f4faf2;border:1px solid #e0ecdc;border-radius:15px}
+#learningHierarchyView .lib-wizard-progress>i{height:2px;flex:1;max-width:46px;background:#d4e2d2}
+#learningHierarchyView .lib-wizard-step{display:flex;align-items:center;gap:7px;color:#829084;min-width:0}
+#learningHierarchyView .lib-wizard-step>span{width:31px;height:31px;flex:0 0 31px;border-radius:50%;display:grid;place-items:center;background:#e2eae0;color:#607463;font-weight:800}
+#learningHierarchyView .lib-wizard-step small{font-size:.75rem;white-space:nowrap}
+#learningHierarchyView .lib-wizard-step.is-active{color:#175b35;font-weight:800}
+#learningHierarchyView .lib-wizard-step.is-active>span,#learningHierarchyView .lib-wizard-step.is-done>span{background:#197746;color:#fff}
+#learningHierarchyView .lib-wizard-panel{animation:libWizardIn .18s ease-out}
+#learningHierarchyView .lib-wizard-panel[hidden]{display:none!important}
+#learningHierarchyView .lib-wizard-panel-title{padding:2px 0 14px;margin-bottom:16px;border-bottom:1px solid #e6eee4}
+#learningHierarchyView .lib-wizard-panel-title strong{display:block;color:#174b30;font-size:1.05rem}
+#learningHierarchyView .lib-wizard-panel-title small{display:block;color:#7b897f;font-size:.8rem;line-height:1.7;margin-top:4px}
+#learningHierarchyView .lib-wizard-actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px;padding-top:15px;border-top:1px solid #e7eee5}
+#learningHierarchyView .lib-wizard-actions button{min-height:48px;border-radius:13px!important;flex:1}
+#learningHierarchyView .lib-wizard-reset{margin-top:13px}
+#learningHierarchyView .lib-wizard-reset button{width:100%;min-height:44px}
+#learningHierarchyView .lib-student-access select{min-height:175px;max-height:220px;line-height:1.9}
+#learningHierarchyView .lib-student-access select option{padding:7px 9px;border-radius:6px}
+#learningHierarchyView .lib-content-field textarea{min-height:260px;line-height:2}
+#learningHierarchyView .lib-field textarea{padding:13px!important}
+#learningHierarchyView .lib-form-actions button:disabled{opacity:.65;cursor:wait}
+@keyframes libWizardIn{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+ #learningHierarchyView .lib-wizard-progress{gap:4px;padding:11px 7px}
+ #learningHierarchyView .lib-wizard-progress>i{max-width:18px}
+ #learningHierarchyView .lib-wizard-step{gap:4px}
+ #learningHierarchyView .lib-wizard-step>span{width:27px;height:27px;flex-basis:27px;font-size:.82rem}
+ #learningHierarchyView .lib-wizard-step small{font-size:.66rem;white-space:normal;line-height:1.25;max-width:65px}
+ #learningHierarchyView .lib-wizard-actions{gap:8px}
+ #learningHierarchyView .lib-wizard-actions button{font-size:.85rem;padding:10px 8px!important}
+ #learningHierarchyView .lib-content-field textarea{min-height:235px}
+ #learningHierarchyView .lib-student-access select{min-height:155px}
 }
 </style>
 
