@@ -2122,8 +2122,7 @@ window.addEventListener("unhandledrejection",function(e){
           const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل النجوم");
           automaticStudentStarsCache=new Map((data.students||[]).map(x=>[String(x.student_id),x]));
         }
-        document.querySelectorAll("[data-student-stars]").forEach(el=>{const item=automaticStudentStarsCache.get(el.dataset.studentStars);if(!item||!item.stars_count){el.textContent="";el.title="";el.style.display="none";return;}el.textContent=" ⭐ "+item.stars_count;el.title=item.stars.map(x=>x.reason).join("
-");el.style.display="inline";});
+        document.querySelectorAll("[data-student-stars]").forEach(el=>{const item=automaticStudentStarsCache.get(el.dataset.studentStars);if(!item||!item.stars_count){el.textContent="";el.title="";el.style.display="none";return;}el.textContent=" ⭐ "+item.stars_count;el.title=item.stars.map(x=>x.reason).join("\n");el.style.display="inline";});
       }catch(error){console.warn("تعذر تحميل أوسمة التلاميذ",error);}
     }
     let studentSortMode="name";
@@ -2161,8 +2160,7 @@ window.addEventListener("unhandledrejection",function(e){
           if(data.code&&navigator.clipboard&&navigator.clipboard.writeText){try{await navigator.clipboard.writeText(data.code);}catch(_){}}
           if(action==="disable-quiz"||action==="disable-portal"){if(codeEl)codeEl.textContent="معطّل";}
           if((action==="get-quiz"||action==="get-portal")&&data.has_code===false)alert(data.message||"لا يوجد كود لهذا التلميذ.");
-          else if(action==="issue-quiz"||action==="issue-portal")alert((isQuiz?"كود الاختبار: ":"كود دخول فضاء التلميذ: ")+data.code+"
-تم إصداره.");
+          else if(action==="issue-quiz"||action==="issue-portal")alert((isQuiz?"كود الاختبار: ":"كود دخول فضاء التلميذ: ")+data.code+"\nتم إصداره.");
           else if(action==="disable-quiz"||action==="disable-portal")alert("تم تعطيل الكود المحدد فقط.");else if(action==="activate-portal")alert(data.message||"تم تفعيل كود فضاء التلميذ.");
         }catch(err){alert(err.message||"تعذر تنفيذ العملية.");}
         finally{btn.disabled=false;btn.textContent=oldLabel;}
@@ -2176,8 +2174,7 @@ window.addEventListener("unhandledrejection",function(e){
         try{
           const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_get_student_settings",student_id:sid})});
           const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر تحميل الإعدادات.");
-          const val=await window.TahadiDialog.prompt("إعدادات الاختبار للتلميذ: "+d.student.full_name+"
-عدد المحاولات (1–20). اكتبي 0 للعودة للإعداد العام ("+d.global_max_attempts+").",String(d.max_attempts));
+          const val=await window.TahadiDialog.prompt("إعدادات الاختبار للتلميذ: "+d.student.full_name+"\nعدد المحاولات (1–20). اكتبي 0 للعودة للإعداد العام ("+d.global_max_attempts+").",String(d.max_attempts));
           if(val===null)return;
           let saved;
           if(String(val).trim()==="0") saved=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_reset_student_settings",student_id:sid})});
@@ -2781,12 +2778,7 @@ const handleIncomeCalendarClick=async e=>{
     $("backToPayments")?.addEventListener("click",()=>showView("paymentsView"));
     $("manualInPersonPaymentForm").onsubmit=async ev=>{ev.preventDefault();const status=$("manualPaymentStatus"),btn=$("saveManualInPersonPayment"),due=Number($("manualPaymentDue")?.value),paid=Number($("manualPaymentPaid")?.value),date=$("manualPaymentDate")?.value||"";if(!selectedManualStudent()){status.textContent="اختاري التلميذ أولًا.";return;}if($("manualPaymentServiceType")?.value==="individual_session"&&!manualPaymentIndividualLesson?.value){status.textContent="اختاري الحصة الفردية المراد تسديدها.";return;}const selectedServiceType=$("manualPaymentServiceType")?.value||"",isCoursePayment=["course","exam_course","test_course"].includes(selectedServiceType),courseDate=$("manualPaymentCourseDate")?.value||"";if(isCoursePayment&&!courseDate){status.textContent="اختاري تاريخ الدورة (يوم واحد).";return;}if(!Number.isFinite(due)||due<=0||!Number.isFinite(paid)||paid<0||paid>due){status.textContent="تحققي من المبلغ المستحق والمبلغ المقبوض؛ يجب ألا يتجاوز المقبوض المستحق.";return;}btn.disabled=true;status.textContent="جارٍ حفظ التسجيل…";try{const token=localStorage.getItem("tahadi_teacher_token");const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"manual_student_payment",payment:{student_id:manualPaymentStudent.value,service_name:selectedServiceType==="individual_session"?(manualPaymentIndividualLesson?.selectedOptions[0]?.textContent||"حصة فردية"):(($("manualPaymentServiceType")?.selectedOptions[0]?.textContent||"اشتراك شهري")+(isCoursePayment&&courseDate?" — "+courseDate:"")),service_type:selectedServiceType,course_date:isCoursePayment?courseDate:null,lesson_id:selectedServiceType==="individual_session"?(manualPaymentIndividualLesson?.value||""):null,subscription_month:selectedServiceType==="monthly_subscription"?Array.from(document.querySelectorAll('input[name="manualPaymentMonth"]:checked')).map(el=>el.value).join("، "):"",amount_due:due,amount_paid:paid,payment_date:date||null,payment_method:$("manualPaymentMethod")?.value||""}})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ التسجيل.");const savedStudent=selectedManualStudent(),savedService=manualPaymentServiceType?.selectedOptions?.[0]?.textContent?.trim()||"خدمة تعليمية",savedMonths=Array.from(document.querySelectorAll('input[name="manualPaymentMonth"]:checked')).map(el=>el.value),remaining=Math.max(0,due-paid),paymentComplete=remaining===0;let successMessage="اكتمل تسجيل العملية بنجاح 🌿
 
-التلميذ: "+(savedStudent?.full_name||"—")+"
-المستوى: "+(savedStudent?.level||"—")+"
-الخدمة: "+savedService;if(savedMonths.length)successMessage+="
-الفترة: "+savedMonths.join("، ");if(isCoursePayment&&courseDate)successMessage+="
-تاريخ الدورة: "+courseDate;successMessage+="
-
+التلميذ: "+(savedStudent?.full_name||"—")+"\nالمستوى: "+(savedStudent?.level||"—")+"\nالخدمة: "+savedService;if(savedMonths.length)successMessage+="\nالفترة: "+savedMonths.join("، ");if(isCoursePayment&&courseDate)successMessage+="\nتاريخ الدورة: "+courseDate;successMessage+="\n
 المبلغ المستحق: "+due.toLocaleString("fr-FR")+" دج
 المبلغ المقبوض: "+paid.toLocaleString("fr-FR")+" دج
 المبلغ المتبقي: "+remaining.toLocaleString("fr-FR")+" دج
