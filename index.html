@@ -3936,6 +3936,37 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
  .section-category>summary .category-title{font-size:15px!important}
  .section-category>summary small{font-size:12px!important}
 }
+
+/* Stack section title and description consistently on mobile */
+.section-category>summary{
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding-top:13px!important;
+  padding-bottom:13px!important;
+  padding-right:14px!important;
+  padding-left:64px!important;
+  text-align:right!important;
+}
+.section-category>summary .category-title{
+  display:block!important;
+  width:100%!important;
+  line-height:1.4!important;
+}
+.section-category>summary small{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  line-height:1.45!important;
+  white-space:normal!important;
+}
+.section-category>summary .category-arrow{
+  left:12px!important;
+}
+@media(max-width:700px){
+ .section-category>summary{padding-right:12px!important;padding-left:62px!important}
+}
 </style>
 
 
