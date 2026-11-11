@@ -4417,17 +4417,41 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
 </section><script>
 (function(){
 const $=id=>document.getElementById(id),endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
-let nodes=[],students=[];
+let nodes=[],students=[],libraryNavStack=[];
 const types={segment:"مقطع تعليمي",knowledge_resource:"مورد معرفي",activity:"نشاط",summary:"ملخص نشاط",exercise:"تمرين مستقل",topic:"موضوع مستقل"};
 const parentTypes={knowledge_resource:"segment",activity:"knowledge_resource",summary:"activity"};
 function esc(v){return String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
 async function api(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await res.json();if(!res.ok||!d.ok)throw new Error(d.error||"تعذر تنفيذ العملية.");return d;}
 function parentOptions(){const type=$("libTeacherType").value,need=parentTypes[type];$("libTeacherParentWrap").hidden=!need;const options=nodes.filter(n=>n.node_type===need);$("libTeacherParent").innerHTML='<option value="">اختاري العنصر الأب</option>'+options.map(n=>'<option value="'+esc(n.id)+'">'+esc(n.title)+'</option>').join("");}
-function renderNodes(){const root=$("libTeacherNodes");if(!nodes.length){root.innerHTML='<p class="muted">لا توجد عناصر بعد لهذا المستوى. ابدئي بإضافة مقطع أو تمرين أو موضوع.</p>';return;}
-const sorted=[...nodes].sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
-root.innerHTML=sorted.map(n=>{const parent=nodes.find(x=>x.id===n.parent_id);const child=n.node_type==="segment"?'<button type="button" class="secondary" data-lib-add-child="knowledge_resource" data-parent-id="'+esc(n.id)+'">＋ إضافة مورد معرفي</button>':n.node_type==="knowledge_resource"?'<button type="button" class="secondary" data-lib-add-child="activity" data-parent-id="'+esc(n.id)+'">＋ إضافة نشاط</button>':n.node_type==="activity"?'<button type="button" class="secondary" data-lib-add-child="summary" data-parent-id="'+esc(n.id)+'">＋ إضافة ملخص النشاط</button>':"";return '<article class="data-item" style="margin:9px 0"><strong>'+esc(types[n.node_type])+' — '+esc(n.title)+'</strong><p class="muted">'+(parent?'يتبع: '+esc(parent.title)+' · ':'')+(n.is_published?'منشور':'مسودة')+' · '+(Array.isArray(n.visible_student_ids)?n.visible_student_ids.length:0)+' تلميذ محدد</p><div class="actions-row">'+child+'<button type="button" class="secondary" data-lib-edit="'+esc(n.id)+'">تعديل</button><button type="button" class="secondary" data-lib-delete="'+esc(n.id)+'">حذف</button></div></article>';}).join("");
-root.querySelectorAll("[data-lib-add-child]").forEach(b=>b.addEventListener("click",()=>startChild(b.dataset.libAddChild,b.dataset.parentId)));root.querySelectorAll("[data-lib-edit]").forEach(b=>b.addEventListener("click",()=>editNode(b.dataset.libEdit)));
-root.querySelectorAll("[data-lib-delete]").forEach(b=>b.addEventListener("click",()=>deleteNode(b.dataset.libDelete)));
+function renderNodes(){
+ const root=$("libTeacherNodes");
+ if(!nodes.length){libraryNavStack=[];root.innerHTML='<p class="muted">لا توجد عناصر بعد لهذا المستوى. ابدئي بإضافة مقطع أو تمرين أو موضوع.</p>';return;}
+ const sort=(a,b)=>Number(a.sort_order)-Number(b.sort_order);
+ const currentId=libraryNavStack.length?libraryNavStack[libraryNavStack.length-1]:null;
+ const current=currentId?nodes.find(n=>String(n.id)===String(currentId)):null;
+ if(currentId&&!current){libraryNavStack=[];return renderNodes();}
+ const children=nodes.filter(n=>String(n.parent_id||"")===String(currentId||"")).sort(sort);
+ const typeChild={segment:["knowledge_resource","مورد معرفي"],knowledge_resource:["activity","نشاط"],activity:["summary","ملخص النشاط"]};
+ const path=libraryNavStack.map(id=>nodes.find(n=>String(n.id)===String(id))).filter(Boolean);
+ const crumbs='<div class="lib-nav-crumbs"><button type="button" class="secondary" data-lib-nav-root>المحتوى التعليمي</button>'+path.map((n,i)=>'<span>←</span><button type="button" class="secondary" data-lib-nav-crumb="'+i+'">'+esc(n.title)+'</button>').join("")+'</div>';
+ const back=current?'<button type="button" class="secondary lib-nav-back" data-lib-nav-back>← رجوع إلى '+esc(path.length>1?path[path.length-2].title:"القائمة الرئيسية")+'</button>':"";
+ const header=current?'<div class="lib-nav-current"><small>'+esc(types[current.node_type]||"عنصر")+'</small><h3>'+esc(current.title)+'</h3></div>':'<div class="lib-nav-current"><h3>اختاري القسم الذي تريدين فتحه</h3><p>كل زر يفتح العناصر التابعة له في صفحة مستقلة داخل المكتبة.</p></div>';
+ const add=current&&typeChild[current.node_type]?'<button type="button" class="primary lib-nav-add" data-lib-add-child="'+typeChild[current.node_type][0]+'" data-parent-id="'+esc(current.id)+'">＋ إضافة '+typeChild[current.node_type][1]+'</button>':"";
+ const list=children.length?children.map(n=>{
+  const childKind=typeChild[n.node_type],hasChildren=nodes.some(x=>String(x.parent_id||"")===String(n.id));
+  const isNavigable=!!childKind||hasChildren;
+  const info=(n.is_published?"منشور للتلاميذ":"مسودة")+(Array.isArray(n.visible_student_ids)?" · "+n.visible_student_ids.length+" تلميذ محدد":"");
+  return '<article class="lib-nav-item"><button type="button" class="lib-nav-open" data-lib-nav-open="'+esc(n.id)+'"><span class="lib-nav-item-icon">'+(n.node_type==="segment"?"📘":n.node_type==="knowledge_resource"?"📚":n.node_type==="activity"?"🧪":n.node_type==="summary"?"📝":"📄")+'</span><span class="lib-nav-item-copy"><strong>'+esc(n.title)+'</strong><small>'+esc(types[n.node_type]||"عنصر")+' · '+esc(info)+'</small></span><span class="lib-nav-arrow">'+(isNavigable?"←":"↗")+'</span></button><div class="lib-nav-item-actions">'+(childKind?'<button type="button" class="secondary" data-lib-add-child="'+childKind[0]+'" data-parent-id="'+esc(n.id)+'">＋ '+childKind[1]+'</button>':"")+'<button type="button" class="secondary" data-lib-edit="'+esc(n.id)+'">تعديل</button><button type="button" class="secondary" data-lib-delete="'+esc(n.id)+'">حذف</button></div></article>';
+ }).join(""):'<p class="muted lib-nav-empty">'+(current?"لا توجد عناصر تابعة هنا بعد. استخدمي زر الإضافة لإنشاء أول عنصر.":"لا توجد عناصر في هذا المستوى بعد. ابدئي بإضافة مقطع تعليمي أو تمرين أو موضوع.")+'</p>';
+ const detail=current&&!typeChild[current.node_type]&&!children.length?'<section class="lib-nav-detail"><h4>تفاصيل العنصر</h4>'+(current.description?'<p>'+esc(current.description)+'</p>':"")+(current.content_text?'<div class="lib-nav-content">'+esc(current.content_text)+'</div>':"")+(current.resource_url?'<a href="'+esc(current.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a>':"")+'</section>':"";
+ root.innerHTML=crumbs+back+header+add+list+detail;
+ root.querySelector("[data-lib-nav-root]")?.addEventListener("click",()=>{libraryNavStack=[];renderNodes();});
+ root.querySelector("[data-lib-nav-back]")?.addEventListener("click",()=>{libraryNavStack.pop();renderNodes();});
+ root.querySelectorAll("[data-lib-nav-crumb]").forEach(b=>b.addEventListener("click",()=>{libraryNavStack=libraryNavStack.slice(0,Number(b.dataset.libNavCrumb)+1);renderNodes();}));
+ root.querySelectorAll("[data-lib-nav-open]").forEach(b=>b.addEventListener("click",()=>{const n=nodes.find(x=>String(x.id)===String(b.dataset.libNavOpen));if(!n)return;libraryNavStack.push(n.id);renderNodes();}));
+ root.querySelectorAll("[data-lib-add-child]").forEach(b=>b.addEventListener("click",()=>startChild(b.dataset.libAddChild,b.dataset.parentId)));
+ root.querySelectorAll("[data-lib-edit]").forEach(b=>b.addEventListener("click",()=>editNode(b.dataset.libEdit)));
+ root.querySelectorAll("[data-lib-delete]").forEach(b=>b.addEventListener("click",()=>deleteNode(b.dataset.libDelete)));
 }
 function showEditorStep(step){document.querySelectorAll("#learningHierarchyView [data-wizard-panel]").forEach(p=>{const active=Number(p.dataset.wizardPanel)===Number(step);p.hidden=!active;p.classList.toggle("is-active",active);});document.querySelectorAll("#learningHierarchyView [data-wizard-indicator]").forEach(i=>{const n=Number(i.dataset.wizardIndicator);i.classList.toggle("is-active",n===Number(step));i.classList.toggle("is-done",n<Number(step));});const panel=document.querySelector(`#learningHierarchyView [data-wizard-panel="${step}"]`);if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});}
 function resetForm(){ $("libTeacherNodeId").value="";$("libTeacherFormTitle").textContent="➕ إضافة عنصر";$("libTeacherTitle").value="";$("libTeacherDescription").value="";$("libTeacherContent").value="";$("libTeacherUrl").value="";$("libTeacherPublished").checked=false;$("libTeacherStudents").selectedIndex=-1;parentOptions();showEditorStep(1);}
@@ -4435,7 +4459,7 @@ function startChild(type,parentId){resetForm();$("libTeacherType").value=type;pa
 function editNode(id){const n=nodes.find(x=>x.id===id);if(!n)return;showEditorStep(1);$("libTeacherNodeId").value=n.id;$("libTeacherFormTitle").textContent="✏️ تعديل العنصر";$("libTeacherType").value=n.node_type;parentOptions();$("libTeacherParent").value=n.parent_id||"";$("libTeacherTitle").value=n.title||"";$("libTeacherDescription").value=n.description||"";$("libTeacherContent").value=n.content_text||"";$("libTeacherUrl").value=n.resource_url||"";$("libTeacherPublished").checked=!!n.is_published;const selected=new Set(n.visible_student_ids||[]);Array.from($("libTeacherStudents").options).forEach(o=>o.selected=selected.has(o.value));window.scrollTo({top:$("learningHierarchyView").offsetTop,behavior:"smooth"});}
 async function deleteNode(id){const n=nodes.find(x=>x.id===id);if(!n||!confirm("سيتم حذف هذا العنصر وكل العناصر التابعة له. هل تريدين المتابعة؟"))return;try{await api("teacher_delete_library_node",{id});await load();$("libTeacherStatus").textContent="تم حذف العنصر وفروعه.";}catch(e){$("libTeacherStatus").textContent=e.message;}}
 async function load(){const level=$("libTeacherLevel").value;if(!level)return;try{$("libTeacherStatus").textContent="جارٍ تحميل المحتوى…";const [a,b]=await Promise.all([api("teacher_list_library_nodes",{level}),api("teacher_list_resource_students",{level})]);nodes=a.nodes||[];students=b.students||[];$("libTeacherStudents").innerHTML=students.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.full_name)+'</option>').join("");parentOptions();renderNodes();$("libTeacherStatus").textContent="تم تحميل "+nodes.length+" عنصرًا و"+students.length+" تلميذًا في هذا المستوى.";}catch(e){$("libTeacherStatus").textContent=e.message;}}
-$("libTeacherLevel").addEventListener("change",()=>{resetForm();load();});
+$("libTeacherLevel").addEventListener("change",()=>{libraryNavStack=[];resetForm();load();});
 document.querySelectorAll("#learningHierarchyView [data-wizard-next]").forEach(b=>b.addEventListener("click",()=>{const next=Number(b.dataset.wizardNext);showEditorStep(next);$("libTeacherStatus").textContent="";}));
 document.querySelectorAll("#learningHierarchyView [data-wizard-back]").forEach(b=>b.addEventListener("click",()=>showEditorStep(Number(b.dataset.wizardBack))));
 $("libTeacherType").addEventListener("change",parentOptions);
@@ -4548,3 +4572,22 @@ document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.ad
 
 </body>
 </html>
+<style id="lib-button-navigation-v1">
+#learningHierarchyView .lib-nav-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin:12px 0}
+#learningHierarchyView .lib-nav-crumbs button,#learningHierarchyView .lib-nav-back{font-size:.88rem;padding:9px 13px}
+#learningHierarchyView .lib-nav-current{padding:14px 4px;color:#174b30}
+#learningHierarchyView .lib-nav-current h3{margin:5px 0;font-size:1.15rem}
+#learningHierarchyView .lib-nav-current p,#learningHierarchyView .lib-nav-current small{color:#758276}
+#learningHierarchyView .lib-nav-add{width:100%;margin:8px 0 14px;padding:14px}
+#learningHierarchyView .lib-nav-item{margin:12px 0;padding:12px;border:1px solid #dce8d9;border-radius:18px;background:#f8fcf7;box-shadow:0 5px 0 #d8e5d6}
+#learningHierarchyView .lib-nav-open{width:100%;display:flex;align-items:center;gap:12px;text-align:right;border:0;border-radius:13px;background:#edf7ed;color:#174b30;padding:15px;cursor:pointer;font:inherit}
+#learningHierarchyView .lib-nav-item-icon{display:grid;place-items:center;min-width:42px;height:42px;border-radius:12px;background:#dcefdc;font-size:1.2rem}
+#learningHierarchyView .lib-nav-item-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:5px}
+#learningHierarchyView .lib-nav-item-copy strong{font-size:1rem}
+#learningHierarchyView .lib-nav-item-copy small{font-size:.8rem;color:#718071}
+#learningHierarchyView .lib-nav-arrow{font-size:1.3rem;font-weight:900}
+#learningHierarchyView .lib-nav-item-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+#learningHierarchyView .lib-nav-item-actions button{flex:1;min-width:85px}
+#learningHierarchyView .lib-nav-empty{padding:18px;text-align:center;background:#f7faf5;border-radius:14px}
+#learningHierarchyView .lib-nav-detail{padding:16px;margin-top:14px;border:1px solid #dce8d9;border-radius:16px;background:white;white-space:pre-wrap;line-height:1.8}
+</style>
