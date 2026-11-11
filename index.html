@@ -1861,6 +1861,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div id="status" class="status" role="status" aria-live="polite"></div>
 
 </main>
+<footer>© منصة التحدي التعليمية</footer>
 
 <div id="lessonFeedbackModal" class="editor-overlay" hidden><section class="editor-panel lesson-feedback-panel" role="dialog" aria-modal="true" aria-labelledby="lessonFeedbackTitle"><div class="editor-head"><h2 id="lessonFeedbackTitle">تأكيد العملية</h2><button type="button" id="closeLessonFeedback" class="secondary">إغلاق ✕</button></div><p id="lessonFeedbackText" class="muted" style="font-size:1rem;line-height:1.8;margin:12px 0"></p><button type="button" id="confirmLessonFeedback" class="primary" style="width:100%">حسنًا</button></section></div>
 <div id="recordEditorModal" class="editor-overlay" hidden><section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="recordEditorTitle"><div class="editor-head"><h2 id="recordEditorTitle">تعديل المعلومات</h2><button type="button" id="closeRecordEditor" class="secondary">إغلاق ✕</button></div><p class="muted">تظهر هنا جميع الحقول المتاحة لهذا السجل. عدّلي ما تحتاجينه ثم احفظي.</p><form id="recordEditorForm"><div id="recordEditorFields" class="editor-fields"></div><div class="editor-actions"><button class="primary" type="submit">حفظ كل التعديلات</button><button class="secondary" type="button" id="cancelRecordEditor">إلغاء</button></div></form></section></div>
@@ -4400,6 +4401,6 @@ $("libTeacherSave").addEventListener("click",async()=>{const level=$("libTeacher
 document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.addEventListener("click",()=>{if($("libTeacherLevel").value)load();}));
 })();
 </script>
-<footer>© منصة التحدي التعليمية</footer>
+
 </body>
 </html>
