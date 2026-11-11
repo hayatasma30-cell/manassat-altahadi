@@ -633,7 +633,7 @@ function renderStudentLearningResources(data=currentDashboardData||teacherPrevie
  html='<button type="button" class="secondary" data-library-back style="margin-bottom:12px">← '+(studentLibraryPath.length?safe(current?.title||"السابق"):"أقسام المكتبة")+'</button><h3 style="margin:8px 0 14px">'+(category?.icon||"📚")+' '+safe(category?.label||"المحتوى")+'</h3>';
  let rows=[];
  if(studentLibraryCategory==="segments"&&!studentLibraryPath.length)rows=byParent(null).filter(n=>n.node_type==="segment");
- else if(studentLibraryCategory!=="segments")rows=byParent(null).filter(n=>n.node_type===studentLibraryCategory);
+ else if(studentLibraryCategory!=="segments"&&!studentLibraryPath.length)rows=byParent(null).filter(n=>n.node_type===studentLibraryCategory);
  else if(current?.node_type==="segment")rows=byParent(current.id).filter(n=>n.node_type==="knowledge_resource");
  else if(current?.node_type==="knowledge_resource")rows=byParent(current.id).filter(n=>n.node_type==="activity");
  else if(current?.node_type==="activity")rows=byParent(current.id).filter(n=>n.node_type==="summary");
