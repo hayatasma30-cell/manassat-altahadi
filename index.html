@@ -2172,7 +2172,7 @@ window.addEventListener("unhandledrejection",function(e){
       }));
     };
     const showStudentModeChooser=()=>{selectedStudentLevel="all";selectedStudyMode="all";studentRegistrationFilter="all";studentStatusFilter="all";studentSearchTerm="";$("studentSearchInput").value="";$("allStudentsSearchInput").value="";$("studentModeChooser").hidden=false;$("studentModeContent").hidden=true;renderStudentFilters();renderStudents();};
-    document.querySelectorAll("[data-student-entry]").forEach(button=>button.addEventListener("click",()=>{const entry=button.dataset.studentEntry;selectedStudentLevel="all";studentStatusFilter="all";studentSearchTerm="";$("studentSearchInput").value="";$("allStudentsSearchInput").value="";selectedStudyMode=entry==="zoom"?"zoom":"in_person";studentRegistrationFilter=entry==="courses"?"course_only":"monthly_subscription";$("studentModeChooser").hidden=true;$("studentModeContent").hidden=false;renderStudentFilters();renderStudents();}));
+    document.querySelectorAll("[data-student-entry]").forEach(button=>button.addEventListener("click",()=>{const entry=button.dataset.studentEntry;selectedStudentLevel="all";studentStatusFilter="all";studentSearchTerm="";$("studentSearchInput").value="";$("allStudentsSearchInput").value="";selectedStudyMode=entry==="zoom"?"zoom":"in_person";studentRegistrationFilter=entry==="courses"?"course_only":entry==="in_person"?"monthly_subscription":"all";$("studentModeChooser").hidden=true;$("studentModeContent").hidden=false;renderStudentFilters();renderStudents();}));
     $("backToStudentModeChooser").addEventListener("click",showStudentModeChooser);
     renderStudentFilters();
     renderStudents();
