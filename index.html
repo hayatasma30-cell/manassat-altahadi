@@ -4207,7 +4207,26 @@ $("accessCategory").addEventListener("change",()=>loadItems($("accessCategory").
 $("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));
 document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));
 })();
-</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><script>
+</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><section id="learningHierarchyView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🧩 المكتبة التعليمية المنظمة</h2></div>
+<div class="panel">
+<p class="muted">أنشئي محتوى هرميًا: المقطع التعليمي ← المورد المعرفي ← النشاط ← ملخص النشاط. التمارين والمواضيع أقسام مستقلة. لا يظهر أي عنصر للتلميذ إلا إذا كان منشورًا ومخصصًا له.</p>
+<label for="libTeacherLevel">المستوى الدراسي</label><select id="libTeacherLevel"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select>
+<div id="libTeacherStatus" class="muted" role="status"></div>
+<div class="panel" style="margin-top:14px;background:#fbfcf8">
+<h3 id="libTeacherFormTitle">➕ إضافة عنصر</h3><input id="libTeacherNodeId" type="hidden">
+<label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select>
+<div id="libTeacherParentWrap"><label for="libTeacherParent">يتبع لـ</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select></div>
+<label for="libTeacherTitle">العنوان</label><input id="libTeacherTitle" maxlength="180" placeholder="عنوان العنصر" required>
+<label for="libTeacherDescription">وصف مختصر</label><textarea id="libTeacherDescription" rows="2" placeholder="وصف اختياري"></textarea>
+<label for="libTeacherContent">محتوى الملخص أو النص التعليمي</label><textarea id="libTeacherContent" rows="4" placeholder="اكتبي المحتوى هنا عند الحاجة"></textarea>
+<label for="libTeacherUrl">رابط مورد أو ملف (اختياري)</label><input id="libTeacherUrl" type="url" placeholder="https://...">
+<label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع (يمكن تحديد أكثر من تلميذ)</label><select id="libTeacherStudents" multiple size="5"></select>
+<label style="display:flex;align-items:center;gap:8px;margin-top:10px"><input id="libTeacherPublished" type="checkbox" style="width:auto"> نشر العنصر للتلاميذ المحددين</label>
+<div class="actions-row" style="margin-top:12px"><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول</button></div>
+</div>
+<h3 style="margin-top:18px">العناصر المسجلة</h3><div id="libTeacherNodes"><p class="muted">اختاري المستوى لعرض محتواه.</p></div>
+</div></section><script>
 (function(){
 const $=id=>document.getElementById(id),endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
 let nodes=[],students=[];
@@ -4232,24 +4251,5 @@ $("libTeacherReset").addEventListener("click",resetForm);
 $("libTeacherSave").addEventListener("click",async()=>{const level=$("libTeacherLevel").value,type=$("libTeacherType").value,title=$("libTeacherTitle").value.trim();if(!level||title.length<2){$("libTeacherStatus").textContent="اختاري المستوى واكتبي عنوانًا صحيحًا.";return;}const parent=parentTypes[type]?$("libTeacherParent").value:null;if(parentTypes[type]&&!parent){$("libTeacherStatus").textContent="اختاري العنصر الأب أولًا.";return;}const btn=$("libTeacherSave");btn.disabled=true;try{await api("teacher_save_library_node",{id:$("libTeacherNodeId").value||undefined,level,node_type:type,parent_id:parent,title,description:$("libTeacherDescription").value,content_text:$("libTeacherContent").value,resource_url:$("libTeacherUrl").value,is_published:$("libTeacherPublished").checked,visible_student_ids:Array.from($("libTeacherStudents").selectedOptions).map(o=>o.value)});resetForm();await load();$("libTeacherStatus").textContent="تم حفظ العنصر بنجاح.";}catch(e){$("libTeacherStatus").textContent=e.message;}finally{btn.disabled=false;}});
 document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.addEventListener("click",()=>{if($("libTeacherLevel").value)load();}));
 })();
-</script><section id="learningHierarchyView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🧩 المكتبة التعليمية المنظمة</h2></div>
-<div class="panel">
-<p class="muted">أنشئي محتوى هرميًا: المقطع التعليمي ← المورد المعرفي ← النشاط ← ملخص النشاط. التمارين والمواضيع أقسام مستقلة. لا يظهر أي عنصر للتلميذ إلا إذا كان منشورًا ومخصصًا له.</p>
-<label for="libTeacherLevel">المستوى الدراسي</label><select id="libTeacherLevel"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select>
-<div id="libTeacherStatus" class="muted" role="status"></div>
-<div class="panel" style="margin-top:14px;background:#fbfcf8">
-<h3 id="libTeacherFormTitle">➕ إضافة عنصر</h3><input id="libTeacherNodeId" type="hidden">
-<label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select>
-<div id="libTeacherParentWrap"><label for="libTeacherParent">يتبع لـ</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select></div>
-<label for="libTeacherTitle">العنوان</label><input id="libTeacherTitle" maxlength="180" placeholder="عنوان العنصر" required>
-<label for="libTeacherDescription">وصف مختصر</label><textarea id="libTeacherDescription" rows="2" placeholder="وصف اختياري"></textarea>
-<label for="libTeacherContent">محتوى الملخص أو النص التعليمي</label><textarea id="libTeacherContent" rows="4" placeholder="اكتبي المحتوى هنا عند الحاجة"></textarea>
-<label for="libTeacherUrl">رابط مورد أو ملف (اختياري)</label><input id="libTeacherUrl" type="url" placeholder="https://...">
-<label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع (يمكن تحديد أكثر من تلميذ)</label><select id="libTeacherStudents" multiple size="5"></select>
-<label style="display:flex;align-items:center;gap:8px;margin-top:10px"><input id="libTeacherPublished" type="checkbox" style="width:auto"> نشر العنصر للتلاميذ المحددين</label>
-<div class="actions-row" style="margin-top:12px"><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول</button></div>
-</div>
-<h3 style="margin-top:18px">العناصر المسجلة</h3><div id="libTeacherNodes"><p class="muted">اختاري المستوى لعرض محتواه.</p></div>
-</div></section></body>
+</script></body>
 </html>
