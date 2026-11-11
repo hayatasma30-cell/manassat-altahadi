@@ -17,16 +17,28 @@
   }catch(_){}
 })();
 </script>
-<script>/* لا نخفي واجهة فضاء الأستاذة أثناء استعادة الصفحة؛ تظهر مباشرة حتى لو تعذر استرجاع موضع التمرير. */</script>
+<script>
+(function(){
+  try{
+    const token=localStorage.getItem("tahadi_teacher_token");
+    const expiry=localStorage.getItem("tahadi_teacher_expires");
+    const saved=JSON.parse(sessionStorage.getItem("tahadi_teacher_page_position_v2")||localStorage.getItem("tahadi_teacher_page_position_v2")||"null");
+    if(token&&expiry&&new Date(expiry).getTime()>Date.now()&&saved&&saved.view&&saved.view!=="homeView"){
+      document.documentElement.classList.add("tahadi-restoring");
+      window.__tahadiRestoreFallback=setTimeout(()=>document.documentElement.classList.remove("tahadi-restoring"),15000);
+    }
+  }catch(_){}
+})();
+</script>
 <meta charset="utf-8">
 <link rel="manifest" href="./manifest.json"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-11-11-learning-hierarchy-wizard-v2">
+<meta name="platform-build" content="2026-11-04-restore-original-individual-payment-flow-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
 :root{--g:#14532d;--g2:#166534;--g3:#21834c;--cream:#faf8ee;--ink:#18382a;--muted:#69786d;--line:#e3e9dc;--pale:#eef7ec;--gold:#f1d38a;--white:#fff}
-*{box-sizing:border-box}html{scroll-behavior:smooth}/* واجهة فضاء الأستاذة تبقى مرئية أثناء استعادة آخر صفحة. */body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
+*{box-sizing:border-box}html{scroll-behavior:smooth}html.tahadi-restoring body > :not(.topbar){visibility:hidden!important}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.75}
 button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .topbar{background:linear-gradient(120deg,#103f28,var(--g2));color:#fff;padding:12px 16px;box-shadow:0 4px 18px #143e2518}
 .top-inner{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:10px;font-size:1.15rem;font-weight:800}.brand-logo{width:48px;height:48px;object-fit:contain;flex:0 0 48px;filter:drop-shadow(0 2px 3px #0002)}.brand-text{display:block}.brand small{display:block;font-size:.7rem;font-weight:400;color:#d6ead9}
@@ -35,21 +47,6 @@ button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:tran
 .menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.menu-btn{width:100%;min-height:104px;background:linear-gradient(145deg,#fff 0%,#fbfff9 100%);border:1.5px solid #b7d8b8;border-bottom:5px solid #56a96b;border-radius:21px;padding:14px;display:flex;align-items:center;gap:12px;text-align:right;color:var(--ink);box-shadow:0 8px 0 #1b6b3520,0 14px 24px #173f2226;transition:transform .18s,box-shadow .18s,border-color .18s;position:relative;isolation:isolate}.menu-btn:nth-child(1){border-color:#f0c66a;border-bottom-color:#d99a20;background:linear-gradient(145deg,#fffdf5,#fff5d9);box-shadow:0 8px 0 #c48b2426,0 14px 24px #8a641c26}.menu-btn:nth-child(2){border-color:#a6dcb1;border-bottom-color:#299b52;background:linear-gradient(145deg,#fff,#f0fff3);box-shadow:0 8px 0 #24874624,0 14px 24px #185e3025}.menu-btn:nth-child(3){border-color:#f2b1b8;border-bottom-color:#e35c68;background:linear-gradient(145deg,#fff,#fff1f2);box-shadow:0 8px 0 #c83e4c26,0 14px 24px #9e293526}.menu-btn:nth-child(4){border-color:#a8d0ff;border-bottom-color:#3489ec;background:linear-gradient(145deg,#fff,#eff7ff);box-shadow:0 8px 0 #2874d626,0 14px 24px #245b9b26}.menu-btn:nth-child(5){border-color:#d9b0f4;border-bottom-color:#9a4bd2;background:linear-gradient(145deg,#fff,#fbf1ff);box-shadow:0 8px 0 #8137b226,0 14px 24px #64268a26}.menu-btn:active{transform:translateY(4px);box-shadow:0 3px 0 #193d2020,0 6px 12px #173f221a}.menu-btn:hover{transform:translateY(-2px)}.menu-icon{width:52px;height:52px;flex:0 0 52px;display:grid;place-items:center;border-radius:17px;background:linear-gradient(145deg,#eff9ec,#dff2dc);font-size:1.45rem;box-shadow:0 5px 12px #193d201b;border:1px solid #ffffff}.menu-copy{flex:1}.menu-copy strong{display:block;font-size:.98rem}.menu-copy small{display:block;color:var(--muted);font-size:.76rem;line-height:1.45;margin-top:2px}.chev{color:var(--g2);font-size:1.35rem}
 .view{display:none!important}.view.active{display:block!important;visibility:visible!important;opacity:1!important;animation:fade .18s ease}@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
 .view-head{display:flex;align-items:center;gap:10px;margin:10px 0 16px}.back{width:auto;min-height:40px;margin:0;padding:8px 13px;border-radius:11px;background:#e8f3e6;color:var(--g);font-size:.86rem}.view-head h2{margin:0;font-size:1.35rem}.panel{background:#fff;border:1px solid var(--line);border-radius:19px;padding:18px;box-shadow:0 8px 24px #153d2010}.muted{color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}.stat{background:var(--pale);border-radius:15px;padding:14px}.stat strong{display:block;font-size:1.6rem;color:var(--g2)}.stat span{font-size:.88rem}
-/* ملخص المنصة: بطاقات إحصائية أوضح ومناسبة للهاتف */
-#overviewView .panel{padding:clamp(14px,3.5vw,22px);border-radius:22px}
-#overviewView .overview-intro{margin:0 0 16px;line-height:1.8}
-#overviewView .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:0 0 16px}
-#overviewView .stat{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;min-height:112px;padding:15px;border:1px solid #e1ecdf;border-radius:18px;background:linear-gradient(145deg,#f2f8f0,#e8f3e7);text-align:right;color:var(--ink);font:inherit;box-shadow:0 3px 0 rgba(25,83,48,.05);transition:transform .15s ease,box-shadow .15s ease;cursor:pointer}
-#overviewView .stat:active{transform:translateY(1px);box-shadow:none}
-#overviewView .stat strong{font-size:clamp(1.7rem,6vw,2.15rem);line-height:1.1;font-weight:800;letter-spacing:-.03em}
-#overviewView .stat span{font-size:.88rem;font-weight:700;color:#294c36;line-height:1.4}
-#overviewView .stat small{font-size:.72rem;color:#64806b;font-weight:600}
-#overviewView .stat.pending-stat{background:linear-gradient(145deg,#fff8e9,#fff1d7);border-color:#f2e4c7}
-#overviewView .stat.pending-stat strong{color:#9a681c}
-#overviewView .stat.pending-stat span{color:#77551f}
-#overviewView #refreshBtn{margin-top:2px;min-height:46px;border-radius:13px}
-@media(min-width:700px){#overviewView .stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}#overviewView .stat{min-height:126px;padding:18px}}
-
 .list{display:grid;gap:10px}.data-item{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff;overflow-wrap:anywhere}.data-item strong{display:block;margin-bottom:3px}.data-item span,.data-item .small{font-size:.88rem;color:var(--muted)}.small{font-size:.85rem;margin-top:8px;line-height:1.8}.payment-meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:9px}.payment-status{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:.82rem;font-weight:700;border:1px solid transparent}.payment-status.pending{color:#855600;background:#fff4cf;border-color:#f0d47a}.payment-status.approved{color:#17633a;background:#e5f6eb;border-color:#a9d9b7}.payment-status.rejected{color:#9f2431;background:#ffeaed;border-color:#edb0b8}.payment-date{display:block;margin-top:9px;padding-top:9px;border-top:1px dashed #d9e5d7;color:#586b5c;font-size:.88rem;line-height:1.8}.status{display:none;padding:10px 13px;margin:12px 0;border-radius:12px;overflow-wrap:anywhere}.status.show{display:block}.status.error{background:#fff0f0;color:#a61b1b}.status.ok{background:#eef8ee;color:var(--g)}
 .login{max-width:520px;margin:25px auto;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 8px 24px #153d2010}.login h2{margin-top:0}.login p{color:var(--muted)}label{display:block;font-weight:700;margin:13px 0 6px}input{width:100%;padding:12px 14px;border:1px solid #cbd7ca;border-radius:12px;background:white;color:var(--ink)}.primary{width:100%;border:0;border-radius:12px;background:var(--g2);color:white;padding:12px 16px;min-height:46px;font-weight:700;margin-top:12px}.primary:disabled{opacity:.6}
 .note{margin-top:18px;padding:15px;border-right:4px solid var(--g3);border-radius:12px;background:#edf6eb;color:#405c48;font-size:.9rem}.logout{width:auto;margin:0;padding:8px 12px;min-height:38px;border-radius:10px;background:#ffffff20;border:1px solid #ffffff50;color:#fff;font-size:.82rem}
@@ -318,9 +315,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #reviewCoursesView .course-next{width:100%;margin-top:20px}
 #reviewCoursesView .course-back{width:auto}
 @media(max-width:420px){#reviewCoursesView .course-step{font-size:.72rem;padding:8px 3px}#reviewCoursesView .course-nav-actions{flex-direction:column}#reviewCoursesView .course-nav-actions button{width:100%}}
-
-#lessonCategory{border:1px solid #cbdcc8;border-radius:14px;padding:13px;background:#fff;color:var(--ink);width:100%;font:inherit;font-weight:700;box-shadow:0 3px 0 #e3e9dc}#lessonCategoryHint{background:#eef7ec;border-right:4px solid #21834c;border-radius:10px;padding:9px 12px}.lesson-kind-pill{display:inline-block;background:#e5f3e5;color:#14532d;border:1px solid #b7d8b8;border-radius:999px;padding:2px 10px;font-size:.9rem;font-weight:700}.daily-mode-switch button{border-radius:14px;box-shadow:0 4px 0 #0b3820,0 7px 14px #14532d18;min-height:46px}.daily-mode-switch button:active{transform:translateY(2px);box-shadow:0 2px 0 #0b3820}
-.lesson-category-filter{margin-top:10px}.lesson-category-filter button{flex:1;min-width:0;font-size:.95rem;padding:11px 9px;border-radius:13px;box-shadow:0 4px 0 rgba(20,83,45,.16),0 7px 12px rgba(20,63,34,.07)}.lesson-category-filter button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(20,83,45,.16)}
+\n#lessonCategory{border:1px solid #cbdcc8;border-radius:14px;padding:13px;background:#fff;color:var(--ink);width:100%;font:inherit;font-weight:700;box-shadow:0 3px 0 #e3e9dc}#lessonCategoryHint{background:#eef7ec;border-right:4px solid #21834c;border-radius:10px;padding:9px 12px}.lesson-kind-pill{display:inline-block;background:#e5f3e5;color:#14532d;border:1px solid #b7d8b8;border-radius:999px;padding:2px 10px;font-size:.9rem;font-weight:700}.daily-mode-switch button{border-radius:14px;box-shadow:0 4px 0 #0b3820,0 7px 14px #14532d18;min-height:46px}.daily-mode-switch button:active{transform:translateY(2px);box-shadow:0 2px 0 #0b3820}\n.lesson-category-filter{margin-top:10px}.lesson-category-filter button{flex:1;min-width:0;font-size:.95rem;padding:11px 9px;border-radius:13px;box-shadow:0 4px 0 rgba(20,83,45,.16),0 7px 12px rgba(20,63,34,.07)}.lesson-category-filter button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(20,83,45,.16)}
 /* إعادة تنظيم حصصي اليومية على الهاتف */
 #dailyLessonsView>.panel{padding:18px!important}
 #dailyLessonsView>.panel>.daily-mode-switch[aria-label="أقسام الحصص"]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;margin:16px 0 20px!important}
@@ -916,17 +911,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  #studentLevelView #studentsList .student-card-details .student-actions button{min-height:27px!important;padding:3px 4px!important;font-size:9px!important}
  #studentLevelView #studentsList .student-card-meta .student-chip{white-space:nowrap}
 }
-
-/* إظهار اختيار نوع الاحتساب وسعر الدورة بوضوح في كل مسارات الحضور */
-.lesson-roster-row{grid-template-columns:minmax(0,1fr) 74px 68px!important;row-gap:8px!important;padding:12px 4px!important}
-.lesson-roster-billing{grid-column:1/-1!important;display:flex!important;justify-content:flex-start!important;gap:8px!important;white-space:normal!important;font-size:.82rem!important;color:#245b39}
-.lesson-roster-billing select{width:auto!important;min-width:125px!important;min-height:38px!important;padding:5px 9px!important;border:1px solid #b8d5b5!important;border-radius:9px!important;background:#fff!important;color:#18382a!important}
-.lesson-course-price-wrap{margin:14px 0;padding:13px;border:1px solid #b7d8b8;border-right:4px solid #21834c;border-radius:13px;background:#f0f8ed}
-.lesson-course-price-wrap[hidden]{display:none!important}
-.lesson-course-price-wrap label{display:grid;gap:7px;font-weight:800;color:#14532d}
-.lesson-course-price-wrap input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #9fc7a2;border-radius:11px;background:#fff}
-@media(max-width:420px){.lesson-roster-row{grid-template-columns:minmax(0,1fr) 62px 58px!important}.lesson-roster-row label{font-size:.75rem!important}}
-</style>
+\n/* إظهار اختيار نوع الاحتساب وسعر الدورة بوضوح في كل مسارات الحضور */\n.lesson-roster-row{grid-template-columns:minmax(0,1fr) 74px 68px!important;row-gap:8px!important;padding:12px 4px!important}\n.lesson-roster-billing{grid-column:1/-1!important;display:flex!important;justify-content:flex-start!important;gap:8px!important;white-space:normal!important;font-size:.82rem!important;color:#245b39}\n.lesson-roster-billing select{width:auto!important;min-width:125px!important;min-height:38px!important;padding:5px 9px!important;border:1px solid #b8d5b5!important;border-radius:9px!important;background:#fff!important;color:#18382a!important}\n.lesson-course-price-wrap{margin:14px 0;padding:13px;border:1px solid #b7d8b8;border-right:4px solid #21834c;border-radius:13px;background:#f0f8ed}\n.lesson-course-price-wrap[hidden]{display:none!important}\n.lesson-course-price-wrap label{display:grid;gap:7px;font-weight:800;color:#14532d}\n.lesson-course-price-wrap input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #9fc7a2;border-radius:11px;background:#fff}\n@media(max-width:420px){.lesson-roster-row{grid-template-columns:minmax(0,1fr) 62px 58px!important}.lesson-roster-row label{font-size:.75rem!important}}\n</style>
 
 <style id="home-redesign-clean-v3">
 /* الصفحة الرئيسية: تصميم هادئ ومتماسك للهاتف */
@@ -1447,33 +1432,31 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <details class="platform-sections">
 <summary class="platform-sections-entry"><span class="entry-icon">☰</span><span><strong>أقسام المنصة</strong><small>اضغطي هنا للوصول إلى جميع خدمات المنصة</small></span><span class="entry-arrow">＋</span></summary>
 <div class="platform-sections-content">
-<button class="unified-library-entry" data-view="studentsHubView" type="button"><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></button>
-<button class="unified-library-entry" data-view="resourceLibraryView" type="button"><span class="category-title">📚 المكتبة العلمية</span><small>مدخل موحد للمعلومات والدروس والملخصات والاختبارات والتحديات والدورات وإتاحة المحتوى</small><span class="category-arrow">＋</span></button>
-<button class="unified-library-entry" data-view="financialHubView" type="button"><span class="category-title">💼 الإدارة المالية</span><small>الاشتراكات والمدفوعات والحسابات والملخص والتسجيلات</small><span class="category-arrow">＋</span></button>
-</div>
-</details>
-<div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
-</section>
-<section id="studentsHubView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 التلاميذ والحصص</h2></div>
-<div class="panel"><p class="muted">اختاري الخدمة التي تريدين إدارتها.</p><div class="category-buttons">
-<button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
+<details class="section-category"><summary><span class="category-title">🎓 التلاميذ والحصص</span><small>التلاميذ، الحصص، الاختبارات والأسئلة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="studentsView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>قائمة التلاميذ</strong><small>عرض التلاميذ النشطين</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="student-space.html?v=20261105-enrollment191" style="text-decoration:none"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>فضاء التلميذ</strong><small>فتح فضاء التلميذ مباشرة</small></span><span class="chev">‹</span></a>
 <a class="menu-btn" id="teacherQuestionsInboxLink" href="teacher-questions.html" style="text-decoration:none;position:relative"><span class="menu-icon">✉️</span><span class="menu-copy"><strong>أسئلة التلاميذ</strong><small>الأسئلة والأجوبة الكتابية — للأستاذة فقط</small></span><span class="chev">‹</span><span id="teacherQuestionUnreadBadge" hidden style="display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:#b42318;color:#fff;font-size:12px;font-weight:900;margin-inline-start:auto"></span></a>
 <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="weeklyGroupsView"><span class="menu-icon">👥</span><span class="menu-copy"><strong>المجموعات الأسبوعية</strong><small>إدارة مجموعات الدعم الحضوري وZoom</small></span><span class="chev">‹</span></button>
-</div></div></section>
-<section id="financialHubView" class="view">
-<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💼 الإدارة المالية</h2></div>
-<div class="panel"><p class="muted">اختاري الخدمة المالية التي تريدين إدارتها.</p><div class="category-buttons">
-<button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>إدارة الاشتراكات</strong><small>متابعة اشتراكات التلاميذ والمبالغ والحالات</small></span><span class="chev">‹</span></button>
+</div></details>
+<details class="section-category"><summary><span class="category-title">📘 المكتبة التعليمية</span><small>التعلّم اليومي ودورات المراجعة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة المكتبة العلمية</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
+<button class="menu-btn" id="teacherTestsInboxLink" data-view="electronicTestsView" style="position:relative"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات والتحديات</strong><small>إدارة الاختبارات الإلكترونية والتحديات اليومية</small></span><span class="chev">‹</span><span id="teacherQuizUnreadBadge" hidden style="display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:#b42318;color:#fff;font-size:12px;font-weight:900;margin-inline-start:auto"></span></button>
+<button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="resourceLibraryView" type="button"><span class="menu-icon">📖</span><span class="menu-copy"><strong>مكتبة الدروس والموارد</strong><small>إضافة الدروس والملخصات والتمارين وإدارة الموارد</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="learningResourcesView" id="contentAccessShortcut" type="button"><span class="menu-icon">🔐</span><span class="menu-copy"><strong>إدارة إتاحة المحتوى</strong><small>قفل أو فتح الدروس والاختبارات والدورات والتحديات</small></span><span class="chev">‹</span></button>
+</div></details>
+<details class="section-category"><summary><span class="category-title">💼 الإدارة المالية</span><small>الاشتراكات والمدفوعات والحسابات والملخص والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>إدارة الاشتراكات</strong><small>متابعة اشتراكات التلاميذ والمبالغ والحالات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>مراجعة المدفوعات ووصولات الدفع</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" data-view="incomeView"><span class="menu-icon">💰</span><span class="menu-copy"><strong>مداخيلي</strong><small>عرض المداخيل والحسابات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" id="schoolYearGoalsShortcut" type="button"><span class="menu-icon">🎯</span><span class="menu-copy"><strong>أهداف السنة الدراسية</strong><small>متابعة الهدف السنوي والشهري</small></span><span class="chev">‹</span></button>
-</div></div></section>
+<button class="menu-btn" data-view="overviewView"><span class="menu-icon">📊</span><span class="menu-copy"><strong>ملخص المنصة</strong><small>أعداد التلاميذ والمدفوعات</small></span><span class="chev">‹</span></button>
+</div></details>
+</div>
+</details>
+<div id="sessionActions" style="display:none;margin-top:18px"><button class="primary" id="logoutBtn" type="button">تسجيل الخروج</button></div>
+</section>
 <section id="learningResourcesView" class="view">
-<div class="view-head"><button class="back" data-view="resourceLibraryView" type="button">→ المكتبة العلمية</button><h2>🔐 إدارة إتاحة المحتوى</h2></div><section class="panel" id="selectiveContentAccess" style="margin:12px 0;border:1px solid #dce8d7">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🔐 إدارة إتاحة المحتوى</h2></div><section class="panel" id="selectiveContentAccess" style="margin:12px 0;border:1px solid #dce8d7">
 <h3 style="margin-top:0">🔐 إدارة إتاحة المحتوى</h3>
 <p class="muted">اختاري القسم أو المحتوى الذي تريدين إغلاقه، واكتبي رسالة توضيحية تظهر للتلميذ. تبقى بقية أقسام المنصة متاحة.</p>
 <label for="accessCategory">القسم</label><select id="accessCategory"><option value="resources">الدروس والموارد التعليمية</option><option value="daily_science">المعلومات اليومية</option><option value="lessons">الحصص</option><option value="quizzes">الاختبارات</option><option value="challenges">التحديات اليومية</option><option value="review_courses">دورات المراجعة</option><option value="courses">موارد الدورات</option><option value="summaries">الملخصات</option><option value="exercises">التمارين</option></select>
@@ -1483,31 +1466,21 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <p id="selectiveAccessStatus" class="muted" role="status"></p><div id="selectiveAccessList" class="list"></div>
 </section>
 </section>
-<section id="resourceLibraryView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 المكتبة العلمية</h2></div>
-<div id="resourceLibraryHub" class="panel"><p class="muted">من هنا تديرين جميع أقسام المحتوى التعليمي من مكان واحد.</p><div class="electronic-tests-menu" style="display:grid;grid-template-columns:1fr;gap:12px">
-<a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>المعلومات العلمية</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
-<button type="button" class="menu-btn" data-view="learningHierarchyView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>الدروس والملخصات</strong><small>المقطع التعليمي ← المورد المعرفي ← النشاط ← ملخص النشاط</small></span><span class="chev">‹</span></button>
-<button type="button" class="menu-btn" id="teacherTestsInboxLink" data-view="electronicTestsView" style="position:relative"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات والتحديات</strong><small>إدارة الاختبارات الإلكترونية والتحديات اليومية</small></span><span class="chev">‹</span><span id="teacherQuizUnreadBadge" hidden style="display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:#b42318;color:#fff;font-size:12px;font-weight:900;margin-inline-start:auto"></span></button>
-<button type="button" class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">🎓</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
-<button type="button" class="menu-btn" data-view="learningResourcesView" id="contentAccessShortcut"><span class="menu-icon">🔐</span><span class="menu-copy"><strong>إدارة إتاحة المحتوى</strong><small>قفل وفتح الدروس والاختبارات والدورات والتحديات</small></span><span class="chev">‹</span></button>
-<button type="button" id="openResourceAdd" hidden aria-hidden="true" tabindex="-1">إضافة مورد مستقل</button>
-<button type="button" class="menu-btn" id="openResourceList"><span class="menu-icon">🗂️</span><span class="menu-copy"><strong>أرشيف الموارد التعليمية السابقة</strong><small>عرض الموارد القديمة وتعديلها أو نشرها دون نقلها أو حذفها</small></span><span class="chev">‹</span></button>
-</div></div>
-<div class="panel" id="resourceAddPanel" hidden><button type="button" class="secondary" id="backResourceAdd" style="margin-bottom:14px">← العودة إلى مكتبة الدروس والموارد</button><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
+<section id="resourceLibraryView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
+<div class="panel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
 <form id="learningResourceForm">
-<input id="resourceId" type="hidden"><input id="resourceStoredPath" type="hidden">
+<input id="resourceId" type="hidden">
 <label for="resourceTitle">عنوان المورد</label><input id="resourceTitle" required maxlength="180" placeholder="مثال: ملخص الزلازل والتشوهات التكتونية">
 <label for="resourceLevel">المستوى الدراسي</label><select id="resourceLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select>
-<button type="button" class="secondary" id="openResourceStudentPicker" style="margin:12px 0">👥 اختيار التلاميذ الذين يمكنهم رؤية المورد</button><div id="resourceStudentPicker" class="panel" hidden style="margin:8px 0"><p class="muted">اختاري المستوى أولًا، ثم حددي التلاميذ المسموح لهم برؤية هذا المورد. إذا لم تحددي أسماء، فسيكون المورد متاحًا لجميع التلاميذ.</p><div class="actions-row"><button type="button" class="secondary" id="selectAllResourceStudents">تحديد الكل</button><button type="button" class="secondary" id="clearResourceStudents">إلغاء التحديد</button></div><div id="resourceStudentsChoices" style="max-height:260px;overflow:auto"></div><p id="resourceStudentsCount" class="muted small">لم يتم اختيار تلاميذ محددين.</p></div>
 <label for="resourceType">نوع المورد</label><select id="resourceType"><option value="lesson">درس</option><option value="summary">ملخص</option><option value="exercise">تمرين</option><option value="video">فيديو</option><option value="link">رابط تعليمي</option></select>
-<label for="resourceUrl">رابط الملف أو الفيديو (اختياري)</label><input id="resourceUrl" type="url" placeholder="https://..."><label for="resourcePdfFile">أو ارفعي ملف PDF</label><input id="resourcePdfFile" type="file" accept="application/pdf,.pdf"><p class="muted small">PDF فقط، بحد أقصى 15 ميغابايت. عند اختيار ملف، سيُستخدم بدل الرابط.</p>
+<label for="resourceUrl">رابط الملف أو الفيديو (اختياري)</label><input id="resourceUrl" type="url" placeholder="https://...">
 <label for="resourceDescription">وصف مختصر (اختياري)</label><input id="resourceDescription" maxlength="1000" placeholder="محتوى المورد أو تعليمات للتلميذ">
 <label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="resourcePublished" type="checkbox" style="width:auto"> نشر المورد في فضاء التلميذ فورًا</label>
-<div class="actions-row"><button class="primary" id="saveLearningResource" type="submit">حفظ المورد</button><button class="secondary" id="cancelResourceEdit" type="button">إفراغ الحقول</button></div><p id="resourceFormStatus" class="muted" role="status"></p></form></div></div>
-<div class="panel" id="resourceListPanel" hidden><button type="button" class="secondary" id="backResourceList" style="margin-bottom:14px">← العودة إلى مكتبة الدروس والموارد</button><div class="section-heading"><h3>الموارد المضافة</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div>
+<div class="actions-row"><button class="primary" id="saveLearningResource" type="submit">حفظ المورد</button><button class="secondary" id="cancelResourceEdit" type="button">إفراغ الحقول</button></div><p id="resourceFormStatus" class="muted" role="status"></p></form></div>
+<div class="panel"><div class="section-heading"><h3>الموارد المضافة</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div>
 </section>
 <section id="reviewCoursesView" class="view">
-<div class="view-head"><button class="back" data-view="resourceLibraryView" type="button">→ المكتبة العلمية</button><h2>📚 دورات المراجعة</h2></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 دورات المراجعة</h2></div>
 <div id="courseCatalogPanel" class="panel"><div class="section-heading"><div><h3>مكتبة الدورات</h3><p class="muted">أنشئي دورة جديدة أو افتحي دورة محفوظة لإدارة المشاركين والملخصات والتمارين.</p></div><button class="secondary" id="refreshCourseCatalog" type="button">تحديث</button></div><button class="primary" id="createReviewCourse" type="button">＋ إنشاء دورة جديدة</button><div id="courseCatalogList" class="list"><p class="muted">جارٍ تحميل الدورات…</p></div></div>
 <div class="course-stepper" id="courseSetupStepper" hidden aria-label="خطوات إدارة الدورة"><span class="course-step active" data-step-label="1">١. إعداد الدورة</span><span class="course-step" data-step-label="2">٢. اختيار التلاميذ</span><span class="course-step" data-step-label="3">٣. المشاركون</span></div>
 <div id="courseSetupPage" class="course-subpage" hidden>
@@ -1551,7 +1524,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="login"><p>أدخلي رمز الأستاذة الخاص للوصول إلى معلومات المنصة.</p><form id="loginForm"><label for="code">كود الدخول</label><input id="code" type="password" minlength="6" maxlength="64" autocomplete="current-password" required placeholder="أدخلي الكود هنا"><button class="primary" id="submitBtn" type="submit">دخول</button></form></div>
 </section>
 <section id="studentsView" class="view">
-<div class="view-head"><button class="back" data-view="studentsHubView" type="button">→ التلاميذ والحصص</button><h2>🎓 قائمة التلاميذ</h2></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div>
 <div class="panel"><div class="students-overview-tools"><div><h3 style="margin:0">قائمة المستويات</h3><p class="muted" style="margin:4px 0 0">ابحثي عن أي تلميذ أو اختاري المستوى.</p></div><button class="primary overview-add-button" id="openAddStudentPage" type="button">➕ إضافة تلميذ</button></div><div class="overview-search"><input id="allStudentsSearchInput" type="search" autocomplete="off" placeholder="ابحثي بالاسم أو رقم الهاتف…"><button type="button" class="primary" id="allStudentsSearchBtn">بحث</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
 
 </section>
@@ -1571,7 +1544,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <section id="studentLevelView" class="view">
 <div class="view-head"><button class="back" id="backToStudentLevels" type="button">→ مستويات التلاميذ</button><h2 id="studentLevelTitle">قائمة التلاميذ</h2></div><div class="panel"><div class="student-list-tools"><div><label for="studentSearchInput">🔎 البحث عن تلميذ</label><input id="studentSearchInput" type="search" autocomplete="off" placeholder="الاسم أو رقم الهاتف…"></div><div><label for="studentSortSelect">ترتيب القائمة</label><select id="studentSortSelect"><option value="name">الاسم أبجديًا</option><option value="newest">الأحدث تسجيلًا</option><option value="oldest">الأقدم تسجيلًا</option></select></div></div><div id="studentQuickStats" class="student-quick-stats"></div><p id="studentLevelDescription" class="muted"></p><div id="studentsList" class="list" style="margin-top:14px"></div></div>
 </section>
-<section id="electronicTestsView" class="view"><div class="view-head"><button class="back" data-view="resourceLibraryView" type="button">→ المكتبة العلمية</button><h2>📝 الاختبارات والتحديات</h2></div><style>.electronic-tests-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.electronic-tests-menu .menu-btn{min-height:90px}.electronic-test-panel[hidden],#electronicTestsHub[hidden]{display:none!important}.electronic-test-back{width:auto;min-height:40px;padding:8px 13px;border-radius:11px;background:#e8f3e6;color:#14532d}.electronic-test-panel{border-radius:20px;padding:clamp(16px,3vw,26px);box-shadow:0 10px 24px #183d2410}.electronic-test-panel>.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.electronic-test-panel .actions-row{display:flex;gap:10px;flex-wrap:wrap}.electronic-test-panel .actions-row button{flex:1 1 190px;min-height:48px;border-radius:13px;box-shadow:0 5px 0 #14532d24}.electronic-test-panel .data-item{border:1px solid #dfe8dc;border-radius:17px;padding:16px;background:#fff}.quiz-library-card{display:flex;flex-direction:column;align-items:stretch;gap:13px;margin:12px 0!important;padding:17px!important;border:1px solid #dce8d9!important;border-radius:19px!important;background:linear-gradient(145deg,#fff 0%,#fbfdf9 100%)!important;box-shadow:0 5px 0 #e1eadf,0 10px 22px #173d2410!important}.quiz-library-card .quiz-card-head{display:flex;align-items:flex-start;gap:11px}
+<section id="electronicTestsView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📝 الاختبارات والتحديات</h2></div><style>.electronic-tests-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.electronic-tests-menu .menu-btn{min-height:90px}.electronic-test-panel[hidden],#electronicTestsHub[hidden]{display:none!important}.electronic-test-back{width:auto;min-height:40px;padding:8px 13px;border-radius:11px;background:#e8f3e6;color:#14532d}.electronic-test-panel{border-radius:20px;padding:clamp(16px,3vw,26px);box-shadow:0 10px 24px #183d2410}.electronic-test-panel>.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.electronic-test-panel .actions-row{display:flex;gap:10px;flex-wrap:wrap}.electronic-test-panel .actions-row button{flex:1 1 190px;min-height:48px;border-radius:13px;box-shadow:0 5px 0 #14532d24}.electronic-test-panel .data-item{border:1px solid #dfe8dc;border-radius:17px;padding:16px;background:#fff}.quiz-library-card{display:flex;flex-direction:column;align-items:stretch;gap:13px;margin:12px 0!important;padding:17px!important;border:1px solid #dce8d9!important;border-radius:19px!important;background:linear-gradient(145deg,#fff 0%,#fbfdf9 100%)!important;box-shadow:0 5px 0 #e1eadf,0 10px 22px #173d2410!important}.quiz-library-card .quiz-card-head{display:flex;align-items:flex-start;gap:11px}
 
 /* تصميم محسن ومرتب لإعدادات الاختبار */
 #electronicTestManageContent{direction:rtl;color:#244a35;padding:4px 0 10px}
@@ -1623,13 +1596,13 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 }
 .quiz-library-card .quiz-card-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:13px;background:#edf6ea;border:1px solid #d6e6d1;font-size:21px}.quiz-library-card .quiz-card-info{min-width:0;flex:1}.quiz-library-card .quiz-card-title{display:block;color:#174c30;font-size:1.04rem;line-height:1.65;overflow-wrap:anywhere}.quiz-library-card .quiz-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:7px;color:#68776c;font-size:.86rem}.quiz-library-card .quiz-level{padding:4px 9px;border-radius:20px;background:#f0f4ed;border:1px solid #e0e8dc}.quiz-library-card .quiz-status{padding:4px 9px;border-radius:20px;background:#e9f4e8;color:#21633b;border:1px solid #cfe1cb}.quiz-library-card .quiz-status.draft{background:#f5f2e8;color:#78632b;border-color:#e9dfc3}.quiz-library-card button{width:100%;min-height:46px;padding:10px 15px;border-radius:13px;box-shadow:0 4px 0 #14532d24;font-weight:700}.quiz-library-card button:active{transform:translateY(2px);box-shadow:0 2px 0 #14532d24!important}.quiz-manage-actions{display:grid;grid-template-columns:1fr;gap:10px;margin-top:16px}.quiz-manage-actions a,.quiz-manage-actions button{display:block;text-align:center;padding:12px;border-radius:13px;text-decoration:none;font-weight:700}.quiz-manage-actions a{background:#edf6ea;color:#14532d;border:1px solid #cfe0cb}.quiz-manage-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.quiz-manage-grid input{width:100%}@media(max-width:480px){.quiz-manage-grid{grid-template-columns:1fr}}.electronic-test-panel [data-test-page="results"]{background:#edf6ea;color:#14532d;border:1px solid #cfe0cb;box-shadow:0 4px 0 #d6e5d1}@media(max-width:520px){.electronic-tests-menu{grid-template-columns:1fr;gap:9px}.electronic-tests-menu .menu-btn{min-height:76px}}.quiz-level-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.quiz-level-grid[hidden],#electronicTestLevelList[hidden]{display:none!important}.quiz-level-grid:not([hidden]){display:grid!important}#electronicTestLevelList:not([hidden]){display:block!important}.quiz-level-card{width:100%;min-height:76px;padding:13px!important;display:flex;align-items:center;justify-content:space-between;gap:8px;text-align:right;border:1px solid #b7d2b4!important;border-bottom:4px solid #67996a!important;border-radius:17px!important;background:linear-gradient(145deg,#fffef8,#eaf5e8)!important;box-shadow:0 5px 0 #1b6b3520,0 10px 18px rgba(24,63,34,.10)!important;color:#174c30!important}.quiz-level-card strong{display:block;font-size:.95rem}.quiz-level-card small{display:block;color:#68776c;font-size:.78rem;margin-top:3px}.quiz-level-card .quiz-level-count{white-space:nowrap;border-radius:20px;background:#fff;padding:4px 8px;border:1px solid #dce8d9;font-size:.78rem}@media(max-width:520px){.quiz-level-grid{grid-template-columns:1fr;gap:9px}.quiz-level-card{min-height:66px}} </style><div id="electronicTestsHub" class="electronic-tests-hub"><p class="muted">اختاري ما تريدين إنجازه. إدارة الاختبارات والتحديات تتم من داخل فضاء الأستاذة وبالتصميم نفسه.</p><div class="electronic-tests-menu">
 <button type="button" class="menu-btn" data-test-page="menu"><span class="menu-icon">📚</span><span class="menu-copy"><strong>مكتبة الاختبارات</strong><small>إضافة الاختبارات وإدارتها ومتابعة نتائج التلاميذ</small></span><span class="chev">‹</span></button>
-<button type="button" class="menu-btn" id="teacherChallengesInboxLink" data-challenge-folder="1" style="position:relative"><span class="menu-icon">🏆</span><span class="menu-copy"><strong>التحديات اليومية</strong><small>إضافة التحديات ومكتبتها وتصحيح المشاركات</small></span><span class="chev">‹</span><span id="teacherChallengeUnreadBadge" hidden style="display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:#b42318;color:#fff;font-size:12px;font-weight:900;margin-inline-start:auto"></span></button>
-</div></div><div id="dailyChallengeFolder" class="panel electronic-test-panel" hidden><button type="button" class="secondary electronic-test-back" id="backFromChallengeFolder" style="margin-bottom:14px">← العودة إلى الاختبارات والتحديات</button><h3>🏆 إدارة التحديات اليومية</h3><p class="muted">اختاري المهمة التي تريدين تنفيذها.</p><div class="electronic-tests-menu" style="display:grid;grid-template-columns:1fr;gap:12px"><button type="button" class="menu-btn" data-challenge-action="editor"><span class="menu-icon">➕</span><span class="menu-copy"><strong>إضافة تحدٍّ يومي</strong><small>إنشاء تحدٍّ جديد وإعداد أسئلته وموعد نشره</small></span><span class="chev">‹</span></button><button type="button" class="menu-btn" data-challenge-action="list"><span class="menu-icon">🗂️</span><span class="menu-copy"><strong>قائمة التحديات اليومية</strong><small>إدارة المسودات والتحديات المنشورة</small></span><span class="chev">‹</span></button><button type="button" class="menu-btn" data-challenge-action="results"><span class="menu-icon">🖊️</span><span class="menu-copy"><strong>تصحيح التحديات والنتائج</strong><small>مراجعة المشاركات والإجابات والعلامات</small></span><span class="chev">‹</span></button></div></div><div id="dailyChallengeEmbedded" class="panel electronic-test-panel" hidden><div class="section-heading"><h3 id="dailyChallengeEmbeddedTitle">إدارة التحدي اليومي</h3><button type="button" class="secondary electronic-test-back" id="backFromDailyChallenge">← العودة إلى الاختبارات والتحديات</button></div><iframe id="dailyChallengeFrame" title="إدارة التحديات اليومية" src="about:blank" loading="lazy" style="display:block;width:100%;height:420px;min-height:260px;border:0;border-radius:14px;background:transparent;overflow:hidden" referrerpolicy="same-origin"></iframe></div><div class="panel electronic-test-panel" data-test-panel="menu" hidden><button type="button" class="secondary electronic-test-back" data-test-back="hub" style="margin-bottom:14px">← العودة إلى الاختبارات والتحديات</button><div class="section-heading"><h3>📚 مكتبة الاختبارات</h3></div><p class="muted">اختاري الصفحة التي تريدين الدخول إليها.</p><div class="electronic-tests-menu" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px"><button type="button" class="menu-btn" data-test-page="add"><span class="menu-icon">➕</span><span class="menu-copy"><strong>إضافة اختبار إلكتروني</strong><small>إنشاء اختبار جديد وتحديد بياناته</small></span><span class="chev">‹</span></button><button type="button" class="menu-btn" data-test-page="list"><span class="menu-icon">🗂️</span><span class="menu-copy"><strong>الاختبارات المضافة</strong><small>فتح قائمة الاختبارات وإدارة كل اختبار في صفحة مستقلة</small></span><span class="chev">‹</span></button><button type="button" class="menu-btn" data-test-page="results"><span class="menu-icon">📊</span><span class="menu-copy"><strong>متابعة نتائج التلاميذ</strong><small>عرض المحاولات والإجابات والعلامات</small></span><span class="chev">‹</span></button></div></div><div class="panel electronic-test-panel" data-test-panel="add" hidden><button type="button" class="secondary electronic-test-back" data-test-back="menu" style="margin-bottom:14px">← العودة إلى مكتبة الاختبارات</button><h3>➕ إضافة اختبار إلكتروني</h3><p class="muted">أدخلي عنوان الاختبار ورابطه والمستوى والسند. عند النشر يظهر الاختبار للتلاميذ في المستوى المحدد.</p><form id="electronicTestForm"><label for="electronicTestTitle">عنوان الاختبار</label><input id="electronicTestTitle" required maxlength="180" placeholder="مثال: النشاط الثالث — مجتمع النحل"><label for="electronicTestLevel">المستوى الدراسي</label><select id="electronicTestLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select><label for="electronicTestUrl">رابط الاختبار الإلكتروني</label><input id="electronicTestUrl" type="url" required placeholder="https://..."><label for="electronicTestDescription">السند أو التعليمات (اختياري)</label><textarea id="electronicTestDescription" maxlength="1000" rows="3" placeholder="السند أو تعليمات الاختبار"></textarea><label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="electronicTestPublished" type="checkbox" style="width:auto"> نشر الاختبار للتلاميذ فورًا</label><div class="actions-row"><button class="primary" id="saveElectronicTest" type="submit">حفظ الاختبار</button><button class="secondary" id="resetElectronicTest" type="button">إفراغ الحقول</button></div><p id="electronicTestStatus" class="muted" role="status"></p></form></div><div class="panel electronic-test-panel" data-test-panel="results" hidden><button type="button" class="secondary electronic-test-back" data-test-back="menu" style="margin-bottom:14px">← العودة إلى مكتبة الاختبارات</button><div class="section-heading"><h3>📊 متابعة نتائج التلاميذ</h3></div><p class="muted">اختاري التلميذ لعرض جميع محاولاته وإجاباته وعلاماته، مع إمكانية حذف محاولة محددة.</p><label for="libraryResultsStudent">التلميذ</label><select id="libraryResultsStudent"><option value="">اختاري التلميذ</option></select><button type="button" class="primary" id="loadLibraryStudentResults" style="width:100%;margin-top:10px">عرض نتائج التلميذ</button><p id="libraryResultsStatus" class="muted" role="status" aria-live="polite"></p><div id="libraryStudentResults" class="list"></div></div><div class="panel electronic-test-panel" data-test-panel="manage" hidden><button type="button" class="secondary electronic-test-back" data-test-back="list" style="margin-bottom:14px">← العودة إلى اختبارات المستوى</button><div id="electronicTestManageContent"></div></div><div class="panel electronic-test-panel" data-test-panel="list" hidden><button type="button" class="secondary electronic-test-back" data-test-back="menu" style="margin-bottom:14px">← العودة إلى مكتبة الاختبارات</button><div class="section-heading"><h3>🗂️ الاختبارات المضافة</h3><button class="secondary" id="refreshElectronicTests" type="button">تحديث القائمة</button></div><div id="electronicTestLevels" class="quiz-level-grid"></div><div id="electronicTestLevelList" hidden><button type="button" class="secondary electronic-test-back" id="backToElectronicTestLevels" style="margin:8px 0 14px">← العودة إلى المستويات</button><h4 id="electronicTestLevelHeading" style="color:#174c30;margin:8px 0 14px"></h4><div id="electronicTestsList" class="list"><p class="muted">جارٍ تحميل الاختبارات…</p></div></div></div></section><section id="studentProfileView" class="view">
+<button type="button" class="menu-btn" id="teacherChallengesInboxLink" data-challenge-page="list" style="position:relative"><span class="menu-icon">🏆</span><span class="menu-copy"><strong>مكتبة التحديات</strong><small>إضافة التحديات وإدارة المسودات والمنشورات والنتائج</small></span><span class="chev">‹</span><span id="teacherChallengeUnreadBadge" hidden style="display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:#b42318;color:#fff;font-size:12px;font-weight:900;margin-inline-start:auto"></span></button>
+</div></div><div id="dailyChallengeEmbedded" class="panel electronic-test-panel" hidden><div class="section-heading"><h3 id="dailyChallengeEmbeddedTitle">إدارة التحدي اليومي</h3><button type="button" class="secondary electronic-test-back" id="backFromDailyChallenge">← العودة إلى الاختبارات والتحديات</button></div><iframe id="dailyChallengeFrame" title="إدارة التحديات اليومية" src="about:blank" loading="lazy" style="display:block;width:100%;height:420px;min-height:260px;border:0;border-radius:14px;background:transparent;overflow:hidden" referrerpolicy="same-origin"></iframe></div><div class="panel electronic-test-panel" data-test-panel="menu" hidden><button type="button" class="secondary electronic-test-back" data-test-back="hub" style="margin-bottom:14px">← العودة إلى الاختبارات والتحديات</button><div class="section-heading"><h3>📚 مكتبة الاختبارات</h3></div><p class="muted">اختاري الصفحة التي تريدين الدخول إليها.</p><div class="electronic-tests-menu" style="display:grid;grid-template-columns:1fr;gap:12px;margin-top:18px"><button type="button" class="menu-btn" data-test-page="add"><span class="menu-icon">➕</span><span class="menu-copy"><strong>إضافة اختبار إلكتروني</strong><small>إنشاء اختبار جديد وتحديد بياناته</small></span><span class="chev">‹</span></button><button type="button" class="menu-btn" data-test-page="list"><span class="menu-icon">🗂️</span><span class="menu-copy"><strong>الاختبارات المضافة</strong><small>فتح قائمة الاختبارات وإدارة كل اختبار في صفحة مستقلة</small></span><span class="chev">‹</span></button><button type="button" class="menu-btn" data-test-page="results"><span class="menu-icon">📊</span><span class="menu-copy"><strong>متابعة نتائج التلاميذ</strong><small>عرض المحاولات والإجابات والعلامات</small></span><span class="chev">‹</span></button></div></div><div class="panel electronic-test-panel" data-test-panel="add" hidden><button type="button" class="secondary electronic-test-back" data-test-back="menu" style="margin-bottom:14px">← العودة إلى مكتبة الاختبارات</button><h3>➕ إضافة اختبار إلكتروني</h3><p class="muted">أدخلي عنوان الاختبار ورابطه والمستوى والسند. عند النشر يظهر الاختبار للتلاميذ في المستوى المحدد.</p><form id="electronicTestForm"><label for="electronicTestTitle">عنوان الاختبار</label><input id="electronicTestTitle" required maxlength="180" placeholder="مثال: النشاط الثالث — مجتمع النحل"><label for="electronicTestLevel">المستوى الدراسي</label><select id="electronicTestLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select><label for="electronicTestUrl">رابط الاختبار الإلكتروني</label><input id="electronicTestUrl" type="url" required placeholder="https://..."><label for="electronicTestDescription">السند أو التعليمات (اختياري)</label><textarea id="electronicTestDescription" maxlength="1000" rows="3" placeholder="السند أو تعليمات الاختبار"></textarea><label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="electronicTestPublished" type="checkbox" style="width:auto"> نشر الاختبار للتلاميذ فورًا</label><div class="actions-row"><button class="primary" id="saveElectronicTest" type="submit">حفظ الاختبار</button><button class="secondary" id="resetElectronicTest" type="button">إفراغ الحقول</button></div><p id="electronicTestStatus" class="muted" role="status"></p></form></div><div class="panel electronic-test-panel" data-test-panel="results" hidden><button type="button" class="secondary electronic-test-back" data-test-back="menu" style="margin-bottom:14px">← العودة إلى مكتبة الاختبارات</button><div class="section-heading"><h3>📊 متابعة نتائج التلاميذ</h3></div><p class="muted">اختاري التلميذ لعرض جميع محاولاته وإجاباته وعلاماته، مع إمكانية حذف محاولة محددة.</p><label for="libraryResultsStudent">التلميذ</label><select id="libraryResultsStudent"><option value="">اختاري التلميذ</option></select><button type="button" class="primary" id="loadLibraryStudentResults" style="width:100%;margin-top:10px">عرض نتائج التلميذ</button><p id="libraryResultsStatus" class="muted" role="status" aria-live="polite"></p><div id="libraryStudentResults" class="list"></div></div><div class="panel electronic-test-panel" data-test-panel="manage" hidden><button type="button" class="secondary electronic-test-back" data-test-back="list" style="margin-bottom:14px">← العودة إلى اختبارات المستوى</button><div id="electronicTestManageContent"></div></div><div class="panel electronic-test-panel" data-test-panel="list" hidden><button type="button" class="secondary electronic-test-back" data-test-back="menu" style="margin-bottom:14px">← العودة إلى مكتبة الاختبارات</button><div class="section-heading"><h3>🗂️ الاختبارات المضافة</h3><button class="secondary" id="refreshElectronicTests" type="button">تحديث القائمة</button></div><div id="electronicTestLevels" class="quiz-level-grid"></div><div id="electronicTestLevelList" hidden><button type="button" class="secondary electronic-test-back" id="backToElectronicTestLevels" style="margin:8px 0 14px">← العودة إلى المستويات</button><h4 id="electronicTestLevelHeading" style="color:#174c30;margin:8px 0 14px"></h4><div id="electronicTestsList" class="list"><p class="muted">جارٍ تحميل الاختبارات…</p></div></div></div></section><section id="studentProfileView" class="view">
 <div class="view-head"><button class="back" id="backToStudents" type="button">→ قائمة التلاميذ</button><h2>👤 ملف التلميذ</h2></div>
 <div class="panel"><h3 id="studentDetailsTitle">ملف التلميذ</h3><div id="studentDetailsBody"></div></div>
 </section>
 <section id="dailyLessonsView" class="view">
-<div class="view-head"><button class="back" data-view="studentsHubView" type="button">→ التلاميذ والحصص</button><h2>🗓️ حصصي اليومية</h2></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🗓️ حصصي اليومية</h2></div>
 <div class="panel">
 
 <div class="daily-mode-switch lesson-main-nav" role="group" aria-label="إدارة الحصص"><button type="button" class="primary" data-lesson-page="add">➕ إضافة حصة</button><button type="button" class="secondary" data-lesson-page="calendar">📅 التقويم</button><button type="button" class="secondary" data-lesson-page="library">📚 إدارة الحصص</button></div>
@@ -1666,7 +1639,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 .weekly-group-action-menu{display:grid;gap:12px;margin-top:12px}.weekly-group-action{width:100%;min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border:1px solid #cbdccf;border-radius:16px;background:#f7fbf7;color:#174b32;font:inherit;font-weight:700;text-align:right;box-shadow:0 5px 0 #dce8dd}.weekly-group-action span{font-size:24px}.weekly-group-subpage{display:block}.weekly-group-subpage>.back{margin:4px 0 16px}.weekly-group-subpage>h3{margin:8px 0 16px;color:#174b32}
 </style>
 <section id="weeklyGroupsView" class="view">
-<div class="view-head"><button class="back" data-view="studentsHubView" type="button">→ التلاميذ والحصص</button><h2>👥 المجموعات الأسبوعية</h2></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>👥 المجموعات الأسبوعية</h2></div>
 <div id="weeklyGroupsDirectory" class="weekly-groups-directory"><button id="weeklyNewGroupBtn" class="primary" type="button" style="width:100%;margin:0 0 16px">＋ إنشاء مجموعة جديدة</button><p class="muted">اختاري المجموعة لفتح صفحتها وإدارة شؤونها.</p><input id="weeklyGroupSearch" type="search" placeholder="🔍 ابحثي باسم المجموعة أو المستوى..." style="width:100%;margin:8px 0 12px"><div id="weeklyGroupButtons" class="weekly-group-buttons"></div></div>
 <div id="weeklyGroupDetailNav" hidden style="margin:12px 0"><button id="weeklyGroupsBackBtn" class="back" type="button">← كل المجموعات</button><h3 id="weeklyGroupDetailTitle"></h3></div>
 <div class="panel" id="weeklyGroupMainPanel" hidden>
@@ -1694,7 +1667,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <button type="button" class="back" data-weekly-editor-back>← معلومات المجموعة</button>
 <strong id="weeklyGroupFormTitle">➕ إنشاء مجموعة أسبوعية</strong><input id="weeklyGroupEditId" type="hidden">
 <div class="editor-fields">
-<label class="editor-field">المستوى<select id="weeklyGroupLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option></select></label>
+<label class="editor-field">المستوى<select id="weeklyGroupLevel"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select></label>
 <label class="editor-field">طريقة الدراسة<select id="weeklyGroupMode"><option value="in_person">حضوري</option><option value="zoom">Zoom</option></select></label>
 <label class="editor-field">يوم الحصة<select id="weeklyGroupWeekday"><option value="">اختاري اليوم</option><option value="0">الأحد</option><option value="1">الإثنين</option><option value="2">الثلاثاء</option><option value="3">الأربعاء</option><option value="4">الخميس</option><option value="5">الجمعة</option><option value="6">السبت</option></select></label>
 <label class="editor-field">بداية الحصة<input id="weeklyGroupStartTime" type="time" required></label>
@@ -1751,14 +1724,14 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </div>
 </section>
 <section id="subscriptionsView" class="view">
-<div class="view-head"><button class="back" data-view="financialHubView" type="button">→ الإدارة المالية</button><h2>📚 إدارة الاشتراكات</h2></div><div class="panel"><p class="muted">الاشتراكات المسجلة للتلاميذ وحالتها ومبالغها.</p><div id="subscriptionModeFilters" class="daily-mode-switch" role="group" aria-label="تصفية الاشتراكات حسب طريقة الدراسة"><button type="button" class="primary" data-sub-mode="all">الكل</button><button type="button" class="secondary" data-sub-mode="zoom">💻 زووم</button><button type="button" class="secondary" data-sub-mode="in_person">🏫 حضوري</button></div><div id="subscriptionsList" class="list" style="margin-top:14px"></div></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 إدارة الاشتراكات</h2></div><div class="panel"><p class="muted">الاشتراكات المسجلة للتلاميذ وحالتها ومبالغها.</p><div id="subscriptionModeFilters" class="daily-mode-switch" role="group" aria-label="تصفية الاشتراكات حسب طريقة الدراسة"><button type="button" class="primary" data-sub-mode="all">الكل</button><button type="button" class="secondary" data-sub-mode="zoom">💻 زووم</button><button type="button" class="secondary" data-sub-mode="in_person">🏫 حضوري</button></div><div id="subscriptionsList" class="list" style="margin-top:14px"></div></div>
 </section>
 <section id="paymentsView" class="view">
-<div class="view-head"><button class="back" data-view="financialHubView" type="button">→ الإدارة المالية</button><h2>💳 إشعارات الدفع</h2></div><div class="panel"><p class="muted">أحدث المدفوعات المسجلة والاشتراكات المرتبطة بها.</p><div class="data-item" style="margin:12px 0"><strong>💳 تسجيل دفعة جديدة</strong><p class="muted">سجّلي مستحقات التلاميذ والمبالغ المقبوضة مباشرة من المنصة.</p><button type="button" class="primary" id="toggleManualInPersonPayment">＋ تسجيل دفعة</button><button type="button" class="secondary" data-view="unpaidPaymentsView" style="margin-top:9px;width:100%">📌 الدفعات غير المقبوضة</button></div></div><div id="paymentModeFilters" class="daily-mode-switch" role="group" aria-label="تصفية المدفوعات حسب طريقة الدراسة"><button type="button" class="primary" data-payment-mode="all">الكل</button><button type="button" class="secondary" data-payment-mode="zoom">💻 زووم</button><button type="button" class="secondary" data-payment-mode="in_person">🏫 حضوري</button></div><button type="button" class="secondary" id="refreshPaymentsBtn" style="margin-top:12px">↻ تحديث إشعارات الدفع</button><p id="paymentsRefreshStatus" class="muted" aria-live="polite"></p><div id="paymentsList" class="list" style="margin-top:14px"></div></div>
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div><div class="panel"><p class="muted">أحدث المدفوعات المسجلة والاشتراكات المرتبطة بها.</p><div class="data-item" style="margin:12px 0"><strong>💳 تسجيل دفعة جديدة</strong><p class="muted">سجّلي مستحقات التلاميذ والمبالغ المقبوضة مباشرة من المنصة.</p><button type="button" class="primary" id="toggleManualInPersonPayment">＋ تسجيل دفعة</button><button type="button" class="secondary" data-view="unpaidPaymentsView" style="margin-top:9px;width:100%">📌 الدفعات غير المقبوضة</button></div></div><div id="paymentModeFilters" class="daily-mode-switch" role="group" aria-label="تصفية المدفوعات حسب طريقة الدراسة"><button type="button" class="primary" data-payment-mode="all">الكل</button><button type="button" class="secondary" data-payment-mode="zoom">💻 زووم</button><button type="button" class="secondary" data-payment-mode="in_person">🏫 حضوري</button></div><button type="button" class="secondary" id="refreshPaymentsBtn" style="margin-top:12px">↻ تحديث إشعارات الدفع</button><p id="paymentsRefreshStatus" class="muted" aria-live="polite"></p><div id="paymentsList" class="list" style="margin-top:14px"></div></div>
 </section>
 <section id="unpaidPaymentsView" class="view"><div class="view-head"><button class="back" data-view="paymentsView" type="button">→ إشعارات الدفع</button><h2>📌 الدفعات غير المقبوضة</h2></div><div class="panel"><div id="unpaidPaymentSummary" class="stats"></div><p class="muted">الاشتراكات الشهرية والحصص الفردية التي ما زال لها مبلغ مستحق، وفق السجلات المحفوظة في قاعدة البيانات.</p><div id="unpaidPaymentsList" class="list"></div></div></section>
 <section id="manualInPersonPaymentView" class="view"><div class="view-head"><button class="back" id="backToPayments" type="button">→ إشعارات الدفع</button><h2>💳 تسجيل دفعة جديدة</h2></div><div class="panel"><p class="muted">اختاري التلميذ، ثم أدخلي المبلغ المستحق والمبلغ المقبوض يدويًا.</p><form id="manualInPersonPaymentForm" style="display:grid;gap:14px"><label>طريقة الدراسة<select id="manualPaymentMode" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري طريقة الدراسة</option><option value="zoom">زووم</option><option value="in_person">حضوري</option></select></label><label>المستوى الدراسي<select id="manualPaymentLevel" required disabled style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري طريقة الدراسة أولًا</option></select></label><label>نوع الخدمة<select id="manualPaymentServiceType" required disabled style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري نوع الخدمة</option><option value="monthly_subscription">اشتراك شهري / أربع حصص</option><option value="individual_session">حصة فردية</option><option value="course">دورة ليوم واحد</option><option value="exam_course">دورة فرض</option><option value="test_course">دورة اختبار</option></select></label><label>اسم التلميذ<select id="manualPaymentStudent" required disabled style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري المستوى أولًا</option></select></label><div id="manualPaymentCourseDateWrap" hidden><label>تاريخ الدورة (يوم واحد)<input id="manualPaymentCourseDate" type="date" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label></div><div id="manualPaymentIndividualLessonWrap" hidden><label style="display:block;margin-bottom:8px">الحصة الفردية المراد تسديدها</label><select id="manualPaymentIndividualLesson" disabled style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري التلميذ أولًا</option></select><p class="small" id="manualPaymentIndividualLessonStatus" aria-live="polite"></p></div><div id="manualPaymentMonthsWrap"><label style="display:block;margin-bottom:8px">الأشهر (يمكن اختيار أكثر من شهر)</label><div id="manualPaymentMonths" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="جانفي 2026" style="width:18px;height:18px"> جانفي</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="فيفري 2026" style="width:18px;height:18px"> فيفري</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="مارس 2026" style="width:18px;height:18px"> مارس</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="أفريل 2026" style="width:18px;height:18px"> أفريل</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="ماي 2026" style="width:18px;height:18px"> ماي</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="جوان 2026" style="width:18px;height:18px"> جوان</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="جويلية 2026" style="width:18px;height:18px"> جويلية</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="أوت 2026" style="width:18px;height:18px"> أوت</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="سبتمبر 2026" style="width:18px;height:18px"> سبتمبر</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="أكتوبر 2026" style="width:18px;height:18px"> أكتوبر</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="نوفمبر 2026" style="width:18px;height:18px"> نوفمبر</label><label style="display:flex;align-items:center;gap:6px;background:#f2f8f1;border-radius:10px;padding:9px;font-size:14px"><input type="checkbox" name="manualPaymentMonth" value="ديسمبر 2026" style="width:18px;height:18px"> ديسمبر</label></div><div class="small" style="margin-top:7px">اقتراحات الأشهر لسنة 2026، ويمكن تحديد عدة أشهر.</div></div><label>المبلغ الإجمالي المستحق (دج)<input id="manualPaymentDue" type="number" min="0.01" max="10000000" step="0.01" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><label>المبلغ المقبوض فعليًا (دج)<input id="manualPaymentPaid" type="number" min="0" max="10000000" step="0.01" value="0" required style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><div class="data-item"><div class="small">المبلغ المتبقي</div><strong id="manualPaymentRemaining">—</strong></div><label>تاريخ الدفع (اختياري)<input id="manualPaymentDate" type="date" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"></label><label>طريقة الدفع (اختياري)<select id="manualPaymentMethod" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px"><option value="">اختاري طريقة الدفع</option><option value="cash">نقدًا</option><option value="BaridiMob">بريدي موب</option><option value="CCP">تحويل بريدي</option><option value="bank_transfer">تحويل بنكي</option></select></label><button class="primary" id="saveManualInPersonPayment" type="submit">حفظ التسجيل</button><p id="manualPaymentStatus" class="muted" aria-live="polite"></p></form></div></section>
-<section id="incomeView" class="view"><div class="view-head"><button class="back" data-view="financialHubView" type="button">→ الإدارة المالية</button><h2>💰 مداخيلي</h2></div>
+<section id="incomeView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💰 مداخيلي</h2></div>
 <div id="incomeHomeMenu" class="panel income-home-menu">
   <p class="muted" style="margin-top:0">اختاري القسم الذي تريدين الدخول إليه.</p>
   <div class="income-home-grid">
@@ -1852,6 +1825,9 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   </section>
 </div>
 <div id="incomePaymentsPage" class="panel income-subpage" hidden><div class="view-head"><button class="back" data-income-calendar-back type="button">→ مداخيلي</button><h3>🧾 دفعات الشهر</h3></div><label for="incomeMonthPayments">اختاري الشهر</label><input id="incomeMonthPayments" type="month" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><div id="incomePayments" class="list"></div><div class="note">تُحسب الدفعات المسجلة فقط لتجنب احتساب المبلغ العائلي مرتين.</div></div></section>
+<section id="overviewView" class="view">
+<div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📊 ملخص المنصة</h2></div><div class="panel"><p class="muted">ملخص مباشر من قاعدة بيانات Supabase.</p><div id="stats" class="stats"></div><button class="primary" id="refreshBtn" type="button">تحديث البيانات</button></div>
+</section>
 <section id="telegramView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📝 التسجيلات والطلبات</h2></div><div class="panel"><p class="muted">طلبات التسجيل وتجديد الاشتراك الواردة عبر بوت تيليغرام. المراجعة والقبول أو الرفض تبقى في مجموعة إدارة منصة التحدي على تيليغرام.</p><div class="stats"><div class="stat"><strong id="requestCount">0</strong><span>طلبات قيد المراجعة</span></div><div class="stat"><strong id="requestTotal">0</strong><span>إجمالي الطلبات المعروضة</span></div></div><label for="requestSearch">البحث باسم التلميذ أو رقم الطلب</label><input id="requestSearch" type="search" placeholder="اكتبي الاسم أو رقم الطلب..." autocomplete="off" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin:8px 0 14px"><label for="requestStudyModeFilter">تصفية الطلبات حسب طريقة الدراسة</label><select id="requestStudyModeFilter" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink);margin-bottom:12px"><option value="all">كل طرق الدراسة</option><option value="zoom">زووم</option><option value="in_person">حضوري</option><option value="unknown">غير محددة / طلب عائلي مختلط</option></select><label for="requestFilter">تصفية الطلبات حسب الحالة</label><select id="requestFilter" style="width:100%;padding:12px;border:1px solid #cbd7ca;border-radius:12px;background:#fff;color:var(--ink)"><option value="all">كل الطلبات</option><option value="pending">قيد المراجعة</option><option value="approved">مقبول</option><option value="rejected">مرفوض</option></select><div id="requestsList" class="list" style="margin-top:14px"></div><div class="note">هذا القسم للعرض والمتابعة فقط. استعملي أزرار قبول/رفض في تيليغرام حتى تبقى عملية المراجعة موحّدة.</div><button class="primary" id="refreshRequestsBtn" type="button">تحديث الطلبات</button></div>
 </section>
@@ -1862,7 +1838,6 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 
 </main>
 <footer>© منصة التحدي التعليمية</footer>
-
 <div id="lessonFeedbackModal" class="editor-overlay" hidden><section class="editor-panel lesson-feedback-panel" role="dialog" aria-modal="true" aria-labelledby="lessonFeedbackTitle"><div class="editor-head"><h2 id="lessonFeedbackTitle">تأكيد العملية</h2><button type="button" id="closeLessonFeedback" class="secondary">إغلاق ✕</button></div><p id="lessonFeedbackText" class="muted" style="font-size:1rem;line-height:1.8;margin:12px 0"></p><button type="button" id="confirmLessonFeedback" class="primary" style="width:100%">حسنًا</button></section></div>
 <div id="recordEditorModal" class="editor-overlay" hidden><section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="recordEditorTitle"><div class="editor-head"><h2 id="recordEditorTitle">تعديل المعلومات</h2><button type="button" id="closeRecordEditor" class="secondary">إغلاق ✕</button></div><p class="muted">تظهر هنا جميع الحقول المتاحة لهذا السجل. عدّلي ما تحتاجينه ثم احفظي.</p><form id="recordEditorForm"><div id="recordEditorFields" class="editor-fields"></div><div class="editor-actions"><button class="primary" type="submit">حفظ كل التعديلات</button><button class="secondary" type="button" id="cancelRecordEditor">إلغاء</button></div></form></section></div>
 <script id="tahadi-boot-error-capture">
@@ -1962,13 +1937,6 @@ window.addEventListener("unhandledrejection",function(e){
     if(id!=="loginView")setTimeout(saveTeacherPagePosition,80);
   }
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
-  // ربط أزرار التنقل التي تُضاف بعد تحميل المعالج الرئيسي، ومنها زر العودة من الدروس والملخصات.
-  document.addEventListener("click", event => {
-    const button = event.target instanceof Element ? event.target.closest("#learningHierarchyView [data-view]") : null;
-    if (!button) return;
-    event.preventDefault();
-    showView(button.dataset.view);
-  });
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{if(typeof showIncomeHome==="function")showIncomeHome();});
   // دعم زر الرجوع في الهاتف داخل قسم المداخيل بدل مغادرة المنصة.
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{history.pushState({tahadiIncome:"home"},"",location.pathname+location.search+"#income");});
@@ -2063,7 +2031,7 @@ window.addEventListener("unhandledrejection",function(e){
     if (!res.ok || !data.ok) throw new Error(data.error || "تعذر تحميل بيانات المنصة.");
     const d = data.dashboard || {};
     const counts = d.counts || {};
-    const studentModes={zoom:0,in_person:0};const studentsForStats=Array.isArray(d.students)?d.students:[];studentsForStats.forEach(s=>{const mode=s.study_mode||"zoom";if(mode==="in_person")studentModes.in_person++;else studentModes.zoom++;});$("stats").innerHTML = [["التلاميذ",counts.students,"studentsView","عرض قائمة التلاميذ"],["💻 تلاميذ الزووم",studentModes.zoom,null,"عدد تلاميذ الدراسة عن بُعد"],["🏫 تلاميذ الحضوري",studentModes.in_person,null,"عدد تلاميذ الدراسة الحضورية"],["الاشتراكات",counts.subscriptions,"subscriptionsView","فتح إدارة الاشتراكات"],["المدفوعات",counts.payments,"paymentsView","فتح إشعارات الدفع"],["مدفوعات قيد المراجعة",counts.pendingPayments ?? 0,"paymentsView","فتح إشعارات الدفع"]].map((x,i)=>x[2]?'<button type="button" class="stat stat-link '+(i===5?"pending-stat":"")+'" data-view="'+x[2]+'" aria-label="'+escapeHtml(x[0])+" — "+x[3]+'"><strong>'+escapeHtml(x[1] ?? 0)+'</strong><span>'+x[0]+'</span><small>'+x[3]+' ←</small></button>':'<div class="stat '+(i===5?"pending-stat":"")+'"><strong>'+escapeHtml(x[1] ?? 0)+'</strong><span>'+x[0]+'</span><small>'+x[3]+'</small></div>').join("");
+    const studentModes={zoom:0,in_person:0};const studentsForStats=Array.isArray(d.students)?d.students:[];studentsForStats.forEach(s=>{const mode=s.study_mode||"zoom";if(mode==="in_person")studentModes.in_person++;else studentModes.zoom++;});$("stats").innerHTML = [["التلاميذ",counts.students],["💻 تلاميذ الزووم",studentModes.zoom],["🏫 تلاميذ الحضوري",studentModes.in_person],["الاشتراكات",counts.subscriptions],["المدفوعات",counts.payments],["مدفوعات قيد المراجعة",counts.pendingPayments ?? 0]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1] ?? 0)+'</strong><span>'+x[0]+'</span></div>').join("");
     const students = Array.isArray(d.students) ? d.students : [];
     window.tahadiDailyStudents = students; if(typeof populateDailyLessonStudents==="function") populateDailyLessonStudents();
      const studentsByIdForRequests = new Map(students.map(s=>[String(s.id),s]));
@@ -2783,7 +2751,7 @@ const handleIncomeCalendarClick=async e=>{
     $("manualInPersonPaymentForm")?.addEventListener("input",event=>{if(event.target?.id==="manualPaymentDue"||event.target?.id==="manualPaymentPaid")updateManualRemaining();});
     $("toggleManualInPersonPayment")?.addEventListener("click",()=>{updateManualStudentInfo();updateManualRemaining();showView("manualInPersonPaymentView");});
     $("backToPayments")?.addEventListener("click",()=>showView("paymentsView"));
-    $("manualInPersonPaymentForm").onsubmit=async ev=>{ev.preventDefault();const status=$("manualPaymentStatus"),btn=$("saveManualInPersonPayment"),due=Number($("manualPaymentDue")?.value),paid=Number($("manualPaymentPaid")?.value),date=$("manualPaymentDate")?.value||"";if(!selectedManualStudent()){status.textContent="اختاري التلميذ أولًا.";return;}if($("manualPaymentServiceType")?.value==="individual_session"&&!manualPaymentIndividualLesson?.value){status.textContent="اختاري الحصة الفردية المراد تسديدها.";return;}const selectedServiceType=$("manualPaymentServiceType")?.value||"",isCoursePayment=["course","exam_course","test_course"].includes(selectedServiceType),courseDate=$("manualPaymentCourseDate")?.value||"";if(isCoursePayment&&!courseDate){status.textContent="اختاري تاريخ الدورة (يوم واحد).";return;}if(!Number.isFinite(due)||due<=0||!Number.isFinite(paid)||paid<0||paid>due){status.textContent="تحققي من المبلغ المستحق والمبلغ المقبوض؛ يجب ألا يتجاوز المقبوض المستحق.";return;}btn.disabled=true;status.textContent="جارٍ حفظ التسجيل…";try{const token=localStorage.getItem("tahadi_teacher_token");const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"manual_student_payment",payment:{student_id:manualPaymentStudent.value,service_name:selectedServiceType==="individual_session"?(manualPaymentIndividualLesson?.selectedOptions[0]?.textContent||"حصة فردية"):(($("manualPaymentServiceType")?.selectedOptions[0]?.textContent||"اشتراك شهري")+(isCoursePayment&&courseDate?" — "+courseDate:"")),service_type:selectedServiceType,course_date:isCoursePayment?courseDate:null,lesson_id:selectedServiceType==="individual_session"?(manualPaymentIndividualLesson?.value||""):null,subscription_month:selectedServiceType==="monthly_subscription"?Array.from(document.querySelectorAll('input[name="manualPaymentMonth"]:checked')).map(el=>el.value).join("، "):"",amount_due:due,amount_paid:paid,payment_date:date||null,payment_method:$("manualPaymentMethod")?.value||""}})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ التسجيل.");const savedStudent=selectedManualStudent(),savedService=manualPaymentServiceType?.selectedOptions?.[0]?.textContent?.trim()||"خدمة تعليمية",savedMonths=Array.from(document.querySelectorAll('input[name="manualPaymentMonth"]:checked')).map(el=>el.value),remaining=Math.max(0,due-paid),paymentComplete=remaining===0;let successMessage=["اكتمل تسجيل العملية بنجاح 🌿","","التلميذ: "+(savedStudent?.full_name||"—"),"المستوى: "+(savedStudent?.level||"—"),"الخدمة: "+savedService,...(savedMonths.length?["الفترة: "+savedMonths.join("، ")]:[]),...(isCoursePayment&&courseDate?["تاريخ الدورة: "+courseDate]:[]),"","المبلغ المستحق: "+due.toLocaleString("fr-FR")+" دج","المبلغ المقبوض: "+paid.toLocaleString("fr-FR")+" دج","المبلغ المتبقي: "+remaining.toLocaleString("fr-FR")+" دج","",paymentComplete?"✓ تم تسديد المبلغ كاملًا":"ℹ️ تم تسجيل دفعة جزئية بنجاح"].join("\n");status.textContent=paymentComplete?"تم التسجيل والتسديد بالكامل ✓":"تم التسجيل مع بقاء مبلغ مستحق ✓";await window.TahadiDialog.alert(successMessage);$("manualInPersonPaymentForm").reset();if($("manualPaymentPaid"))$("manualPaymentPaid").value="0";updateManualStudentInfo();updateManualRemaining();await refresh();}catch(err){status.textContent=err.message||"تعذر حفظ التسجيل.";await window.TahadiDialog.alert("تعذر حفظ التسجيل:\n"+(err.message||"حدث خطأ غير معروف."));}finally{btn.disabled=false;}};
+    $("manualInPersonPaymentForm").onsubmit=async ev=>{ev.preventDefault();const status=$("manualPaymentStatus"),btn=$("saveManualInPersonPayment"),due=Number($("manualPaymentDue")?.value),paid=Number($("manualPaymentPaid")?.value),date=$("manualPaymentDate")?.value||"";if(!selectedManualStudent()){status.textContent="اختاري التلميذ أولًا.";return;}if($("manualPaymentServiceType")?.value==="individual_session"&&!manualPaymentIndividualLesson?.value){status.textContent="اختاري الحصة الفردية المراد تسديدها.";return;}const selectedServiceType=$("manualPaymentServiceType")?.value||"",isCoursePayment=["course","exam_course","test_course"].includes(selectedServiceType),courseDate=$("manualPaymentCourseDate")?.value||"";if(isCoursePayment&&!courseDate){status.textContent="اختاري تاريخ الدورة (يوم واحد).";return;}if(!Number.isFinite(due)||due<=0||!Number.isFinite(paid)||paid<0||paid>due){status.textContent="تحققي من المبلغ المستحق والمبلغ المقبوض؛ يجب ألا يتجاوز المقبوض المستحق.";return;}btn.disabled=true;status.textContent="جارٍ حفظ التسجيل…";try{const token=localStorage.getItem("tahadi_teacher_token");const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"manual_student_payment",payment:{student_id:manualPaymentStudent.value,service_name:selectedServiceType==="individual_session"?(manualPaymentIndividualLesson?.selectedOptions[0]?.textContent||"حصة فردية"):(($("manualPaymentServiceType")?.selectedOptions[0]?.textContent||"اشتراك شهري")+(isCoursePayment&&courseDate?" — "+courseDate:"")),service_type:selectedServiceType,course_date:isCoursePayment?courseDate:null,lesson_id:selectedServiceType==="individual_session"?(manualPaymentIndividualLesson?.value||""):null,subscription_month:selectedServiceType==="monthly_subscription"?Array.from(document.querySelectorAll('input[name="manualPaymentMonth"]:checked')).map(el=>el.value).join("، "):"",amount_due:due,amount_paid:paid,payment_date:date||null,payment_method:$("manualPaymentMethod")?.value||""}})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ التسجيل.");const savedStudent=selectedManualStudent(),savedService=manualPaymentServiceType?.selectedOptions?.[0]?.textContent?.trim()||"خدمة تعليمية",savedMonths=Array.from(document.querySelectorAll('input[name="manualPaymentMonth"]:checked')).map(el=>el.value),remaining=Math.max(0,due-paid),paymentComplete=remaining===0;let successMessage="اكتمل تسجيل العملية بنجاح 🌿\n\nالتلميذ: "+(savedStudent?.full_name||"—")+"\nالمستوى: "+(savedStudent?.level||"—")+"\nالخدمة: "+savedService;if(savedMonths.length)successMessage+="\nالفترة: "+savedMonths.join("، ");if(isCoursePayment&&courseDate)successMessage+="\nتاريخ الدورة: "+courseDate;successMessage+="\n\nالمبلغ المستحق: "+due.toLocaleString("fr-FR")+" دج\nالمبلغ المقبوض: "+paid.toLocaleString("fr-FR")+" دج\nالمبلغ المتبقي: "+remaining.toLocaleString("fr-FR")+" دج\n\n"+(paymentComplete?"✓ تم تسديد المبلغ كاملًا":"ℹ️ تم تسجيل دفعة جزئية بنجاح");status.textContent=paymentComplete?"تم التسجيل والتسديد بالكامل ✓":"تم التسجيل مع بقاء مبلغ مستحق ✓";await window.TahadiDialog.alert(successMessage);$("manualInPersonPaymentForm").reset();if($("manualPaymentPaid"))$("manualPaymentPaid").value="0";updateManualStudentInfo();updateManualRemaining();await refresh();}catch(err){status.textContent=err.message||"تعذر حفظ التسجيل.";await window.TahadiDialog.alert("تعذر حفظ التسجيل:\n"+(err.message||"حدث خطأ غير معروف."));}finally{btn.disabled=false;}};
     let selectedPaymentMode="all";
     const renderPayments=()=>{
       document.querySelectorAll("[data-payment-mode]").forEach(b=>{const active=b.dataset.paymentMode===selectedPaymentMode;b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
@@ -2882,10 +2850,7 @@ const handleIncomeCalendarClick=async e=>{
     const isRecurring=!!(x.recurrence_group_id||row.recurrence?.enabled);
     let scopeChoice="1";
     if(!duplicate&&isRecurring){
-      scopeChoice=await window.TahadiDialog.prompt("هذه الحصة مرتبطة بتكرار أسبوعي. اختاري نطاق التعديل:\
-1 = هذه الحصة فقط\
-2 = هذه الحصة والحصص المكررة بعدها\
-3 = كامل الحصص المكررة","1");
+      scopeChoice=await window.TahadiDialog.prompt("هذه الحصة مرتبطة بتكرار أسبوعي. اختاري نطاق التعديل:\\n1 = هذه الحصة فقط\\n2 = هذه الحصة والحصص المكررة بعدها\\n3 = كامل الحصص المكررة","1");
       if(scopeChoice===null)return;
     }
     const scopeMap={"1":"this","2":"future","3":"all"};
@@ -3338,6 +3303,7 @@ const handleIncomeCalendarClick=async e=>{
     catch (e) { if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true}); setTimeout(()=>window.scrollTo({top:keepY,behavior:"instant"}),80); showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
   }
   $("backToStudents").addEventListener("click", () => showView("studentsView"));
+  $("refreshBtn").addEventListener("click", refresh);
   $("refreshRequestsBtn").addEventListener("click", refresh);
   $("requestFilter").addEventListener("change", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); }); $("requestStudyModeFilter").addEventListener("change", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); });
   $("requestSearch").addEventListener("input", () => { if (window.tahadiRenderRequests) window.tahadiRenderRequests(); });
@@ -3363,11 +3329,10 @@ const handleIncomeCalendarClick=async e=>{
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});
     /* Restore the nested teacher workspace immediately, before the dashboard network request finishes. */
     if(lastView==="electronicTestsView"){
-      const hub=document.getElementById("electronicTestsHub"),panel=document.getElementById("dailyChallengeEmbedded"),frame=document.getElementById("dailyChallengeFrame"),challengeFolder=document.getElementById("dailyChallengeFolder");
+      const hub=document.getElementById("electronicTestsHub"),panel=document.getElementById("dailyChallengeEmbedded"),frame=document.getElementById("dailyChallengeFrame");
       if(savedPosition.challengePage&&panel&&frame&&hub){
         hub.hidden=true;panel.hidden=false;
-        if(challengeFolder)challengeFolder.hidden=true;
-        const page=["editor","list","results"].includes(savedPosition.challengePage)?savedPosition.challengePage:"editor";
+        const page=savedPosition.challengePage==="list"?"list":"editor";
         const target="./daily-challenge-admin.html?embed=1&v=20261106fix3#"+page;
         if(!frame.src.endsWith(target))frame.src=target;
         const title=document.getElementById("dailyChallengeEmbeddedTitle");if(title)title.textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
@@ -3376,7 +3341,7 @@ const handleIncomeCalendarClick=async e=>{
         document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==savedPosition.testPage);
       }
     }
-    const restoreTeacherPosition=async()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});if(lastView==="incomeView"&&typeof showIncomeHome==="function")showIncomeHome();if(lastView==="dailyLessonsView"&&typeof setLessonHome==="function"){setLessonHome();if(savedPosition.lessonMode&&typeof setLessonMode==="function")setLessonMode(savedPosition.lessonMode,"list");if(savedPosition.lessonWorkspace&&typeof window.tahadiRestoreLessonSubpage==="function"){const ws=savedPosition.lessonWorkspace;window.tahadiRestoreLessonSubpage(savedPosition.lessonSubpage||ws.subpage||"all",ws.selectedDate,ws.cursor,ws.calendarView,ws.dayPageOpen);}else if(savedPosition.lessonSubpage&&savedPosition.lessonSubpage!=="all"){setLessonPage("library");setLessonSubpage(savedPosition.lessonSubpage);}else if(savedPosition.lessonPage&&typeof setLessonPage==="function")setLessonPage(savedPosition.lessonPage);}if(lastView==="electronicTestsView"){if(savedPosition.challengePage&&typeof openDailyChallengePage==="function"){openDailyChallengePage(savedPosition.challengePage,{preserveScroll:true});restoreChallengeFramePosition(savedPosition.challengeY||0);}else if(savedPosition.testPage){const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==savedPosition.testPage);if(typeof loadElectronicTests==="function"){selectedElectronicTestLevel=savedPosition.testLevel||"";await loadElectronicTests();if(savedPosition.testPage==="manage"&&savedPosition.quizManageId){await openQuizManagement(savedPosition.quizManageId);}else if(savedPosition.testPage==="list"&&selectedElectronicTestLevel){renderElectronicTestLevel();}}}}const y=Math.max(0,Number(savedPosition.y)||0);window.__tahadiRestoringTeacherPage=true;const frame=document.getElementById("dailyChallengeFrame"),panel=document.getElementById("dailyChallengeEmbedded");let finished=false,observer=null;const finishRestore=()=>{if(finished)return;window.scrollTo({top:y,behavior:"auto"});if(Math.abs((window.scrollY||0)-y)<=4){finished=true;if(observer)observer.disconnect();window.__tahadiRestoringTeacherPage=false;if(window.__tahadiRestoreFallback)clearTimeout(window.__tahadiRestoreFallback);}};const retryRestore=()=>{requestAnimationFrame(()=>requestAnimationFrame(finishRestore));};if(lastView==="electronicTestsView"&&savedPosition.challengePage&&frame&&panel){if("ResizeObserver" in window){observer=new ResizeObserver(retryRestore);observer.observe(panel);observer.observe(frame);}frame.addEventListener("load",()=>{retryRestore();[120,300,650,1100,1700].forEach(ms=>setTimeout(retryRestore,ms));},{once:true});[80,220,500,900,1400,2000].forEach(ms=>setTimeout(retryRestore,ms));}else{retryRestore();setTimeout(retryRestore,350);setTimeout(retryRestore,800);}}; loadDashboard(savedToken).then(restoreTeacherPosition).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم عند استقرار الاتصال.","error");console.error("initial dashboard load failed",err);restoreTeacherPosition();});
+    const restoreTeacherPosition=async()=>{if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});if(lastView==="incomeView"&&typeof showIncomeHome==="function")showIncomeHome();if(lastView==="dailyLessonsView"&&typeof setLessonHome==="function"){setLessonHome();if(savedPosition.lessonMode&&typeof setLessonMode==="function")setLessonMode(savedPosition.lessonMode,"list");if(savedPosition.lessonWorkspace&&typeof window.tahadiRestoreLessonSubpage==="function"){const ws=savedPosition.lessonWorkspace;window.tahadiRestoreLessonSubpage(savedPosition.lessonSubpage||ws.subpage||"all",ws.selectedDate,ws.cursor,ws.calendarView,ws.dayPageOpen);}else if(savedPosition.lessonSubpage&&savedPosition.lessonSubpage!=="all"){setLessonPage("library");setLessonSubpage(savedPosition.lessonSubpage);}else if(savedPosition.lessonPage&&typeof setLessonPage==="function")setLessonPage(savedPosition.lessonPage);}if(lastView==="electronicTestsView"){if(savedPosition.challengePage&&typeof openDailyChallengePage==="function"){openDailyChallengePage(savedPosition.challengePage,{preserveScroll:true});restoreChallengeFramePosition(savedPosition.challengeY||0);}else if(savedPosition.testPage){const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==savedPosition.testPage);if(typeof loadElectronicTests==="function"){selectedElectronicTestLevel=savedPosition.testLevel||"";await loadElectronicTests();if(savedPosition.testPage==="manage"&&savedPosition.quizManageId){await openQuizManagement(savedPosition.quizManageId);}else if(savedPosition.testPage==="list"&&selectedElectronicTestLevel){renderElectronicTestLevel();}}}}const y=Math.max(0,Number(savedPosition.y)||0);window.__tahadiRestoringTeacherPage=true;const frame=document.getElementById("dailyChallengeFrame"),panel=document.getElementById("dailyChallengeEmbedded");let finished=false,observer=null;const finishRestore=()=>{if(finished)return;window.scrollTo({top:y,behavior:"auto"});if(Math.abs((window.scrollY||0)-y)<=4){finished=true;if(observer)observer.disconnect();window.__tahadiRestoringTeacherPage=false;document.documentElement.classList.remove("tahadi-restoring");if(window.__tahadiRestoreFallback)clearTimeout(window.__tahadiRestoreFallback);}};const retryRestore=()=>{requestAnimationFrame(()=>requestAnimationFrame(finishRestore));};if(lastView==="electronicTestsView"&&savedPosition.challengePage&&frame&&panel){if("ResizeObserver" in window){observer=new ResizeObserver(retryRestore);observer.observe(panel);observer.observe(frame);}frame.addEventListener("load",()=>{retryRestore();[120,300,650,1100,1700].forEach(ms=>setTimeout(retryRestore,ms));},{once:true});[80,220,500,900,1400,2000].forEach(ms=>setTimeout(retryRestore,ms));}else{retryRestore();setTimeout(retryRestore,350);setTimeout(retryRestore,800);}}; loadDashboard(savedToken).then(restoreTeacherPosition).catch(err=>{showStatus("تعذر تحميل بيانات المنصة: "+(err&&err.message?err.message:"خطأ غير معروف")+". أعيدي فتح القسم عند استقرار الاتصال.","error");console.error("initial dashboard load failed",err);restoreTeacherPosition();});
   } else if (savedToken || expiry) { localStorage.removeItem("tahadi_teacher_token"); localStorage.removeItem("tahadi_teacher_expires"); }
   form.addEventListener("submit", async event => {
     event.preventDefault();
@@ -3550,7 +3515,7 @@ const handleIncomeCalendarClick=async e=>{
   $("resetElectronicTest")?.addEventListener("click",()=>{electronicTestForm.reset();$("electronicTestStatus").textContent="";});
   $("refreshElectronicTests")?.addEventListener("click",loadElectronicTests);
   document.querySelector('[data-view="electronicTestsView"]')?.addEventListener("click",()=>{const hub=$("electronicTestsHub");if(hub)hub.hidden=false;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);});
-  const challengeHub=$("electronicTestsHub"),challengePanel=$("dailyChallengeEmbedded"),challengeFrame=$("dailyChallengeFrame"),challengeFolder=$("dailyChallengeFolder");
+  const challengeHub=$("electronicTestsHub"),challengePanel=$("dailyChallengeEmbedded"),challengeFrame=$("dailyChallengeFrame");
   function openDailyChallengePage(page,options={}){
     challengeHub.hidden=true;
     document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);
@@ -3565,9 +3530,9 @@ const handleIncomeCalendarClick=async e=>{
     challengeFrame.addEventListener("load",()=>{try{challengeFrame.contentWindow.addEventListener("hashchange",saveTeacherPagePosition);challengeFrame.contentWindow.addEventListener("scroll",saveTeacherPagePosition,{passive:true});}catch(_){}saveTeacherPagePosition();},{once:true});
     if(!options.preserveScroll)challengePanel.scrollIntoView({behavior:"smooth",block:"start"});
   }
-  document.querySelector("[data-challenge-folder]")?.addEventListener("click",()=>{challengeHub.hidden=true;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);challengeFolder.hidden=false;saveTeacherPagePosition();challengeFolder.scrollIntoView({behavior:"smooth",block:"start"});});$("backFromChallengeFolder")?.addEventListener("click",()=>{challengeFolder.hidden=true;challengeHub.hidden=false;challengeHub.scrollIntoView({behavior:"smooth",block:"start"});saveTeacherPagePosition();});document.querySelectorAll("[data-challenge-action]").forEach(btn=>btn.addEventListener("click",()=>openDailyChallengePage(btn.dataset.challengeAction)));
+  document.querySelectorAll("[data-challenge-page]").forEach(btn=>btn.addEventListener("click",event=>{event.preventDefault();const page=btn.dataset.challengePage==="editor"?"editor":"list";sessionStorage.removeItem(teacherPagePositionKey);localStorage.removeItem(teacherPagePositionKey);window.location.assign("./daily-challenge-admin.html?v=20261106fix3#"+page);}));
 
-  $("backFromDailyChallenge")?.addEventListener("click",()=>{challengePanel.hidden=true;if(challengeFolder){challengeFolder.hidden=false;challengeFolder.scrollIntoView({behavior:"smooth",block:"start"});}else{challengeHub.hidden=false;challengeHub.scrollIntoView({behavior:"smooth",block:"start"});}saveTeacherPagePosition();});
+  $("backFromDailyChallenge")?.addEventListener("click",()=>{challengePanel.hidden=true;challengeHub.hidden=false;saveTeacherPagePosition();challengeHub.scrollIntoView({behavior:"smooth",block:"start"});});
   function showElectronicTestPage(page){const hub=$("electronicTestsHub");if(!hub)return;hub.hidden=true;document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==page);if(page==="list")selectedElectronicTestLevel="";saveTeacherPagePosition();if(page==="list")loadElectronicTests();if(page==="results")populateLibraryResultsStudents();}
   function backElectronicTestPage(target){const hub=$("electronicTestsHub");if(hub){hub.hidden=target!=="hub";hub.style.setProperty("display",target==="hub"?"block":"none","important");}document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>{const active=p.dataset.testPanel===target;p.hidden=!active;p.style.setProperty("display",active?"block":"none","important");p.setAttribute("aria-hidden",active?"false":"true");});if(target==="list"){if(selectedElectronicTestLevel){renderElectronicTestLevel();}else{loadElectronicTests();}}if(target==="results")populateLibraryResultsStudents();saveTeacherPagePosition();window.scrollTo({top:0,behavior:"instant"});}
   document.addEventListener("click",event=>{const el=event.target instanceof Element?event.target:null;if(!el)return;const level=el.closest("[data-quiz-level]");if(level){event.preventDefault();selectedElectronicTestLevel=level.dataset.quizLevel;renderElectronicTestLevel();return;}if(el.closest("#backToElectronicTestLevels")){event.preventDefault();selectedElectronicTestLevel="";renderElectronicTestLevels();return;}const page=el.closest("[data-test-page]");if(page){event.preventDefault();event.stopImmediatePropagation();showElectronicTestPage(page.dataset.testPage);return;}const back=el.closest(".electronic-test-back[data-test-back]");if(back){event.preventDefault();event.stopImmediatePropagation();backElectronicTestPage(back.dataset.testBack||"hub");}},true);
@@ -3583,45 +3548,30 @@ const handleIncomeCalendarClick=async e=>{
   $("resetCourseResource")?.addEventListener("click",()=>{$("courseResourceForm").reset();$("courseResourceId").value="";$("courseResourceStatus").textContent="";});
   $("refreshCourseResources")?.addEventListener("click",loadCourseResources);
   const resourceTypeNames={lesson:"درس",summary:"ملخص",exercise:"تمرين",video:"فيديو",link:"رابط تعليمي"};
-  let resourceListRows=[],resourceListCategory=null,resourceListSelectedId=null;
-  function renderLearningResourceList(){
-    const list=$("learningResourcesList");if(!list)return;
-    const bind=(selector,fn)=>list.querySelectorAll(selector).forEach(el=>el.addEventListener("click",async event=>{event.preventDefault();event.stopPropagation();await fn(el,event);}));
-    if(resourceListSelectedId){
-      const r=resourceListRows.find(x=>String(x.id)===String(resourceListSelectedId));
-      if(!r){resourceListSelectedId=null;return renderLearningResourceList();}
-      list.innerHTML='<button type="button" class="secondary" id="resourceDetailBack">← العودة إلى قائمة الموارد</button><article class="data-item" style="margin-top:14px"><h3>'+escapeHtml(r.title)+'</h3><p class="small">'+escapeHtml(resourceTypeNames[r.resource_type]||r.resource_type)+' • '+escapeHtml(r.level)+'</p><p>'+(r.is_published?'<span style="color:#17683a">منشور للتلاميذ</span>':'<span style="color:#946b16">مسودة — لا يظهر للتلاميذ</span>')+'</p>'+(r.description?'<p>'+escapeHtml(r.description)+'</p>':'')+((r.resource_open_url||r.resource_url)?'<p><a href="'+escapeHtml(r.resource_open_url||r.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a></p>':'<p class="small">لم يرفق رابط بالعنصر.</p>')+'<div class="actions-row"><button type="button" class="secondary" data-edit-resource="'+escapeHtml(r.id)+'">تعديل</button><button type="button" class="secondary" data-toggle-resource="'+escapeHtml(r.id)+'" data-published="'+(!r.is_published)+'">'+(r.is_published?'إلغاء النشر':'نشر للتلاميذ')+'</button><button type="button" class="danger" data-delete-resource="'+escapeHtml(r.id)+'">حذف</button></div><p id="resourceItemActionStatus" class="muted" role="status"></p></article>';
-      bind("#resourceDetailBack",()=>{resourceListSelectedId=null;renderLearningResourceList();});
-      bind("[data-edit-resource]",()=>{const x=r;$("resourceId").value=x.id;$("resourceTitle").value=x.title;$("resourceLevel").value=x.level;$("resourceType").value=x.resource_type;$("resourceStoredPath").value=String(x.resource_url||"").startsWith("storage-pdf:")?x.resource_url:"";$("resourceUrl").value=String(x.resource_url||"").startsWith("storage-pdf:")?"":(x.resource_url||"");$("resourcePdfFile").value="";$("resourceDescription").value=x.description||"";selectedResourceStudentIds=Array.isArray(x.visible_student_ids)?x.visible_student_ids.slice():[];$("resourcePublished").checked=!!x.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";showResourcePage("add");$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});});
-      bind("[data-toggle-resource]",async(btn)=>{const status=$("resourceItemActionStatus");btn.disabled=true;if(status)status.textContent="جارٍ تحديث حالة النشر…";try{await resourceRequest("teacher_save_resource",{...r,is_published:btn.dataset.published==="true"});await loadLearningResources();resourceListSelectedId=String(r.id);renderLearningResourceList();}catch(error){if(status)status.textContent="تعذر تنفيذ العملية: "+(error.message||error);}finally{btn.disabled=false;}});
-      bind("[data-delete-resource]",async(btn)=>{if(!window.confirm("هل تريدين حذف هذا المورد نهائيًا؟ لا يمكن التراجع عن الحذف."))return;const status=$("resourceItemActionStatus");btn.disabled=true;if(status)status.textContent="جارٍ الحذف…";try{await resourceRequest("teacher_delete_resource",{id:r.id});resourceListSelectedId=null;await loadLearningResources();}catch(error){if(status)status.textContent="تعذر الحذف: "+(error.message||error);}finally{btn.disabled=false;}});
-    }else if(resourceListCategory){
-      const rows=resourceListRows.filter(r=>r.resource_type===resourceListCategory);
-      list.innerHTML='<button type="button" class="secondary" id="resourceCategoryBack">← جميع أنواع الموارد</button><h3 style="margin:18px 0">'+escapeHtml(resourceTypeNames[resourceListCategory]||resourceListCategory)+'</h3>'+(rows.length?rows.map(r=>'<button type="button" class="lib-resource-row-button" data-open-resource="'+escapeHtml(r.id)+'"><span><strong>'+escapeHtml(r.title)+'</strong><small>'+escapeHtml(r.level)+' • '+(r.is_published?'منشور للتلاميذ':'مسودة')+'</small></span><b>←</b></button>').join(""):'<p class="empty-state">لا توجد موارد من هذا النوع.</p>');
-      bind("#resourceCategoryBack",()=>{resourceListCategory=null;renderLearningResourceList();});
-      bind("[data-open-resource]",btn=>{resourceListSelectedId=btn.dataset.openResource;renderLearningResourceList();});
-    }else{
-      const kinds=["lesson","summary","exercise","video","link"];
-      list.innerHTML='<p class="muted">اختاري نوع المورد لعرض العناصر المسجلة تحته.</p>'+kinds.map(type=>'<button type="button" class="lib-resource-row-button" data-open-resource-category="'+type+'"><span><strong>'+escapeHtml(resourceTypeNames[type])+'</strong><small>'+resourceListRows.filter(r=>r.resource_type===type).length+' مورد</small></span><b>←</b></button>').join("");
-      bind("[data-open-resource-category]",btn=>{resourceListCategory=btn.dataset.openResourceCategory;renderLearningResourceList();});
-    }
-  }
   async function loadLearningResources(){
     const list=$("learningResourcesList");if(!list)return;list.innerHTML='<p class="muted">جارٍ تحميل الموارد…</p>';
-    try{const d=await resourceRequest("teacher_list_resources");resourceListRows=d.resources||[];resourceListCategory=null;resourceListSelectedId=null;if(!resourceListRows.length){list.innerHTML='<div class="empty-state">لم تضيفي موارد بعد. ابدئي بإضافة أول درس أو ملخص.</div>';return;}renderLearningResourceList();}
-    catch(e){list.innerHTML='<p class="error">'+escapeHtml(e.message)+'</p>';}
+    try{
+      const d=await resourceRequest("teacher_list_resources");const rows=d.resources||[];
+      if(!rows.length){list.innerHTML='<div class="empty-state">لم تضيفي موارد بعد. ابدئي بإضافة أول درس أو ملخص.</div>';return;}
+      list.innerHTML=rows.map(r=>'<article class="data-item" data-resource-card="'+r.id+'" style="margin:10px 0"><div class="section-heading"><div style="display:flex;align-items:center;gap:10px;min-width:0"><button type="button" class="secondary resource-drag-handle" aria-label="اسحبي لترتيب المورد" title="اسحبي لترتيب المورد" style="min-width:42px;width:42px;height:42px;padding:0;font-size:22px;touch-action:none;cursor:grab">⠿</button><strong>'+escapeHtml(r.title)+'</strong></div><span class="badge">'+escapeHtml(resourceTypeNames[r.resource_type]||r.resource_type)+'</span></div><p class="small">'+escapeHtml(r.level)+' • '+(r.is_published?'<span style="color:#17683a">منشور للتلاميذ</span>':'<span style="color:#946b16">مسودة — لا يظهر للتلاميذ</span>')+'</p>'+(r.description?'<p>'+escapeHtml(r.description)+'</p>':'')+(r.resource_url?'<p dir="ltr"><a href="'+escapeHtml(r.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a></p>':'<p class="small">لم يرفق رابط بالعنصر.</p>')+'<div class="actions-row"><button type="button" class="secondary" data-edit-resource="'+r.id+'">تعديل</button><button type="button" class="secondary" data-toggle-resource="'+r.id+'" data-published="'+(!r.is_published)+'">'+(r.is_published?'إلغاء النشر':'نشر للتلاميذ')+'</button><button type="button" class="danger" data-delete-resource="'+r.id+'">حذف</button></div></article>').join("");
+      list.querySelectorAll(".resource-drag-handle").forEach(handle=>{
+        const card=handle.closest("[data-resource-card]");let active=false,touchId=null,moved=false;
+        const move=(x,y)=>{const target=document.elementFromPoint(x,y)?.closest("[data-resource-card]");if(!target||target===card||target.parentElement!==list)return;const rect=target.getBoundingClientRect();list.insertBefore(card,y<rect.top+rect.height/2?target:target.nextSibling);moved=true;};
+        const cleanup=()=>{document.removeEventListener("touchmove",onMove);document.removeEventListener("touchend",onEnd);document.removeEventListener("touchcancel",onEnd);card.classList.remove("resource-dragging");active=false;};
+        const onMove=e=>{if(!active)return;const t=[...e.changedTouches].find(x=>x.identifier===touchId);if(!t)return;e.preventDefault();move(t.clientX,t.clientY);};
+        const onEnd=e=>{if(!active)return;if(e?.changedTouches?.length&&![...e.changedTouches].some(x=>x.identifier===touchId))return;cleanup();if(!moved)return;list.dataset.reordering="1";const ids=[...list.querySelectorAll("[data-resource-card]")].map(x=>x.dataset.resourceCard);const status=$("resourceFormStatus");if(status)status.textContent="جارٍ حفظ الترتيب…";resourceRequest("teacher_reorder_resources",{ids}).then(()=>{if(status)status.textContent="تم حفظ الترتيب، وسيظهر للتلاميذ بنفس الطريقة.";}).catch(async err=>{if(status)status.textContent=err.message||"تعذر حفظ الترتيب.";await loadLearningResources();}).finally(()=>{delete list.dataset.reordering;});};
+        handle.addEventListener("touchstart",e=>{if(!e.changedTouches.length)return;const t=e.changedTouches[0];e.preventDefault();e.stopPropagation();active=true;moved=false;touchId=t.identifier;card.classList.add("resource-dragging");if(navigator.vibrate)navigator.vibrate(20);document.addEventListener("touchmove",onMove,{passive:false});document.addEventListener("touchend",onEnd);document.addEventListener("touchcancel",onEnd);},{passive:false});
+      });
+      list.querySelectorAll("[data-edit-resource]").forEach(btn=>btn.addEventListener("click",()=>{const r=rows.find(x=>x.id===btn.dataset.editResource);if(!r)return;$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=r.resource_type;$("resourceUrl").value=r.resource_url||"";$("resourceDescription").value=r.description||"";$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});}));
+      list.querySelectorAll("[data-toggle-resource]").forEach(btn=>btn.addEventListener("click",async()=>{btn.disabled=true;try{const r=rows.find(x=>x.id===btn.dataset.toggleResource);await resourceRequest("teacher_save_resource",{...r,is_published:btn.dataset.published==="true"});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
+      list.querySelectorAll("[data-delete-resource]").forEach(btn=>btn.addEventListener("click",async()=>{if(!await window.TahadiDialog.confirm("هل تريدين حذف هذا المورد نهائيًا؟"))return;btn.disabled=true;try{await resourceRequest("teacher_delete_resource",{id:btn.dataset.deleteResource});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
+    }catch(e){list.innerHTML='<p class="error">'+escapeHtml(e.message)+'</p>';}
   }
-  let selectedResourceStudentIds=[];async function loadResourceStudentPicker(){const level=$("resourceLevel").value,root=$("resourceStudentsChoices"),picker=$("resourceStudentPicker");if(!level){alert("اختاري المستوى الدراسي أولًا.");return;}picker.hidden=false;root.textContent="جارٍ تحميل التلاميذ…";try{const d=await resourceRequest("teacher_list_resource_students",{level});root.innerHTML=(d.students||[]).map(st=>'<label style="display:flex;align-items:center;gap:8px;padding:7px;border-bottom:1px solid #e5eee7"><input type="checkbox" data-resource-student="'+escapeHtml(st.id)+'" '+(selectedResourceStudentIds.includes(st.id)?'checked':'')+' style="width:auto"><span>'+escapeHtml(st.full_name)+' <small class="muted">— '+escapeHtml(st.level||'')+'</small></span></label>').join("")||'<p class="muted">لا يوجد تلاميذ نشطون في هذا المستوى.</p>';root.querySelectorAll("[data-resource-student]").forEach(ch=>ch.addEventListener("change",()=>{const id=ch.dataset.resourceStudent;if(ch.checked){if(!selectedResourceStudentIds.includes(id))selectedResourceStudentIds.push(id);}else selectedResourceStudentIds=selectedResourceStudentIds.filter(x=>x!==id);updateResourceStudentCount();}));updateResourceStudentCount();}catch(e){root.textContent=e.message||"تعذر تحميل التلاميذ.";}}function updateResourceStudentCount(){const el=$("resourceStudentsCount");if(el)el.textContent=selectedResourceStudentIds.length?"عدد التلاميذ المحددين: "+selectedResourceStudentIds.length:"لم يتم اختيار تلاميذ محددين؛ المورد متاح للجميع.";}$("openResourceStudentPicker").addEventListener("click",loadResourceStudentPicker);$("selectAllResourceStudents").addEventListener("click",()=>{document.querySelectorAll("#resourceStudentsChoices [data-resource-student]").forEach(ch=>{ch.checked=true;if(!selectedResourceStudentIds.includes(ch.dataset.resourceStudent))selectedResourceStudentIds.push(ch.dataset.resourceStudent);});updateResourceStudentCount();});$("clearResourceStudents").addEventListener("click",()=>{selectedResourceStudentIds=[];document.querySelectorAll("#resourceStudentsChoices [data-resource-student]").forEach(ch=>ch.checked=false);updateResourceStudentCount();});$("resourceLevel").addEventListener("change",()=>{selectedResourceStudentIds=[];$("resourceStudentsChoices").replaceChildren();$("resourceStudentPicker").hidden=true;updateResourceStudentCount();});$("learningResourceForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveLearningResource"),status=$("resourceFormStatus"),file=$("resourcePdfFile").files[0];btn.disabled=true;status.textContent="جارٍ الحفظ…";try{let resourceUrl=$("resourceUrl").value.trim()||$("resourceStoredPath").value;if(file){if(file.type!=="application/pdf"||file.size<1||file.size>15*1024*1024)throw Error("اختاري ملف PDF صالحًا لا يتجاوز 15 ميغابايت.");status.textContent="جارٍ تجهيز رفع ملف PDF…";const upload=await resourceRequest("teacher_create_resource_upload",{size:file.size,content_type:file.type});const uploaded=await fetch(upload.signed_url,{method:"PUT",headers:{"Content-Type":"application/pdf","x-upsert":"false"},body:file});if(!uploaded.ok)throw Error("فشل رفع ملف PDF. أعيدي المحاولة.");resourceUrl=upload.path;}const body={id:$("resourceId").value||undefined,title:$("resourceTitle").value,level:$("resourceLevel").value,resource_type:$("resourceType").value,resource_url:resourceUrl,description:$("resourceDescription").value,is_published:$("resourcePublished").checked,visible_student_ids:selectedResourceStudentIds};status.textContent="جارٍ حفظ المورد…";await resourceRequest("teacher_save_resource",body);status.textContent="تم الحفظ بنجاح.";resetResourceForm();await loadLearningResources();}catch(e){status.textContent=e.message}finally{btn.disabled=false;}});
-  function resetResourceForm(){selectedResourceStudentIds=[];$("resourceStudentPicker").hidden=true;$("resourceStudentsChoices").replaceChildren();updateResourceStudentCount();$("learningResourceForm").reset();$("resourceId").value="";$("resourceStoredPath").value="";$("resourcePdfFile").value="";$("resourceFormTitle").textContent="➕ إضافة مورد تعليمي";}
+  $("learningResourceForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveLearningResource"),status=$("resourceFormStatus");btn.disabled=true;status.textContent="جارٍ الحفظ…";try{const body={id:$("resourceId").value||undefined,title:$("resourceTitle").value,level:$("resourceLevel").value,resource_type:$("resourceType").value,resource_url:$("resourceUrl").value,description:$("resourceDescription").value,is_published:$("resourcePublished").checked};await resourceRequest("teacher_save_resource",body);status.textContent="تم الحفظ بنجاح.";resetResourceForm();await loadLearningResources();}catch(e){status.textContent=e.message}finally{btn.disabled=false;}});
+  function resetResourceForm(){$("learningResourceForm").reset();$("resourceId").value="";$("resourceFormTitle").textContent="➕ إضافة مورد تعليمي";}
   $("cancelResourceEdit").addEventListener("click",resetResourceForm);
   $("refreshLearningResources").addEventListener("click",loadLearningResources);
-  function showResourcePage(page){const hub=$("resourceLibraryHub"),add=$("resourceAddPanel"),list=$("resourceListPanel");if(hub)hub.hidden=page!=="hub";if(add)add.hidden=page!=="add";if(list)list.hidden=page!=="list";if(page==="list")loadLearningResources();if(page==="hub")resetResourceForm();}
-  $("openResourceAdd").addEventListener("click",()=>showResourcePage("add"));
-  $("openResourceList").addEventListener("click",()=>showResourcePage("list"));
-  $("backResourceAdd").addEventListener("click",()=>showResourcePage("hub"));
-  $("backResourceList").addEventListener("click",()=>showResourcePage("hub"));
-  window.showResourcePage=showResourcePage;
-  document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>showResourcePage("hub")));
+  document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
 })();
 
 /* ساعة المنصة والتذكيرات الشخصية */
@@ -3921,144 +3871,6 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 #lessonCalendarDayDetails .lesson-income-row{background:#f0f7ed}.lesson-income-row strong{color:#17633b!important;font-size:.88rem}
 @media(max-width:480px){#lessonCalendarDayDetails .calendar-lesson-content{padding:9px}#lessonCalendarDayDetails .calendar-lesson-info-row{padding:8px 9px;font-size:.79rem}#lessonCalendarDayDetails .calendar-lesson-info-row.student strong{font-size:.92rem}}
 
-
-/* Unified visual language for teacher home navigation cards */
-.platform-sections-entry,
-.section-category>summary,
-.unified-library-entry{
-  min-height:82px!important;
-  box-sizing:border-box;
-  display:flex!important;
-  flex-direction:row!important;
-  align-items:center!important;
-  gap:12px!important;
-  padding:12px 14px!important;
-  border:1.5px solid #b7d8b8!important;
-  border-bottom:5px solid #56a96b!important;
-  border-radius:18px!important;
-  background:linear-gradient(145deg,#fff 0%,#f0fff3 100%)!important;
-  color:var(--g)!important;
-  box-shadow:0 7px 0 #1b6b3520,0 12px 20px #173f221c!important;
-}
-.platform-sections-entry .entry-icon,
-.section-category>summary .category-arrow,
-.unified-library-entry .menu-icon{
-  width:42px!important;height:42px!important;flex:0 0 42px!important;
-  display:grid!important;place-items:center!important;border-radius:14px!important;
-  background:linear-gradient(145deg,#eff9ec,#dff2dc)!important;
-  border:1px solid #fff!important;box-shadow:0 4px 10px #193d2018!important;
-}
-.platform-sections-entry>span:nth-child(2),
-.section-category>summary .category-title-wrap{flex:1;min-width:0}
-.section-category>summary{position:relative!important;padding-left:58px!important;padding-right:14px!important;}
-.section-category>summary .category-title{display:block;font-size:1rem!important;font-weight:800!important;line-height:1.4}
-.section-category>summary small{display:block!important;padding:0!important;margin-top:3px!important;font-size:.8rem!important;color:var(--muted)!important;font-weight:500!important;line-height:1.45}
-.section-category>summary .category-arrow{position:absolute!important;left:12px!important;top:50%!important;transform:translateY(-50%)!important;font-size:1.05rem!important;color:var(--g)!important}
-.section-category[open]>summary .category-arrow{transform:translateY(-50%) rotate(45deg)!important}
-.platform-sections-entry:active,.section-category>summary:active,.unified-library-entry:active{transform:translateY(3px)!important;box-shadow:0 3px 0 #1b6b3520,0 6px 12px #173f2215!important}
-.unified-library-entry{margin:10px 0!important;text-align:right!important}
-@media(max-width:700px){
- .platform-sections-entry,.section-category>summary,.unified-library-entry{min-height:82px!important;padding:11px 12px!important;gap:10px!important}
- .section-category>summary{padding-left:56px!important;padding-right:12px!important}
- .section-category>summary .category-title{font-size:15px!important}
- .section-category>summary small{font-size:12px!important}
-}
-
-/* Stack section title and description consistently on mobile */
-.section-category>summary{
-  flex-direction:column!important;
-  align-items:stretch!important;
-  justify-content:center!important;
-  gap:4px!important;
-  padding-top:13px!important;
-  padding-bottom:13px!important;
-  padding-right:14px!important;
-  padding-left:64px!important;
-  text-align:right!important;
-}
-.section-category>summary .category-title{
-  display:block!important;
-  width:100%!important;
-  line-height:1.4!important;
-}
-.section-category>summary small{
-  display:block!important;
-  width:100%!important;
-  margin:0!important;
-  line-height:1.45!important;
-  white-space:normal!important;
-}
-.section-category>summary .category-arrow{
-  left:12px!important;
-}
-@media(max-width:700px){
- .section-category>summary{padding-right:12px!important;padding-left:62px!important}
-}
-
-/* Make the direct scientific library button identical to the adjacent category cards */
-.unified-library-entry{
-  width:100%!important;
-  min-height:82px!important;
-  box-sizing:border-box!important;
-  position:relative!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:stretch!important;
-  justify-content:center!important;
-  gap:4px!important;
-  margin:10px 0!important;
-  padding:13px 14px 13px 64px!important;
-  border:1.5px solid #b7d8b8!important;
-  border-bottom:5px solid #56a96b!important;
-  border-radius:18px!important;
-  background:linear-gradient(145deg,#fff 0%,#f0fff3 100%)!important;
-  color:var(--g)!important;
-  text-align:right!important;
-  box-shadow:0 7px 0 #1b6b3520,0 12px 20px #173f221c!important;
-  font:inherit!important;
-}
-.unified-library-entry .category-title{
-  display:block!important;width:100%!important;
-  font-size:15px!important;font-weight:800!important;line-height:1.4!important;
-}
-.unified-library-entry>small{
-  display:block!important;width:100%!important;margin:0!important;
-  color:var(--muted)!important;font-size:12px!important;font-weight:500!important;
-  line-height:1.45!important;white-space:normal!important;
-}
-.unified-library-entry .category-arrow{
-  position:absolute!important;left:12px!important;top:50%!important;
-  transform:translateY(-50%)!important;width:42px!important;height:42px!important;
-  display:grid!important;place-items:center!important;border-radius:50%!important;
-  background:linear-gradient(145deg,#eff9ec,#dff2dc)!important;
-  color:var(--g)!important;font-size:1.05rem!important;
-  border:1px solid #fff!important;box-shadow:0 4px 10px #193d2018!important;
-}
-.unified-library-entry:active{transform:translateY(3px)!important;box-shadow:0 3px 0 #1b6b3520,0 6px 12px #173f2215!important}
-@media(max-width:700px){.unified-library-entry{padding-right:12px!important;padding-left:62px!important}}
-
-/* One consistent green card style for every item inside the unified scientific library */
-#resourceLibraryHub .electronic-tests-menu>.menu-btn,
-#resourceLibraryHub .electronic-tests-menu>.menu-btn:nth-child(n),
-#resourceLibraryHub .electronic-tests-menu>a.menu-btn{
-  border:1px solid #c8dfc4!important;
-  border-bottom:4px solid #2f8550!important;
-  border-radius:17px!important;
-  background:linear-gradient(145deg,#fff 0%,#f2faf0 100%)!important;
-  color:var(--ink)!important;
-  box-shadow:0 4px 0 rgba(20,83,45,.08),0 8px 16px rgba(20,63,34,.06)!important;
-}
-#resourceLibraryHub .electronic-tests-menu>.menu-btn .menu-icon,
-#resourceLibraryHub .electronic-tests-menu>a.menu-btn .menu-icon{
-  background:#e8f5e5!important;
-  border:1px solid #d8ead3!important;
-  box-shadow:none!important;
-}
-#resourceLibraryHub .electronic-tests-menu>.menu-btn:active,
-#resourceLibraryHub .electronic-tests-menu>a.menu-btn:active{
-  transform:translateY(3px)!important;
-  box-shadow:0 2px 0 rgba(20,83,45,.08),0 4px 10px rgba(20,63,34,.06)!important;
-}
 </style>
 
 
@@ -4374,194 +4186,5 @@ $("accessCategory").addEventListener("change",()=>loadItems($("accessCategory").
 $("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));
 document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));
 })();
-</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><section id="learningHierarchyView" class="view lib-hierarchy-page">
-<div class="view-head"><button class="back" data-view="resourceLibraryView" type="button">→ العودة إلى المكتبة العلمية</button><h2>🧩 الدروس والملخصات المنظمة</h2></div>
-<div class="lib-hierarchy-intro">
-  <div class="lib-intro-icon">🧭</div>
-  <div><strong>تنظيم المحتوى التعليمي</strong><p>ابدئي بالمقطع التعليمي، ثم أضيفي المورد المعرفي، فالنشاط، ثم ملخص النشاط. يمكنك إضافة التمارين والمواضيع بشكل مستقل.</p>
-  <div class="lib-flow"><span>المقطع التعليمي</span><i>←</i><span>المورد المعرفي</span><i>←</i><span>النشاط</span><i>←</i><span>ملخص النشاط</span></div></div>
-</div>
-<div class="lib-level-card">
-  <div class="lib-section-heading"><span class="lib-step">1</span><div><strong>اختيار المستوى الدراسي</strong><small>حددي المستوى الذي تريدين إدارة محتواه</small></div></div>
-  <select id="libTeacherLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select>
-</div>
-<div id="libTeacherStatus" class="lib-status" role="status" aria-live="polite"></div>
-<div class="lib-editor-card">
-  <div class="lib-editor-heading"><span class="lib-editor-icon">✏️</span><div><h3 id="libTeacherFormTitle">إضافة عنصر جديد</h3><p>أدخلي بيانات العنصر ثم احفظيه للانتقال إلى الخطوة التالية</p></div></div>
-  <input id="libTeacherNodeId" type="hidden">
-  <div class="lib-wizard-progress" aria-label="مراحل إضافة العنصر">
-    <div class="lib-wizard-step is-active" data-wizard-indicator="1"><span>1</span><small>بيانات العنصر</small></div><i></i>
-    <div class="lib-wizard-step" data-wizard-indicator="2"><span>2</span><small>المحتوى والمصدر</small></div><i></i>
-    <div class="lib-wizard-step" data-wizard-indicator="3"><span>3</span><small>النشر والحفظ</small></div>
-  </div>
-  <div class="lib-wizard-panel is-active" data-wizard-panel="1">
-    <div class="lib-wizard-panel-title"><strong>المرحلة الأولى: بيانات العنصر</strong><small>حددي نوع المحتوى وعنوانه ومكانه في التسلسل التعليمي.</small></div>
-    <div class="lib-form-grid">
-      <div class="lib-field"><label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select></div>
-      <div class="lib-field" id="libTeacherParentWrap"><label for="libTeacherParent">العنصر الأب</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select><small>يظهر عند إضافة مورد أو نشاط أو ملخص تابع.</small></div>
-      <div class="lib-field lib-field-wide"><label for="libTeacherTitle">عنوان العنصر <em>*</em></label><input id="libTeacherTitle" maxlength="180" placeholder="مثال: تأثير العوامل الفيزيوكيميائية" required></div>
-      <div class="lib-field lib-field-wide"><label for="libTeacherDescription">وصف مختصر <small>(اختياري)</small></label><textarea id="libTeacherDescription" rows="2" placeholder="اكتبي وصفًا موجزًا يساعد على التعرف على العنصر"></textarea></div>
-    </div>
-    <div class="lib-wizard-actions"><span></span><button type="button" class="primary" data-wizard-next="2">التالي: المحتوى والمصدر ←</button></div>
-  </div>
-  <div class="lib-wizard-panel" data-wizard-panel="2" hidden>
-    <div class="lib-wizard-panel-title"><strong>المرحلة الثانية: المحتوى التعليمي</strong><small>أضيفي الملخص أو النص التعليمي، ويمكنك إرفاق رابط خارجي.</small></div>
-    <div class="lib-form-grid">
-      <div class="lib-field lib-field-wide lib-content-field"><label for="libTeacherContent">المحتوى التعليمي أو ملخص النشاط</label><textarea id="libTeacherContent" rows="10" placeholder="اكتبي المحتوى التعليمي هنا... يمكنك تنظيمه إلى فقرات وعناوين"></textarea><small>خصصي هذا الحقل لكتابة الملخص أو النص التعليمي الكامل.</small></div>
-      <div class="lib-field lib-field-wide"><label for="libTeacherUrl">رابط مورد أو ملف <small>(اختياري)</small></label><input id="libTeacherUrl" type="url" placeholder="https://..."></div>
-    </div>
-    <div class="lib-wizard-actions"><button type="button" class="secondary" data-wizard-back="1">→ السابق</button><button type="button" class="primary" data-wizard-next="3">التالي: صلاحية الاطلاع ←</button></div>
-  </div>
-  <div class="lib-wizard-panel" data-wizard-panel="3" hidden>
-    <div class="lib-wizard-panel-title"><strong>المرحلة الثالثة: صلاحية الاطلاع والنشر</strong><small>اختاري من يمكنه مشاهدة العنصر، أو اتركيه محفوظًا كمسودة.</small></div>
-    <div class="lib-student-access"><div class="lib-access-heading"><span>👩‍🎓</span><div><strong>صلاحية الاطلاع</strong><small>اختاري التلاميذ الذين يمكنهم مشاهدة هذا المحتوى</small></div></div>
-      <label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع</label><select id="libTeacherStudents" multiple size="5"></select><small class="lib-help">يمكن تحديد أكثر من تلميذ. اضغطي مطولًا أو استخدمي خيارات التحديد في الجهاز.</small>
-    </div>
-    <label class="lib-publish-toggle" for="libTeacherPublished"><input id="libTeacherPublished" type="checkbox"><span><strong>نشر العنصر للتلاميذ المحددين</strong><small>إذا لم تفعّلي النشر، يبقى العنصر محفوظًا كمسودة خاصة بك.</small></span></label>
-    <div class="lib-wizard-actions"><button type="button" class="secondary" data-wizard-back="2">→ السابق</button><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button></div>
-  </div>
-  <div class="lib-form-actions lib-wizard-reset"><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول والبدء من جديد</button></div>
-</div>
-<div class="lib-records-card"><div class="lib-section-heading"><span class="lib-step">2</span><div><strong>العناصر المسجلة</strong><small>استعرضي العناصر وأضيفي التوابع أو عدّليها</small></div></div><div id="libTeacherNodes"><p class="muted">اختاري المستوى الدراسي لعرض محتواه.</p></div></div>
-</section><script>
-(function(){
-const $=id=>document.getElementById(id),endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
-let nodes=[],students=[];
-const types={segment:"مقطع تعليمي",knowledge_resource:"مورد معرفي",activity:"نشاط",summary:"ملخص نشاط",exercise:"تمرين مستقل",topic:"موضوع مستقل"};
-const parentTypes={knowledge_resource:"segment",activity:"knowledge_resource",summary:"activity"};
-function esc(v){return String(v??"").replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));}
-async function api(action,extra={}){const token=localStorage.getItem("tahadi_teacher_token");const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await res.json();if(!res.ok||!d.ok)throw new Error(d.error||"تعذر تنفيذ العملية.");return d;}
-function parentOptions(){const type=$("libTeacherType").value,need=parentTypes[type];$("libTeacherParentWrap").hidden=!need;const options=nodes.filter(n=>n.node_type===need);$("libTeacherParent").innerHTML='<option value="">اختاري العنصر الأب</option>'+options.map(n=>'<option value="'+esc(n.id)+'">'+esc(n.title)+'</option>').join("");}
-function renderNodes(){const root=$("libTeacherNodes");if(!nodes.length){root.innerHTML='<p class="muted">لا توجد عناصر بعد لهذا المستوى. ابدئي بإضافة مقطع أو تمرين أو موضوع.</p>';return;}
-const sorted=[...nodes].sort((a,b)=>Number(a.sort_order)-Number(b.sort_order));
-root.innerHTML=sorted.map(n=>{const parent=nodes.find(x=>x.id===n.parent_id);const child=n.node_type==="segment"?'<button type="button" class="secondary" data-lib-add-child="knowledge_resource" data-parent-id="'+esc(n.id)+'">＋ إضافة مورد معرفي</button>':n.node_type==="knowledge_resource"?'<button type="button" class="secondary" data-lib-add-child="activity" data-parent-id="'+esc(n.id)+'">＋ إضافة نشاط</button>':n.node_type==="activity"?'<button type="button" class="secondary" data-lib-add-child="summary" data-parent-id="'+esc(n.id)+'">＋ إضافة ملخص النشاط</button>':"";return '<article class="data-item" style="margin:9px 0"><strong>'+esc(types[n.node_type])+' — '+esc(n.title)+'</strong><p class="muted">'+(parent?'يتبع: '+esc(parent.title)+' · ':'')+(n.is_published?'منشور':'مسودة')+' · '+(Array.isArray(n.visible_student_ids)?n.visible_student_ids.length:0)+' تلميذ محدد</p><div class="actions-row">'+child+'<button type="button" class="secondary" data-lib-edit="'+esc(n.id)+'">تعديل</button><button type="button" class="secondary" data-lib-delete="'+esc(n.id)+'">حذف</button></div></article>';}).join("");
-root.querySelectorAll("[data-lib-add-child]").forEach(b=>b.addEventListener("click",()=>startChild(b.dataset.libAddChild,b.dataset.parentId)));root.querySelectorAll("[data-lib-edit]").forEach(b=>b.addEventListener("click",()=>editNode(b.dataset.libEdit)));
-root.querySelectorAll("[data-lib-delete]").forEach(b=>b.addEventListener("click",()=>deleteNode(b.dataset.libDelete)));
-}
-function showEditorStep(step){document.querySelectorAll("#learningHierarchyView [data-wizard-panel]").forEach(p=>{const active=Number(p.dataset.wizardPanel)===Number(step);p.hidden=!active;p.classList.toggle("is-active",active);});document.querySelectorAll("#learningHierarchyView [data-wizard-indicator]").forEach(i=>{const n=Number(i.dataset.wizardIndicator);i.classList.toggle("is-active",n===Number(step));i.classList.toggle("is-done",n<Number(step));});const panel=document.querySelector(`#learningHierarchyView [data-wizard-panel="${step}"]`);if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});}
-function resetForm(){ $("libTeacherNodeId").value="";$("libTeacherFormTitle").textContent="➕ إضافة عنصر";$("libTeacherTitle").value="";$("libTeacherDescription").value="";$("libTeacherContent").value="";$("libTeacherUrl").value="";$("libTeacherPublished").checked=false;$("libTeacherStudents").selectedIndex=-1;parentOptions();showEditorStep(1);}
-function startChild(type,parentId){resetForm();$("libTeacherType").value=type;parentOptions();$("libTeacherParent").value=parentId;const parent=nodes.find(n=>String(n.id)===String(parentId));$("libTeacherStatus").textContent="الخطوة التالية: إضافة "+types[type]+" داخل «"+(parent?.title||"العنصر المحدد")+"».";window.scrollTo({top:$("learningHierarchyView").offsetTop,behavior:"smooth"});$("libTeacherTitle").focus();}
-function editNode(id){const n=nodes.find(x=>x.id===id);if(!n)return;showEditorStep(1);$("libTeacherNodeId").value=n.id;$("libTeacherFormTitle").textContent="✏️ تعديل العنصر";$("libTeacherType").value=n.node_type;parentOptions();$("libTeacherParent").value=n.parent_id||"";$("libTeacherTitle").value=n.title||"";$("libTeacherDescription").value=n.description||"";$("libTeacherContent").value=n.content_text||"";$("libTeacherUrl").value=n.resource_url||"";$("libTeacherPublished").checked=!!n.is_published;const selected=new Set(n.visible_student_ids||[]);Array.from($("libTeacherStudents").options).forEach(o=>o.selected=selected.has(o.value));window.scrollTo({top:$("learningHierarchyView").offsetTop,behavior:"smooth"});}
-async function deleteNode(id){const n=nodes.find(x=>x.id===id);if(!n||!confirm("سيتم حذف هذا العنصر وكل العناصر التابعة له. هل تريدين المتابعة؟"))return;try{await api("teacher_delete_library_node",{id});await load();$("libTeacherStatus").textContent="تم حذف العنصر وفروعه.";}catch(e){$("libTeacherStatus").textContent=e.message;}}
-async function load(){const level=$("libTeacherLevel").value;if(!level)return;try{$("libTeacherStatus").textContent="جارٍ تحميل المحتوى…";const [a,b]=await Promise.all([api("teacher_list_library_nodes",{level}),api("teacher_list_resource_students",{level})]);nodes=a.nodes||[];students=b.students||[];$("libTeacherStudents").innerHTML=students.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.full_name)+'</option>').join("");parentOptions();renderNodes();$("libTeacherStatus").textContent="تم تحميل "+nodes.length+" عنصرًا و"+students.length+" تلميذًا في هذا المستوى.";}catch(e){$("libTeacherStatus").textContent=e.message;}}
-$("libTeacherLevel").addEventListener("change",()=>{libraryNavStack=[];resetForm();load();});
-document.querySelectorAll("#learningHierarchyView [data-wizard-next]").forEach(b=>b.addEventListener("click",()=>{const next=Number(b.dataset.wizardNext);showEditorStep(next);$("libTeacherStatus").textContent="";}));
-document.querySelectorAll("#learningHierarchyView [data-wizard-back]").forEach(b=>b.addEventListener("click",()=>showEditorStep(Number(b.dataset.wizardBack))));
-$("libTeacherType").addEventListener("change",parentOptions);
-$("libTeacherReset").addEventListener("click",resetForm);
-$("libTeacherSave").addEventListener("click",async()=>{const level=$("libTeacherLevel").value,type=$("libTeacherType").value,title=$("libTeacherTitle").value.trim();if(!level||title.length<2){$("libTeacherStatus").textContent="اختاري المستوى واكتبي عنوانًا صحيحًا.";return;}const parent=parentTypes[type]?$("libTeacherParent").value:null;if(parentTypes[type]&&!parent){$("libTeacherStatus").textContent="اختاري العنصر الأب أولًا.";return;}const btn=$("libTeacherSave");btn.disabled=true;try{await api("teacher_save_library_node",{id:$("libTeacherNodeId").value||undefined,level,node_type:type,parent_id:parent,title,description:$("libTeacherDescription").value,content_text:$("libTeacherContent").value,resource_url:$("libTeacherUrl").value,is_published:$("libTeacherPublished").checked,visible_student_ids:Array.from($("libTeacherStudents").selectedOptions).map(o=>o.value)});resetForm();await load();$("libTeacherStatus").textContent="تم حفظ العنصر بنجاح.";}catch(e){$("libTeacherStatus").textContent=e.message;}finally{btn.disabled=false;}});
-document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.addEventListener("click",()=>{if($("libTeacherLevel").value)load();}));
-})();
-</script>
-
-
-<style id="learning-hierarchy-mobile-redesign-v1">
-#learningHierarchyView.lib-hierarchy-page{max-width:920px;margin:0 auto;padding-bottom:28px}
-#learningHierarchyView .view-head{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:14px}
-#learningHierarchyView .view-head h2{margin:0;color:#174b30;font-size:clamp(1.15rem,4vw,1.55rem)}
-.lib-hierarchy-intro,.lib-level-card,.lib-editor-card,.lib-records-card{background:#fff;border:1px solid #dfe9dc;border-radius:20px;box-shadow:0 5px 0 #dce8da,0 12px 24px #173f2410;margin:14px 0;padding:clamp(14px,3.5vw,22px)}
-.lib-hierarchy-intro{display:flex;gap:13px;align-items:flex-start;background:linear-gradient(135deg,#f2faf0,#fff)}
-.lib-intro-icon{width:42px;height:42px;flex:0 0 42px;border-radius:14px;background:#e2f2e1;display:grid;place-items:center;font-size:1.3rem}
-.lib-hierarchy-intro strong,.lib-section-heading strong,.lib-access-heading strong{color:#174b30;font-size:1.02rem}
-.lib-hierarchy-intro p{margin:4px 0 12px;color:#64756a;font-size:.9rem;line-height:1.8}
-.lib-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.lib-flow span{background:#e9f5e7;border:1px solid #d5e8d2;border-radius:9px;padding:5px 8px;color:#245b39;font-size:.76rem;font-weight:700}
-.lib-flow i{font-style:normal;color:#7da184}
-.lib-section-heading,.lib-editor-heading,.lib-access-heading{display:flex;align-items:center;gap:11px;margin-bottom:15px}
-.lib-step{width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:#e6f3e4;color:#1d633b;display:grid;place-items:center;font-weight:800}
-.lib-section-heading small,.lib-editor-heading p,.lib-access-heading small{display:block;color:#7b897f;font-size:.78rem;font-weight:400;margin-top:2px}
-.lib-level-card select,.lib-field input,.lib-field select,.lib-field textarea,.lib-student-access select{width:100%;max-width:100%;border:1px solid #d4dfd3!important;border-radius:12px!important;background:#fbfdf9!important;color:#203b2b!important;padding:12px 13px!important;min-height:48px;box-shadow:inset 0 1px 2px #153d1d08}
-.lib-level-card select{font-weight:700}
-.lib-status{min-height:0;margin:8px 2px;color:#55735d;font-size:.88rem}
-.lib-editor-card{background:linear-gradient(180deg,#fff 0%,#fcfefa 100%)}
-.lib-editor-heading{padding-bottom:13px;border-bottom:1px solid #e7eee5}
-.lib-editor-icon{width:43px;height:43px;border-radius:14px;background:#e7f4e5;display:grid;place-items:center;font-size:1.25rem}
-.lib-editor-heading h3{margin:0;color:#174b30;font-size:1.2rem}
-.lib-editor-heading p{margin:3px 0 0;line-height:1.6}
-.lib-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
-.lib-field{min-width:0}
-.lib-field-wide{grid-column:1/-1}
-.lib-field>label,.lib-student-access>label{display:block;font-weight:800;color:#294d36;margin:0 0 7px;font-size:.94rem}
-.lib-field label em{color:#b34b3f;font-style:normal}
-.lib-field label small{color:#87958a;font-weight:400;font-size:.8rem}
-.lib-field textarea{resize:vertical;line-height:1.9;min-height:90px}
-.lib-content-field textarea{min-height:230px;font-size:1rem;line-height:2}
-.lib-field>small,.lib-help{display:block;color:#859187;font-size:.76rem;margin-top:6px;line-height:1.6}
-.lib-student-access{margin-top:18px;padding:15px;background:#f5faf3;border:1px solid #e0ecdc;border-radius:15px}
-.lib-access-heading{margin-bottom:12px}
-.lib-access-heading>span{font-size:1.4rem}
-.lib-student-access select{min-height:145px;max-height:190px;padding:8px!important}
-.lib-publish-toggle{display:flex;align-items:center;gap:12px;margin-top:17px;padding:13px;background:#f0f8ee;border:1px solid #dcebd8;border-radius:13px;cursor:pointer}
-.lib-publish-toggle input{width:21px;height:21px;flex:0 0 21px;accent-color:#187344}
-.lib-publish-toggle strong,.lib-publish-toggle small{display:block}
-.lib-publish-toggle strong{color:#225438;font-size:.9rem}
-.lib-publish-toggle small{color:#7b897f;font-size:.76rem;margin-top:3px}
-.lib-form-actions{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-top:18px}
-.lib-form-actions button{min-height:50px;border-radius:13px!important}
-.lib-records-card .data-item{padding:13px!important;border:1px solid #e1eade!important;border-radius:14px!important;background:#fbfdf9!important}
-.lib-records-card .actions-row{display:flex;flex-wrap:wrap;gap:8px}
-.lib-records-card .actions-row button{min-height:40px}
-@media(max-width:600px){
- #learningHierarchyView.lib-hierarchy-page{padding-left:0;padding-right:0}
- #learningHierarchyView .view-head{padding:0 5px}
- .lib-hierarchy-intro,.lib-level-card,.lib-editor-card,.lib-records-card{border-radius:16px;padding:14px;margin:12px 0}
- .lib-hierarchy-intro{gap:10px}
- .lib-intro-icon{width:36px;height:36px;flex-basis:36px}
- .lib-flow{gap:5px}
- .lib-flow span{font-size:.69rem;padding:5px 6px}
- .lib-form-grid{grid-template-columns:minmax(0,1fr);gap:13px}
- .lib-field-wide{grid-column:auto}
- .lib-content-field textarea{min-height:210px}
- .lib-student-access{padding:12px}
- .lib-form-actions{grid-template-columns:1fr 1fr}
- .lib-form-actions button{font-size:.88rem;padding:10px 8px!important}
-}
-</style>
-
-
-<style id="learning-hierarchy-wizard-v2">
-#learningHierarchyView .lib-wizard-progress{display:flex;align-items:center;justify-content:center;gap:7px;margin:4px 0 20px;padding:13px 10px;background:#f4faf2;border:1px solid #e0ecdc;border-radius:15px}
-#learningHierarchyView .lib-wizard-progress>i{height:2px;flex:1;max-width:46px;background:#d4e2d2}
-#learningHierarchyView .lib-wizard-step{display:flex;align-items:center;gap:7px;color:#829084;min-width:0}
-#learningHierarchyView .lib-wizard-step>span{width:31px;height:31px;flex:0 0 31px;border-radius:50%;display:grid;place-items:center;background:#e2eae0;color:#607463;font-weight:800}
-#learningHierarchyView .lib-wizard-step small{font-size:.75rem;white-space:nowrap}
-#learningHierarchyView .lib-wizard-step.is-active{color:#175b35;font-weight:800}
-#learningHierarchyView .lib-wizard-step.is-active>span,#learningHierarchyView .lib-wizard-step.is-done>span{background:#197746;color:#fff}
-#learningHierarchyView .lib-wizard-panel{animation:libWizardIn .18s ease-out}
-#learningHierarchyView .lib-wizard-panel[hidden]{display:none!important}
-#learningHierarchyView .lib-wizard-panel-title{padding:2px 0 14px;margin-bottom:16px;border-bottom:1px solid #e6eee4}
-#learningHierarchyView .lib-wizard-panel-title strong{display:block;color:#174b30;font-size:1.05rem}
-#learningHierarchyView .lib-wizard-panel-title small{display:block;color:#7b897f;font-size:.8rem;line-height:1.7;margin-top:4px}
-#learningHierarchyView .lib-wizard-actions{display:flex;justify-content:space-between;gap:10px;margin-top:20px;padding-top:15px;border-top:1px solid #e7eee5}
-#learningHierarchyView .lib-wizard-actions button{min-height:48px;border-radius:13px!important;flex:1}
-#learningHierarchyView .lib-wizard-reset{margin-top:13px}
-#learningHierarchyView .lib-wizard-reset button{width:100%;min-height:44px}
-#learningHierarchyView .lib-student-access select{min-height:175px;max-height:220px;line-height:1.9}
-#learningHierarchyView .lib-student-access select option{padding:7px 9px;border-radius:6px}
-#learningHierarchyView .lib-content-field textarea{min-height:260px;line-height:2}
-#learningHierarchyView .lib-field textarea{padding:13px!important}
-#learningHierarchyView .lib-form-actions button:disabled{opacity:.65;cursor:wait}
-@keyframes libWizardIn{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:600px){
- #learningHierarchyView .lib-wizard-progress{gap:4px;padding:11px 7px}
- #learningHierarchyView .lib-wizard-progress>i{max-width:18px}
- #learningHierarchyView .lib-wizard-step{gap:4px}
- #learningHierarchyView .lib-wizard-step>span{width:27px;height:27px;flex-basis:27px;font-size:.82rem}
- #learningHierarchyView .lib-wizard-step small{font-size:.66rem;white-space:normal;line-height:1.25;max-width:65px}
- #learningHierarchyView .lib-wizard-actions{gap:8px}
- #learningHierarchyView .lib-wizard-actions button{font-size:.85rem;padding:10px 8px!important}
- #learningHierarchyView .lib-content-field textarea{min-height:235px}
- #learningHierarchyView .lib-student-access select{min-height:155px}
-}
-</style>
-
-</body>
+</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script></body>
 </html>
-
-<style id="resource-list-button-navigation-v1">
-#learningResourcesList .lib-resource-row-button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;margin:12px 0;padding:17px;border:1px solid #d6e5d5;border-radius:16px;background:#f4faf2;color:#174b30;box-shadow:0 5px 0 #d5e3d3;text-align:right;font:inherit;cursor:pointer}
-#learningResourcesList .lib-resource-row-button span{display:flex;flex-direction:column;gap:6px;min-width:0}
-#learningResourcesList .lib-resource-row-button strong{font-weight:800}
-#learningResourcesList .lib-resource-row-button small{color:#718071;font-size:.85rem}
-#learningResourcesList .lib-resource-row-button b{font-size:1.2rem}
-</style>
