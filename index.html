@@ -3343,7 +3343,8 @@ const handleIncomeCalendarClick=async e=>{
       const hub=document.getElementById("electronicTestsHub"),panel=document.getElementById("dailyChallengeEmbedded"),frame=document.getElementById("dailyChallengeFrame"),challengeFolder=document.getElementById("dailyChallengeFolder");
       if(savedPosition.challengePage&&panel&&frame&&hub){
         hub.hidden=true;panel.hidden=false;
-        const page=savedPosition.challengePage==="list"?"list":"editor";
+        if(challengeFolder)challengeFolder.hidden=true;
+        const page=["editor","list","results"].includes(savedPosition.challengePage)?savedPosition.challengePage:"editor";
         const target="./daily-challenge-admin.html?embed=1&v=20261106fix3#"+page;
         if(!frame.src.endsWith(target))frame.src=target;
         const title=document.getElementById("dailyChallengeEmbeddedTitle");if(title)title.textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
@@ -3526,7 +3527,7 @@ const handleIncomeCalendarClick=async e=>{
   $("resetElectronicTest")?.addEventListener("click",()=>{electronicTestForm.reset();$("electronicTestStatus").textContent="";});
   $("refreshElectronicTests")?.addEventListener("click",loadElectronicTests);
   document.querySelector('[data-view="electronicTestsView"]')?.addEventListener("click",()=>{const hub=$("electronicTestsHub");if(hub)hub.hidden=false;document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);});
-  const challengeHub=$("electronicTestsHub"),challengePanel=$("dailyChallengeEmbedded"),challengeFrame=$("dailyChallengeFrame");
+  const challengeHub=$("electronicTestsHub"),challengePanel=$("dailyChallengeEmbedded"),challengeFrame=$("dailyChallengeFrame"),challengeFolder=$("dailyChallengeFolder");
   function openDailyChallengePage(page,options={}){
     challengeHub.hidden=true;
     document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);
