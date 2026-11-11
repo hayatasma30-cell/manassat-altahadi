@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#14532d">
-<meta name="description" content="فضاء التلميذ - منصة التحدي"><meta name="platform-build" content="2026-11-11-learning-library-hierarchy-v1"><title>فضاء التلميذ | منصة التحدي</title>
+<meta name="description" content="فضاء التلميذ - منصة التحدي"><meta name="platform-build" content="2026-11-11-learning-library-linked-v2"><title>فضاء التلميذ | منصة التحدي</title>
 <style>
 .daily-challenge-notice{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:13px 15px;border:1px solid #d8c58a;border-right:5px solid #b58a32;border-radius:15px;background:linear-gradient(110deg,#fff9e8,#f2f8e9);box-shadow:0 4px 12px #3d32100d}.daily-challenge-notice.hidden{display:none!important}.daily-challenge-notice-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border-radius:12px;background:#f6e9c6;font-size:22px}.daily-challenge-notice-copy{display:grid;gap:2px;min-width:0}.daily-challenge-notice-copy strong{color:#795a1c}.daily-challenge-notice-copy span{font-size:13px;color:#56675a}.daily-challenge-notice-link{margin-inline-start:auto;white-space:nowrap;text-decoration:none;color:#14532d;font-weight:800;font-size:13px;padding:8px 11px;border-radius:10px;background:#e5f1df;box-shadow:0 2px 0 #14532d1a}@media(max-width:520px){.daily-challenge-notice{flex-wrap:wrap}.daily-challenge-notice-link{margin-inline-start:54px}}
 :root{--g:#14532d;--g2:#1f7747;--cream:#faf8ee;--ink:#18382a;--muted:#68776c;--line:#dfe8dc;--pale:#edf7eb;--gold:#f1d38a;--white:#fff}
@@ -621,6 +621,7 @@ let studentLibraryPath=[];
 function renderStudentLearningResources(data=currentDashboardData||teacherPreviewData||{}){
  const root=$("studentLearningResourcesList");if(!root)return;
  const nodes=Array.isArray(data?.library_nodes)?data.library_nodes:[];
+ const legacy=Array.isArray(data?.resources)?data.resources.filter(r=>r.resource_type!=="quiz"):[];
  const byParent=parent=>nodes.filter(n=>String(n.parent_id||"")===String(parent||""));
  const current=studentLibraryPath.length?nodes.find(n=>String(n.id)===String(studentLibraryPath[studentLibraryPath.length-1])):null;
  let rows=[];
@@ -639,10 +640,13 @@ function renderStudentLearningResources(data=currentDashboardData||teacherPrevie
   html+='<div class="empty">لا يوجد ملخص منشور لهذا النشاط بعد.</div>';
  }else if(current?.node_type==="summary"){
   html+='<article class="item" style="margin:10px 0"><h3>'+safe(current.title)+'</h3>'+(current.description?'<p>'+safe(current.description)+'</p>':'')+(current.content_text?'<div style="white-space:pre-wrap;line-height:1.9">'+safe(current.content_text)+'</div>':'')+(current.resource_url?'<p><a target="_blank" rel="noopener" href="'+safe(current.resource_url)+'">فتح المورد ↗</a></p>':'')+'</article>';
- }else if(!studentLibraryPath.length){
+ }else if(!studentLibraryPath.length&&!legacy.length){
   html+='<div class="empty">لم تنشر الأستاذة أي مقاطع تعليمية لهذا المستوى بعد.</div>';
- }else{
+ }else if(studentLibraryPath.length){
   html+='<div class="empty">لا توجد عناصر منشورة داخل هذا القسم حاليًا.</div>';
+ }
+ if(!studentLibraryPath.length&&legacy.length){
+  html+='<section class="item" style="margin-top:14px"><h3>الموارد التعليمية السابقة</h3><p class="muted small">محتويات محفوظة من المكتبة السابقة، ستبقى متاحة دون نقل أو حذف.</p>'+legacy.map(r=>'<article style="padding:10px 0;border-top:1px solid #e5eadf"><strong>'+safe(r.title)+'</strong>'+(r.description?'<p>'+safe(r.description)+'</p>':'')+(r.resource_url?'<p><a target="_blank" rel="noopener" href="'+safe(r.resource_url)+'">فتح المورد ↗</a></p>':'')+'</article>').join("")+'</section>';
  }
  root.innerHTML=html;
 }
