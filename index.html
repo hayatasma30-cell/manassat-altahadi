@@ -951,6 +951,33 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 @media(max-width:480px){#resourceListSection>.panel{padding:13px!important;border-radius:20px!important}#resourceListSection .data-item{padding:14px!important;border-radius:18px!important}#resourceListSection .data-item>.section-heading strong{font-size:.98rem!important}#resourceListSection .data-item .actions-row{gap:6px}#resourceListSection .data-item .actions-row button{font-size:.78rem!important;min-height:41px!important}}
 @media(prefers-reduced-motion:reduce){#resourceListSection .data-item{transition:none!important}}
 
+
+/* اللمسات الاحترافية النهائية لبطاقات الموارد */
+#resourceListSection>.panel{position:relative;overflow:hidden}
+#resourceListSection>.panel:before{content:"";position:absolute;top:0;right:0;width:125px;height:125px;border-radius:0 0 0 100%;background:radial-gradient(circle at top right,#e8f3e4 0%,#f5faf2 58%,transparent 60%);pointer-events:none}
+#resourceListSection>.panel>.section-heading{position:relative;z-index:1;padding-bottom:17px}
+#resourceListSection>.panel>.section-heading h3{display:flex;align-items:center;gap:9px;font-size:1.24rem;letter-spacing:.1px}
+#resourceListSection>.panel>.section-heading h3:before{content:"📚";display:grid;place-items:center;width:39px;height:39px;border-radius:13px;background:#edf6e9;font-size:1.15rem;box-shadow:inset 0 0 0 1px #dcebd7}
+#resourceListSection .data-item{padding:19px!important;border-radius:22px!important}
+#resourceListSection .data-item>.section-heading{align-items:center!important;gap:12px!important}
+#resourceListSection .data-item>.section-heading>div{gap:12px!important}
+#resourceListSection .data-item>.section-heading strong{font-size:1.08rem!important;line-height:1.95!important;letter-spacing:.05px}
+#resourceListSection .resource-drag-handle{width:46px!important;height:46px!important;min-width:46px!important;flex-basis:46px!important;border-radius:15px!important;font-size:21px!important;background:linear-gradient(145deg,#f8fcf6,#e9f3e6)!important}
+#resourceListSection .badge{padding:7px 13px!important;font-size:.8rem!important;box-shadow:inset 0 1px #fff}
+#resourceListSection .data-item>p.small{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:12px 0!important;padding:9px 11px;border-radius:12px;background:#f5f8f2;color:#667568!important}
+#resourceListSection .data-item>p.small span[style*="17683a"]{display:inline-flex;padding:4px 9px;border-radius:30px;background:#e2f2e2;font-weight:800}
+#resourceListSection .data-item>p.small span[style*="946b16"]{display:inline-flex;padding:4px 9px;border-radius:30px;background:#fff2d4;font-weight:800}
+#resourceListSection .data-item>p[dir="ltr"]{display:flex;align-items:center;justify-content:flex-start;min-height:48px;margin:14px 0!important;padding:11px 14px!important;border:1px solid #e3eee0;background:linear-gradient(100deg,#f8fbf6,#eff7ec)!important}
+#resourceListSection .data-item>p[dir="ltr"] a{display:inline-flex;align-items:center;gap:8px;font-size:.98rem}
+#resourceListSection .data-item .actions-row{gap:10px!important;margin-top:16px!important;padding-top:15px!important}
+#resourceListSection .data-item .actions-row button{min-height:46px!important;border-radius:14px!important;font-size:.88rem!important;transition:transform .15s ease,filter .15s ease}
+#resourceListSection .data-item .actions-row button:active{transform:translateY(2px);filter:brightness(.97)}
+#resourceListSection .data-item .actions-row button[data-edit-resource]{border-bottom:3px solid #bcd5b6!important}
+#resourceListSection .data-item .actions-row button[data-toggle-resource]{border-bottom:3px solid #e4d49f!important}
+#resourceListSection .data-item .actions-row button[data-delete-resource]{border-bottom:3px solid #e5c5c1!important}
+@media(max-width:480px){#resourceListSection>.panel>.section-heading h3{font-size:1.12rem}#resourceListSection .data-item{padding:15px!important}#resourceListSection .data-item>.section-heading strong{font-size:1rem!important}#resourceListSection .resource-drag-handle{width:42px!important;height:42px!important;min-width:42px!important;flex-basis:42px!important}#resourceListSection .data-item .actions-row{gap:7px!important}#resourceListSection .data-item .actions-row button{min-height:44px!important;font-size:.8rem!important;padding:7px 3px!important}}
+@media(prefers-reduced-motion:reduce){#resourceListSection .data-item .actions-row button{transition:none!important}}
+
 </style>
 
 <style id="home-redesign-clean-v3">
