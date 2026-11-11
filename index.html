@@ -922,7 +922,36 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  #studentLevelView #studentsList .student-card-details .student-actions button{min-height:27px!important;padding:3px 4px!important;font-size:9px!important}
  #studentLevelView #studentsList .student-card-meta .student-chip{white-space:nowrap}
 }
-\n/* إظهار اختيار نوع الاحتساب وسعر الدورة بوضوح في كل مسارات الحضور */\n.lesson-roster-row{grid-template-columns:minmax(0,1fr) 74px 68px!important;row-gap:8px!important;padding:12px 4px!important}\n.lesson-roster-billing{grid-column:1/-1!important;display:flex!important;justify-content:flex-start!important;gap:8px!important;white-space:normal!important;font-size:.82rem!important;color:#245b39}\n.lesson-roster-billing select{width:auto!important;min-width:125px!important;min-height:38px!important;padding:5px 9px!important;border:1px solid #b8d5b5!important;border-radius:9px!important;background:#fff!important;color:#18382a!important}\n.lesson-course-price-wrap{margin:14px 0;padding:13px;border:1px solid #b7d8b8;border-right:4px solid #21834c;border-radius:13px;background:#f0f8ed}\n.lesson-course-price-wrap[hidden]{display:none!important}\n.lesson-course-price-wrap label{display:grid;gap:7px;font-weight:800;color:#14532d}\n.lesson-course-price-wrap input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #9fc7a2;border-radius:11px;background:#fff}\n@media(max-width:420px){.lesson-roster-row{grid-template-columns:minmax(0,1fr) 62px 58px!important}.lesson-roster-row label{font-size:.75rem!important}}\n</style>
+\n/* إظهار اختيار نوع الاحتساب وسعر الدورة بوضوح في كل مسارات الحضور */\n.lesson-roster-row{grid-template-columns:minmax(0,1fr) 74px 68px!important;row-gap:8px!important;padding:12px 4px!important}\n.lesson-roster-billing{grid-column:1/-1!important;display:flex!important;justify-content:flex-start!important;gap:8px!important;white-space:normal!important;font-size:.82rem!important;color:#245b39}\n.lesson-roster-billing select{width:auto!important;min-width:125px!important;min-height:38px!important;padding:5px 9px!important;border:1px solid #b8d5b5!important;border-radius:9px!important;background:#fff!important;color:#18382a!important}\n.lesson-course-price-wrap{margin:14px 0;padding:13px;border:1px solid #b7d8b8;border-right:4px solid #21834c;border-radius:13px;background:#f0f8ed}\n.lesson-course-price-wrap[hidden]{display:none!important}\n.lesson-course-price-wrap label{display:grid;gap:7px;font-weight:800;color:#14532d}\n.lesson-course-price-wrap input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #9fc7a2;border-radius:11px;background:#fff}\n@media(max-width:420px){.lesson-roster-row{grid-template-columns:minmax(0,1fr) 62px 58px!important}.lesson-roster-row label{font-size:.75rem!important}}\n
+/* تطوير واجهة المكتبة التعليمية للأستاذة — تصميم فقط */
+#resourceLibraryView .view-head{margin-bottom:16px}
+#resourceListSection>.panel{border:1px solid #dfe9dc!important;border-radius:24px!important;background:linear-gradient(180deg,#fff 0%,#fbfdf9 100%)!important;box-shadow:0 5px 0 #e8efe4,0 14px 28px #174b2b0c!important;padding:clamp(14px,3.5vw,22px)!important}
+#resourceListSection>.panel>.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:3px 2px 15px;margin-bottom:14px;border-bottom:1px solid #e7eee4}
+#resourceListSection .section-heading h3{margin:0;color:#174b32;font-size:1.2rem}
+#resourceListSection #refreshLearningResources{min-height:40px!important;padding:8px 14px!important;border-radius:12px!important;background:linear-gradient(145deg,#f4faf1,#e6f2e2)!important;color:#185b36!important;border:1px solid #cfe1ca!important;box-shadow:0 3px 0 #d9e8d5!important}
+#resourceListSection #learningResourcesList{gap:14px!important}
+#resourceListSection .data-item{position:relative;margin:0!important;padding:17px!important;border:1px solid #dce8d9!important;border-radius:20px!important;background:linear-gradient(155deg,#fff 0%,#fbfdf9 65%,#f5faf2 100%)!important;box-shadow:0 3px 0 #e4eee1,0 9px 20px #174b2b0b!important;transition:transform .18s ease,box-shadow .18s ease}
+#resourceListSection .data-item:before{content:"";position:absolute;top:0;right:0;left:0;height:3px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#dcebd8,#27814a,#dcebd8)}
+#resourceListSection .data-item>.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+#resourceListSection .data-item>.section-heading>div{flex:1;min-width:0}
+#resourceListSection .data-item>.section-heading strong{color:#174b32;font-size:1.04rem;line-height:1.9;margin:0;overflow-wrap:anywhere}
+#resourceListSection .resource-drag-handle{flex:0 0 42px!important;border-radius:13px!important;background:linear-gradient(145deg,#fff,#edf6ea)!important;color:#24603b!important;border:1px solid #cfe0cb!important;border-bottom:4px solid #9db99a!important;box-shadow:0 4px 9px #174b2b12!important}
+#resourceListSection .badge{display:inline-flex;align-items:center;white-space:nowrap;padding:6px 11px;border-radius:30px;background:#e9f4e6;color:#17613a;border:1px solid #d6e8d1;font-weight:800;font-size:.78rem}
+#resourceListSection .data-item>p{line-height:1.8;margin:8px 0;color:#6e7d72;overflow-wrap:anywhere}
+#resourceListSection .data-item>p.small{font-size:.83rem}
+#resourceListSection .data-item>p[dir="ltr"]{padding:9px 11px;border-radius:11px;background:#f3f8f0;text-align:left}
+#resourceListSection .data-item>p[dir="ltr"] a{color:#17633a;font-weight:800;text-decoration:none}
+#resourceListSection .data-item .actions-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid #e7eee4}
+#resourceListSection .data-item .actions-row button{min-width:0;min-height:43px!important;margin:0!important;padding:8px 5px!important;border-radius:12px!important;font-size:.86rem!important;font-weight:800!important;box-shadow:0 3px 0 #dce7d9!important}
+#resourceListSection .data-item .actions-row button[data-edit-resource]{background:linear-gradient(145deg,#f5faf2,#e8f3e5)!important;color:#185b36!important;border:1px solid #cfe1ca!important}
+#resourceListSection .data-item .actions-row button[data-toggle-resource]{background:linear-gradient(145deg,#fff9e8,#f7edcf)!important;color:#795a16!important;border:1px solid #ead9a7!important;box-shadow:0 3px 0 #e8dfc6!important}
+#resourceListSection .data-item .actions-row button[data-delete-resource]{background:linear-gradient(145deg,#fff5f4,#fbe9e7)!important;color:#a33b37!important;border:1px solid #edcfca!important;box-shadow:0 3px 0 #eadbd8!important}
+#resourceListSection .resource-dragging{opacity:.75;transform:scale(.99);border:2px dashed #27814a!important}
+@media(hover:hover){#resourceListSection .data-item:hover{transform:translateY(-2px);box-shadow:0 5px 0 #e4eee1,0 14px 24px #174b2b12!important}}
+@media(max-width:480px){#resourceListSection>.panel{padding:13px!important;border-radius:20px!important}#resourceListSection .data-item{padding:14px!important;border-radius:18px!important}#resourceListSection .data-item>.section-heading strong{font-size:.98rem!important}#resourceListSection .data-item .actions-row{gap:6px}#resourceListSection .data-item .actions-row button{font-size:.78rem!important;min-height:41px!important}}
+@media(prefers-reduced-motion:reduce){#resourceListSection .data-item{transition:none!important}}
+
+</style>
 
 <style id="home-redesign-clean-v3">
 /* الصفحة الرئيسية: تصميم هادئ ومتماسك للهاتف */
