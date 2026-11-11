@@ -2118,7 +2118,8 @@ window.addEventListener("unhandledrejection",function(e){
     const orderedLevels = [...knownLevels, ...studentLevels.filter(level => !knownLevels.includes(level)).sort((a,b) => a.localeCompare(b,"ar"))];
     const renderStudentFilters = () => {
       const options = [{value:"all",label:"الكل"}, ...orderedLevels.map(level => ({value:level,label:levelDisplayNames[level]||level}))];
-      if(!levelFilters){console.error("studentLevelFilters container is missing");return;}\n      levelFilters.innerHTML = options.map(option => {
+      if(!levelFilters){console.error("studentLevelFilters container is missing");return;}
+      levelFilters.innerHTML = options.map(option => {
         const count = option.value === "all" ? students.length : students.filter(s => normalizeStudentLevel(s.level) === option.value).length;
         const activeCount=(option.value==="all"?students:students.filter(s=>normalizeStudentLevel(s.level)===option.value)).filter(s=>(s.status||"active")==="active").length;
         const inactiveCount=(option.value==="all"?students:students.filter(s=>normalizeStudentLevel(s.level)===option.value)).filter(s=>s.status==="inactive").length;
