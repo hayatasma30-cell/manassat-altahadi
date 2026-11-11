@@ -1962,6 +1962,13 @@ window.addEventListener("unhandledrejection",function(e){
     if(id!=="loginView")setTimeout(saveTeacherPagePosition,80);
   }
   document.querySelectorAll("[data-view]").forEach(btn => btn.addEventListener("click", () => showView(btn.dataset.view)));
+  // ربط أزرار التنقل التي تُضاف بعد تحميل المعالج الرئيسي، ومنها زر العودة من الدروس والملخصات.
+  document.addEventListener("click", event => {
+    const button = event.target instanceof Element ? event.target.closest("#learningHierarchyView [data-view]") : null;
+    if (!button) return;
+    event.preventDefault();
+    showView(button.dataset.view);
+  });
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{if(typeof showIncomeHome==="function")showIncomeHome();});
   // دعم زر الرجوع في الهاتف داخل قسم المداخيل بدل مغادرة المنصة.
   document.querySelector('[data-view="incomeView"]')?.addEventListener("click",()=>{history.pushState({tahadiIncome:"home"},"",location.pathname+location.search+"#income");});
