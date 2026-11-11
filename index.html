@@ -2089,7 +2089,19 @@ window.addEventListener("unhandledrejection",function(e){
     const payments = Array.isArray(d.payments) ? d.payments : [];
     for(const p of payments)window.tahadiRecordCache["student_payments:"+p.id]=p;
 
-    const levelFilters = $("studentLevelFilters");
+    let levelFilters = $("studentLevelFilters");
+    if(!levelFilters){
+      const host=$("studentsView")?.querySelector(".panel");
+      if(host){
+        levelFilters=document.createElement("div");
+        levelFilters.id="studentLevelFilters";
+        levelFilters.className="level-filters";
+        levelFilters.setAttribute("role","group");
+        levelFilters.setAttribute("aria-label","صفحات التلاميذ حسب المستوى");
+        const search=host.querySelector(".overview-search");
+        if(search)search.after(levelFilters);else host.appendChild(levelFilters);
+      }
+    }
     let selectedStudentLevel = "all";
     let selectedStudyMode = "all";
     const normalizeStudentLevel = value => {
@@ -2106,7 +2118,7 @@ window.addEventListener("unhandledrejection",function(e){
     const orderedLevels = [...knownLevels, ...studentLevels.filter(level => !knownLevels.includes(level)).sort((a,b) => a.localeCompare(b,"ar"))];
     const renderStudentFilters = () => {
       const options = [{value:"all",label:"الكل"}, ...orderedLevels.map(level => ({value:level,label:levelDisplayNames[level]||level}))];
-      levelFilters.innerHTML = options.map(option => {
+      if(!levelFilters){console.error("studentLevelFilters container is missing");return;}\n      levelFilters.innerHTML = options.map(option => {
         const count = option.value === "all" ? students.length : students.filter(s => normalizeStudentLevel(s.level) === option.value).length;
         const activeCount=(option.value==="all"?students:students.filter(s=>normalizeStudentLevel(s.level)===option.value)).filter(s=>(s.status||"active")==="active").length;
         const inactiveCount=(option.value==="all"?students:students.filter(s=>normalizeStudentLevel(s.level)===option.value)).filter(s=>s.status==="inactive").length;
@@ -2118,8 +2130,8 @@ window.addEventListener("unhandledrejection",function(e){
     const studentSuggestionValues=()=>students.flatMap(x=>[x.full_name,x.phone]);
     window.tahadiEnableSearchSuggestions("studentSearchInput",studentSuggestionValues);
     window.tahadiEnableSearchSuggestions("allStudentsSearchInput",studentSuggestionValues);
-    studentSearchInput.addEventListener("input",()=>{studentSearchTerm=studentSearchInput.value.trim().toLocaleLowerCase("ar");renderStudents();});
-    $("studentSortSelect").addEventListener("change",e=>{studentSortMode=e.target.value;renderStudents();});
+    studentSearchInput?.addEventListener("input",()=>{studentSearchTerm=studentSearchInput.value.trim().toLocaleLowerCase("ar");renderStudents();});
+    $("studentSortSelect")?.addEventListener("change",e=>{studentSortMode=e.target.value;renderStudents();});
     let automaticStudentStarsCache=null;
     async function loadAutomaticStudentStars(){
       const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;
@@ -2194,7 +2206,7 @@ window.addEventListener("unhandledrejection",function(e){
     };
     renderStudentFilters();
     renderStudents();
-    levelFilters.addEventListener("click", event => {
+    levelFilters?.addEventListener("click", event => {
       const btn = event.target.closest("[data-level]");
       if (!btn) return;
       selectedStudentLevel = btn.dataset.level;
