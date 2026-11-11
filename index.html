@@ -3602,23 +3602,19 @@ const handleIncomeCalendarClick=async e=>{
       list.querySelectorAll("[data-open-resource-category]").forEach(b=>b.addEventListener("click",()=>{resourceListCategory=b.dataset.openResourceCategory;renderLearningResourceList();}));
     }
   }
-  // مستمع واحد على الحاوية الثابتة؛ يلتقط النقرات حتى بعد إعادة رسم أزرار الموارد.
-  const resourceListRoot=$("learningResourcesList");
-  if(resourceListRoot&&!resourceListRoot.dataset.navigationBound){
-    resourceListRoot.dataset.navigationBound="1";
-    resourceListRoot.addEventListener("click",async event=>{
-      const button=event.target instanceof Element?event.target.closest("button"):null;
-      if(!button||!resourceListRoot.contains(button))return;
-      const id=button.dataset;
-      if(button.id==="resourceDetailBack"){event.preventDefault();event.stopImmediatePropagation();resourceListSelectedId=null;renderLearningResourceList();return;}
-      if(button.id==="resourceCategoryBack"){event.preventDefault();event.stopImmediatePropagation();resourceListCategory=null;renderLearningResourceList();return;}
-      if(id.openResourceCategory){event.preventDefault();event.stopImmediatePropagation();resourceListCategory=id.openResourceCategory;renderLearningResourceList();return;}
-      if(id.openResource){event.preventDefault();event.stopImmediatePropagation();resourceListSelectedId=id.openResource;renderLearningResourceList();return;}
-      if(id.editResource){event.preventDefault();event.stopImmediatePropagation();const r=resourceListRows.find(x=>String(x.id)===String(id.editResource));if(!r)return;$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=r.resource_type;$("resourceStoredPath").value=String(r.resource_url||"").startsWith("storage-pdf:")?r.resource_url:"";$("resourceUrl").value=String(r.resource_url||"").startsWith("storage-pdf:")?"":(r.resource_url||"");$("resourcePdfFile").value="";$("resourceDescription").value=r.description||"";selectedResourceStudentIds=Array.isArray(r.visible_student_ids)?r.visible_student_ids.slice():[];$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";showResourcePage("add");$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});return;}
-      if(id.toggleResource){event.preventDefault();event.stopImmediatePropagation();button.disabled=true;try{const r=resourceListRows.find(x=>String(x.id)===String(id.toggleResource));if(!r)return;await resourceRequest("teacher_save_resource",{...r,is_published:id.published==="true"});await loadLearningResources();resourceListSelectedId=String(r.id);renderLearningResourceList();}catch(error){alert(error.message);}finally{button.disabled=false;}return;}
-      if(id.deleteResource){event.preventDefault();event.stopImmediatePropagation();if(!await window.TahadiDialog.confirm("هل تريدين حذف هذا المورد نهائيًا؟"))return;button.disabled=true;try{await resourceRequest("teacher_delete_resource",{id:id.deleteResource});resourceListSelectedId=null;await loadLearningResources();}catch(error){alert(error.message);}finally{button.disabled=false;}return;}
-    },true);
-  }
+  // مستمع التقاط عام: يلتقط نقرات أزرار الموارد حتى عند إعادة إنشاء عناصر الصفحة.
+  document.addEventListener("click",async event=>{
+    const button=event.target instanceof Element?event.target.closest("#resourceListPanel button"):null;
+    if(!button)return;
+    const d=button.dataset;
+    if(button.id==="resourceDetailBack"){event.preventDefault();event.stopImmediatePropagation();resourceListSelectedId=null;renderLearningResourceList();return;}
+    if(button.id==="resourceCategoryBack"){event.preventDefault();event.stopImmediatePropagation();resourceListCategory=null;renderLearningResourceList();return;}
+    if(d.openResourceCategory){event.preventDefault();event.stopImmediatePropagation();resourceListCategory=d.openResourceCategory;renderLearningResourceList();return;}
+    if(d.openResource){event.preventDefault();event.stopImmediatePropagation();resourceListSelectedId=d.openResource;renderLearningResourceList();return;}
+    if(d.editResource){event.preventDefault();event.stopImmediatePropagation();const r=resourceListRows.find(x=>String(x.id)===String(d.editResource));if(!r)return;$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=r.resource_type;$("resourceStoredPath").value=String(r.resource_url||"").startsWith("storage-pdf:")?r.resource_url:"";$("resourceUrl").value=String(r.resource_url||"").startsWith("storage-pdf:")?"":(r.resource_url||"");$("resourcePdfFile").value="";$("resourceDescription").value=r.description||"";selectedResourceStudentIds=Array.isArray(r.visible_student_ids)?r.visible_student_ids.slice():[];$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";showResourcePage("add");$("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});return;}
+    if(d.toggleResource){event.preventDefault();event.stopImmediatePropagation();button.disabled=true;try{const r=resourceListRows.find(x=>String(x.id)===String(d.toggleResource));if(!r)return;await resourceRequest("teacher_save_resource",{...r,is_published:d.published==="true"});await loadLearningResources();resourceListSelectedId=String(r.id);renderLearningResourceList();}catch(error){alert(error.message);}finally{button.disabled=false;}return;}
+    if(d.deleteResource){event.preventDefault();event.stopImmediatePropagation();if(!await window.TahadiDialog.confirm("هل تريدين حذف هذا المورد نهائيًا؟"))return;button.disabled=true;try{await resourceRequest("teacher_delete_resource",{id:d.deleteResource});resourceListSelectedId=null;await loadLearningResources();}catch(error){alert(error.message);}finally{button.disabled=false;}return;}
+  },true);
 
   async function loadLearningResources(){
     const list=$("learningResourcesList");if(!list)return;list.innerHTML='<p class="muted">جارٍ تحميل الموارد…</p>';
