@@ -1453,7 +1453,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <button class="menu-btn" data-view="dailyLessonsView"><span class="menu-icon">🗓️</span><span class="menu-copy"><strong>حصص اليوم</strong><small>تنظيم الحصص الجماعية والفردية</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="weeklyGroupsView"><span class="menu-icon">👥</span><span class="menu-copy"><strong>المجموعات الأسبوعية</strong><small>إدارة مجموعات الدعم الحضوري وZoom</small></span><span class="chev">‹</span></button>
 </div></details>
-<button class="menu-btn unified-library-entry" data-view="resourceLibraryView" type="button" style="width:100%;margin:10px 0"><span class="menu-icon">📚</span><span class="menu-copy"><strong>المكتبة العلمية</strong><small>مدخل موحد للمعلومات والدروس والملخصات والاختبارات والتحديات والدورات وإتاحة المحتوى</small></span><span class="chev">‹</span></button>
+<button class="unified-library-entry" data-view="resourceLibraryView" type="button"><span class="category-title">📚 المكتبة العلمية</span><small>مدخل موحد للمعلومات والدروس والملخصات والاختبارات والتحديات والدورات وإتاحة المحتوى</small><span class="category-arrow">＋</span></button>
 <details class="section-category"><summary><span class="category-title">💼 الإدارة المالية</span><small>الاشتراكات والمدفوعات والحسابات والملخص والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><button class="menu-btn" data-view="subscriptionsView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>إدارة الاشتراكات</strong><small>متابعة اشتراكات التلاميذ والمبالغ والحالات</small></span><span class="chev">‹</span></button>
 <button class="menu-btn" data-view="paymentsView"><span class="menu-icon">💳</span><span class="menu-copy"><strong>إشعارات الدفع</strong><small>مراجعة المدفوعات ووصولات الدفع</small></span><span class="chev">‹</span></button>
 <a class="menu-btn" href="notifications.html?source=teacher" style="text-decoration:none"><span class="menu-icon">🔔</span><span class="menu-copy"><strong>إدارة التنبيهات</strong><small>إرسال التنبيهات ومتابعة من قرأها</small></span><span class="chev">‹</span></a>
@@ -3967,6 +3967,48 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 @media(max-width:700px){
  .section-category>summary{padding-right:12px!important;padding-left:62px!important}
 }
+
+/* Make the direct scientific library button identical to the adjacent category cards */
+.unified-library-entry{
+  width:100%!important;
+  min-height:82px!important;
+  box-sizing:border-box!important;
+  position:relative!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:4px!important;
+  margin:10px 0!important;
+  padding:13px 14px 13px 64px!important;
+  border:1.5px solid #b7d8b8!important;
+  border-bottom:5px solid #56a96b!important;
+  border-radius:18px!important;
+  background:linear-gradient(145deg,#fff 0%,#f0fff3 100%)!important;
+  color:var(--g)!important;
+  text-align:right!important;
+  box-shadow:0 7px 0 #1b6b3520,0 12px 20px #173f221c!important;
+  font:inherit!important;
+}
+.unified-library-entry .category-title{
+  display:block!important;width:100%!important;
+  font-size:15px!important;font-weight:800!important;line-height:1.4!important;
+}
+.unified-library-entry>small{
+  display:block!important;width:100%!important;margin:0!important;
+  color:var(--muted)!important;font-size:12px!important;font-weight:500!important;
+  line-height:1.45!important;white-space:normal!important;
+}
+.unified-library-entry .category-arrow{
+  position:absolute!important;left:12px!important;top:50%!important;
+  transform:translateY(-50%)!important;width:42px!important;height:42px!important;
+  display:grid!important;place-items:center!important;border-radius:50%!important;
+  background:linear-gradient(145deg,#eff9ec,#dff2dc)!important;
+  color:var(--g)!important;font-size:1.05rem!important;
+  border:1px solid #fff!important;box-shadow:0 4px 10px #193d2018!important;
+}
+.unified-library-entry:active{transform:translateY(3px)!important;box-shadow:0 3px 0 #1b6b3520,0 6px 12px #173f2215!important}
+@media(max-width:700px){.unified-library-entry{padding-right:12px!important;padding-left:62px!important}}
 </style>
 
 
