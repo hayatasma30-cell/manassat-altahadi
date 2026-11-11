@@ -1861,7 +1861,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div id="status" class="status" role="status" aria-live="polite"></div>
 
 </main>
-<footer>© منصة التحدي التعليمية</footer>
+
 <div id="lessonFeedbackModal" class="editor-overlay" hidden><section class="editor-panel lesson-feedback-panel" role="dialog" aria-modal="true" aria-labelledby="lessonFeedbackTitle"><div class="editor-head"><h2 id="lessonFeedbackTitle">تأكيد العملية</h2><button type="button" id="closeLessonFeedback" class="secondary">إغلاق ✕</button></div><p id="lessonFeedbackText" class="muted" style="font-size:1rem;line-height:1.8;margin:12px 0"></p><button type="button" id="confirmLessonFeedback" class="primary" style="width:100%">حسنًا</button></section></div>
 <div id="recordEditorModal" class="editor-overlay" hidden><section class="editor-panel" role="dialog" aria-modal="true" aria-labelledby="recordEditorTitle"><div class="editor-head"><h2 id="recordEditorTitle">تعديل المعلومات</h2><button type="button" id="closeRecordEditor" class="secondary">إغلاق ✕</button></div><p class="muted">تظهر هنا جميع الحقول المتاحة لهذا السجل. عدّلي ما تحتاجينه ثم احفظي.</p><form id="recordEditorForm"><div id="recordEditorFields" class="editor-fields"></div><div class="editor-actions"><button class="primary" type="submit">حفظ كل التعديلات</button><button class="secondary" type="button" id="cancelRecordEditor">إلغاء</button></div></form></section></div>
 <script id="tahadi-boot-error-capture">
@@ -4399,5 +4399,7 @@ $("libTeacherReset").addEventListener("click",resetForm);
 $("libTeacherSave").addEventListener("click",async()=>{const level=$("libTeacherLevel").value,type=$("libTeacherType").value,title=$("libTeacherTitle").value.trim();if(!level||title.length<2){$("libTeacherStatus").textContent="اختاري المستوى واكتبي عنوانًا صحيحًا.";return;}const parent=parentTypes[type]?$("libTeacherParent").value:null;if(parentTypes[type]&&!parent){$("libTeacherStatus").textContent="اختاري العنصر الأب أولًا.";return;}const btn=$("libTeacherSave");btn.disabled=true;try{await api("teacher_save_library_node",{id:$("libTeacherNodeId").value||undefined,level,node_type:type,parent_id:parent,title,description:$("libTeacherDescription").value,content_text:$("libTeacherContent").value,resource_url:$("libTeacherUrl").value,is_published:$("libTeacherPublished").checked,visible_student_ids:Array.from($("libTeacherStudents").selectedOptions).map(o=>o.value)});resetForm();await load();$("libTeacherStatus").textContent="تم حفظ العنصر بنجاح.";}catch(e){$("libTeacherStatus").textContent=e.message;}finally{btn.disabled=false;}});
 document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.addEventListener("click",()=>{if($("libTeacherLevel").value)load();}));
 })();
-</script></body>
+</script>
+<footer>© منصة التحدي التعليمية</footer>
+</body>
 </html>
