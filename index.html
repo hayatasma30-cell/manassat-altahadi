@@ -21,7 +21,7 @@
 <meta charset="utf-8">
 <link rel="manifest" href="./manifest.json"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-11-11-no-blank-restore-v7">
+<meta name="platform-build" content="2026-11-11-learning-hierarchy-redesign-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -4343,26 +4343,37 @@ $("accessCategory").addEventListener("change",()=>loadItems($("accessCategory").
 $("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));
 document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));
 })();
-</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><section id="learningHierarchyView" class="view">
+</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><section id="learningHierarchyView" class="view lib-hierarchy-page">
 <div class="view-head"><button class="back" data-view="resourceLibraryView" type="button">→ العودة إلى المكتبة العلمية</button><h2>🧩 الدروس والملخصات المنظمة</h2></div>
-<div class="panel">
-<p class="muted">اعملي من مدخل واحد وبالترتيب: <strong>المقطع التعليمي ← المورد المعرفي ← النشاط ← ملخص النشاط</strong>. بعد حفظ كل عنصر، استعملي زر «إضافة تابع» أسفله للانتقال مباشرة إلى الخطوة التالية. التمارين والمواضيع تبقى أقسامًا مستقلة. لا يظهر المحتوى للتلميذ إلا إذا نُشر وكان مسموحًا له بالاطلاع.</p>
-<label for="libTeacherLevel">المستوى الدراسي</label><select id="libTeacherLevel"><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select>
-<div id="libTeacherStatus" class="muted" role="status"></div>
-<div class="panel" style="margin-top:14px;background:#fbfcf8">
-<h3 id="libTeacherFormTitle">➕ إضافة عنصر</h3><input id="libTeacherNodeId" type="hidden">
-<label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select>
-<div id="libTeacherParentWrap"><label for="libTeacherParent">يتبع لـ</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select></div>
-<label for="libTeacherTitle">العنوان</label><input id="libTeacherTitle" maxlength="180" placeholder="عنوان العنصر" required>
-<label for="libTeacherDescription">وصف مختصر</label><textarea id="libTeacherDescription" rows="2" placeholder="وصف اختياري"></textarea>
-<label for="libTeacherContent">محتوى الملخص أو النص التعليمي</label><textarea id="libTeacherContent" rows="4" placeholder="اكتبي المحتوى هنا عند الحاجة"></textarea>
-<label for="libTeacherUrl">رابط مورد أو ملف (اختياري)</label><input id="libTeacherUrl" type="url" placeholder="https://...">
-<label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع (يمكن تحديد أكثر من تلميذ)</label><select id="libTeacherStudents" multiple size="5"></select>
-<label style="display:flex;align-items:center;gap:8px;margin-top:10px"><input id="libTeacherPublished" type="checkbox" style="width:auto"> نشر العنصر للتلاميذ المحددين</label>
-<div class="actions-row" style="margin-top:12px"><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول</button></div>
+<div class="lib-hierarchy-intro">
+  <div class="lib-intro-icon">🧭</div>
+  <div><strong>تنظيم المحتوى التعليمي</strong><p>ابدئي بالمقطع التعليمي، ثم أضيفي المورد المعرفي، فالنشاط، ثم ملخص النشاط. يمكنك إضافة التمارين والمواضيع بشكل مستقل.</p>
+  <div class="lib-flow"><span>المقطع التعليمي</span><i>←</i><span>المورد المعرفي</span><i>←</i><span>النشاط</span><i>←</i><span>ملخص النشاط</span></div></div>
 </div>
-<h3 style="margin-top:18px">العناصر المسجلة</h3><div id="libTeacherNodes"><p class="muted">اختاري المستوى لعرض محتواه.</p></div>
-</div></section><script>
+<div class="lib-level-card">
+  <div class="lib-section-heading"><span class="lib-step">1</span><div><strong>اختيار المستوى الدراسي</strong><small>حددي المستوى الذي تريدين إدارة محتواه</small></div></div>
+  <select id="libTeacherLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option></select>
+</div>
+<div id="libTeacherStatus" class="lib-status" role="status" aria-live="polite"></div>
+<div class="lib-editor-card">
+  <div class="lib-editor-heading"><span class="lib-editor-icon">✏️</span><div><h3 id="libTeacherFormTitle">إضافة عنصر جديد</h3><p>أدخلي بيانات العنصر ثم احفظيه للانتقال إلى الخطوة التالية</p></div></div>
+  <input id="libTeacherNodeId" type="hidden">
+  <div class="lib-form-grid">
+    <div class="lib-field"><label for="libTeacherType">نوع العنصر</label><select id="libTeacherType"><option value="segment">مقطع تعليمي</option><option value="knowledge_resource">مورد معرفي</option><option value="activity">نشاط</option><option value="summary">ملخص نشاط</option><option value="exercise">تمرين مستقل</option><option value="topic">موضوع مستقل</option></select></div>
+    <div class="lib-field" id="libTeacherParentWrap"><label for="libTeacherParent">العنصر الأب</label><select id="libTeacherParent"><option value="">اختاري العنصر الأب</option></select><small>يظهر هذا الحقل عند إضافة مورد أو نشاط أو ملخص تابع</small></div>
+    <div class="lib-field lib-field-wide"><label for="libTeacherTitle">عنوان العنصر <em>*</em></label><input id="libTeacherTitle" maxlength="180" placeholder="مثال: تأثير العوامل الفيزيوكيميائية" required></div>
+    <div class="lib-field lib-field-wide"><label for="libTeacherDescription">وصف مختصر <small>(اختياري)</small></label><textarea id="libTeacherDescription" rows="2" placeholder="اكتبي وصفًا موجزًا يساعد على التعرف على العنصر"></textarea></div>
+    <div class="lib-field lib-field-wide lib-content-field"><label for="libTeacherContent">المحتوى التعليمي أو ملخص النشاط</label><textarea id="libTeacherContent" rows="8" placeholder="اكتبي المحتوى التعليمي هنا... يمكنك تنظيمه إلى فقرات وعناوين"></textarea><small>خصصي هذا الحقل لكتابة الملخص أو النص التعليمي الكامل.</small></div>
+    <div class="lib-field lib-field-wide"><label for="libTeacherUrl">رابط مورد أو ملف <small>(اختياري)</small></label><input id="libTeacherUrl" type="url" placeholder="https://..."></div>
+  </div>
+  <div class="lib-student-access"><div class="lib-access-heading"><span>👩‍🎓</span><div><strong>صلاحية الاطلاع</strong><small>اختاري التلاميذ الذين يمكنهم مشاهدة هذا المحتوى</small></div></div>
+    <label for="libTeacherStudents">التلاميذ المسموح لهم بالاطلاع</label><select id="libTeacherStudents" multiple size="5"></select><small class="lib-help">يمكن تحديد أكثر من تلميذ. اضغطي مطولًا أو استخدمي خيارات التحديد في الجهاز.</small>
+  </div>
+  <label class="lib-publish-toggle" for="libTeacherPublished"><input id="libTeacherPublished" type="checkbox"><span><strong>نشر العنصر للتلاميذ المحددين</strong><small>إذا لم تفعّلي النشر، يبقى العنصر محفوظًا كمسودة خاصة بك.</small></span></label>
+  <div class="lib-form-actions"><button type="button" class="primary" id="libTeacherSave">حفظ العنصر</button><button type="button" class="secondary" id="libTeacherReset">تفريغ الحقول</button></div>
+</div>
+<div class="lib-records-card"><div class="lib-section-heading"><span class="lib-step">2</span><div><strong>العناصر المسجلة</strong><small>استعرضي العناصر وأضيفي التوابع أو عدّليها</small></div></div><div id="libTeacherNodes"><p class="muted">اختاري المستوى الدراسي لعرض محتواه.</p></div></div>
+</section><script>
 (function(){
 const $=id=>document.getElementById(id),endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
 let nodes=[],students=[];
@@ -4389,6 +4400,70 @@ $("libTeacherSave").addEventListener("click",async()=>{const level=$("libTeacher
 document.querySelectorAll('[data-view="learningHierarchyView"]').forEach(b=>b.addEventListener("click",()=>{if($("libTeacherLevel").value)load();}));
 })();
 </script>
+
+
+<style id="learning-hierarchy-mobile-redesign-v1">
+#learningHierarchyView.lib-hierarchy-page{max-width:920px;margin:0 auto;padding-bottom:28px}
+#learningHierarchyView .view-head{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:14px}
+#learningHierarchyView .view-head h2{margin:0;color:#174b30;font-size:clamp(1.15rem,4vw,1.55rem)}
+.lib-hierarchy-intro,.lib-level-card,.lib-editor-card,.lib-records-card{background:#fff;border:1px solid #dfe9dc;border-radius:20px;box-shadow:0 5px 0 #dce8da,0 12px 24px #173f2410;margin:14px 0;padding:clamp(14px,3.5vw,22px)}
+.lib-hierarchy-intro{display:flex;gap:13px;align-items:flex-start;background:linear-gradient(135deg,#f2faf0,#fff)}
+.lib-intro-icon{width:42px;height:42px;flex:0 0 42px;border-radius:14px;background:#e2f2e1;display:grid;place-items:center;font-size:1.3rem}
+.lib-hierarchy-intro strong,.lib-section-heading strong,.lib-access-heading strong{color:#174b30;font-size:1.02rem}
+.lib-hierarchy-intro p{margin:4px 0 12px;color:#64756a;font-size:.9rem;line-height:1.8}
+.lib-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lib-flow span{background:#e9f5e7;border:1px solid #d5e8d2;border-radius:9px;padding:5px 8px;color:#245b39;font-size:.76rem;font-weight:700}
+.lib-flow i{font-style:normal;color:#7da184}
+.lib-section-heading,.lib-editor-heading,.lib-access-heading{display:flex;align-items:center;gap:11px;margin-bottom:15px}
+.lib-step{width:34px;height:34px;flex:0 0 34px;border-radius:11px;background:#e6f3e4;color:#1d633b;display:grid;place-items:center;font-weight:800}
+.lib-section-heading small,.lib-editor-heading p,.lib-access-heading small{display:block;color:#7b897f;font-size:.78rem;font-weight:400;margin-top:2px}
+.lib-level-card select,.lib-field input,.lib-field select,.lib-field textarea,.lib-student-access select{width:100%;max-width:100%;border:1px solid #d4dfd3!important;border-radius:12px!important;background:#fbfdf9!important;color:#203b2b!important;padding:12px 13px!important;min-height:48px;box-shadow:inset 0 1px 2px #153d1d08}
+.lib-level-card select{font-weight:700}
+.lib-status{min-height:0;margin:8px 2px;color:#55735d;font-size:.88rem}
+.lib-editor-card{background:linear-gradient(180deg,#fff 0%,#fcfefa 100%)}
+.lib-editor-heading{padding-bottom:13px;border-bottom:1px solid #e7eee5}
+.lib-editor-icon{width:43px;height:43px;border-radius:14px;background:#e7f4e5;display:grid;place-items:center;font-size:1.25rem}
+.lib-editor-heading h3{margin:0;color:#174b30;font-size:1.2rem}
+.lib-editor-heading p{margin:3px 0 0;line-height:1.6}
+.lib-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
+.lib-field{min-width:0}
+.lib-field-wide{grid-column:1/-1}
+.lib-field>label,.lib-student-access>label{display:block;font-weight:800;color:#294d36;margin:0 0 7px;font-size:.94rem}
+.lib-field label em{color:#b34b3f;font-style:normal}
+.lib-field label small{color:#87958a;font-weight:400;font-size:.8rem}
+.lib-field textarea{resize:vertical;line-height:1.9;min-height:90px}
+.lib-content-field textarea{min-height:230px;font-size:1rem;line-height:2}
+.lib-field>small,.lib-help{display:block;color:#859187;font-size:.76rem;margin-top:6px;line-height:1.6}
+.lib-student-access{margin-top:18px;padding:15px;background:#f5faf3;border:1px solid #e0ecdc;border-radius:15px}
+.lib-access-heading{margin-bottom:12px}
+.lib-access-heading>span{font-size:1.4rem}
+.lib-student-access select{min-height:145px;max-height:190px;padding:8px!important}
+.lib-publish-toggle{display:flex;align-items:center;gap:12px;margin-top:17px;padding:13px;background:#f0f8ee;border:1px solid #dcebd8;border-radius:13px;cursor:pointer}
+.lib-publish-toggle input{width:21px;height:21px;flex:0 0 21px;accent-color:#187344}
+.lib-publish-toggle strong,.lib-publish-toggle small{display:block}
+.lib-publish-toggle strong{color:#225438;font-size:.9rem}
+.lib-publish-toggle small{color:#7b897f;font-size:.76rem;margin-top:3px}
+.lib-form-actions{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-top:18px}
+.lib-form-actions button{min-height:50px;border-radius:13px!important}
+.lib-records-card .data-item{padding:13px!important;border:1px solid #e1eade!important;border-radius:14px!important;background:#fbfdf9!important}
+.lib-records-card .actions-row{display:flex;flex-wrap:wrap;gap:8px}
+.lib-records-card .actions-row button{min-height:40px}
+@media(max-width:600px){
+ #learningHierarchyView.lib-hierarchy-page{padding-left:0;padding-right:0}
+ #learningHierarchyView .view-head{padding:0 5px}
+ .lib-hierarchy-intro,.lib-level-card,.lib-editor-card,.lib-records-card{border-radius:16px;padding:14px;margin:12px 0}
+ .lib-hierarchy-intro{gap:10px}
+ .lib-intro-icon{width:36px;height:36px;flex-basis:36px}
+ .lib-flow{gap:5px}
+ .lib-flow span{font-size:.69rem;padding:5px 6px}
+ .lib-form-grid{grid-template-columns:minmax(0,1fr);gap:13px}
+ .lib-field-wide{grid-column:auto}
+ .lib-content-field textarea{min-height:210px}
+ .lib-student-access{padding:12px}
+ .lib-form-actions{grid-template-columns:1fr 1fr}
+ .lib-form-actions button{font-size:.88rem;padding:10px 8px!important}
+}
+</style>
 
 </body>
 </html>
