@@ -180,6 +180,30 @@
 .student-resources-empty p{margin:7px 0 0;font-size:.86rem;line-height:1.8}
 @media(max-width:650px){.student-resources-list{grid-template-columns:1fr;gap:12px}.student-resource-card{padding:15px}.resources-page-head{align-items:flex-start}.resources-page-head h2{font-size:1.08rem}}
 
+
+/* اللمسة النهائية لواجهة الموارد التعليمية */
+.resources-page{position:relative;padding:clamp(16px,4vw,25px)!important;border:1px solid #e0eadd!important;border-radius:25px!important;box-shadow:0 5px 0 #e8efe4,0 15px 32px #214d3010!important}
+.resources-page:before{content:"";display:block;height:4px;position:absolute;top:0;right:22px;left:22px;border-radius:0 0 8px 8px;background:linear-gradient(90deg,#d6e9d1,#2a8550,#d6e9d1)}
+.resources-page-head{position:relative;gap:15px;padding:9px 3px 20px!important;margin-bottom:20px!important;border-bottom:1px solid #e8eee5!important}
+.resources-page-icon{width:58px!important;height:58px!important;flex-basis:58px!important;border-radius:19px!important;font-size:1.8rem!important;background:linear-gradient(145deg,#eff8eb,#dcefd9)!important;box-shadow:0 4px 0 #d6e7d2,inset 0 0 0 1px #cfe3cd!important}
+.resources-page-head h2{font-size:clamp(1.08rem,4vw,1.3rem)!important;letter-spacing:.1px}
+.resources-page-head p{font-size:.9rem!important;line-height:1.85!important}
+.student-resources-list{gap:17px!important}
+.student-resource-card{position:relative;overflow:hidden;padding:19px!important;border:1px solid #dce9d9!important;border-radius:22px!important;background:linear-gradient(155deg,#fff 0%,#fcfefa 56%,#f3f9f0 100%)!important;box-shadow:0 4px 0 #e1ecde,0 12px 24px #174b2b0d!important;transition:transform .18s ease,box-shadow .18s ease}
+.student-resource-card:before{content:"";position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,#dcebd8,#27814a,#dcebd8)}
+.student-resource-card:after{content:"";position:absolute;width:100px;height:100px;left:-48px;bottom:-54px;border-radius:50%;background:#e9f4e5;opacity:.55;pointer-events:none}
+.student-resource-top{position:relative;z-index:1;margin-bottom:15px!important}
+.student-resource-type{padding:6px 13px!important;border:1px solid #d9ead5;background:linear-gradient(135deg,#edf7e9,#e2f1df)!important;color:#175b36!important;font-size:.8rem!important}
+.student-resource-mark{font-size:.74rem!important;letter-spacing:.2px}
+.student-resource-card h3{position:relative;z-index:1;font-size:clamp(1.02rem,3.8vw,1.16rem)!important;line-height:2!important;color:#174b32!important}
+.student-resource-description{position:relative;z-index:1;font-size:.9rem!important;line-height:1.9!important}
+.student-resource-open{position:relative;z-index:1;align-self:stretch!important;min-height:49px;margin-top:17px!important;border-radius:15px!important;border:1px solid #2b8953!important;border-bottom:4px solid #104b2c!important;background:linear-gradient(145deg,#329b60,#17633a 80%)!important;font-size:.96rem!important;box-shadow:0 7px 15px #14532d20!important}
+.student-resource-no-link{position:relative;z-index:1}
+.student-resources-empty{padding:32px 18px!important;border-radius:21px!important;background:linear-gradient(145deg,#fbfdf9,#f0f7ed)!important}
+@media(hover:hover){.student-resource-card:hover{transform:translateY(-3px);box-shadow:0 6px 0 #e1ecde,0 17px 28px #174b2b13!important}.student-resource-open:hover{filter:brightness(1.04)}}
+@media(max-width:650px){.resources-page{padding:15px!important;border-radius:21px!important}.resources-page-head{gap:12px!important;padding-bottom:17px!important;margin-bottom:16px!important}.resources-page-icon{width:52px!important;height:52px!important;flex-basis:52px!important;font-size:1.6rem!important}.student-resources-list{gap:14px!important}.student-resource-card{padding:17px!important;border-radius:20px!important}.student-resource-open{min-height:50px!important;margin-top:15px!important}}
+@media(prefers-reduced-motion:reduce){.student-resource-card,.student-resource-open{transition:none!important}}
+
 </style>
 <style id="student-calendar-match-teacher-v1">
 /* تقويم التلميذ: أزرار ثلاثية الأبعاد مثل تقويم الأستاذة */
