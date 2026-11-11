@@ -54,6 +54,17 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 @media(max-width:700px){.wrap{padding:13px}.topbar{padding:10px 12px}.brand{font-size:1rem}.teacher-chip{font-size:.75rem}.hero{padding:21px 17px;border-radius:19px}.menu{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.menu-btn{min-height:102px;padding:11px;gap:8px;align-items:flex-start}.menu-icon{width:37px;height:37px;flex-basis:37px;border-radius:11px;font-size:1.1rem}.menu-copy strong{font-size:.88rem}.menu-copy small{font-size:.7rem}.chev{display:none}.panel{padding:14px}.view-head h2{font-size:1.15rem}}
 @media(max-width:380px){.menu{grid-template-columns:1fr}.menu-btn{min-height:72px;align-items:center}.menu-copy small{font-size:.76rem}}
 
+/* فئات قوائم التلاميذ: زووم وحضوري ودورات */
+.student-mode-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 4px}
+.student-mode-card{min-height:145px;padding:18px 12px;border-radius:18px;border:1.5px solid #a9cdb0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font:inherit;font-weight:800;color:#173d2b;background:#edf7ed;box-shadow:0 4px 0 #b5d3b8,0 8px 16px #183f2215;cursor:pointer}
+.student-mode-card.zoom{background:#edf4ff;border-color:#9bbce2;box-shadow:0 4px 0 #c5d9f0,0 8px 16px #183f2215;color:#245b91}
+.student-mode-card.in-person{background:#eaf5eb;border-color:#a9cdb0;color:#1d6540}
+.student-mode-card.courses{grid-column:1/-1;min-height:118px;background:#f7f2e5;border-color:#d9c99a;box-shadow:0 4px 0 #e7d9b5,0 8px 16px #6c552015;color:#8b6a2e}
+.student-mode-icon{font-size:30px;line-height:1}
+.student-mode-card small{font-weight:600;padding:5px 13px;border-radius:20px;background:#ffffffa8}
+.student-mode-card:active{transform:translateY(3px);box-shadow:0 1px 0 #b5d3b8}
+#studentModeContent[hidden],#studentModeChooser[hidden]{display:none!important}
+@media(max-width:380px){.student-mode-card{min-height:125px;padding:13px 8px;font-size:14px}}
 /* تنظيم قائمة التلاميذ: صفحات واضحة وأزرار ثلاثية الأبعاد */
 .level-filters{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px!important;margin:14px 0!important}
 .level-filter{min-height:72px!important;padding:14px!important;display:flex!important;align-items:center;justify-content:space-between;gap:8px;text-align:right;background:linear-gradient(145deg,#fffef8,#eaf5e8)!important;border:1px solid #b7d2b4!important;border-bottom:5px solid #67996a!important;border-radius:17px!important;box-shadow:0 5px 0 #1b6b3520,0 10px 18px rgba(24,63,34,.13)!important;transition:transform .16s,box-shadow .16s!important}
@@ -1525,7 +1536,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </section>
 <section id="studentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>🎓 قائمة التلاميذ</h2></div>
-<div class="panel"><div class="students-overview-tools"><div><h3 style="margin:0">قائمة المستويات</h3><p class="muted" style="margin:4px 0 0">ابحثي عن أي تلميذ أو اختاري المستوى.</p></div><button class="primary overview-add-button" id="openAddStudentPage" type="button">➕ إضافة تلميذ</button></div><div class="overview-search"><input id="allStudentsSearchInput" type="search" autocomplete="off" placeholder="ابحثي بالاسم أو رقم الهاتف…"><button type="button" class="primary" id="allStudentsSearchBtn">بحث</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div>
+<div class="panel"><div id="studentModeChooser"><h3 style="margin:0 0 12px">اختاري فئة التلاميذ</h3><div class="student-mode-cards"><button type="button" class="student-mode-card zoom" data-student-entry="zoom"><span class="student-mode-icon">▣</span><strong>تلاميذ الزووم</strong><small>فتح القائمة ←</small></button><button type="button" class="student-mode-card in-person" data-student-entry="in_person"><span class="student-mode-icon">⌂</span><strong>تلاميذ الحضوري</strong><small>فتح القائمة ←</small></button><button type="button" class="student-mode-card courses" data-student-entry="courses"><span class="student-mode-icon">▤</span><strong>تلاميذ الدورات</strong><small>فتح القائمة ←</small></button></div></div><div id="studentModeContent" hidden><div class="students-overview-tools"><div><button type="button" class="secondary" id="backToStudentModeChooser">→ الفئات</button><h3 style="margin:8px 0 0">قائمة المستويات</h3><p class="muted" style="margin:4px 0 0">اختاري المستوى لعرض قائمة التلاميذ.</p></div><button class="primary overview-add-button" id="openAddStudentPage" type="button">➕ إضافة تلميذ</button></div><div class="overview-search"><input id="allStudentsSearchInput" type="search" autocomplete="off" placeholder="ابحثي بالاسم أو رقم الهاتف…"><button type="button" class="primary" id="allStudentsSearchBtn">بحث</button></div><div id="studentLevelFilters" class="level-filters" role="group" aria-label="صفحات التلاميذ حسب المستوى"></div></div></div>
 
 </section>
 <section id="addStudentView" class="view">
@@ -2160,6 +2171,9 @@ window.addEventListener("unhandledrejection",function(e){
         finally{btn.disabled=false;btn.textContent=old;}
       }));
     };
+    const showStudentModeChooser=()=>{selectedStudentLevel="all";selectedStudyMode="all";studentRegistrationFilter="all";studentStatusFilter="all";studentSearchTerm="";$("studentSearchInput").value="";$("allStudentsSearchInput").value="";$("studentModeChooser").hidden=false;$("studentModeContent").hidden=true;renderStudentFilters();renderStudents();};
+    document.querySelectorAll("[data-student-entry]").forEach(button=>button.addEventListener("click",()=>{const entry=button.dataset.studentEntry;selectedStudentLevel="all";studentStatusFilter="all";studentSearchTerm="";$("studentSearchInput").value="";$("allStudentsSearchInput").value="";selectedStudyMode=entry==="zoom"?"zoom":"in_person";studentRegistrationFilter=entry==="courses"?"course_only":"monthly_subscription";$("studentModeChooser").hidden=true;$("studentModeContent").hidden=false;renderStudentFilters();renderStudents();}));
+    $("backToStudentModeChooser").addEventListener("click",showStudentModeChooser);
     renderStudentFilters();
     renderStudents();
     levelFilters.addEventListener("click", event => {
@@ -2171,10 +2185,10 @@ window.addEventListener("unhandledrejection",function(e){
       showView("studentLevelView");
     });
     const allStudentsSearchInput=$("allStudentsSearchInput");
-    const runAllStudentsSearch=()=>{studentSearchTerm=allStudentsSearchInput.value.trim().toLocaleLowerCase("ar");selectedStudentLevel="all";studentStatusFilter="all";selectedStudyMode="all";studentSearchInput.value=allStudentsSearchInput.value;renderStudentFilters();renderStudents();showView("studentLevelView");};
+    const runAllStudentsSearch=()=>{studentSearchTerm=allStudentsSearchInput.value.trim().toLocaleLowerCase("ar");selectedStudentLevel="all";studentStatusFilter="all";studentSearchInput.value=allStudentsSearchInput.value;renderStudentFilters();renderStudents();showView("studentLevelView");};
     $("allStudentsSearchBtn").addEventListener("click",runAllStudentsSearch);
     allStudentsSearchInput.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();runAllStudentsSearch();}});
-    $("backToStudentLevels").addEventListener("click", () => showView("studentsView"));
+    $("backToStudentLevels").addEventListener("click", () => {showStudentModeChooser();showView("studentsView");});
     $("openAddStudentPage").addEventListener("click",()=>showView("addStudentView"));
     $("backFromAddStudent").addEventListener("click",()=>showView("studentsView"));
     const subStatus = {active:"نشط",paid:"مدفوع",pending:"قيد المراجعة",expired:"منتهي",cancelled:"ملغى"};
