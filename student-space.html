@@ -574,7 +574,33 @@ body{background:var(--cream)!important;color:var(--ink)!important}
  #studentMenu .student-actions.student-home-grid.student-direct-services>.student-action{min-height:76px!important;padding:11px 13px!important;border-radius:16px!important}
 }
 </style>
-</head>
+<style id="student-lessons-polish-v2">
+.cal-day{position:relative!important;overflow:visible!important}
+.cal-day.has-upcoming i{background:#25844c!important}
+.cal-day.has-completed i{background:#7b9a86!important}
+.cal-day.has-cancelled i{background:#bd7770!important}
+.cal-day.multiple-lessons{border-color:#8fbc91!important}
+.cal-day-count{position:absolute;top:-6px;left:-5px;min-width:16px;height:16px;padding:0 3px;border-radius:9px;background:#17623c;color:#fff;font-size:9px;line-height:16px;font-weight:800}
+.selected-day-panel{scroll-margin-top:14px}
+.student-lesson-card{position:relative}
+.student-lesson-status{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 9px;border-radius:20px;font-size:.74rem;font-weight:800;background:#eef4ed;color:#65766a}
+.student-lesson-status i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.student-lesson-status.upcoming{background:#eaf5e9;color:#17623c}
+.student-lesson-status.live{background:#17623c;color:#fff}
+.student-lesson-status.completed{background:#edf1ed;color:#60796a}
+.student-lesson-status.cancelled{background:#fbefed;color:#a14d48}
+.student-lesson-status.neutral{background:#f1f3ef;color:#718075}
+.lesson-resources h4{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lesson-resources h4 small{font-size:.7rem;font-weight:600;color:#78867a;background:#f0f5ed;padding:4px 8px;border-radius:20px}
+.lesson-resource-link{display:grid;grid-template-columns:38px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;column-gap:10px}
+.lesson-resource-icon{grid-column:1;grid-row:1/3;display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#e2efdf;color:#17623c;font-size:1.1rem;font-weight:900}
+.lesson-resource-copy{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;gap:3px;min-width:0}
+.lesson-resource-copy small{font-size:.72rem;color:#7b887d}
+.lesson-resource-copy strong{font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}
+.lesson-resource-open{grid-column:2;justify-self:start;margin-top:3px}
+.lesson-resource-link.unavailable{opacity:.72;cursor:default}
+@media(max-width:500px){.cal-day-count{left:-3px;top:-5px}.lesson-resource-link{grid-template-columns:32px minmax(0,1fr);column-gap:8px}.lesson-resource-icon{width:31px;height:31px}}
+</style></head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">🎓</div><span>فضاء التلميذ</span><button id="logoutBtn" class="logout" type="button">خروج ↗</button></div></div></div>
 <main class="wrap">
@@ -731,16 +757,32 @@ function renderStudentLessons(items){
    }).filter(Boolean);
   }
   if(!items.length)return "";
-  return '<section class="lesson-resources"><h4>موارد هذه الحصة</h4><div class="lesson-resources-list">'+items.map(r=>{
+  const resourceIcon=label=>String(label||"").includes("نشاط")?"✎":String(label||"").includes("تصحيح")?"✓":"▤";
+  return '<section class="lesson-resources"><h4><span>موارد هذه الحصة</span><small>'+items.length+' مورد</small></h4><div class="lesson-resources-list">'+items.map(r=>{
    const url=String(r.url||r.resource_open_url||r.resource_url||"").trim();
-   const content='<span class="lesson-resource-type">'+safe(r.label)+'</span><strong>'+safe(r.title)+'</strong>';
-   return url?'<a class="lesson-resource-link" href="'+safe(url)+'" target="_blank" rel="noopener noreferrer">'+content+'<span class="lesson-resource-open">فتح المورد ↗</span></a>':'<div class="lesson-resource-link">'+content+'</div>';
+   const label=String(r.label||"مورد تعليمي");
+   const title=String(r.title||"مورد بدون عنوان");
+   const content='<span class="lesson-resource-icon" aria-hidden="true">'+resourceIcon(label)+'</span><span class="lesson-resource-copy"><small>'+safe(label)+'</small><strong>'+safe(title)+'</strong></span>';
+   const action='<span class="lesson-resource-open">'+(url?'فتح المورد ↗':'الرابط غير متاح')+'</span>';
+   return url?'<a class="lesson-resource-link" href="'+safe(url)+'" target="_blank" rel="noopener noreferrer" aria-label="فتح '+safe(title)+'">'+content+action+'</a>':'<div class="lesson-resource-link unavailable">'+content+action+'</div>';
   }).join("")+'</div></section>';
+ };
+ const lessonStatusInfo=x=>{
+  const raw=String(x.status||"").trim().toLowerCase();
+  const start=lessonDateTime(x,false),end=lessonDateTime(x,true),now=Date.now();
+  if(["ملغاة","ملغية","ملغاة من الأستاذة","cancelled","canceled"].includes(raw))return {label:"ملغاة",cls:"cancelled"};
+  if(["تمت","تمت من قبل","completed","done"].includes(raw))return {label:"مكتملة",cls:"completed"};
+  if(Number.isFinite(start)&&Number.isFinite(end)&&now>=start&&now<end)return {label:"جارية الآن",cls:"live"};
+  if(raw==="مجدولة"||raw==="scheduled")return {label:"قادمة",cls:"upcoming"};
+  return {label:raw||"موعد الحصة",cls:"neutral"};
  };
  const selectedDayHtml=dateStr=>{
   const dayLessons=visibleRows.filter(x=>String(x.lesson_date||"")===String(dateStr)).sort((a,b)=>String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
   if(!dayLessons.length)return '<div class="selected-day-empty"><strong>حصص يوم '+safe(dateStr)+'</strong><p>لا توجد حصة مبرمجة في هذا اليوم.</p></div>';
-  return '<section class="selected-day-panel"><div class="selected-day-heading"><strong>حصص يوم '+safe(dateStr)+'</strong><span>'+dayLessons.length+' '+(dayLessons.length===1?'حصة':'حصص')+'</span></div>'+dayLessons.map(x=>'<article class="student-lesson-card"><div class="student-lesson-card-head"><strong>'+safe(x.lesson_time||"الوقت غير محدد")+'</strong><span class="lesson-mode-tag">'+(x.delivery_mode==="zoom"?"Zoom":"حضوري")+'</span></div><p class="student-lesson-meta">'+safe(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+' · '+safe(x.subject||"علوم الطبيعة والحياة")+'</p>'+(x.status==="مجدولة"&&Number.isFinite(lessonDateTime(x,true))&&lessonDateTime(x,true)>Date.now()?'<p class="student-lesson-countdown">'+countdownText(x)+'</p>':"")+'<div class="student-lesson-entry-action">'+(joinButton(x)||(x.delivery_mode==="zoom"?'<span class="lesson-no-link">لم يُضف رابط Zoom لهذه الحصة بعد.</span>':'<span class="lesson-inperson-label">حصة حضورية</span>'))+'</div>'+lessonResourcesHtml(x)+'</article>').join("")+'</section>';
+  return '<section class="selected-day-panel"><div class="selected-day-heading"><strong>حصص يوم '+safe(dateStr)+'</strong><span>'+dayLessons.length+' '+(dayLessons.length===1?'حصة':'حصص')+'</span></div>'+dayLessons.map(x=>{
+   const state=lessonStatusInfo(x);
+   return '<article class="student-lesson-card"><div class="student-lesson-card-head"><strong>'+safe(x.lesson_time||"الوقت غير محدد")+'</strong><span class="lesson-mode-tag">'+(x.delivery_mode==="zoom"?"Zoom":"حضوري")+'</span></div><div class="student-lesson-status '+state.cls+'"><i></i>'+safe(state.label)+'</div><p class="student-lesson-meta">'+safe(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+' · '+safe(x.subject||"علوم الطبيعة والحياة")+'</p>'+(state.cls==="upcoming"||state.cls==="live"?'<p class="student-lesson-countdown">'+countdownText(x)+'</p>':"")+'<div class="student-lesson-entry-action">'+(joinButton(x)||(x.delivery_mode==="zoom"?'<span class="lesson-no-link">لم يُضف رابط Zoom لهذه الحصة بعد.</span>':'<span class="lesson-inperson-label">حصة حضورية</span>'))+'</div>'+lessonResourcesHtml(x)+'</article>';
+  }).join("")+'</section>';
  };
   const counterGroups=new Map();for(const x of visibleRows){const k=[x.level||"",x.delivery_mode||"",x.lesson_time||"",x.lesson_type||"",x.lesson_type==="فردية"?(x.student_id||x.student_name||""):""].join("|");if(!counterGroups.has(k))counterGroups.set(k,[]);counterGroups.get(k).push(x);}
  const lessonCounters=new Map();for(const group of counterGroups.values()){group.sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));let n=0;for(const x of group){if(x.status==="تمت"&&!x.replacement_lesson_id){n++;lessonCounters.set(x.id,x.delivery_mode==="in_person"?(("حصة "+(((n-1)%4)+1)+" من 4 · الشهر "+Math.ceil(n/4))):("الحصة رقم "+n));}}}
@@ -753,7 +795,13 @@ function renderStudentLessons(items){
  const attByDay={};for(const x of attendance){attByDay[x.attendance_date]=x;}
  const monthName=studentCalendarMonth.toLocaleDateString("ar-DZ",{month:"long",year:"numeric"});let cells="";
  for(let n=0;n<offset;n++)cells+='<span class="cal-blank"></span>';
- for(let d=1;d<=days;d++){const dateStr=month+"-"+String(d).padStart(2,"0"),has=(byDay[dateStr]||[]).length,at=attByDay[dateStr];cells+='<button type="button" class="cal-day'+(has?" has-lesson":"")+(dateStr===getStudentTodayKey()?" today":"")+(dateStr===(window.tahadiStudentSelectedDate||"")?" selected":"")+(showAttendance&&at?' has-attendance':'')+'" data-cal-date="'+dateStr+'"><span>'+d+'</span>'+(has?'<i></i>':'')+'</button>';}
+ for(let d=1;d<=days;d++){
+  const dateStr=month+"-"+String(d).padStart(2,"0"),dayRows=byDay[dateStr]||[],has=dayRows.length,at=attByDay[dateStr];
+  const hasUpcoming=dayRows.some(x=>["upcoming","live"].includes(lessonStatusInfo(x).cls));
+  const hasCompleted=dayRows.some(x=>lessonStatusInfo(x).cls==="completed");
+  const hasCancelled=dayRows.length>0&&dayRows.every(x=>lessonStatusInfo(x).cls==="cancelled");
+  cells+='<button type="button" class="cal-day'+(has?" has-lesson":"")+(hasUpcoming?" has-upcoming":"")+(hasCompleted?" has-completed":"")+(hasCancelled?" has-cancelled":"")+(has>1?" multiple-lessons":"")+(dateStr===getStudentTodayKey()?" today":"")+(dateStr===(window.tahadiStudentSelectedDate||"")?" selected":"")+(showAttendance&&at?' has-attendance':'')+'" data-cal-date="'+dateStr+'" aria-label="'+dateStr+(has?"، "+has+" حصة":"، لا توجد حصص")+'"><span>'+d+'</span>'+(has?'<i></i>':'')+(has>1?'<small class="cal-day-count">'+has+'</small>':'')+'</button>';
+ }
  const lessonById=new Map(visibleRows.map(x=>[String(x.id),x]));
  const attendanceRows=attendance.map(x=>({record:x,lesson:x.lesson_id?lessonById.get(String(x.lesson_id)):null})).sort((a,b)=>String(b.record.attendance_date||"").localeCompare(String(a.record.attendance_date||"")));
  const attendanceHtml=attendanceRows.length?attendanceRows.slice(0,60).map(({record:x,lesson})=>{const status=String(x.status||"");const label=({present:"حاضر",late:"متأخر",absent:"غائب",excused_absence:"غائب بعذر",excused:"غائب بعذر"})[status.toLowerCase()]||status;const lessonDone=!!lesson&&["تمت","تمت من قبل"].includes(String(lesson.status||""));return '<div class="item"><strong>'+safe(x.attendance_date||lesson?.lesson_date||"—")+'</strong><p>'+(lessonDone?'<span class="tag">منجزة</span> · ':"")+'<span class="tag">'+safe(label)+'</span>'+(lesson?.lesson_time?' · '+safe(lesson.lesson_time):"")+(x.note?' · '+safe(x.note):"")+'</p></div>';}).join(""):'<div class="empty">لم تسجل الأستاذة حضورًا أو غيابًا بعد.</div>';
@@ -765,7 +813,7 @@ function renderStudentLessons(items){
  root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.addEventListener("click",()=>{showPage(btn.dataset.studentLessonPage);window.scrollTo({top:root.getBoundingClientRect().top+window.scrollY-12,behavior:"smooth"});}));
  showPage(activePage);
  const showDay=dateStr=>{window.tahadiStudentSelectedDate=dateStr;root.querySelectorAll("[data-cal-date]").forEach(btn=>btn.classList.toggle("selected",btn.dataset.calDate===dateStr));const details=$("selectedDayDetails");if(details)details.innerHTML=selectedDayHtml(dateStr);};
- root.querySelectorAll("[data-cal-date]").forEach(b=>b.addEventListener("click",()=>showDay(b.dataset.calDate)));
+ root.querySelectorAll("[data-cal-date]").forEach(b=>b.addEventListener("click",()=>{showDay(b.dataset.calDate);const details=$("selectedDayDetails");if(details)setTimeout(()=>details.scrollIntoView({behavior:"smooth",block:"start"}),60);}));
  $("calPrev").addEventListener("click",()=>{studentCalendarMonth=new Date(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()-1,1);renderStudentLessons(rows);});
  $("calNext").addEventListener("click",()=>{studentCalendarMonth=new Date(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()+1,1);renderStudentLessons(rows);});
  const currentMonthRows=inMonth.slice().sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
