@@ -3639,7 +3639,7 @@ const handleIncomeCalendarClick=async e=>{
     document.querySelectorAll(".electronic-test-panel").forEach(p=>p.hidden=true);
     challengePanel.hidden=false;
     $("dailyChallengeEmbeddedTitle").textContent=page==="editor"?"إضافة تحدٍّ جديد":"مكتبة التحديات";
-    const target="./daily-challenge-admin.html?embed=1&v=20261106fix3#"+page;
+    const target="./daily-challenge-admin.html?embed=1&v=20261112buttons#"+page;
     const desired=new URL(target,location.href);
     let current=null;try{current=new URL(challengeFrame.src,location.href);}catch(_){}
     if(!current||current.pathname!==desired.pathname||current.search!==desired.search||current.hash!==desired.hash){challengeFrame.src=target;}
