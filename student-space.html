@@ -706,10 +706,12 @@ function renderStudentLessons(items){
  const showPage=key=>{window.tahadiStudentLessonPage=key;root.querySelectorAll("[data-student-lesson-panel]").forEach(el=>el.classList.toggle("hidden",el.dataset.studentLessonPanel!==key));root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.classList.toggle("active",btn.dataset.studentLessonPage===key));};
  root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.addEventListener("click",()=>{showPage(btn.dataset.studentLessonPage);window.scrollTo({top:root.getBoundingClientRect().top+window.scrollY-12,behavior:"smooth"});}));
  showPage(activePage);
- const showDay=dateStr=>{window.tahadiStudentSelectedDate=dateStr;root.querySelectorAll("[data-cal-date]").forEach(btn=>btn.classList.toggle("selected",btn.dataset.calDate===dateStr));const dayRows=byDay[dateStr]||[],at=attByDay[dateStr],el=$("selectedLesconst showDay=dateStr=>{window.tahadiStudentSelectedDate=dateStr;root.querySelectorAll("[data-cal-date]").forEach(btn=>btn.classList.toggle("selected",btn.dataset.calDate===dateStr));};
- root.querySelectorAll("[data-cal-date]").forEach(b=>b.addEventListener("click",()=>showDay(b.dataset.calDate)))(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()+1,1);renderStudentLessons(rows);});
+ const showDay=dateStr=>{window.tahadiStudentSelectedDate=dateStr;root.querySelectorAll("[data-cal-date]").forEach(btn=>btn.classList.toggle("selected",btn.dataset.calDate===dateStr));};
+ root.querySelectorAll("[data-cal-date]").forEach(b=>b.addEventListener("click",()=>showDay(b.dataset.calDate)));
+ $("calPrev").addEventListener("click",()=>{studentCalendarMonth=new Date(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()-1,1);renderStudentLessons(rows);});
+ $("calNext").addEventListener("click",()=>{studentCalendarMonth=new Date(studentCalendarMonth.getFullYear(),studentCalendarMonth.getMonth()+1,1);renderStudentLessons(rows);});
  const currentMonthRows=inMonth.slice().sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
- const preferred=byDay[getStudentTodayKey()]?.length?getStudentTodayKey():(currentMonthRows[0]?.lesson_date||null);if(preferred)showDay(preferred);
+ const preferred=month===getStudentTodayKey().slice(0,7)?getStudentTodayKey():(currentMonthRows[0]?.lesson_date||null);if(preferred)showDay(preferred);
 }
 async function loadStudentLessons(refresh=false){const root=$("studentLessonsList");try{let data=currentDashboardData||teacherPreviewData||{};if(refresh&&!teacherPreviewId&&sessionToken){const fresh=await call("student_portal_dashboard",{session_token:sessionToken});if(!fresh||fresh.ok===false)throw new Error(fresh?.error||"تعذر تحديث الحصص.");currentDashboardData={...data,...fresh};data=currentDashboardData;}renderStudentLessons(Array.isArray(data.lessons)?data.lessons:[]);}catch(error){if(root)root.innerHTML='<p class="error">تعذر تحميل الحصص: '+safe(error?.message||"خطأ في الاتصال")+'</p>';}}
 
