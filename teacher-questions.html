@@ -173,7 +173,9 @@ function readPageState(){
  }catch(e){return {activePage:"homePage",currentListPage:"newPage",selectedCategory:"newPage",selectedLevel:"",questionId:"",scrollY:0};}
 }
 const initialPageState=readPageState();
-currentListPage=initialPageState.currentListPage;\nselectedCategory=initialPageState.selectedCategory;\nselectedLevel=initialPageState.selectedLevel;
+currentListPage=initialPageState.currentListPage;
+selectedCategory=initialPageState.selectedCategory;
+selectedLevel=initialPageState.selectedLevel;
 async function call(action,extra={}) {
  const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge");
  if(!token) throw new Error("جلسة الأستاذة غير موجودة. عودي إلى فضاء الأستاذة وسجلي الدخول ثم افتحي الأسئلة من جديد.");
@@ -329,7 +331,9 @@ function render() {
  $("statTotal").textContent=questions.length;
  $("statNew").textContent=newer.length;
  $("statPublished").textContent=published.length;
- $("homeNewCount").textContent="بانتظار الرد: "+newer.length;\n $("homeAnsweredCount").textContent="تم الرد: "+answered.length;\n $("homeLibraryCount").textContent="منشور: "+published.length;
+ $("homeNewCount").textContent="بانتظار الرد: "+newer.length;
+ $("homeAnsweredCount").textContent="تم الرد: "+answered.length;
+ $("homeLibraryCount").textContent="منشور: "+published.length;
  $("newCount").textContent="عدد الأسئلة الجديدة: "+newer.length;
  $("answeredCount").textContent="عدد الأسئلة التي تمت الإجابة عنها: "+answered.length;
  ["newLevel","answeredLevel","libraryLevel"].forEach(fillLevelSelect);
