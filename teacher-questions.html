@@ -31,6 +31,18 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 .action:disabled{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
 .question-detail-text{background:#f5f6ec;border-right:4px solid #8eae83;padding:16px 14px}
 @media(max-width:520px){.question-tools{display:grid;grid-template-columns:1fr 1fr}.question-tools .action{width:100%}}
+</style><style id="teacher-questions-grouping-v1">
+.student-question-group{margin:18px 0 22px;padding:13px;border:1px solid #dce8da;border-radius:22px;background:linear-gradient(180deg,#f8fbf6,#fff);box-shadow:0 5px 16px #14532d0b}
+.student-question-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:5px 4px 13px;border-bottom:1px solid #e5ede2}
+.student-question-group-identity{display:flex;align-items:center;gap:9px;flex-wrap:wrap;min-width:0}
+.student-question-group-identity h3{margin:0;font-size:1.08rem;color:#14532d}
+.student-question-group-identity>span{padding:4px 9px;border-radius:999px;background:#edf4e9;color:#687b6c;font-size:.75rem;font-weight:700}
+.student-question-group-counts{display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:#17623c}
+.student-question-group-counts>b{padding:5px 10px;border-radius:999px;background:#e6f2e6;font-size:.78rem}
+.student-question-group-counts>small{padding:4px 8px;border-radius:999px;background:#f0f4ed;color:#718074;font-size:.7rem}
+.student-question-group-list{display:grid;gap:11px;padding-top:12px}
+.student-question-group-list>.question-list-card{margin:0!important;box-shadow:0 3px 11px #14532d08}
+@media(max-width:480px){.student-question-group{padding:10px;border-radius:18px;margin:14px 0 18px}.student-question-group-head{align-items:flex-start}.student-question-group-counts{width:100%}.student-question-group-identity h3{font-size:1rem}}
 </style><style id="teacher-question-date-layout-v2">
 .question-card-meta{display:flex;flex-direction:column;align-items:stretch;gap:10px;direction:rtl}
 .question-datetime{display:grid;grid-template-columns:minmax(0,1fr) minmax(92px,.55fr);gap:9px;width:100%;direction:rtl}
@@ -248,20 +260,36 @@ function render() {
  ["newLevel","answeredLevel","libraryLevel"].forEach(fillLevelSelect);
  renderLists();renderLibrary();
 }
+function renderGroupedQuestions(rows,fromPage) {
+ const groups=new Map();
+ rows.forEach(q=>{
+  const student=q.students||{};
+  const key=String(student.id||student.student_id||student.full_name||"unknown");
+  if(!groups.has(key))groups.set(key,{name:student.full_name||"تلميذ غير معروف",level:student.level||"المستوى غير محدد",rows:[]});
+  groups.get(key).rows.push(q);
+ });
+ const ordered=[...groups.values()].sort((a,b)=>String(a.name).localeCompare(String(b.name),"ar"));
+ return ordered.map(group=>{
+  const groupRows=group.rows.sort((a,b)=>Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
+  const pending=groupRows.filter(q=>q.status!=="answered"&&q.status!=="closed").length;
+  const published=groupRows.filter(q=>q.is_published).length;
+  return '<section class="student-question-group"><header class="student-question-group-head"><div class="student-question-group-identity"><h3>'+esc(group.name)+'</h3><span>'+esc(group.level)+'</span></div><div class="student-question-group-counts"><b>'+groupRows.length+' '+(groupRows.length===1?'سؤال':'أسئلة')+'</b>'+(pending?'<small>'+pending+' بانتظار الرد</small>':'<small>تم الرد على الكل</small>')+(published?'<small>'+published+' منشور</small>':'')+'</div></header><div class="student-question-group-list">'+groupRows.map(q=>questionCard(q,fromPage)).join("")+'</div></section>';
+ }).join("");
+}
 function renderLists() {
  const newer=questions.filter(q=>q.status!=="answered"&&q.status!=="closed");
  const answered=questions.filter(q=>q.status==="answered"||q.status==="closed");
  const nr=newer.filter(q=>matches(q,$("newSearch").value.trim(),$("newLevel").value));
  const ar=answered.filter(q=>matches(q,$("answeredSearch").value.trim(),$("answeredLevel").value));
- $("newQuestions").innerHTML=nr.length?nr.map(q=>questionCard(q,"newPage")).join(""):'<div class="empty">لا توجد أسئلة تطابق البحث.</div>';
- $("answeredQuestions").innerHTML=ar.length?ar.map(q=>questionCard(q,"answeredPage")).join(""):'<div class="empty">لا توجد أسئلة تطابق البحث.</div>';
+ $("newQuestions").innerHTML=nr.length?renderGroupedQuestions(nr,"newPage"):'<div class="empty">لا توجد أسئلة تطابق البحث.</div>';
+ $("answeredQuestions").innerHTML=ar.length?renderGroupedQuestions(ar,"answeredPage"):'<div class="empty">لا توجد أسئلة تطابق البحث.</div>';
  bindOpenButtons();
 }
 function renderLibrary() {
  const term=($("librarySearch").value||"").trim(),level=$("libraryLevel").value;
  const rows=questions.filter(q=>q.is_published&&matches(q,term,level));
  $("libraryCount").textContent="عدد الأسئلة المنشورة المطابقة: "+rows.length;
- $("libraryQuestions").innerHTML=rows.length?rows.map(q=>questionCard(q,"libraryPage")).join(""):'<div class="empty">لا توجد أسئلة منشورة تطابق البحث.</div>';
+ $("libraryQuestions").innerHTML=rows.length?renderGroupedQuestions(rows,"libraryPage"):'<div class="empty">لا توجد أسئلة منشورة تطابق البحث.</div>';
  bindOpenButtons();
 }
 ["newSearch","answeredSearch"].forEach(id=>$(id).addEventListener("input",renderLists));
