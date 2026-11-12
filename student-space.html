@@ -682,10 +682,20 @@ function renderStudentLessons(items){
  const joinButton=x=>{const link=String(x.zoom_link||"").trim();if(!link.startsWith("https://"))return "";return '<a class="zoom-join-link" href="'+safe(link)+'" target="_blank" rel="noopener noreferrer">الدخول إلى حصة Zoom ↗</a>';};
  const countdownText=x=>{const start=lessonDateTime(x,false),end=lessonDateTime(x,true),now=Date.now();if(now>=start&&now<end)return "الحصة جارية الآن";let diff=Math.max(0,start-now);const days=Math.floor(diff/86400000);diff%=86400000;const hours=Math.floor(diff/3600000);diff%=3600000;const mins=Math.floor(diff/60000);return "باقي على حصتك: "+(days?days+" يوم · ":"")+(hours?hours+" ساعة · ":"")+mins+" دقيقة";};
  const lessonResourcesHtml=x=>{
-  const items=Array.isArray(x.linked_resources_data)?x.linked_resources_data:[];
+  let items=Array.isArray(x.linked_resources_data)?x.linked_resources_data:[];
+  if(!items.length){
+   let links=x.linked_resources||{};
+   if(typeof links==="string"){try{links=JSON.parse(links)||{};}catch(_){links={};}}
+   const sourceResources=Array.isArray(data.resources)?data.resources:[];
+   items=[["activity_id","النشاط"],["lesson_id","الدرس أو التلخيص"],["correction_id","تصحيح النشاط"]].map(([key,label])=>{
+    const id=String(links&&links[key]||"");
+    const resource=sourceResources.find(item=>String(item.id)===id);
+    return resource?{id:resource.id,label,title:resource.title,url:resource.resource_open_url||resource.resource_url||""}:null;
+   }).filter(Boolean);
+  }
   if(!items.length)return "";
   return '<div class="lesson-linked-resources" style="margin-top:12px;padding-top:10px;border-top:1px solid #dcebd8"><strong>موارد هذه الحصة</strong><div style="display:grid;gap:8px;margin-top:8px">'+items.map(r=>{
-   const url=String(r.url||"").trim();
+   const url=String(r.url||r.resource_open_url||r.resource_url||"").trim();
    return url?'<a href="'+safe(url)+'" target="_blank" rel="noopener noreferrer" style="display:block;padding:10px 12px;border-radius:10px;background:#edf5ed;color:#185b39;text-decoration:none;font-weight:700">'+safe(r.label)+' · '+safe(r.title)+' ↗</a>':'<div>'+safe(r.label)+' · '+safe(r.title)+'</div>';
   }).join("")+'</div></div>';
  };
