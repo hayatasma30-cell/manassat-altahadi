@@ -127,14 +127,21 @@ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 let questions=[],currentListPage="newPage";
 const PAGE_STATE_KEY="tahadi_teacher_questions_page_state";
 function savePageState(activePage,questionId=""){
- try{sessionStorage.setItem(PAGE_STATE_KEY,JSON.stringify({activePage,currentListPage,questionId:String(questionId||"")}));}catch(e){}
+ const state={activePage,currentListPage,questionId:String(questionId||""),savedAt:Date.now(),scrollY:window.scrollY||0};
+ try{localStorage.setItem(PAGE_STATE_KEY,JSON.stringify(state));sessionStorage.setItem(PAGE_STATE_KEY,JSON.stringify(state));}catch(e){}
 }
 function readPageState(){
- try{const value=JSON.parse(sessionStorage.getItem(PAGE_STATE_KEY)||"{}");
-  return {activePage:["newPage","answeredPage","libraryPage","questionDetailPage"].includes(value.activePage)?value.activePage:"newPage",
+ try{
+  const local=JSON.parse(localStorage.getItem(PAGE_STATE_KEY)||"{}");
+  const session=JSON.parse(sessionStorage.getItem(PAGE_STATE_KEY)||"{}");
+  const value=(local.savedAt||0)>=(session.savedAt||0)?local:session;
+  return {
+   activePage:["newPage","answeredPage","libraryPage","questionDetailPage"].includes(value.activePage)?value.activePage:"newPage",
    currentListPage:["newPage","answeredPage","libraryPage"].includes(value.currentListPage)?value.currentListPage:"newPage",
-   questionId:String(value.questionId||"")};
- }catch(e){return {activePage:"newPage",currentListPage:"newPage",questionId:""};}
+   questionId:String(value.questionId||""),
+   scrollY:Number.isFinite(Number(value.scrollY))?Math.max(0,Number(value.scrollY)):0
+  };
+ }catch(e){return {activePage:"newPage",currentListPage:"newPage",questionId:"",scrollY:0};}
 }
 const initialPageState=readPageState();
 currentListPage=initialPageState.currentListPage;
@@ -321,8 +328,13 @@ async function load() {
   }else{
    switchPage(saved.activePage==="questionDetailPage"?currentListPage:saved.activePage);
   }
+  requestAnimationFrame(()=>window.scrollTo({top:saved.scrollY||0,behavior:"instant"}));
  }catch(e){$("status").className="error";$("status").textContent=e.message;$("newQuestions").innerHTML='<div class="empty">'+esc(e.message)+'</div>';}
 }
+window.addEventListener("pagehide",()=>savePageState(readPageState().activePage,readPageState().questionId));
+window.addEventListener("beforeunload",()=>savePageState(readPageState().activePage,readPageState().questionId));
+window.addEventListener("pageshow",event=>{if(event.persisted){const saved=readPageState();currentListPage=saved.currentListPage;requestAnimationFrame(()=>window.scrollTo({top:saved.scrollY||0,behavior:"instant"}));}});
+window.addEventListener("scroll",()=>{if(window.__teacherQuestionScrollSave)return;window.__teacherQuestionScrollSave=true;requestAnimationFrame(()=>{const saved=readPageState();savePageState(saved.activePage,saved.questionId);window.__teacherQuestionScrollSave=false;});},{passive:true});
 load();
 </script>
 <script src="./workspace-autosave.js" defer></script>
