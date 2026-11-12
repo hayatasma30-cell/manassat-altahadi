@@ -95,7 +95,10 @@
       // index.html and student-space.html have dedicated restorers; avoid competing with them.
       const isTeacherMainApp=!!document.getElementById("homeView")&&!!document.getElementById("electronicTestsView")&&!!document.getElementById("loginView");
       const isStudentApp=path.endsWith("/student-space.html");
-      const isDedicated=isTeacherMainApp||isStudentApp;
+      // صفحة أسئلة الأستاذة لها مستعيد متخصص يحفظ تبويب القائمة والسؤال المفتوح؛
+      // لا تسمح للمستعيد العام بتغيير الصفحة بعد استعادتها.
+      const isTeacherQuestions=path.endsWith("/teacher-questions.html");
+      const isDedicated=isTeacherMainApp||isStudentApp||isTeacherQuestions;
       if(!isDedicated){
         if(state.page){
           const page=document.getElementById(state.page);
