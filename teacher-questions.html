@@ -31,6 +31,16 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 .action:disabled{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
 .question-detail-text{background:#f5f6ec;border-right:4px solid #8eae83;padding:16px 14px}
 @media(max-width:520px){.question-tools{display:grid;grid-template-columns:1fr 1fr}.question-tools .action{width:100%}}
+</style><style id="teacher-question-date-layout-v2">
+.question-card-meta{display:flex;flex-direction:column;align-items:stretch;gap:10px;direction:rtl}
+.question-datetime{display:grid;grid-template-columns:minmax(0,1fr) minmax(92px,.55fr);gap:9px;width:100%;direction:rtl}
+.question-date,.question-time{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;min-width:0;padding:9px 12px;border:1px solid #e3ebe0;border-radius:13px;background:#f8faf6;color:#526b5b;font-size:.85rem;font-weight:600;line-height:1.5}
+.question-date b,.question-time b{font-size:.68rem;font-weight:700;color:#829084}
+.question-date time{direction:rtl;unicode-bidi:isolate;white-space:normal}
+.question-time{align-items:center;background:#eef5ec}
+.question-time time{direction:ltr;unicode-bidi:isolate;white-space:nowrap;font-size:.98rem;font-weight:800;letter-spacing:.04em;color:#14532d;font-variant-numeric:tabular-nums}
+.question-card-meta .published-pill{align-self:flex-start;margin:0}
+@media(max-width:380px){.question-datetime{grid-template-columns:minmax(0,1fr) 90px;gap:6px}.question-date,.question-time{padding:8px 9px;font-size:.78rem}}
 </style><style id="teacher-question-date-format-v1">
 .question-date{display:inline-flex;align-items:center;gap:7px;flex-wrap:wrap;color:#718176;font-size:.82rem;font-weight:600}
 .question-date i{font-style:normal;direction:ltr;unicode-bidi:isolate;white-space:nowrap;color:#526b5b}
@@ -165,7 +175,7 @@ function questionCard(q,fromPage) {
  const publication=q.is_published?'<span class="published-pill">📚 منشور في المكتبة</span>':'';
  const statusClass=q.status==="answered"?"answered":q.status==="closed"?"closed":"new";
  const createdDate=Number.isFinite(Date.parse(q.created_at||""))?new Date(q.created_at):null;
- const created=createdDate?'<span class="question-date" dir="rtl">📅 '+esc(createdDate.toLocaleDateString("ar-DZ",{day:"numeric",month:"long",year:"numeric"}))+' <i dir="ltr">'+esc(createdDate.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hourCycle:"h23"}))+'</i></span>':'<span class="question-date">📅 تاريخ غير متاح</span>';
+ const created=createdDate?'<div class="question-datetime"><span class="question-date"><b>التاريخ</b><time dir="rtl">'+esc(createdDate.toLocaleDateString("ar-DZ",{day:"numeric",month:"long",year:"numeric"}))+'</time></span><span class="question-time"><b>الوقت</b><time dir="ltr">'+esc(createdDate.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hourCycle:"h23"}))+'</time></span></div>':'<div class="question-datetime"><span class="question-date">التاريخ غير متاح</span></div>';
  const level=String(q.students?.level||"المستوى غير محدد");
  const excerpt=String(q.question_text||"");
  return '<article class="card question-list-card"><div class="question-card-top"><div class="question-student"><h3>'+esc(q.students?.full_name||"تلميذ")+'</h3><span class="question-level">'+esc(level)+'</span></div><span class="question-status '+statusClass+'">'+esc(statusText(q))+'</span></div><div class="question-card-meta">'+created+''+publication+'</div><p class="question-excerpt">'+esc(excerpt.slice(0,220))+(excerpt.length>220?"…":"")+'</p><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
