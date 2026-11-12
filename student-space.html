@@ -595,7 +595,7 @@ body{background:var(--cream)!important;color:var(--ink)!important}
 <button class="student-action" data-section="learningFolder" type="button"><span class="student-action-icon">📖</span><span><strong>مكتبتي العلمية</strong><small>المعلومات العلمية والدورات والملخصات</small></span><span class="student-arrow">‹</span></button>
 <button class="student-action" data-section="progressFolder" type="button"><span class="student-action-icon">📝</span><span><strong>اختباراتي وتحدياتي</strong><small>الاختبارات الإلكترونية والتحديات اليومية وملاحظات الأستاذة</small></span><span class="student-arrow">‹</span></button>
 
-<button class="student-action" data-section="lessonsNotesFolder" type="button"><span class="student-action-icon">📅</span><span><strong>حصصي وملاحظاتی</strong><small>جدول الحصص وملاحظات الأستاذة</small></span><span class="student-arrow">‹</span></button>
+<button class="student-action" data-section="lessons" type="button"><span class="student-action-icon">📅</span><span><strong>حصصي</strong><small>جدول الحصص والحضور</small></span><span class="student-arrow">‹</span></button>
 <button class="student-action" data-section="studentQuestions" type="button"><span class="student-action-icon">✉️</span><span><strong>أسئلتي للأستاذة حياة</strong><small>إرسال الأسئلة ومتابعة ردود الأستاذة من نفس الحساب</small></span><span class="student-arrow">‹</span></button>
 
 <button class="student-action" data-section="servicesFolder" type="button"><span class="student-action-icon">💳</span><span><strong>اشتراكاتی ودفعاتی</strong><small>الخدمات والدفعات المسجلة</small></span><span class="student-arrow">‹</span></button>
@@ -618,9 +618,6 @@ body{background:var(--cream)!important;color:var(--ink)!important}
 
 <button class="student-action" data-section="servicesPayments" type="button"><span class="student-action-icon">💳</span><span><strong>اشتراكاتی ودفعاتی</strong><small>الخدمات والاشتراكات والمدفوعات</small></span><span class="student-arrow">‹</span></button>
 <button class="student-action" data-section="profile" type="button"><span class="student-action-icon">👤</span><span><strong>ملف التلميذ</strong><small>معلوماتك الشخصية والدراسية</small></span><span class="student-arrow">‹</span></button>
-</div></section>
-<section class="card student-section hidden" data-panel="lessonsNotesFolder"><h2>📅 حصصي</h2><div class="student-actions student-submenu-grid">
-<button class="student-action" data-section="lessons" type="button"><span class="student-action-icon">📅</span><span><strong>جدول حصصي</strong><small>مواعيد الحصص والحضور</small></span><span class="student-arrow">‹</span></button>
 </div></section>
 <section class="card student-section hidden" data-panel="communicationFolder"><h2>💬 التواصل مع الأستاذة</h2><div class="student-actions student-submenu-grid">
 
@@ -942,7 +939,9 @@ window.addEventListener("beforeunload",saveStudentPagePosition);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveStudentPagePosition();});
 function restoreStudentPageState(){
  let saved={y:0,section:""};try{saved=JSON.parse(sessionStorage.getItem(studentScrollStorageKey)||localStorage.getItem(studentScrollStorageKey)||"{}")||saved;}catch(_){}
- const requested=new URL(location.href).searchParams.get("section")||saved.section||localStorage.getItem("tahadi_student_active_section")||"";
+ const rawRequested=new URL(location.href).searchParams.get("section")||saved.section||localStorage.getItem("tahadi_student_active_section")||"";
+ const requested=rawRequested==="lessonsNotesFolder"?"lessons":rawRequested;
+ if(requested!==rawRequested){try{localStorage.setItem("tahadi_student_active_section",requested);const u=new URL(location.href);u.searchParams.set("section",requested);history.replaceState({section:requested},"",u);}catch(_){}}
  const valid=requested&&Array.from(document.querySelectorAll(".student-section")).some(el=>el.dataset.panel===requested);
  if(valid){restoringStudentPageState=true;openStudentSection(requested);if(requested==="lessons"){const tab=saved.lessonTab||"upcoming";const btn=document.querySelector('[data-panel="lessons"] [data-student-lesson-page="'+tab+'"]');if(btn)btn.click();if(saved.selectedDate){const day=document.querySelector('[data-panel="lessons"] [data-cal-date="'+saved.selectedDate+'"]');if(day)day.click();}}if(requested==="studentQuestions"){const q=document.querySelector('[data-panel="studentQuestions"] [data-question-page="'+(saved.questionTab||"askQuestionPage")+'"]');if(q)q.click();}restoringStudentPageState=false;}
  const y=Math.max(0,Number(saved.y)||0);
@@ -1090,7 +1089,9 @@ const initializeStudentSpace = async () => {
 (function restoreStudentSectionBeforeFetch(){
  try{
   const params=new URL(location.href).searchParams;
-  const key=params.get("section")||localStorage.getItem("tahadi_student_active_section")||"";
+  const rawKey=params.get("section")||localStorage.getItem("tahadi_student_active_section")||"";
+  const key=rawKey==="lessonsNotesFolder"?"lessons":rawKey;
+  if(key!==rawKey){try{localStorage.setItem("tahadi_student_active_section",key);const u=new URL(location.href);u.searchParams.set("section",key);history.replaceState({section:key},"",u);}catch(_){}}
   if(!key)return;
   const menu=document.getElementById("studentMenu"),detail=document.getElementById("studentDetail");
   const panel=Array.from(document.querySelectorAll(".student-section")).find(el=>el.dataset.panel===key);
