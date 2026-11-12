@@ -153,7 +153,7 @@ try{
  }
 }catch(e){}
 function savePageState(activePage,questionId=""){
- const state={activePage,currentListPage,questionId:String(questionId||""),savedAt:Date.now(),scrollY:window.scrollY||0};
+ const state={activePage,currentListPage,selectedCategory,selectedLevel,questionId:String(questionId||""),savedAt:Date.now(),scrollY:window.scrollY||0};
  try{localStorage.setItem(PAGE_STATE_KEY,JSON.stringify(state));sessionStorage.setItem(PAGE_STATE_KEY,JSON.stringify(state));}catch(e){}
 }
 function readPageState(){
