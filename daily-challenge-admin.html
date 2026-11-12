@@ -361,7 +361,7 @@ body.embed .grade-state{color:#65756a;font-size:12px}
 </div>
 </div>
 <div id="libraryResultCount" class="muted library-result-count"></div>
-<div id="challengeListItems" class="muted">جارٍ التحميل…</div></section><section class="panel hidden" id="results"><div class="row" style="justify-content:space-between"><h2>مشاركات التلاميذ</h2><button class="btn alt" type="button" id="backToChallengeList">← العودة إلى المكتبة</button></div><div id="resultFilters" class="result-filters" aria-label="تصنيف المشاركات"></div><div id="resultList"></div></section></main>
+<div id="challengeListItems" class="muted">جارٍ التحميل…</div></section><section class="panel hidden" id="results"><div class="row" style="justify-content:space-between"><h2>مشاركات التلاميذ</h2><button class="btn alt" type="button" id="backToChallengeList">← العودة إلى المكتبة</button></div><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:12px 0"><div><label for="challengeResultLevel">المستوى الدراسي</label><select id="challengeResultLevel"><option value="">جميع المستويات</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>الكل</option></select></div><div><label for="challengeResultSearch">البحث عن التلميذ بالاسم أو رقم الهاتف</label><input id="challengeResultSearch" type="search" placeholder="اكتبي اسم التلميذ أو رقم هاتفه" autocomplete="off"></div></div><div id="resultFilters" class="result-filters" aria-label="تصنيف المشاركات"></div><div id="resultList"></div></section></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const token=localStorage.getItem("tahadi_teacher_token");let questions=[],editingId=null,currentChallenge=null;
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -471,7 +471,11 @@ function renderSubmissionResults(){
  submissions.forEach(x=>counts[submissionProgress(x,written)]++);
  const filters=[["all","جميع المشاركات"],["pending","غير مصححة"],["partial","قيد التصحيح"],["done","مكتملة التصحيح"]];
  $("resultFilters").innerHTML=filters.map(([key,label])=>'<button type="button" class="result-filter '+(resultFilter===key?'active':'')+'" aria-pressed="'+(resultFilter===key)+'" onclick="filterSubmissionResults(\''+key+'\')"><span>'+label+'</span><b>'+counts[key]+'</b></button>').join("");
- const visible=submissions.filter(x=>resultFilter==="all"||submissionProgress(x,written)===resultFilter);
+ const selectedLevel=$("challengeResultLevel")?.value||"",search=($("challengeResultSearch")?.value||"").trim().toLocaleLowerCase("ar"),needle=search.replace(/\\s/g,"");
+ const visible=submissions.filter(x=>{
+  const student=x.students||{},level=String(student.level||""),name=String(student.full_name||"").toLocaleLowerCase("ar"),phone=String(student.phone||student.phone_number||"").replace(/\\s/g,"");
+  return (resultFilter==="all"||submissionProgress(x,written)===resultFilter)&&(!selectedLevel||level===selectedLevel)&&(!search||name.includes(search)||phone.includes(needle));
+ });
  $("resultList").innerHTML=visible.length?visible.map((x)=>{
   const grades=x.manual_grading||{},state=submissionProgress(x,written);
   const reviewed=state==="done",current=Number(x.score||0)+Number(x.manual_score||0);
@@ -483,7 +487,7 @@ function renderSubmissionResults(){
   return '<article class="item"><div class="participant-head"><h3 class="participant-name">'+esc(x.students?.full_name||"تلميذ")+'</h3><span class="participant-status '+(reviewed?'done':state==="partial"?'partial':'')+'">'+labels[state]+'</span></div><div class="participant-meta"><span>المستوى: '+esc(x.students?.level||"—")+'</span><span>العلامة: '+current+'/'+x.max_score+'</span><span>الإرسال: '+new Date(x.submitted_at).toLocaleString("ar-DZ")+'</span></div>'+review+'<div class="winner-row"><button class="btn alt" onclick="grantExtraAttempt(\''+id+'\',\''+x.student_id+'\',\''+esc(x.students?.full_name||"التلميذ")+'\')">↻ إعادة المحاولة من الصفر</button><button class="btn alt" onclick="setWinner(\''+id+'\',\''+x.id+'\')">اعتماد فائز التحدي</button></div></article>';
  }).join(""):'<div class="msg empty-results">لا توجد مشاركات في هذا القسم.</div>';
 }
-window.filterSubmissionResults=key=>{resultFilter=key;renderSubmissionResults();};
+window.filterSubmissionResults=key=>{resultFilter=key;renderSubmissionResults();};\n$("challengeResultLevel")?.addEventListener("change",renderSubmissionResults);\n$("challengeResultSearch")?.addEventListener("input",renderSubmissionResults);
 window.showResults=async (id,filter="all")=>{try{
  const d=await call("teacher_submissions",{id});
  resultCache={id,questions:d.questions||[],submissions:d.submissions||[]};
