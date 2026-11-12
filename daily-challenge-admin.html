@@ -488,7 +488,8 @@ function renderSubmissionResults(){
  }).join(""):'<div class="msg empty-results">لا توجد مشاركات في هذا القسم.</div>';
 }
 window.filterSubmissionResults=key=>{resultFilter=key;renderSubmissionResults();};
-$("challengeResultLevel")?.addEventListener("change",renderSubmissionResults);\n$("challengeResultSearch")?.addEventListener("input",renderSubmissionResults);
+$("challengeResultLevel")?.addEventListener("change",renderSubmissionResults);
+$("challengeResultSearch")?.addEventListener("input",renderSubmissionResults);
 window.showResults=async (id,filter="all")=>{try{
  const d=await call("teacher_submissions",{id});
  resultCache={id,questions:d.questions||[],submissions:d.submissions||[]};
