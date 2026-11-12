@@ -3225,6 +3225,7 @@ const handleIncomeCalendarClick=async e=>{
       const members=new Set((roster.student_ids||[]).map(String)),saved=new Map((attendance.attendance||[]).map(a=>[String(a.student_id),a.status]));
       const students=roster.students||attendance.students||[];
       const lesson=(window.tahadiLoadedLessonRows||[]).find(x=>String(x.id)===String(lessonId))||{};
+      const isZoom=lesson.delivery_mode==="zoom";
       const counterRows=window.tahadiLessonCounterRows||window.tahadiLoadedLessonRows||[];
       const sameSeries=lesson.recurrence_group_id?counterRows.filter(x=>String(x.recurrence_group_id)===String(lesson.recurrence_group_id)).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||""))):[];
       const seriesIndex=sameSeries.findIndex(x=>String(x.id)===String(lessonId));
@@ -3233,18 +3234,18 @@ const handleIncomeCalendarClick=async e=>{
       const panel=document.createElement("div");panel.className="lesson-roster-panel data-item";
       if(individual){
         const selected=Array.from(members)[0]||"",present=selected&&saved.get(selected)==="present";
-        panel.innerHTML='<h4>تحديد التلميذ والحضور</h4>'+info+
+        panel.innerHTML='<h4>'+(isZoom?'تلميذ حصة Zoom':'تحديد التلميذ والحضور')+'</h4>'+(isZoom?'<p class="muted">تُحتسب الحصة تلقائيًا للتلميذ المحدد دون تسجيل حضور أو غياب.</p>':info)+
           '<label class="lesson-roster-field">التلميذ<select data-individual-student><option value="">اختاري التلميذ</option>'+students.map(st=>'<option value="'+escapeHtml(st.id)+'" '+(String(st.id)===selected?'selected':'')+'>'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</option>').join("")+'</select></label>'+
-          '<div class="lesson-individual-attendance"><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="present" '+(present?'checked':'')+'> حضر الحصة</label><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="absent" '+(selected&&!present?'checked':'')+'> لم يحضر الحصة</label></div>'+
-          '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'" data-individual="1">حفظ التلميذ والحضور</button>';
+          (isZoom?'':'<div class="lesson-individual-attendance"><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="present" '+(present?'checked':'')+'> حضر الحصة</label><label><input type="radio" name="individual-attendance-'+escapeHtml(lessonId)+'" value="absent" '+(selected&&!present?'checked':'')+'> لم يحضر الحصة</label></div>')+
+          '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'" data-individual="1">'+(isZoom?'حفظ التلميذ واحتساب الحصة':'حفظ التلميذ والحضور')+'</button>';
       }else{
         const billingTypes=roster.billing_types||{},coursePrice=Number(roster.course_price||0);
         const selectedCourse=students.some(st=>((billingTypes[String(st.id)]||((st.registration_type==="course_only")?"course":"per_lesson"))==="course"));
-        panel.innerHTML='<h4>قائمة التلاميذ والحضور</h4>'+info+
+        panel.innerHTML='<h4>'+(isZoom?'قائمة تلاميذ حصة Zoom':'قائمة التلاميذ والحضور')+'</h4>'+(isZoom?'<p class="muted">حددي التلاميذ المسجلين في الحصة؛ تُحتسب الحصة لهم تلقائيًا دون تسجيل حضور أو غياب.</p>':info)+
           '<div class="lesson-course-price-wrap" '+(selectedCourse?'':'hidden')+'><label>سعر الدورة الموحّد (دج)<input type="number" min="1" step="1" data-course-price value="'+(coursePrice||"")+'" placeholder="أدخلي سعر الدورة"></label></div>'+
-          '<div class="lesson-roster-head"><span>اسم التلميذ</span><span>في الحصة</span><span>حاضر</span></div>'+
+          (isZoom?'<div class="lesson-roster-head"><span>اسم التلميذ</span><span>في الحصة</span></div>':'<div class="lesson-roster-head"><span>اسم التلميذ</span><span>في الحصة</span><span>حاضر</span></div>')+
           (students.length?students.map(st=>{const id=String(st.id),member=members.has(id),present=saved.get(id)==="present",billing=billingTypes[id]||((st.registration_type==="course_only")?"course":"per_lesson");return '<div class="lesson-roster-row"><span class="lesson-roster-name">'+escapeHtml(st.full_name||"تلميذ بدون اسم")+'</span><label><input type="checkbox" data-roster-student="'+escapeHtml(id)+'" '+(member?'checked':'')+'> إضافة</label><label><input type="checkbox" data-present-student="'+escapeHtml(id)+'" '+(present?'checked':'')+(member?'':' disabled')+'> حاضر</label><label class="lesson-roster-billing">طريقة الاحتساب<select data-billing-type="'+escapeHtml(id)+'"><option value="per_lesson" '+(billing==="per_lesson"?"selected":"")+' >اشتراك شهري</option><option value="course" '+(billing==="course"?"selected":"")+' >دورة</option></select></label></div>';}).join(""):'<p>لا يوجد تلاميذ نشطون في هذا المستوى.</p>')+
-          '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'">حفظ التلاميذ والحضور</button>';
+          '<button type="button" class="secondary lesson-roster-save" data-combined-save="'+escapeHtml(lessonId)+'">'+(isZoom?'حفظ التلاميذ واحتساب الحصص':'حفظ التلاميذ والحضور')+'</button>';
       }
       panel.insertAdjacentHTML("afterbegin",'<button type="button" class="back" data-lesson-action-back>→ العودة إلى التقويم</button>');
       box.appendChild(panel);
@@ -3266,17 +3267,17 @@ const handleIncomeCalendarClick=async e=>{
     }
     const combinedSave=e.target.closest("[data-combined-save]");
     if(combinedSave){(async()=>{try{
-      const panel=combinedSave.closest(".lesson-roster-panel"),lessonId=combinedSave.dataset.combinedSave;
+      const panel=combinedSave.closest(".lesson-roster-panel"),lessonId=combinedSave.dataset.combinedSave,currentLesson=(window.tahadiLoadedLessonRows||[]).find(x=>String(x.id)===String(lessonId))||{},isZoom=currentLesson.delivery_mode==="zoom";
       let rosterIds=[],presentIds=[],coursePrice=0;
       if(combinedSave.dataset.individual==="1"){
         const id=panel.querySelector("[data-individual-student]").value;
         if(!id)throw Error("اختاري التلميذ الخاص بهذه الحصة الفردية.");
         const attendance=panel.querySelector('input[name="individual-attendance-'+CSS.escape(lessonId)+'"]:checked');
-        if(!attendance)throw Error("حددي هل حضر التلميذ أم لم يحضر.");
-        rosterIds=[id];presentIds=attendance.value==="present"?[id]:[];
+        if(!isZoom&&!attendance)throw Error("حددي هل حضر التلميذ أم لم يحضر.");
+        rosterIds=[id];presentIds=isZoom||attendance?.value==="present"?[id]:[];
       }else{
         rosterIds=Array.from(panel.querySelectorAll("[data-roster-student]:checked")).map(x=>x.dataset.rosterStudent);
-        presentIds=Array.from(panel.querySelectorAll("[data-present-student]:checked")).map(x=>x.dataset.presentStudent);
+        presentIds=isZoom?rosterIds:Array.from(panel.querySelectorAll("[data-present-student]:checked")).map(x=>x.dataset.presentStudent);
         if(presentIds.some(id=>!rosterIds.includes(id)))throw Error("حددي التلميذ ضمن قائمة الحصة أولًا.");
       }
       combinedSave.disabled=true;combinedSave.textContent="جارٍ الحفظ…";
@@ -3284,7 +3285,7 @@ const handleIncomeCalendarClick=async e=>{
       const attendanceResult=await lessonRequest({action:"lesson_attendance_save",lesson_id:lessonId,present_student_ids:presentIds,billing_types,course_price:coursePrice});
       const summary=attendanceResult.summary||{};
       const individual=combinedSave.dataset.individual==="1";
-      lessonMessage("تم حفظ الحضور بنجاح. جارٍ الرجوع إلى تقويم الحصص…");
+      lessonMessage(isZoom?"تم احتساب حصة Zoom للتلاميذ المحددين. جارٍ الرجوع إلى التقويم…":"تم حفظ الحضور بنجاح. جارٍ الرجوع إلى تقويم الحصص…");
       await loadDailyLessons();
       const details=document.getElementById("lessonCalendarDayDetails");
       if(details){
