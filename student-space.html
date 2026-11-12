@@ -938,7 +938,7 @@ studentHelpOverlay.addEventListener("click",e=>{if(e.target===studentHelpOverlay
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&studentHelpOverlay&&!studentHelpOverlay.classList.contains("hidden"))studentHelpOverlay.classList.add("hidden");});
 const originalOpenStudentSection=openStudentSection;openStudentSection=function(key){originalOpenStudentSection(key);if(key==="studentQuestions"){loadStudentQuestions();loadQuestionLibrary();}};
 const studentScrollStorageKey="tahadi_student_space_scroll_v2";
-const saveStudentPagePosition=()=>{try{const section=new URL(location.href).searchParams.get("section")||"";const state=JSON.stringify({y:window.scrollY||0,section,at:Date.now()});sessionStorage.setItem(studentScrollStorageKey,state);localStorage.setItem(studentScrollStorageKey,state);}catch(_){}};
+const saveStudentPagePosition=()=>{try{const section=new URL(location.href).searchParams.get("section")||localStorage.getItem("tahadi_student_active_section")||"";const state=JSON.stringify({y:window.scrollY||0,section,at:Date.now()});sessionStorage.setItem(studentScrollStorageKey,state);localStorage.setItem(studentScrollStorageKey,state);}catch(_){}};
 window.addEventListener("scroll",saveStudentPagePosition,{passive:true});
 window.addEventListener("pagehide",saveStudentPagePosition);
 window.addEventListener("beforeunload",saveStudentPagePosition);
