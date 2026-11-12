@@ -935,7 +935,7 @@ studentHelpOverlay.addEventListener("click",e=>{if(e.target===studentHelpOverlay
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&studentHelpOverlay&&!studentHelpOverlay.classList.contains("hidden"))studentHelpOverlay.classList.add("hidden");});
 const originalOpenStudentSection=openStudentSection;openStudentSection=function(key){originalOpenStudentSection(key);if(key==="studentQuestions"){loadStudentQuestions();loadQuestionLibrary();}};
 const studentScrollStorageKey="tahadi_student_space_scroll_v2";
-const saveStudentPagePosition=()=>{try{const section=new URL(location.href).searchParams.get("section")||localStorage.getItem("tahadi_student_active_section")||"";const state=JSON.stringify({y:window.scrollY||0,section,at:Date.now()});sessionStorage.setItem(studentScrollStorageKey,state);localStorage.setItem(studentScrollStorageKey,state);}catch(_){}};
+const saveStudentPagePosition=()=>{try{const section=new URL(location.href).searchParams.get("section")||localStorage.getItem("tahadi_student_active_section")||"";const lessonTab=document.querySelector("[data-panel=\"lessons\"] [data-student-lesson-page].active")?.dataset.studentLessonPage||window.tahadiStudentLessonPage||"upcoming";const questionTab=document.querySelector("[data-panel=\"studentQuestions\"] [data-question-page].active")?.dataset.questionPage||"askQuestionPage";const selectedDate=window.tahadiStudentSelectedDate||"";const state=JSON.stringify({y:window.scrollY||0,section,lessonTab,questionTab,selectedDate,at:Date.now()});sessionStorage.setItem(studentScrollStorageKey,state);localStorage.setItem(studentScrollStorageKey,state);}catch(_){}};
 window.addEventListener("scroll",saveStudentPagePosition,{passive:true});
 window.addEventListener("pagehide",saveStudentPagePosition);
 window.addEventListener("beforeunload",saveStudentPagePosition);
@@ -944,7 +944,7 @@ function restoreStudentPageState(){
  let saved={y:0,section:""};try{saved=JSON.parse(sessionStorage.getItem(studentScrollStorageKey)||localStorage.getItem(studentScrollStorageKey)||"{}")||saved;}catch(_){}
  const requested=new URL(location.href).searchParams.get("section")||saved.section||localStorage.getItem("tahadi_student_active_section")||"";
  const valid=requested&&Array.from(document.querySelectorAll(".student-section")).some(el=>el.dataset.panel===requested);
- if(valid){restoringStudentPageState=true;openStudentSection(requested);restoringStudentPageState=false;}
+ if(valid){restoringStudentPageState=true;openStudentSection(requested);if(requested==="lessons"){const tab=saved.lessonTab||"upcoming";const btn=document.querySelector('[data-panel="lessons"] [data-student-lesson-page="'+tab+'"]');if(btn)btn.click();if(saved.selectedDate){const day=document.querySelector('[data-panel="lessons"] [data-cal-date="'+saved.selectedDate+'"]');if(day)day.click();}}if(requested==="studentQuestions"){const q=document.querySelector('[data-panel="studentQuestions"] [data-question-page="'+(saved.questionTab||"askQuestionPage")+'"]');if(q)q.click();}restoringStudentPageState=false;}
  const y=Math.max(0,Number(saved.y)||0);
  [250,700,1300].forEach(delay=>setTimeout(()=>window.scrollTo({top:y,behavior:"instant"}),delay));
 }
