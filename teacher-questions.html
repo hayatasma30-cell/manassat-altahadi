@@ -126,6 +126,19 @@ const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let questions=[],currentListPage="newPage";
 const PAGE_STATE_KEY="tahadi_teacher_questions_page_state";
+// استعادة جلسة الأستاذة الاحتياطية عند العودة من صفحة أخرى على النطاق نفسه.
+try{
+ const current=localStorage.getItem("tahadi_teacher_token");
+ const expiry=localStorage.getItem("tahadi_teacher_expires");
+ if(!current){
+  const bridge=sessionStorage.getItem("tahadi_teacher_token_bridge");
+  const bridgeExpiry=sessionStorage.getItem("tahadi_teacher_expires_bridge");
+  if(bridge&&bridgeExpiry&&Date.parse(bridgeExpiry)>Date.now()){
+   localStorage.setItem("tahadi_teacher_token",bridge);
+   localStorage.setItem("tahadi_teacher_expires",bridgeExpiry);
+  }
+ }
+}catch(e){}
 function savePageState(activePage,questionId=""){
  const state={activePage,currentListPage,questionId:String(questionId||""),savedAt:Date.now(),scrollY:window.scrollY||0};
  try{localStorage.setItem(PAGE_STATE_KEY,JSON.stringify(state));sessionStorage.setItem(PAGE_STATE_KEY,JSON.stringify(state));}catch(e){}
@@ -146,8 +159,8 @@ function readPageState(){
 const initialPageState=readPageState();
 currentListPage=initialPageState.currentListPage;
 async function call(action,extra={}) {
- const token=localStorage.getItem("tahadi_teacher_token");
- if(!token) throw new Error("جلسة الأستاذة غير موجودة في هذه الصفحة. ادخلي إلى فضاء الأستاذة أولًا ثم افتحي الأسئلة من داخله.");
+ const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge");
+ if(!token) throw new Error("جلسة الأستاذة غير موجودة. عودي إلى فضاء الأستاذة وسجلي الدخول ثم افتحي الأسئلة من جديد.");
  const controller=new AbortController();
  const timeout=setTimeout(()=>controller.abort(),15000);
  try {
