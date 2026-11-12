@@ -31,6 +31,47 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 .action:disabled{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
 .question-detail-text{background:#f5f6ec;border-right:4px solid #8eae83;padding:16px 14px}
 @media(max-width:520px){.question-tools{display:grid;grid-template-columns:1fr 1fr}.question-tools .action{width:100%}}
+</style><style id="teacher-questions-polish-v1">
+:root{--green:#14532d;--green2:#1f7747;--cream:#f4f7ec;--ink:#18382a}
+body{background:linear-gradient(180deg,#f4f7ec 0%,#f8faf4 55%,#f4f7ec 100%)}
+header{padding:24px 16px 27px;text-align:center;box-shadow:0 5px 18px #0b45291c}
+.wrap{max-width:900px;padding:16px 14px 34px}
+.nav{gap:10px;margin-bottom:18px}
+.nav button{min-height:66px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.45;font-size:clamp(.78rem,2.5vw,1rem);padding:12px 8px;border-radius:17px}
+.nav button.active{transform:translateY(-1px)}
+.stats{gap:10px}
+.stat{min-height:98px;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:20px;padding:12px 7px;box-shadow:0 7px 18px #14532d0b}
+.stat strong{font-size:clamp(1.6rem,5vw,2.1rem);font-weight:800}
+.stat span{font-size:.82rem;line-height:1.45}
+.page>.card{border-radius:24px;padding:clamp(16px,3.5vw,26px);box-shadow:0 9px 26px #14532d0c}
+.page>.card>h2{font-size:clamp(1.25rem,4vw,1.8rem);margin-bottom:6px}
+#newCount,#answeredCount,#libraryCount{margin:5px 0 14px;font-weight:600}
+.filters{gap:10px;margin:16px 0 18px}
+.filters input,.filters select,#librarySearch,#libraryLevel{min-height:52px;border-radius:15px}
+.question-list-card{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:17px!important;border:1px solid #dce8da;border-radius:22px!important;box-shadow:0 6px 18px #14532d0c}
+.question-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.question-student{min-width:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.question-student h3{font-size:1.12rem;margin:0;line-height:1.5}
+.question-level{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;background:#f0f5ed;color:#607568;font-size:.74rem;font-weight:700}
+.question-status{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:.76rem;font-weight:800;white-space:nowrap;background:#fff4dc;color:#946b18}
+.question-status.answered{background:#eaf4eb;color:#17623c}
+.question-status.closed{background:#edf0ed;color:#69796d}
+.question-card-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:#7a887d;font-size:.78rem}
+.question-excerpt{margin:0!important;padding:12px 13px;background:#f7f9f3;border:1px solid #edf1e9;border-radius:14px;line-height:1.9;font-size:.98rem;overflow-wrap:anywhere}
+.question-list-card>.open-question{width:100%;min-height:52px;border-radius:14px;font-size:.98rem}
+.empty{background:#fbfcf8}
+#status{padding:4px 2px}
+@media(max-width:520px){
+ .wrap{padding:13px 12px 28px}
+ .nav{gap:7px}
+ .nav button{min-height:70px;padding:9px 5px;font-size:.78rem}
+ .stats{gap:7px}
+ .stat{min-height:88px;border-radius:17px}
+ .stat span{font-size:.72rem}
+ .question-list-card{padding:15px!important}
+ .question-student h3{font-size:1rem}
+ .question-excerpt{font-size:.93rem}
+}
 </style></head><body><header><h1>✉️ أسئلة التلاميذ ومكتبة الأسئلة</h1></header>
 <main class="wrap"><nav class="nav" aria-label="صفحات الأسئلة"><button class="active" data-page="newPage" id="navNew">🆕 الأسئلة الجديدة</button><button data-page="answeredPage" id="navAnswered">💬 تم الرد عليها</button><button data-page="libraryPage" id="navLibrary">📚 مكتبة التلاميذ</button></nav>
 <section class="stats" aria-label="ملخص الأسئلة"><div class="stat"><strong id="statTotal">0</strong><span>إجمالي الأسئلة</span></div><div class="stat"><strong id="statNew">0</strong><span>بانتظار الرد</span></div><div class="stat"><strong id="statPublished">0</strong><span>منشورة للتلاميذ</span></div></section>
@@ -118,7 +159,11 @@ function detailMarkup(q) {
 }
 function questionCard(q,fromPage) {
  const publication=q.is_published?'<span class="published-pill">📚 منشور في المكتبة</span>':'';
- return '<article class="card question-list-card"><div class="summary"><h3>'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h3><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span> '+publication+'</p><p>'+esc((q.question_text||"").slice(0,150))+(String(q.question_text||"").length>150?"…":"")+'</p></div><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
+ const statusClass=q.status==="answered"?"answered":q.status==="closed"?"closed":"new";
+ const created=Number.isFinite(Date.parse(q.created_at||""))?new Date(q.created_at).toLocaleString("ar-DZ"):"تاريخ غير متاح";
+ const level=String(q.students?.level||"المستوى غير محدد");
+ const excerpt=String(q.question_text||"");
+ return '<article class="card question-list-card"><div class="question-card-top"><div class="question-student"><h3>'+esc(q.students?.full_name||"تلميذ")+'</h3><span class="question-level">'+esc(level)+'</span></div><span class="question-status '+statusClass+'">'+esc(statusText(q))+'</span></div><div class="question-card-meta"><span>📅 '+esc(created)+'</span>'+publication+'</div><p class="question-excerpt">'+esc(excerpt.slice(0,220))+(excerpt.length>220?"…":"")+'</p><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
 }
 
 async function deleteQuestion(id){
