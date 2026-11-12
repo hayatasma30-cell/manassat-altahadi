@@ -99,6 +99,43 @@
 .student-lesson-page{border:1px solid #dfe8dc;border-radius:17px;padding:14px;background:#fff;margin-top:10px}
 .student-lesson-page h3{margin:0 0 12px;color:#14532d;font-size:1.05rem;padding-bottom:9px;border-bottom:1px solid #edf1e9}
 .student-lesson-page.hidden{display:none!important}
+.student-lesson-page{padding:10px!important;background:#fffefa!important;border-color:#e4e9df!important}
+.student-calendar{padding:10px!important;border-radius:17px!important;background:linear-gradient(155deg,#fbfdf9,#f4f8f0)!important;margin:4px 0 12px!important}
+.cal-head{margin-bottom:8px!important;padding:2px 0 9px;border-bottom:1px solid #e7eee3}
+.cal-head strong{font-size:1.08rem;color:#174b32}
+.cal-head button{width:42px;min-height:40px;padding:5px!important;border-radius:12px!important;border:1px solid #cfe0cc!important;border-bottom:3px solid #23834b!important;background:#f7fbf4!important;font-size:1.15rem!important}
+.cal-grid{gap:6px!important}
+.cal-grid>small{font-size:.7rem!important;font-weight:800;color:#56715e!important;padding:5px 0!important}
+.cal-day{min-height:43px!important;padding:6px 2px!important;border-radius:11px!important;border:1px solid #dce8d9!important;background:#fff!important;font-weight:700!important}
+.cal-day.has-lesson{background:#edf7e9!important;border-color:#a8cda4!important}
+.cal-day.selected{outline:2px solid #17623c!important;outline-offset:1px;background:#e3f2e1!important;box-shadow:0 0 0 3px #17623c16!important}
+.cal-day.today{outline:2px solid #d59b28!important;outline-offset:1px}
+.cal-day.today.selected{outline:3px solid #17623c!important;box-shadow:0 0 0 3px #d59b2833!important}
+.cal-legend{margin:9px 2px 0!important;padding-top:8px;border-top:1px solid #e7eee3;color:#748176!important}
+.selected-day-panel{margin-top:12px;padding:13px;border:1px solid #e0e9dc;border-radius:17px;background:#fff}
+.selected-day-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #e7eee3;color:#174b32}
+.selected-day-heading strong{font-size:1rem}
+.selected-day-heading span{font-size:.75rem;color:#718174;background:#f1f6ee;padding:4px 8px;border-radius:20px}
+.selected-day-empty{margin-top:12px;padding:15px;border:1px dashed #cbdcc8;border-radius:14px;background:#f8fbf6;color:#315a40}
+.selected-day-empty p{margin:7px 0 0;color:#78857a}
+.student-lesson-card{margin:10px 0 0;padding:13px;border:1px solid #e0e9dc;border-radius:15px;background:linear-gradient(145deg,#fff,#fbfdf9);box-shadow:0 3px 12px #14532d0a}
+.student-lesson-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.student-lesson-card-head>strong{font-size:1.08rem;color:#174b32}
+.lesson-mode-tag{font-size:.72rem;font-weight:800;color:#17623c;background:#eaf5e8;border-radius:20px;padding:4px 9px}
+.student-lesson-meta{margin:8px 0;color:#718075;font-size:.88rem}
+.student-lesson-countdown{margin:8px 0;color:#17623c;font-weight:800}
+.student-lesson-entry-action{margin-top:8px}
+.student-lesson-entry-action .zoom-join-link{padding:9px 13px;border-radius:11px}
+.lesson-no-link,.lesson-inperson-label{display:inline-block;color:#748176;font-size:.82rem}
+.lesson-resources{margin-top:14px;padding-top:12px;border-top:1px solid #e5ece1}
+.lesson-resources h4{margin:0 0 9px;color:#24583c;font-size:.95rem}
+.lesson-resources-list{display:grid;gap:8px}
+.lesson-resource-link{display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px;padding:11px 12px;border:1px solid #dce9d8;border-radius:12px;background:#f1f7ee;color:#185b39;text-decoration:none!important}
+.lesson-resource-link strong{font-size:.9rem;line-height:1.5;overflow-wrap:anywhere}
+.lesson-resource-type{grid-column:1/-1;font-size:.72rem;color:#718174}
+.lesson-resource-open{grid-column:1/-1;justify-self:start;margin-top:3px;font-size:.78rem;font-weight:800;color:#17623c}
+@media(max-width:500px){.cal-day{min-height:40px!important}.selected-day-panel{padding:10px}.student-lesson-card{padding:11px}.lesson-resource-link{padding:10px}}
+
 @media(max-width:500px){.student-lesson-nav{gap:7px}.student-lesson-nav button{min-height:52px;font-size:.86rem}.student-lesson-page{padding:12px}}
 .student-action{
  box-sizing:border-box!important;min-width:0!important;min-height:78px!important;
@@ -694,16 +731,18 @@ function renderStudentLessons(items){
    }).filter(Boolean);
   }
   if(!items.length)return "";
-  return '<div class="lesson-linked-resources" style="margin-top:12px;padding-top:10px;border-top:1px solid #dcebd8"><strong>موارد هذه الحصة</strong><div style="display:grid;gap:8px;margin-top:8px">'+items.map(r=>{
+  return '<section class="lesson-resources"><h4>موارد هذه الحصة</h4><div class="lesson-resources-list">'+items.map(r=>{
    const url=String(r.url||r.resource_open_url||r.resource_url||"").trim();
-   return url?'<a href="'+safe(url)+'" target="_blank" rel="noopener noreferrer" style="display:block;padding:10px 12px;border-radius:10px;background:#edf5ed;color:#185b39;text-decoration:none;font-weight:700">'+safe(r.label)+' · '+safe(r.title)+' ↗</a>':'<div>'+safe(r.label)+' · '+safe(r.title)+'</div>';
-  }).join("")+'</div></div>';
+   const content='<span class="lesson-resource-type">'+safe(r.label)+'</span><strong>'+safe(r.title)+'</strong>';
+   return url?'<a class="lesson-resource-link" href="'+safe(url)+'" target="_blank" rel="noopener noreferrer">'+content+'<span class="lesson-resource-open">فتح المورد ↗</span></a>':'<div class="lesson-resource-link">'+content+'</div>';
+  }).join("")+'</div></section>';
  };
  const selectedDayHtml=dateStr=>{
   const dayLessons=visibleRows.filter(x=>String(x.lesson_date||"")===String(dateStr)).sort((a,b)=>String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
-  if(!dayLessons.length)return '<div class="item"><strong>حصص يوم '+safe(dateStr)+'</strong><p class="muted">لا توجد حصة مبرمجة في هذا اليوم.</p></div>';
-  return '<div class="item" style="border:2px solid #23834b;background:#f4fbf1"><strong>حصص يوم '+safe(dateStr)+'</strong>'+dayLessons.map(x=>'<article style="padding:12px 0;border-top:1px solid #dcebd8"><strong>'+safe(x.lesson_time||"الوقت غير محدد")+'</strong><p class="muted">'+safe(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+' · '+safe(x.subject||"علوم الطبيعة والحياة")+'</p>'+(x.status==="مجدولة"&&Number.isFinite(lessonDateTime(x,true))&&lessonDateTime(x,true)>Date.now()?'<p style="font-weight:800;color:#17623c">'+countdownText(x)+'</p>':"")+(joinButton(x)||(x.delivery_mode==="zoom"?'<p class="muted">لم يُضف رابط Zoom لهذه الحصة بعد.</p>':'<span class="tag">حصة حضورية</span>'))+lessonResourcesHtml(x)+'</article>').join("")+'</div>';
- }; const counterGroups=new Map();for(const x of visibleRows){const k=[x.level||"",x.delivery_mode||"",x.lesson_time||"",x.lesson_type||"",x.lesson_type==="فردية"?(x.student_id||x.student_name||""):""].join("|");if(!counterGroups.has(k))counterGroups.set(k,[]);counterGroups.get(k).push(x);}
+  if(!dayLessons.length)return '<div class="selected-day-empty"><strong>حصص يوم '+safe(dateStr)+'</strong><p>لا توجد حصة مبرمجة في هذا اليوم.</p></div>';
+  return '<section class="selected-day-panel"><div class="selected-day-heading"><strong>حصص يوم '+safe(dateStr)+'</strong><span>'+dayLessons.length+' '+(dayLessons.length===1?'حصة':'حصص')+'</span></div>'+dayLessons.map(x=>'<article class="student-lesson-card"><div class="student-lesson-card-head"><strong>'+safe(x.lesson_time||"الوقت غير محدد")+'</strong><span class="lesson-mode-tag">'+(x.delivery_mode==="zoom"?"Zoom":"حضوري")+'</span></div><p class="student-lesson-meta">'+safe(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+' · '+safe(x.subject||"علوم الطبيعة والحياة")+'</p>'+(x.status==="مجدولة"&&Number.isFinite(lessonDateTime(x,true))&&lessonDateTime(x,true)>Date.now()?'<p class="student-lesson-countdown">'+countdownText(x)+'</p>':"")+'<div class="student-lesson-entry-action">'+(joinButton(x)||(x.delivery_mode==="zoom"?'<span class="lesson-no-link">لم يُضف رابط Zoom لهذه الحصة بعد.</span>':'<span class="lesson-inperson-label">حصة حضورية</span>'))+'</div>'+lessonResourcesHtml(x)+'</article>').join("")+'</section>';
+ };
+  const counterGroups=new Map();for(const x of visibleRows){const k=[x.level||"",x.delivery_mode||"",x.lesson_time||"",x.lesson_type||"",x.lesson_type==="فردية"?(x.student_id||x.student_name||""):""].join("|");if(!counterGroups.has(k))counterGroups.set(k,[]);counterGroups.get(k).push(x);}
  const lessonCounters=new Map();for(const group of counterGroups.values()){group.sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));let n=0;for(const x of group){if(x.status==="تمت"&&!x.replacement_lesson_id){n++;lessonCounters.set(x.id,x.delivery_mode==="in_person"?(("حصة "+(((n-1)%4)+1)+" من 4 · الشهر "+Math.ceil(n/4))):("الحصة رقم "+n));}}}
  const monthKey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"),month=monthKey(studentCalendarMonth),inMonth=visibleRows.filter(x=>String(x.lesson_date||"").startsWith(month));
  const isPresent=x=>["حاضر","متأخر","present","late"].includes(String(x.status||"").toLowerCase());
@@ -720,7 +759,7 @@ function renderStudentLessons(items){
  const attendanceHtml=attendanceRows.length?attendanceRows.slice(0,60).map(({record:x,lesson})=>{const status=String(x.status||"");const label=({present:"حاضر",late:"متأخر",absent:"غائب",excused_absence:"غائب بعذر",excused:"غائب بعذر"})[status.toLowerCase()]||status;const lessonDone=!!lesson&&["تمت","تمت من قبل"].includes(String(lesson.status||""));return '<div class="item"><strong>'+safe(x.attendance_date||lesson?.lesson_date||"—")+'</strong><p>'+(lessonDone?'<span class="tag">منجزة</span> · ':"")+'<span class="tag">'+safe(label)+'</span>'+(lesson?.lesson_time?' · '+safe(lesson.lesson_time):"")+(x.note?' · '+safe(x.note):"")+'</p></div>';}).join(""):'<div class="empty">لم تسجل الأستاذة حضورًا أو غيابًا بعد.</div>';
  const statsHtml='<div class="lesson-stats"><div><small>حصص مجدولة</small><b>'+visibleRows.filter(x=>x.status==="مجدولة").length+'</b></div><div><small>حصص منجزة</small><b>'+visibleRows.filter(x=>x.status==="تمت"&&!x.replacement_lesson_id).length+'</b></div>'+(showAttendance?'<div><small>حضور مسجل</small><b>'+attended+'</b></div><div><small>غياب مسجل</small><b>'+absent+'</b></div>':'')+'</div>';
  const activePage=showAttendance?(window.tahadiStudentLessonPage==="attendance"?"attendance":"calendar"):"calendar";
- root.innerHTML='<nav class="student-lesson-nav" aria-label="صفحات الحصص"><button type="button" data-student-lesson-page="calendar">📅 تقويم الحصص</button><button type="button" data-student-lesson-page="attendance">📋 سجل الحضور</button></nav><section class="student-lesson-page hidden" data-student-lesson-panel="calendar"><h3>📅 تقويم الحصص</h3><div class="student-calendar"><div class="cal-head"><button type="button" id="calPrev" aria-label="الشهر السابق">‹</button><strong>'+safe(monthName)+'</strong><button type="button" id="calNext" aria-label="الشهر التالي">›</button></div><div class="cal-grid">'+["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"].map(x=>'<small>'+x+'</small>').join("")+cells+'</div><p class="muted cal-legend">● يوم توجد فيه حصة</p></div>'+'<div id="selectedDayDetails"></div>'+'</section><section class="student-lesson-page hidden" data-student-lesson-panel="attendance"><h3>📋 سجل الحضور والغياب</h3><div class="lesson-stats"><div><small>حضور مسجل</small><b>'+attended+'</b></div><div><small>غياب مسجل</small><b>'+absent+'</b></div></div>'+attendanceHtml+'</section>';
+ root.innerHTML='<nav class="student-lesson-nav" aria-label="صفحات الحصص"><button type="button" data-student-lesson-page="calendar">📅 تقويم الحصص</button><button type="button" data-student-lesson-page="attendance">📋 سجل الحضور</button></nav><section class="student-lesson-page hidden" data-student-lesson-panel="calendar"><div class="student-calendar"><div class="cal-head"><button type="button" id="calPrev" aria-label="الشهر السابق">‹</button><strong>'+safe(monthName)+'</strong><button type="button" id="calNext" aria-label="الشهر التالي">›</button></div><div class="cal-grid">'+["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"].map(x=>'<small>'+x+'</small>').join("")+cells+'</div><p class="muted cal-legend">● يوم توجد فيه حصة</p></div>'+'<div id="selectedDayDetails"></div>'+'</section><section class="student-lesson-page hidden" data-student-lesson-panel="attendance"><h3>📋 سجل الحضور والغياب</h3><div class="lesson-stats"><div><small>حضور مسجل</small><b>'+attended+'</b></div><div><small>غياب مسجل</small><b>'+absent+'</b></div></div>'+attendanceHtml+'</section>';
   if(!showAttendance){root.querySelector('[data-student-lesson-page="attendance"]')?.remove();root.querySelector('[data-student-lesson-panel="attendance"]')?.remove();}
  const showPage=key=>{window.tahadiStudentLessonPage=key;root.querySelectorAll("[data-student-lesson-panel]").forEach(el=>el.classList.toggle("hidden",el.dataset.studentLessonPanel!==key));root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.classList.toggle("active",btn.dataset.studentLessonPage===key));};
  root.querySelectorAll("[data-student-lesson-page]").forEach(btn=>btn.addEventListener("click",()=>{showPage(btn.dataset.studentLessonPage);window.scrollTo({top:root.getBoundingClientRect().top+window.scrollY-12,behavior:"smooth"});}));
