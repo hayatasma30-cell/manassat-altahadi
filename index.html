@@ -3024,18 +3024,17 @@ const handleIncomeCalendarClick=async e=>{
   $("closeLessonResource").addEventListener("click",closeLessonResourceEditor);
   $("cancelLessonResources").addEventListener("click",closeLessonResourceEditor);
   $("lessonResourceModal").addEventListener("click",e=>{if(e.target===$("lessonResourceModal"))closeLessonResourceEditor();});
-  function fillLessonResourceSelect(id,resources,types,chosen){
-    const rows=resources.filter(r=>types.includes(String(r.resource_type||"").toLowerCase()));
-    const select=$(id);select.innerHTML='<option value="">دون ربط</option>'+rows.map(r=>'<option value="'+escapeHtml(r.id)+'">'+escapeHtml(r.title||"مورد")+'</option>').join("");
-    select.value=rows.some(r=>String(r.id)===String(chosen||""))?String(chosen):"";
+  function fillLessonResourceSelect(id,resources,chosen){
+    const select=$(id);select.innerHTML='<option value="">دون ربط</option>'+resources.map(r=>'<option value="'+escapeHtml(r.id)+'">'+escapeHtml(r.title||"مورد")+'</option>').join("");
+    select.value=resources.some(r=>String(r.id)===String(chosen||""))?String(chosen):"";
   }
   async function openLessonResourceEditor(lessonId){
     const [row,result]=await Promise.all([lessonRequest({action:"daily_lessons_get",id:lessonId}),lessonRequest({action:"daily_lesson_resources_list",lesson_id:lessonId})]);
     const lesson=row.lesson;if(!lesson)throw Error("لم نعثر على الحصة.");
     const resources=Array.isArray(result.resources)?result.resources:[],links=lesson.linked_resources||{};
-    fillLessonResourceSelect("lessonResourceActivity",resources,["exercise","activity"],links.activity_id);
-    fillLessonResourceSelect("lessonResourceLesson",resources,["lesson","summary"],links.lesson_id);
-    fillLessonResourceSelect("lessonResourceCorrection",resources,["solution","correction"],links.correction_id);
+    fillLessonResourceSelect("lessonResourceActivity",resources,links.activity_id);
+    fillLessonResourceSelect("lessonResourceLesson",resources,links.lesson_id);
+    fillLessonResourceSelect("lessonResourceCorrection",resources,links.correction_id);
     activeLessonResourceId=String(lesson.id);
     $("lessonResourceLessonInfo").textContent=[lesson.level,lesson.lesson_date,lesson.lesson_time].filter(Boolean).join(" · ");
     $("lessonResourceStatus").textContent="";$("lessonResourceModal").hidden=false;
