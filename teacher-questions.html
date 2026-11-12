@@ -31,6 +31,14 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 .action:disabled{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
 .question-detail-text{background:#f5f6ec;border-right:4px solid #8eae83;padding:16px 14px}
 @media(max-width:520px){.question-tools{display:grid;grid-template-columns:1fr 1fr}.question-tools .action{width:100%}}
+</style><style id="questions-category-level-navigation">
+.category-menu,.level-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:20px}
+.category-button,.level-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:132px;padding:18px 12px;border:1px solid #1f7747;border-radius:20px;background:linear-gradient(145deg,#2d9858,#14532d);color:#fff;font:inherit;cursor:pointer;box-shadow:0 6px 0 #0b3820,0 10px 18px #14532d20;transition:transform .12s,box-shadow .12s}
+.category-button:active,.level-button:active{transform:translateY(3px);box-shadow:0 3px 0 #0b3820}
+.category-button>span{font-size:1.8rem}.category-button strong{font-size:1.02rem}.category-button small{color:#e1f0e4;font-size:.82rem}
+.level-button{min-height:88px;font-weight:800;font-size:1rem;background:linear-gradient(145deg,#fff,#eaf2e7);color:#14532d;border-color:#cbdcc8;box-shadow:0 5px 0 #c3d2bf,0 8px 14px #14532d12}
+.page-back{margin:0 0 14px}
+@media(max-width:420px){.category-menu,.level-menu{gap:10px}.category-button{min-height:120px;padding:13px 8px}.category-button strong{font-size:.9rem}.level-button{min-height:78px;font-size:.9rem}}
 </style><style id="teacher-questions-group-polish-v2">
 .student-question-group{padding:15px;margin:20px 0 24px;border:1px solid #d8e6d7;border-radius:23px;background:#fbfdf9;box-shadow:0 7px 20px #174b2d0c}
 .student-question-group-head{padding:7px 3px 14px;align-items:center}
@@ -113,18 +121,24 @@ header{padding:24px 16px 27px;text-align:center;box-shadow:0 5px 18px #0b45291c}
  .question-excerpt{font-size:.93rem}
 }
 </style></head><body><header><h1>✉️ أسئلة التلاميذ ومكتبة الأسئلة</h1></header>
-<main class="wrap"><nav class="nav" aria-label="صفحات الأسئلة"><button class="active" data-page="newPage" id="navNew">🆕 الأسئلة الجديدة</button><button data-page="answeredPage" id="navAnswered">💬 تم الرد عليها</button><button data-page="libraryPage" id="navLibrary">📚 مكتبة التلاميذ</button></nav>
-<section class="stats" aria-label="ملخص الأسئلة"><div class="stat"><strong id="statTotal">0</strong><span>إجمالي الأسئلة</span></div><div class="stat"><strong id="statNew">0</strong><span>بانتظار الرد</span></div><div class="stat"><strong id="statPublished">0</strong><span>منشورة للتلاميذ</span></div></section>
-<section id="newPage" class="page"><div class="card"><h2>الأسئلة الجديدة</h2><p id="newCount" class="muted">جارٍ التحميل…</p><div class="filters"><input id="newSearch" type="search" placeholder="ابحثي باسم التلميذ أو السؤال"><select id="newLevel"><option value="">كل المستويات</option></select></div><div id="newQuestions"></div></div></section>
-<section id="answeredPage" class="page" hidden><div class="card"><h2>الأسئلة التي تمت الإجابة عنها</h2><p id="answeredCount" class="muted"></p><div class="filters"><input id="answeredSearch" type="search" placeholder="ابحثي باسم التلميذ أو السؤال"><select id="answeredLevel"><option value="">كل المستويات</option></select></div><div id="answeredQuestions"></div></div></section>
+<main class="wrap">
+<section id="homePage" class="page"><div class="card"><h2>اختاري قسم الأسئلة</h2><p class="muted">ابدئي باختيار القسم، ثم المستوى الدراسي.</p><div class="category-menu">
+<button class="category-button" type="button" data-category="newPage"><span>🆕</span><strong>الأسئلة الجديدة</strong><small id="homeNewCount">بانتظار الرد</small></button>
+<button class="category-button" type="button" data-category="answeredPage"><span>💬</span><strong>تم الرد عليها</strong><small id="homeAnsweredCount">الأسئلة المجاب عنها</small></button>
+<button class="category-button" type="button" data-category="libraryPage"><span>📚</span><strong>مكتبة التلاميذ</strong><small id="homeLibraryCount">الأسئلة المنشورة</small></button>
+</div></div>
+<section class="stats" aria-label="ملخص الأسئلة"><div class="stat"><strong id="statTotal">0</strong><span>إجمالي الأسئلة</span></div><div class="stat"><strong id="statNew">0</strong><span>بانتظار الرد</span></div><div class="stat"><strong id="statPublished">0</strong><span>منشورة للتلاميذ</span></div></section></section>
+<section id="levelPage" class="page" hidden><div class="card"><button class="action light" id="levelsHomeBack" type="button">← الأقسام الرئيسية</button><h2 id="levelPageTitle">اختاري المستوى الدراسي</h2><p class="muted">اختاري المستوى لعرض الأسئلة الخاصة بتلاميذه فقط.</p><div class="level-menu"><button class="level-button" type="button" data-level="الأولى متوسط">الأولى متوسط</button><button class="level-button" type="button" data-level="الثانية متوسط">الثانية متوسط</button><button class="level-button" type="button" data-level="الثالثة متوسط">الثالثة متوسط</button><button class="level-button" type="button" data-level="الرابعة متوسط">الرابعة متوسط</button></div></div></section>
+<section id="newPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>الأسئلة الجديدة</h2><p id="newCount" class="muted">جارٍ التحميل…</p><div class="filters"><input id="newSearch" type="search" placeholder="ابحثي باسم التلميذ أو السؤال"><select id="newLevel"><option value="">كل المستويات</option></select></div><div id="newQuestions"></div></div></section>
+<section id="answeredPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>الأسئلة التي تمت الإجابة عنها</h2><p id="answeredCount" class="muted"></p><div class="filters"><input id="answeredSearch" type="search" placeholder="ابحثي باسم التلميذ أو السؤال"><select id="answeredLevel"><option value="">كل المستويات</option></select></div><div id="answeredQuestions"></div></div></section>
 <section id="questionDetailPage" class="page detail-page" hidden><button id="detailBack" class="action green detail-back" type="button">← رجوع إلى قائمة الأسئلة</button><div id="questionDetail"></div></section>
-<section id="libraryPage" class="page" hidden><div class="card"><h2>📚 مكتبة الأسئلة الظاهرة للتلاميذ</h2><input id="librarySearch" type="search" placeholder="ابحثي في المكتبة بالسؤال أو المستوى"><p id="libraryCount" class="muted"></p><select id="libraryLevel" aria-label="تصفية حسب المستوى"><option value="">كل المستويات</option></select><div id="libraryQuestions"></div></div></section>
+<section id="libraryPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>📚 مكتبة الأسئلة الظاهرة للتلاميذ</h2><input id="librarySearch" type="search" placeholder="ابحثي في المكتبة بالسؤال أو المستوى"><p id="libraryCount" class="muted"></p><select id="libraryLevel" aria-label="تصفية حسب المستوى"><option value="">كل المستويات</option></select><div id="libraryQuestions"></div></div></section>
 <p><a class="platform-nav-link" href="index.html">← فضاء الأستاذة</a></p><p id="status" class="muted" role="status"></p></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-let questions=[],currentListPage="newPage";
+let questions=[],currentListPage="newPage",selectedCategory="newPage",selectedLevel="";
 const PAGE_STATE_KEY="tahadi_teacher_questions_page_state";
 // استعادة جلسة الأستاذة الاحتياطية عند العودة من صفحة أخرى على النطاق نفسه.
 try{
@@ -149,15 +163,17 @@ function readPageState(){
   const session=JSON.parse(sessionStorage.getItem(PAGE_STATE_KEY)||"{}");
   const value=(local.savedAt||0)>=(session.savedAt||0)?local:session;
   return {
-   activePage:["newPage","answeredPage","libraryPage","questionDetailPage"].includes(value.activePage)?value.activePage:"newPage",
+   activePage:["homePage","levelPage","newPage","answeredPage","libraryPage","questionDetailPage"].includes(value.activePage)?value.activePage:"homePage",
    currentListPage:["newPage","answeredPage","libraryPage"].includes(value.currentListPage)?value.currentListPage:"newPage",
+   selectedCategory:["newPage","answeredPage","libraryPage"].includes(value.selectedCategory)?value.selectedCategory:"newPage",
+   selectedLevel:String(value.selectedLevel||""),
    questionId:String(value.questionId||""),
    scrollY:Number.isFinite(Number(value.scrollY))?Math.max(0,Number(value.scrollY)):0
   };
- }catch(e){return {activePage:"newPage",currentListPage:"newPage",questionId:"",scrollY:0};}
+ }catch(e){return {activePage:"homePage",currentListPage:"newPage",selectedCategory:"newPage",selectedLevel:"",questionId:"",scrollY:0};}
 }
 const initialPageState=readPageState();
-currentListPage=initialPageState.currentListPage;
+currentListPage=initialPageState.currentListPage;\nselectedCategory=initialPageState.selectedCategory;\nselectedLevel=initialPageState.selectedLevel;
 async function call(action,extra={}) {
  const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge");
  if(!token) throw new Error("جلسة الأستاذة غير موجودة. عودي إلى فضاء الأستاذة وسجلي الدخول ثم افتحي الأسئلة من جديد.");
@@ -175,11 +191,25 @@ async function call(action,extra={}) {
 }
 function switchPage(id) {
  document.querySelectorAll(".page").forEach(p=>p.hidden=p.id!==id);
- document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- savePageState(id,id==="questionDetailPage"?initialPageState.questionId:"");
+ savePageState(id,id==="questionDetailPage"?readPageState().questionId:"");
  window.scrollTo({top:0,behavior:"smooth"});
 }
-document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>switchPage(b.dataset.page)));
+function chooseCategory(category){
+ selectedCategory=category;selectedLevel="";
+ const names={newPage:"الأسئلة الجديدة",answeredPage:"الأسئلة التي تم الرد عليها",libraryPage:"مكتبة التلاميذ"};
+ $("levelPageTitle").textContent=(names[category]||"الأسئلة")+" — اختاري المستوى";
+ switchPage("levelPage");
+}
+function chooseLevel(level){
+ selectedLevel=level;currentListPage=selectedCategory;
+ ["newSearch","answeredSearch","librarySearch"].forEach(id=>{if($(id))$(id).value="";});
+ ["newLevel","answeredLevel","libraryLevel"].forEach(id=>{if($(id))$(id).value="";});
+ renderLists();renderLibrary();switchPage(selectedCategory);
+}
+document.querySelectorAll("[data-category]").forEach(b=>b.addEventListener("click",()=>chooseCategory(b.dataset.category)));
+document.querySelectorAll("[data-level]").forEach(b=>b.addEventListener("click",()=>chooseLevel(b.dataset.level)));
+$("levelsHomeBack").addEventListener("click",()=>switchPage("homePage"));
+document.querySelectorAll("[data-level-back]").forEach(b=>b.addEventListener("click",()=>switchPage("levelPage")));
 $("detailBack").addEventListener("click",()=>{
  const target=["newPage","answeredPage","libraryPage"].includes(currentListPage)?currentListPage:"newPage";
  switchPage(target);
@@ -275,9 +305,22 @@ function fillLevelSelect(id) {
  select.innerHTML='<option value="">كل المستويات</option>'+levels.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join("");
  if(levels.includes(old))select.value=old;
 }
+function matchesSelectedLevel(q){
+ if(!selectedLevel)return true;
+ const raw=String(q.students?.level||"").replace(/[أإآ]/g,"ا").replace(/\s+/g,"").toLowerCase();
+ const target=String(selectedLevel).replace(/[أإآ]/g,"ا").replace(/\s+/g,"").toLowerCase();
+ const aliases={
+ "الاولىمتوسط":["الاولىمتوسط","اولىمتوسط","السنةالاولىمتوسط","1متوسط","01متوسط","الاولى"],
+ "الثانيةمتوسط":["الثانيةمتوسط","ثانيهمتوسط","السنةالثانيةمتوسط","2متوسط","02متوسط","الثانية"],
+ "الثالثةمتوسط":["الثالثةمتوسط","ثالثهمتوسط","السنةالثالثةمتوسط","3متوسط","03متوسط","الثالثة"],
+ "الرابعةمتوسط":["الرابعةمتوسط","رابعهمتوسط","السنةالرابعةمتوسط","4متوسط","04متوسط","الرابعة"]
+ };
+ const keys=aliases[target]||[target];
+ return keys.some(k=>raw.includes(k)||k.includes(raw)&&raw.length>2);
+}
 function matches(q,term,level) {
  const hay=[q.question_text,q.students?.full_name,q.students?.level].join(" ").toLocaleLowerCase("ar");
- return (!term||hay.includes(term.toLocaleLowerCase("ar")))&&(!level||q.students?.level===level);
+ return matchesSelectedLevel(q)&&(!term||hay.includes(term.toLocaleLowerCase("ar")))&&(!level||q.students?.level===level);
 }
 function render() {
  const newer=questions.filter(q=>q.status!=="answered"&&q.status!=="closed");
@@ -286,9 +329,7 @@ function render() {
  $("statTotal").textContent=questions.length;
  $("statNew").textContent=newer.length;
  $("statPublished").textContent=published.length;
- $("navNew").textContent="🆕 الأسئلة الجديدة ("+newer.length+")";
- $("navAnswered").textContent="💬 تم الرد عليها ("+answered.length+")";
- $("navLibrary").textContent="📚 المكتبة ("+published.length+")";
+ $("homeNewCount").textContent="بانتظار الرد: "+newer.length;\n $("homeAnsweredCount").textContent="تم الرد: "+answered.length;\n $("homeLibraryCount").textContent="منشور: "+published.length;
  $("newCount").textContent="عدد الأسئلة الجديدة: "+newer.length;
  $("answeredCount").textContent="عدد الأسئلة التي تمت الإجابة عنها: "+answered.length;
  ["newLevel","answeredLevel","libraryLevel"].forEach(fillLevelSelect);
@@ -335,7 +376,7 @@ async function load() {
  try {
   const data=await call("teacher_student_questions");questions=data.questions||[];render();
   $("status").className="muted";$("status").textContent="تم تحديث الأسئلة.";
-  const saved=readPageState();currentListPage=saved.currentListPage;
+  const saved=readPageState();currentListPage=saved.currentListPage;selectedCategory=saved.selectedCategory;selectedLevel=saved.selectedLevel;
   if(saved.activePage==="questionDetailPage"&&saved.questionId&&questions.some(q=>String(q.id)===saved.questionId)){
    openQuestion(saved.questionId,currentListPage);
   }else{
