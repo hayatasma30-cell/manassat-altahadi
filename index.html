@@ -10,7 +10,7 @@
     const last=localStorage.getItem("tahadi_last_teacher_external_page");
     if(token&&expiry&&new Date(expiry).getTime()>Date.now()&&last){
       const target=new URL(last,location.href);
-      if(target.origin===location.origin&&["/daily-science-admin.html","/teacher-questions.html"].includes(target.pathname)){
+      if(target.origin===location.origin&&(target.pathname.endsWith("/daily-science-admin.html")||target.pathname.endsWith("/teacher-questions.html"))){
         location.replace(target.href);
         return;
       }
