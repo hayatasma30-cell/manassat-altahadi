@@ -3625,7 +3625,8 @@ const handleIncomeCalendarClick=async e=>{
   }
   $("loadLibraryStudentResults")?.addEventListener("click",loadLibraryStudentResults);
   $("libraryResultsLevel")?.addEventListener("change",populateLibraryResultsStudents);
-  $("libraryResultsSearch")?.addEventListener("input",populateLibraryResultsStudents);\n  $("libraryResultsStudent")?.addEventListener("focus",populateLibraryResultsStudents);
+  $("libraryResultsSearch")?.addEventListener("input",populateLibraryResultsStudents);
+  $("libraryResultsStudent")?.addEventListener("focus",populateLibraryResultsStudents);
   $("libraryResultsStudent")?.addEventListener("pointerdown",populateLibraryResultsStudents);
   const electronicTestForm=$("electronicTestForm");
   if(electronicTestForm)electronicTestForm.addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveElectronicTest"),status=$("electronicTestStatus");btn.disabled=true;status.textContent="جارٍ الحفظ…";try{await resourceRequest("teacher_save_resource",{title:$("electronicTestTitle").value.trim(),level:$("electronicTestLevel").value,resource_type:"quiz",resource_url:$("electronicTestUrl").value.trim(),description:$("electronicTestDescription").value.trim(),is_published:$("electronicTestPublished").checked});status.textContent="تم حفظ الاختبار بنجاح.";electronicTestForm.reset();await loadElectronicTests();}catch(e){status.textContent=e.message||"تعذر حفظ الاختبار.";}finally{btn.disabled=false;}});
