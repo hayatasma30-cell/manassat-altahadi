@@ -31,6 +31,20 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 .action:disabled{opacity:.48;cursor:not-allowed;transform:none;box-shadow:none}
 .question-detail-text{background:#f5f6ec;border-right:4px solid #8eae83;padding:16px 14px}
 @media(max-width:520px){.question-tools{display:grid;grid-template-columns:1fr 1fr}.question-tools .action{width:100%}}
+</style><style id="teacher-questions-group-polish-v2">
+.student-question-group{padding:15px;margin:20px 0 24px;border:1px solid #d8e6d7;border-radius:23px;background:#fbfdf9;box-shadow:0 7px 20px #174b2d0c}
+.student-question-group-head{padding:7px 3px 14px;align-items:center}
+.student-question-group-identity{gap:10px}
+.student-question-group-identity h3{font-size:1.12rem;line-height:1.6}
+.student-question-group-counts{justify-content:flex-start}
+.student-question-group-counts>b{background:#e5f1e5;color:#155c37}
+.student-question-group-list{gap:12px;padding-top:14px}
+.student-question-group-list .question-list-card{display:flex;flex-direction:column;align-items:stretch;gap:11px;padding:14px!important;border:1px solid #e4ece1;border-radius:17px!important;background:#fff}
+.student-question-group-list .question-card-top{align-items:center;justify-content:space-between}
+.question-number{display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;background:#f0f5ec;color:#54705b;font-size:.78rem;font-weight:800}
+.student-question-group-list .question-excerpt{margin:0!important}
+.student-question-group-list .question-list-card>.open-question{min-height:48px;margin-top:1px}
+@media(max-width:480px){.student-question-group{padding:11px}.student-question-group-list .question-list-card{padding:12px!important}.student-question-group-identity h3{font-size:1rem}}
 </style><style id="teacher-questions-grouping-v1">
 .student-question-group{margin:18px 0 22px;padding:13px;border:1px solid #dce8da;border-radius:22px;background:linear-gradient(180deg,#f8fbf6,#fff);box-shadow:0 5px 16px #14532d0b}
 .student-question-group-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:5px 4px 13px;border-bottom:1px solid #e5ede2}
@@ -183,14 +197,14 @@ function detailMarkup(q) {
  const publishLabel=q.is_published?"🔒 إلغاء النشر من مكتبة التلاميذ":"📢 نشر السؤال في مكتبة التلاميذ";
  return '<article class="card detail-layout"><h2 class="question-detail-title">'+esc(q.students?.full_name||"تلميذ")+' — '+esc(q.students?.level||"")+'</h2><p class="muted">'+esc(new Date(q.created_at).toLocaleString("ar-DZ"))+' · <span class="status-pill">'+statusText(q)+'</span></p>'+(q.content_title?'<div class="saved"><strong>المحتوى المرتبط بالسؤال:</strong><p>'+esc(q.content_title)+' · '+esc(q.content_type||"محتوى تعليمي")+'</p></div>':"") + '<h3>سؤال التلميذ</h3>'+'<div class="question question-detail-text" id="questionText">'+esc(q.question_text)+'</div><div class="question-tools"><button id="detailCopy" class="action light" type="button">📋 نسخ السؤال</button></div>'+(hasReply?'<div class="saved"><strong>إجابتك المحفوظة</strong><p style="white-space:pre-wrap">'+esc(q.teacher_reply)+'</p></div>':'')+'<div id="replyEditor" '+(hasReply?'hidden':'')+'><label for="detailReply">'+(hasReply?'تعديل نص الإجابة':'اكتبي إجابتك للتلميذ')+'</label><textarea class="answer-editor" id="detailReply" rows="7" maxlength="5000" placeholder="اكتبي إجابتك هنا…">'+esc(q.teacher_reply||"")+'</textarea><p id="draftNote" class="draft-note">تُحفظ المسودة تلقائيًا على هذا الجهاز حتى لا تفقدي كتابتك.</p></div><div class="question-tools"><button id="detailPreview" class="action light" type="button">👁️ معاينة الإجابة</button></div><div id="answerPreview" class="preview-box" hidden><strong>معاينة ما سيظهر للتلميذ</strong><p id="previewText"></p></div><div class="detail-actions">'+(hasReply?'<button id="detailEdit" class="action light" type="button">✏️ تعديل الإجابة</button>':'')+'<button id="detailSave" class="action green" type="button" '+(hasReply?'hidden':'')+'>💾 '+(hasReply?'حفظ التعديل':'حفظ الإجابة وإرسالها')+'</button><button id="detailPublish" class="action green" type="button" '+(!canPublish&&!q.is_published?'disabled title="احفظي الإجابة أولًا قبل النشر"':'')+'>'+publishLabel+'</button><button id="detailDelete" class="action danger" type="button">🗑️ حذف السؤال</button></div><p id="detailStatus" class="muted" role="status"></p></article>';
 }
-function questionCard(q,fromPage) {
+function questionCard(q,fromPage,questionNumber=0) {
  const publication=q.is_published?'<span class="published-pill">📚 منشور في المكتبة</span>':'';
  const statusClass=q.status==="answered"?"answered":q.status==="closed"?"closed":"new";
  const createdDate=Number.isFinite(Date.parse(q.created_at||""))?new Date(q.created_at):null;
  const created=createdDate?'<div class="question-datetime"><span class="question-date"><b>التاريخ</b><time dir="rtl">'+esc(createdDate.toLocaleDateString("ar-DZ",{day:"numeric",month:"long",year:"numeric"}))+'</time></span><span class="question-time"><b>الوقت</b><time dir="ltr">'+esc(createdDate.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit",hourCycle:"h23"}))+'</time></span></div>':'<div class="question-datetime"><span class="question-date">التاريخ غير متاح</span></div>';
  const level=String(q.students?.level||"المستوى غير محدد");
  const excerpt=String(q.question_text||"");
- return '<article class="card question-list-card"><div class="question-card-top"><div class="question-student"><h3>'+esc(q.students?.full_name||"تلميذ")+'</h3><span class="question-level">'+esc(level)+'</span></div><span class="question-status '+statusClass+'">'+esc(statusText(q))+'</span></div><div class="question-card-meta">'+created+''+publication+'</div><p class="question-excerpt">'+esc(excerpt.slice(0,220))+(excerpt.length>220?"…":"")+'</p><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
+ return '<article class="card question-list-card"><div class="question-card-top"><span class="question-number">السؤال '+questionNumber+'</span><span class="question-status '+statusClass+'">'+esc(statusText(q))+'</span></div><div class="question-card-meta">'+created+''+publication+'</div><p class="question-excerpt">'+esc(excerpt.slice(0,220))+(excerpt.length>220?"…":"")+'</p><button class="action green open-question" type="button" data-id="'+esc(q.id)+'" data-from="'+fromPage+'">📖 فتح السؤال</button></article>';
 }
 
 async function deleteQuestion(id){
@@ -264,7 +278,7 @@ function renderGroupedQuestions(rows,fromPage) {
  const groups=new Map();
  rows.forEach(q=>{
   const student=q.students||{};
-  const key=String(student.id||student.student_id||student.full_name||"unknown");
+  const key=String(student.id||student.student_id||((student.full_name||"تلميذ غير معروف")+"::"+(student.level||"")));
   if(!groups.has(key))groups.set(key,{name:student.full_name||"تلميذ غير معروف",level:student.level||"المستوى غير محدد",rows:[]});
   groups.get(key).rows.push(q);
  });
@@ -273,7 +287,7 @@ function renderGroupedQuestions(rows,fromPage) {
   const groupRows=group.rows.sort((a,b)=>Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
   const pending=groupRows.filter(q=>q.status!=="answered"&&q.status!=="closed").length;
   const published=groupRows.filter(q=>q.is_published).length;
-  return '<section class="student-question-group"><header class="student-question-group-head"><div class="student-question-group-identity"><h3>'+esc(group.name)+'</h3><span>'+esc(group.level)+'</span></div><div class="student-question-group-counts"><b>'+groupRows.length+' '+(groupRows.length===1?'سؤال':'أسئلة')+'</b>'+(pending?'<small>'+pending+' بانتظار الرد</small>':'<small>تم الرد على الكل</small>')+(published?'<small>'+published+' منشور</small>':'')+'</div></header><div class="student-question-group-list">'+groupRows.map(q=>questionCard(q,fromPage)).join("")+'</div></section>';
+  return '<section class="student-question-group"><header class="student-question-group-head"><div class="student-question-group-identity"><h3>'+esc(group.name)+'</h3><span>'+esc(group.level)+'</span></div><div class="student-question-group-counts"><b>'+groupRows.length+' '+(groupRows.length===1?'سؤال':'أسئلة')+'</b>'+(pending?'<small>'+pending+' بانتظار الرد</small>':'<small>تم الرد على الكل</small>')+(published?'<small>'+published+' منشور</small>':'')+'</div></header><div class="student-question-group-list">'+groupRows.map((q,index)=>questionCard(q,fromPage,index+1)).join("")+'</div></section>';
  }).join("");
 }
 function renderLists() {
