@@ -397,4 +397,24 @@ load();
 <script src="./workspace-autosave.js" defer></script>
 <script src="./writing-tools.js" defer></script>
 <script src="./tahadi-dialogs.js" defer></script>
+<script>
+/* إصلاح الرجوع من مكتبة أسئلة التلاميذ إلى فضاء الأستاذة */
+(function(){
+  function returnToTeacherHome(event){
+    const link=event.target&&event.target.closest&&event.target.closest('a.platform-nav-link, a.brand');
+    if(!link)return;
+    event.preventDefault();
+    event.stopPropagation();
+    try{sessionStorage.setItem("tahadi_return_from_questions","1");}catch(_){}
+    window.location.assign("https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions");
+  }
+  document.addEventListener("click",returnToTeacherHome,true);
+  document.addEventListener("keydown",function(event){
+    if((event.key==="Enter"||event.key===" ")&&event.target&&event.target.closest){
+      const link=event.target.closest("a.platform-nav-link, a.brand");
+      if(link){event.preventDefault();window.location.assign("https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions");}
+    }
+  },true);
+})();
+</script>
 </body></html>
