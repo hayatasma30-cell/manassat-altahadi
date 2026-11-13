@@ -5,6 +5,12 @@
 <script>
 (function(){
   try{
+    const params=new URLSearchParams(location.search);
+    /* الرجوع الصريح من مكتبة الأسئلة له الأولوية: لا تعيدي فتح الصفحة الخارجية تلقائيًا. */
+    if(params.get("returnFromQuestions")==="1" || params.get("from")==="teacher-questions"){
+      localStorage.removeItem("tahadi_last_teacher_external_page");
+      return;
+    }
     const token=localStorage.getItem("tahadi_teacher_token");
     const expiry=localStorage.getItem("tahadi_teacher_expires");
     const last=localStorage.getItem("tahadi_last_teacher_external_page");
@@ -3533,7 +3539,8 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     /* Challenge manager now opens as a standalone page; discard the obsolete iframe restore state. */
     if(savedPosition.challengePage){savedPosition.challengePage="";savedPosition.challengeY=0;const clean=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,clean);localStorage.setItem(teacherPagePositionKey,clean);}
     if(new URLSearchParams(location.search).get("from")==="challenge"){savedPosition.challengePage="";const cleanPosition=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,cleanPosition);localStorage.setItem(teacherPagePositionKey,cleanPosition);}
-    const lastView=savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view");
+    const returningFromQuestions=new URLSearchParams(location.search).get("returnFromQuestions")==="1"||new URLSearchParams(location.search).get("from")==="teacher-questions";
+    const lastView=returningFromQuestions?"homeView":(savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view"));
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});
     /* Restore the nested teacher workspace immediately, before the dashboard network request finishes. */
     if(lastView==="electronicTestsView"){
