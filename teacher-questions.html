@@ -119,7 +119,7 @@ body{background:var(--cream)}
  .question-student h3{font-size:1rem}
  .question-excerpt{font-size:.93rem}
 }
-</style></head><body><div class="topbar"><div class="top-inner"><a class="brand" href="index.html" aria-label="العودة إلى منصة التحدي"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></a><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span></div></div></div>
+</style></head><body><div class="topbar"><div class="top-inner"><a class="brand" href="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions" aria-label="العودة إلى منصة التحدي"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></a><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span></div></div></div>
 <main class="wrap">
 <section id="homePage" class="page"><div class="card"><h2>اختاري قسم الأسئلة</h2><p class="muted">ابدئي باختيار القسم، ثم المستوى الدراسي.</p><div class="category-menu">
 <button class="category-button" type="button" data-category="newPage"><span>🆕</span><strong>الأسئلة الجديدة</strong><small id="homeNewCount">بانتظار الرد</small></button>
@@ -132,7 +132,7 @@ body{background:var(--cream)}
 <section id="answeredPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>الأسئلة التي تمت الإجابة عنها</h2><p id="answeredCount" class="muted"></p><div class="filters"><input id="answeredSearch" type="search" placeholder="ابحثي باسم التلميذ أو السؤال"><select id="answeredLevel"><option value="">كل المستويات</option></select></div><div id="answeredQuestions"></div></div></section>
 <section id="questionDetailPage" class="page detail-page" hidden><button id="detailBack" class="action green detail-back" type="button">← رجوع إلى قائمة الأسئلة</button><div id="questionDetail"></div></section>
 <section id="libraryPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>📚 مكتبة الأسئلة الظاهرة للتلاميذ</h2><input id="librarySearch" type="search" placeholder="ابحثي في المكتبة بالسؤال أو المستوى"><p id="libraryCount" class="muted"></p><select id="libraryLevel" aria-label="تصفية حسب المستوى"><option value="">كل المستويات</option></select><div id="libraryQuestions"></div></div></section>
-<p style="position:relative;z-index:99999"><a class="platform-nav-link" id="returnTeacherHomeNow" href="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?returnFromQuestions=1&v=20261113b" style="position:relative;z-index:99999;pointer-events:auto;touch-action:manipulation" onclick="window.location.href=this.href;return false;">← فضاء الأستاذة</a></p><p id="status" class="muted" role="status"></p></main>
+<p style="position:relative;z-index:99999"><a class="platform-nav-link" id="returnTeacherHomeNow" href="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions" style="position:relative;z-index:99999;display:inline-flex;pointer-events:auto;touch-action:manipulation">← فضاء الأستاذة</a></p><p id="status" class="muted" role="status"></p></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
 const $=id=>document.getElementById(id);
@@ -397,41 +397,5 @@ load();
 <script src="./workspace-autosave.js" defer></script>
 <script src="./writing-tools.js" defer></script>
 <script src="./tahadi-dialogs.js" defer></script>
-<script>
-/* إصلاح الرجوع من مكتبة أسئلة التلاميذ إلى فضاء الأستاذة */
-(function(){
-  function returnToTeacherHome(event){
-    const link=event.target&&event.target.closest&&event.target.closest('a.platform-nav-link, a.brand');
-    if(!link)return;
-    event.preventDefault();
-    event.stopPropagation();
-    try{sessionStorage.setItem("tahadi_return_from_questions","1");}catch(_){}
-    window.location.assign("https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions");
-  }
-  document.addEventListener("click",returnToTeacherHome,true);
-  document.addEventListener("keydown",function(event){
-    if((event.key==="Enter"||event.key===" ")&&event.target&&event.target.closest){
-      const link=event.target.closest("a.platform-nav-link, a.brand");
-      if(link){event.preventDefault();window.location.assign("https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions");}
-    }
-  },true);
-})();
-</script>
-<script>
-/* Touch-first fallback: بعض متصفحات الهاتف لا تطلق click بصورة موثوقة */
-(function(){
-  var destination="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?returnFromQuestions=1&v=20261113c";
-  var last=0;
-  function goHome(event){
-    var target=event.target&&event.target.closest?event.target.closest("#returnTeacherHomeNow,.platform-nav-link,.brand"):null;
-    if(!target)return;
-    var now=Date.now();if(now-last<900)return;last=now;
-    if(event.cancelable)event.preventDefault();
-    window.location.replace(destination);
-  }
-  document.addEventListener("touchend",goHome,{capture:true,passive:false});
-  document.addEventListener("pointerup",goHome,true);
-  document.addEventListener("click",goHome,true);
-})();
-</script>
+
 </body></html>
