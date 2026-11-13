@@ -417,4 +417,21 @@ load();
   },true);
 })();
 </script>
+<script>
+/* Touch-first fallback: بعض متصفحات الهاتف لا تطلق click بصورة موثوقة */
+(function(){
+  var destination="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?returnFromQuestions=1&v=20261113c";
+  var last=0;
+  function goHome(event){
+    var target=event.target&&event.target.closest?event.target.closest("#returnTeacherHomeNow,.platform-nav-link,.brand"):null;
+    if(!target)return;
+    var now=Date.now();if(now-last<900)return;last=now;
+    if(event.cancelable)event.preventDefault();
+    window.location.replace(destination);
+  }
+  document.addEventListener("touchend",goHome,{capture:true,passive:false});
+  document.addEventListener("pointerup",goHome,true);
+  document.addEventListener("click",goHome,true);
+})();
+</script>
 </body></html>
