@@ -39,6 +39,8 @@ input,textarea,select{width:100%;padding:12px;border:1px solid #c7d7c6;border-ra
 .level-button{min-height:88px;font-weight:800;font-size:1rem;background:linear-gradient(145deg,#fff,#eaf2e7);color:#14532d;border-color:#cbdcc8;box-shadow:0 5px 0 #c3d2bf,0 8px 14px #14532d12}
 .page-back{margin:0 0 14px}
 @media(max-width:600px){.top-inner{gap:8px}.brand{font-size:1rem}.brand-logo{width:42px;height:42px;flex-basis:42px}.teacher-chip{font-size:.76rem}.wrap{padding:14px 12px 28px}}\n@media(max-width:420px){.category-menu,.level-menu{gap:10px}.category-button{min-height:120px;padding:13px 8px}.category-button strong{font-size:.9rem}.level-button{min-height:78px;font-size:.9rem}}
+</style><style id="teacher-questions-exit-fix-v5">
+#teacherQuestionsExitFixed{position:fixed!important;top:8px!important;right:8px!important;z-index:2147483647!important;display:flex!important;align-items:center!important;justify-content:center!important;min-height:44px!important;padding:9px 15px!important;border:2px solid #fff!important;border-radius:12px!important;background:#14532d!important;color:#fff!important;font:800 14px Tahoma,Arial,sans-serif!important;text-decoration:none!important;box-shadow:0 3px 14px #0005!important;pointer-events:auto!important;touch-action:manipulation!important}
 </style><style id="teacher-questions-group-polish-v2">
 .student-question-group{padding:15px;margin:20px 0 24px;border:1px solid #d8e6d7;border-radius:23px;background:#fbfdf9;box-shadow:0 7px 20px #174b2d0c}
 .student-question-group-head{padding:7px 3px 14px;align-items:center}
@@ -119,7 +121,7 @@ body{background:var(--cream)}
  .question-student h3{font-size:1rem}
  .question-excerpt{font-size:.93rem}
 }
-</style></head><body><div class="topbar"><div class="top-inner"><a class="brand" href="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions" aria-label="العودة إلى منصة التحدي"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></a><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span></div></div></div>
+</style></head><body><a id="teacherQuestionsExitFixed" href="./index.html?returnFromQuestions=1&amp;from=teacher-questions" target="_top" rel="noopener">← العودة إلى فضاء الأستاذة</a><div class="topbar"><div class="top-inner"><a class="brand" href="./index.html?returnFromQuestions=1&amp;from=teacher-questions" target="_top" rel="noopener" aria-label="العودة إلى منصة التحدي"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></a><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span></div></div></div>
 <main class="wrap">
 <section id="homePage" class="page"><div class="card"><h2>اختاري قسم الأسئلة</h2><p class="muted">ابدئي باختيار القسم، ثم المستوى الدراسي.</p><div class="category-menu">
 <button class="category-button" type="button" data-category="newPage"><span>🆕</span><strong>الأسئلة الجديدة</strong><small id="homeNewCount">بانتظار الرد</small></button>
@@ -132,7 +134,7 @@ body{background:var(--cream)}
 <section id="answeredPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>الأسئلة التي تمت الإجابة عنها</h2><p id="answeredCount" class="muted"></p><div class="filters"><input id="answeredSearch" type="search" placeholder="ابحثي باسم التلميذ أو السؤال"><select id="answeredLevel"><option value="">كل المستويات</option></select></div><div id="answeredQuestions"></div></div></section>
 <section id="questionDetailPage" class="page detail-page" hidden><button id="detailBack" class="action green detail-back" type="button">← رجوع إلى قائمة الأسئلة</button><div id="questionDetail"></div></section>
 <section id="libraryPage" class="page" hidden><button class="action light page-back" type="button" data-level-back>← اختيار المستوى</button><div class="card"><h2>📚 مكتبة الأسئلة الظاهرة للتلاميذ</h2><input id="librarySearch" type="search" placeholder="ابحثي في المكتبة بالسؤال أو المستوى"><p id="libraryCount" class="muted"></p><select id="libraryLevel" aria-label="تصفية حسب المستوى"><option value="">كل المستويات</option></select><div id="libraryQuestions"></div></div></section>
-<p style="position:relative;z-index:99999"><a class="platform-nav-link" id="returnTeacherHomeNow" href="https://hayatasma30-cell.github.io/manassat-altahadi/index.html?from=teacher-questions" style="position:relative;z-index:99999;display:inline-flex;pointer-events:auto;touch-action:manipulation">← فضاء الأستاذة</a></p><p id="status" class="muted" role="status"></p></main>
+<p style="position:relative;z-index:99999"><a class="platform-nav-link" id="returnTeacherHomeNow" href="./index.html?returnFromQuestions=1&amp;from=teacher-questions" target="_top" rel="noopener" style="position:relative;z-index:99999;display:inline-flex;pointer-events:auto;touch-action:manipulation">← فضاء الأستاذة</a></p><p id="status" class="muted" role="status"></p></main>
 <script>
 const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/earthquakes-quiz";
 const $=id=>document.getElementById(id);
