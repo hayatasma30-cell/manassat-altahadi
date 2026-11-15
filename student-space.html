@@ -1014,10 +1014,10 @@ for(const mode of ["in_person","zoom"]){
   const cycleLessons=modeLessons.slice(offset,offset+4);if(!cycleLessons.length)continue;
   const firstDate=String(cycleLessons[0].lesson_date||"").slice(0,10),monthKey=firstDate.slice(0,7);
   const lessonMonthLabel=new Date(firstDate+"T12:00:00").toLocaleDateString("ar-DZ",{month:"long",year:"numeric"});const match=paymentCycles.find(row=>row.cycle_mode===mode&&!usedPaymentCycleKeys.has(paymentCycleKey(row)));if(match)usedPaymentCycleKeys.add(paymentCycleKey(match));
-  scheduledCycles.push({...((match)||{}),service_type:"monthly_subscription",service_name:match?.service_name||"اشتراك أربع حصص",cycle_mode:mode,cycle_month:match?.subscription_month||firstDate,subscription_month:match?.subscription_month||new Date(firstDate+"T12:00:00").toLocaleDateString("ar-DZ",{month:"long",year:"numeric"}),cycle_lessons:cycleLessons,cycle_key:mode+"|"+firstDate,cycle_payment_id:match?.cycle_payment_id||"",status:match?.status||"unpaid",amount_due:match?.amount_due??0,amount_paid:match?.amount_paid??0,remaining_balance:match?.remaining_balance??match?.amount_due??0});
+  scheduledCycles.push({...((match)||{}),service_type:"monthly_subscription",service_name:match?.service_name||"اشتراك أربع حصص",cycle_mode:mode,cycle_month:match?.subscription_month||firstDate,subscription_month:lessonMonthLabel,cycle_lessons:cycleLessons,cycle_key:mode+"|"+firstDate,cycle_payment_id:match?.cycle_payment_id||"",status:match?.status||"unpaid",amount_due:match?.amount_due??0,amount_paid:match?.amount_paid??0,remaining_balance:match?.remaining_balance??match?.amount_due??0});
  }
 }
-for(const paidCycle of paymentCycles){if(!usedPaymentCycleKeys.has(paymentCycleKey(paidCycle)))scheduledCycles.push({...paidCycle,cycle_lessons:[]});}
+// لا نعرض اشتراكات يتيمة بلا دورة حصص مجدولة؛ تبقى سجلاتها المالية محفوظة في سجل الدفعات.
 monthlyCycleRows=scheduledCycles.sort((a,b)=>String(a.cycle_mode||"").localeCompare(String(b.cycle_mode||""))||String(a.cycle_lessons?.[0]?.lesson_date||a.cycle_month||"").localeCompare(String(b.cycle_lessons?.[0]?.lesson_date||b.cycle_month||"")));
 const cycleOrdinal=n=>["الأول","الثاني","الثالث","الرابع","الخامس","السادس","السابع","الثامن","التاسع","العاشر"][n]||String(n+1);
 const subscriptionCardHtml=x=>{
