@@ -3443,7 +3443,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
    if($("lessonListModeSelect"))$("lessonListModeSelect").value=selectedLessonMode;
    if($("lessonCategoryFilterSelect"))$("lessonCategoryFilterSelect").value=selectedLessonCategoryFilter;
    $("lessonListTitle").textContent=({all:"📚 كل الحصص",in_person:"🏫 الحصص الحضورية",zoom:"💻 حصص Zoom",courses:"📝 الدورات",calendar:"📅 تقويم الحصص"})[page]||"إدارة الحصص";
-   $("lessonSubpageNav").hidden=true;$("lessonSubpageBack").hidden=false;$("lessonListHeading")?.classList.add("lesson-subpage-open");
+   $("lessonSubpageNav").hidden=true;$("lessonSubpageBack").hidden=page==="calendar";$("lessonListHeading")?.classList.add("lesson-subpage-open");
    const calendar=page==="calendar";
    $("lessonsCalendarPanel").hidden=!calendar;
    $("lessonsCalendarPanel").classList.toggle("calendar-clean-page",calendar);
