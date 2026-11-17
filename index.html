@@ -3251,15 +3251,14 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
         const selector='#lessonCalendarDayDetails [data-lesson-income="'+CSS.escape(String(lesson.id))+'"]';
         try{
           const price=Math.max(0,Number(lesson.unit_price)||0);
-          const data=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
-          const attendance=data.attendance||[];
           let amountLabel="";
           if(lesson.lesson_type==="فردية"){
-            const record=attendance.find(a=>String(a.student_id)===String(lesson.student_id));
-            amountLabel=!record
-              ?"بانتظار تسجيل الحضور"
-              :(record.status==="present"&&record.is_chargeable===true?price:0).toLocaleString("fr-FR")+" دج";
+            amountLabel=lesson.student_id
+              ?price.toLocaleString("fr-FR")+" دج"
+              :"لا يوجد تلميذ مرتبط";
           }else{
+            const data=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
+            const attendance=data.attendance||[];
             const presentRows=attendance.filter(a=>a.status==="present");
             const regularCount=new Set(presentRows.filter(a=>a.is_chargeable===true&&a.billing_type!=="course").map(a=>String(a.student_id))).size;
             const courseIds=new Set(presentRows.filter(a=>a.billing_type==="course").map(a=>String(a.student_id)));
