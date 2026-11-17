@@ -2673,8 +2673,8 @@ window.addEventListener("unhandledrejection",function(e){
       $("calendarDayPage").hidden=false;
     }
     function openCalendarLessonPage(id){
-      const x=incomeCalendarRows.find(row=>row.lessonId===id);if(!x)return;
-      calendarCurrentLessonId=id;
+      const x=incomeCalendarRows.find(row=>String(row.lessonId)===String(id));if(!x)return;
+      calendarCurrentLessonId=x.lessonId;
       $("calendarLessonPageTitle").textContent=x.lessonType==="فردية"?"تفاصيل الحصة الفردية":"إدارة الحصة الجماعية";
       $("calendarLessonPageMeta").textContent=(x.level||"")+(x.studentName?" · التلميذ: "+x.studentName:"")+(x.note?" · "+x.note:"")+" · "+(x.status||"مجدولة");$("calendarLessonUnitPrice").value=String(x.unitPrice||0);$("calendarLessonPriceStatus").textContent=x.unitPrice>0?"السعر محفوظ لهذه الحصة.":"لم يُحدد سعر هذه الحصة بعد.";$("calendarLessonTotal").textContent="المبلغ المحسوب: "+(Number(x.unitPrice||0)*Number(x.count||0)).toLocaleString("ar-DZ")+" دج · عدد الحاضرين: "+Number(x.count||0);
       const group=x.lessonType==="جماعية"&&x.lessonCategory!=="دورة مراجعة",individual=String(x.lessonType||"").includes("فرد"),completed=x.status==="تمت";
