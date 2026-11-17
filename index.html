@@ -2671,6 +2671,10 @@ window.addEventListener("unhandledrejection",function(e){
         list.innerHTML='<div class="calendar-day-empty">لا توجد حصص في هذا اليوم</div>';
       }
       $("calendarDayPage").hidden=false;
+      /* ربط مباشر لبطاقات الحصص لضمان فتح التفاصيل حتى عند تعطل التفويض العام للنقر */
+      list.querySelectorAll("[data-calendar-open-lesson]").forEach(button=>{
+        button.addEventListener("click",()=>openCalendarLessonPage(button.dataset.calendarOpenLesson));
+      });
     }
     function openCalendarLessonPage(id){
       const x=incomeCalendarRows.find(row=>String(row.lessonId)===String(id));if(!x)return;
