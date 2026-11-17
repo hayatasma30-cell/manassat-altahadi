@@ -2434,12 +2434,12 @@ window.addEventListener("unhandledrejection",function(e){
         if(unitPrice>0)pricedLessons++;else unpricedLessons++;
         try{
           let presentCount=0,courseAmount=0;
-          const attendanceData=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
-          const attendanceRows=attendanceData.attendance||[];
           if(lesson.lesson_type==="فردية"){
-            const record=attendanceRows.find(a=>String(a.student_id)===String(lesson.student_id));
-            presentCount=record&&record.status==="present"&&record.is_chargeable===true?1:0;
+            // الحصص الفردية لا تستخدم سجل حضور؛ الحصة المنجزة المرتبطة بتلميذ تُحتسب مرة واحدة.
+            presentCount=lesson.student_id?1:0;
           }else{
+            const attendanceData=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
+            const attendanceRows=attendanceData.attendance||[];
             const presentIds=new Set(attendanceRows.filter(a=>a.status==="present"&&a.is_chargeable===true&&a.billing_type!=="course").map(a=>String(a.student_id)));
             const courseIds=new Set(attendanceRows.filter(a=>a.status==="present"&&a.billing_type==="course").map(a=>String(a.student_id)));
             // كل حاضر يُحتسب مرة واحدة حسب استحقاقه ونوع الفوترة المسجل في هذه الحصة.
@@ -2578,7 +2578,7 @@ window.addEventListener("unhandledrejection",function(e){
         if(x.status!=="تمت")return;
         const d=String(x.lesson_date||"");if(!/^202[567]-\d{2}-\d{2}$/.test(d))return;
         const unitPrice=Number(x.unit_price)||0;
-        const count=Number(x._chargeableCount||0);
+        const count=x.lesson_type==="فردية"?(x.student_id?1:0):Number(x._chargeableCount||0);
         if(unitPrice<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:"سعر الحصة غير محدد"});
         else if(count<=0)reviewRows.push({date:d,title:(x.lesson_type==="فردية"?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),reason:"لم يُسجل حضور مستحق للاحتساب"});
         addDate(d,unitPrice>0&&count>0?unitPrice*count:0);
@@ -2754,7 +2754,7 @@ window.addEventListener("unhandledrejection",function(e){
         }
         for(const x of calendarLessons){
           const counts=countMap[x.id]||{present:0,chargeable:0,roster:0};
-          const presentCount=x.lesson_type==="فردية"?(x.status==="تمت"?Number(counts.chargeable||0):0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));const count=x.lesson_type==="فردية"?presentCount:(x.status==="تمت"?Number(counts.chargeable||0):Number(counts.roster||0));
+          const presentCount=x.lesson_type==="فردية"?(x.status==="تمت"&&x.student_id?1:0):(x.status==="تمت"?Number(counts.present||0):Number(counts.roster||0));const count=x.lesson_type==="فردية"?presentCount:(x.status==="تمت"?Number(counts.chargeable||0):Number(counts.roster||0));
           const unitPrice=Number(x.unit_price||0),completed=x.status==="تمت",needsReview=completed&&(unitPrice<=0||count<=0);
           incomeCalendarRows.push({date:x.lesson_date,title:(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),amount:completed&&unitPrice>0&&count>0?unitPrice*count:0,estimate:0,unitPrice,kind:needsReview?"حصة تحتاج مراجعة":completed?"حصة مكتملة":"حصة مجدولة",status:x.status,needsReview,lessonId:x.id,lessonType:x.lesson_type,lessonCategory:x.lesson_category,deliveryMode:x.delivery_mode,level:x.level,studentName:x.student_name||"",studentId:x.student_id||"",count,note:(x.lesson_time||"")+(x.delivery_mode==="zoom"?" · Zoom":" · حضوري")+(x.lesson_type==="جماعية"?" · عدد الحاضرين: "+count:"")});
         }
