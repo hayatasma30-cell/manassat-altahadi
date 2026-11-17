@@ -3381,7 +3381,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     const combinedPanel=e.target.closest(".lesson-roster-panel");
     if(combinedPanel&&e.target.matches("[data-roster-student]")){
       const id=e.target.dataset.rosterStudent,present=combinedPanel.querySelector('[data-present-student="'+CSS.escape(id)+'"]');
-      if(present){present.disabled=!e.target.checked;if(!e.target.checked)present.checked=false;}
+      if(present){present.disabled=!e.target.checked;if(!e.target.checked)present.value="absent";}
       const priceWrap=combinedPanel.querySelector(".lesson-course-price-wrap");
       const hasCourse=Array.from(combinedPanel.querySelectorAll("[data-billing-type]")).some(select=>select.value==="course");
       if(priceWrap)priceWrap.hidden=!hasCourse;
@@ -3403,7 +3403,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
         rosterIds=[id];presentIds=[];
       }else{
         rosterIds=Array.from(panel.querySelectorAll("[data-roster-student]:checked")).map(x=>x.dataset.rosterStudent);
-        presentIds=isZoom?rosterIds:Array.from(panel.querySelectorAll("[data-present-student]:checked")).map(x=>x.dataset.presentStudent);
+        presentIds=isZoom?rosterIds:Array.from(panel.querySelectorAll("[data-present-student]")).filter(x=>x.value==="present").map(x=>x.dataset.presentStudent);
         if(presentIds.some(id=>!rosterIds.includes(id)))throw Error("حددي التلميذ ضمن قائمة الحصة أولًا.");
       }
       combinedSave.disabled=true;combinedSave.textContent="جارٍ الحفظ…";
@@ -3411,8 +3411,19 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
       const individual=combinedSave.dataset.individual==="1";
       let attendanceResult=null;
       if(!individual)attendanceResult=await lessonRequest({action:"lesson_attendance_save",lesson_id:lessonId,present_student_ids:presentIds,billing_types,course_price:coursePrice});
+      const noteFailures=[];let savedNotes=0;
+      for(const field of panel.querySelectorAll("[data-lesson-teacher-note]")){
+        const sid=String(field.dataset.studentId||"");if(!rosterIds.includes(sid))continue;
+        const note=field.value.trim(),noteId=field.dataset.noteId||"";
+        try{
+          if(!note&&noteId){await lessonRequest({action:"teacher_note_delete",student_id:sid,id:noteId});field.dataset.noteId="";}
+          else if(note){const result=await lessonRequest({action:"teacher_note_save",student_id:sid,id:noteId,lesson_id:lessonId,note,note_date:currentLesson.lesson_date||new Date().toISOString().slice(0,10)});field.dataset.noteId=result.record?.id||noteId;savedNotes++;}
+        }catch(noteError){noteFailures.push(sid);}
+      }
       const summary=attendanceResult?.summary||{};
-      lessonMessage(individual?"تم حفظ التلميذ المرتبط بالاشتراك الشهري الفردي. جارٍ الرجوع إلى التقويم…":(isZoom?"تم احتساب حصة Zoom للتلاميذ المحددين. جارٍ الرجوع إلى التقويم…":"تم حفظ الحضور بنجاح. جارٍ الرجوع إلى تقويم الحصص…"));
+      const noteMessage=noteFailures.length?" تعذر حفظ ملاحظات "+noteFailures.length+" تلميذ(ة)، أعيدي المحاولة.":" تم حفظ الملاحظات ("+savedNotes+").";
+      lessonMessage((individual?"تم حفظ التلميذ المرتبط بالحصة.":(isZoom?"تم حفظ قائمة تلاميذ Zoom.":"تم حفظ الحضور بنجاح."))+noteMessage+" جارٍ الرجوع إلى التقويم…");
+      if(noteFailures.length)alert("تم حفظ قائمة التلاميذ والحضور، لكن تعذر حفظ ملاحظات بعض التلاميذ. أعيدي فتح الحصة وحاولي حفظها مجددًا.");
       await loadDailyLessons();
       const details=document.getElementById("lessonCalendarDayDetails");
       if(details&&!individual){
