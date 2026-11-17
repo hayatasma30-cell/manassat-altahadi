@@ -3244,7 +3244,10 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   }
   async function updateCalendarLessonAmounts(dayRows){
     for(const lesson of (dayRows||[])){
-      if(lesson.status==="تمت"){
+      if(lesson.status==="تمت"&&lesson.replacement_lesson_id){
+        const linkedIncome=document.querySelector('#lessonCalendarDayDetails [data-lesson-income="'+CSS.escape(String(lesson.id))+'"]');
+        if(linkedIncome)linkedIncome.textContent="مرتبطة بموعد تعويضي — لا تُحتسب منفردة";
+      }else if(lesson.status==="تمت"){
         const selector='#lessonCalendarDayDetails [data-lesson-income="'+CSS.escape(String(lesson.id))+'"]';
         try{
           const price=Math.max(0,Number(lesson.unit_price)||0);
