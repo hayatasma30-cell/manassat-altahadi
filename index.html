@@ -3056,7 +3056,6 @@ window.addEventListener("unhandledrejection",function(e){
   $("closeStudentLessonStats").addEventListener("click",()=>{$("studentLessonStatsPanel").hidden=true;$("studentModeChooser").hidden=studentStatsReturnState.chooser;$("studentModeContent").hidden=studentStatsReturnState.content;});
   $("refreshStudentLessonStats").addEventListener("click",()=>loadStudentLessonStats(true));
   $("resetStudentLessonStats").addEventListener("click",()=>{$("studentLessonStatsSearch").value="";$("studentLessonStatsLevel").value="";$("studentLessonStatsMode").value="";renderStudentLessonStats();});
-  $("studentLessonStatsSearchBtn").addEventListener("click",renderStudentLessonStats);
   $("studentLessonStatsSearch").addEventListener("input",renderStudentLessonStats);
   $("studentLessonStatsLevel").addEventListener("change",renderStudentLessonStats);
   $("studentLessonStatsMode").addEventListener("change",renderStudentLessonStats);
