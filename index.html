@@ -3076,8 +3076,8 @@ window.addEventListener("unhandledrejection",function(e){
     const item=studentLessonStatsCache?.find(x=>String(x.student.id)===String(studentId));if(!item)return;
     selectedStudentStatsId=String(studentId);
     const details=[...item.details].sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||String(a.time||"").localeCompare(String(b.time||"")));
-    const detailHtml=details.length?details.map(d=>'<div class="student-stat-detail-row"><span><bdi dir="ltr">'+escapeHtml(d.date||"")+' · '+escapeHtml(d.time||"")+'</bdi><br><small>'+escapeHtml(d.level||"")+' · '+(d.mode==="in_person"?"حضوري":"Zoom")+' · '+(d.type==="فردية"?"فردية":"جماعية")+'</small></span><span class="payment-status '+(d.state==="present"?"approved":"rejected")+'">'+(d.state==="present"?"حاضر":"غائب")+'</span></div>').join(""):'<p class="muted">لا توجد سجلات حضور لهذا التلميذ.</p>';
-    $("studentStatsDetailContent").innerHTML='<article class="data-item student-stat-card"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><div><strong style="font-size:1.15rem">'+escapeHtml(item.student.full_name||"تلميذ")+'</strong><p class="muted" style="margin:4px 0">'+escapeHtml(item.student.level||"")+'</p></div><button type="button" class="secondary" id="printStudentStatsDetail">🖨️ طباعة</button></div><div class="lesson-roster-info" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px"><div><small>حضر</small><strong>'+item.present+'</strong></div><div><small>غاب</small><strong>'+item.absent+'</strong></div><div><small>المجموع</small><strong>'+item.total+'</strong></div></div><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px"><div><small>Zoom</small><strong>'+item.zoom+'</strong></div><div><small>حضوري</small><strong>'+item.inPerson+'</strong></div><div><small>جماعية</small><strong>'+item.group+'</strong></div><div><small>فردية</small><strong>'+item.individual+'</strong></div></div><h4 style="margin:18px 0 8px">سجل الحصص بالتواريخ ('+details.length+')</h4>'+detailHtml+'</article>';
+    const detailHtml=details.length?details.map(d=>'<div class="student-stat-detail-row"><div class="student-stat-date"><bdi dir="ltr">'+escapeHtml(d.date||"")+'</bdi><bdi dir="ltr">'+escapeHtml(d.time||"")+'</bdi></div><div class="student-stat-row-meta"><span>'+escapeHtml(d.level||"")+'</span><span>'+(d.mode==="in_person"?"حضوري":"Zoom")+'</span><span>'+(d.type==="فردية"?"فردية":"جماعية")+'</span></div><span class="payment-status '+(d.state==="present"?"approved":"rejected")+'">'+(d.state==="present"?"حاضر":"غائب")+'</span></div>').join(""):'<p class="muted">لا توجد سجلات حضور لهذا التلميذ.</p>';
+    $("studentStatsDetailContent").innerHTML='<article class="data-item student-stat-card student-stat-compact"><div class="student-stat-profile"><div><strong>'+escapeHtml(item.student.full_name||"تلميذ")+'</strong><p class="muted">'+escapeHtml(item.student.level||"")+'</p></div><button type="button" class="secondary" id="printStudentStatsDetail">🖨️ طباعة</button></div><div class="student-stat-main-counts"><div><small>حضر</small><strong>'+item.present+'</strong></div><div><small>غاب</small><strong>'+item.absent+'</strong></div><div><small>المجموع</small><strong>'+item.total+'</strong></div></div><details class="student-stat-extra"><summary>تفاصيل إضافية: طريقة التدريس ونوع الحصص</summary><div class="student-stat-chips"><span>Zoom: <b>'+item.zoom+'</b></span><span>حضوري: <b>'+item.inPerson+'</b></span><span>جماعية: <b>'+item.group+'</b></span><span>فردية: <b>'+item.individual+'</b></span></div></details><h4 class="student-stat-history-title">سجل الحصص <span>('+details.length+')</span></h4><div class="student-stat-history">'+detailHtml+'</div></article>';
     $("studentStatsListPage").hidden=true;$("studentStatsDetailPage").hidden=false;
   }
   $("openStudentLessonStats").addEventListener("click",async()=>{studentStatsReturnState={chooser:$("studentModeChooser").hidden,content:$("studentModeContent").hidden};$("studentModeChooser").hidden=true;$("studentModeContent").hidden=true;$("studentLessonStatsPanel").hidden=false;await loadStudentLessonStats();});
@@ -4070,6 +4070,28 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 .student-stat-detail-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #e6e9e4}
 @media(max-width:620px){#studentLessonStatsPanel .view-head{align-items:stretch}#studentLessonStatsPanel .view-head button{width:100%}.student-stats-result{padding:12px}.student-stats-result button{min-width:76px}}
 @media print{body *{visibility:hidden!important}#studentStatsDetailContent,.student-stat-card,.student-stat-card *{visibility:visible!important}.student-stat-card{position:absolute!important;top:0!important;left:0!important;width:100%!important;box-shadow:none!important}}
+
+.student-stat-compact{padding:13px!important}
+.student-stat-profile{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.student-stat-profile strong{font-size:1.12rem}
+.student-stat-profile p{margin:3px 0 0}
+.student-stat-profile button{width:auto;min-width:84px;padding:8px 11px;margin:0}
+.student-stat-main-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.student-stat-main-counts>div{background:#f3f7f0;border-radius:11px;padding:9px 5px;text-align:center}
+.student-stat-main-counts small{display:block;color:#718075;font-size:.8rem}
+.student-stat-main-counts strong{display:block;font-size:1.2rem;margin-top:2px}
+.student-stat-extra{margin-top:10px;border-top:1px solid #e7ece4;border-bottom:1px solid #e7ece4;padding:8px 0}
+.student-stat-extra summary{font-weight:600;font-size:.9rem;cursor:pointer}
+.student-stat-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.student-stat-chips span{background:#f3f7f0;border-radius:20px;padding:6px 10px;font-size:.85rem}
+.student-stat-history-title{display:flex;justify-content:space-between;align-items:center;margin:13px 0 5px!important}
+.student-stat-history{display:flex;flex-direction:column}
+.student-stat-detail-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:10px 0;border-bottom:1px solid #e7ece4}
+.student-stat-date{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:600;font-size:.92rem}
+.student-stat-row-meta{display:flex;gap:7px;flex-wrap:wrap;color:#78847b;font-size:.8rem}
+.student-stat-row-meta span+span:before{content:"·";margin-inline-end:7px}
+.student-stat-detail-row .payment-status{grid-column:2;grid-row:1/3;white-space:nowrap}
+@media(max-width:420px){.student-stat-date{font-size:.85rem}.student-stat-row-meta{font-size:.76rem}.student-stat-profile button{min-width:75px}}
 </style>
 
 
