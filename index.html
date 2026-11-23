@@ -2120,6 +2120,7 @@ window.addEventListener("unhandledrejection",function(e){
     setTimeout(() => { tahadiHandlingPopState = false; }, 0);
   }, true);
   function showView(id, options={}) {
+    const refreshLock=window.__tahadiRefreshLock;if(refreshLock&&id!==refreshLock.view)return;
     if(id!=="studentsView"){try{localStorage.removeItem("tahadi_student_stats_detail_checkpoint");sessionStorage.removeItem("tahadi_student_stats_detail_checkpoint");}catch(_){}}
     const target = document.getElementById(id);
     if (!target || !target.classList.contains("view")) id = "homeView";
@@ -3324,6 +3325,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   async function refresh() {
     const token=localStorage.getItem("tahadi_teacher_token");
     if(!token){showView("loginView");showStatus("سجلي الدخول أولًا.","error");return;}
+    window.__tahadiRefreshLock={view:activeView||"homeView"};
     /* لا تحفظي حالة الواجهة عند بدء التحميل؛ activeView تكون homeView مؤقتًا وقد تمسح القسم المحفوظ قبل استعادته. نعتمد على لقطة pagehide/beforeunload السابقة. */
     let saved={};
     try{saved=JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
@@ -3363,6 +3365,8 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     }catch(e){
       try{await restoreNested();}catch(_){if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true,skipHistory:true});}
       showStatus(e instanceof Error?e.message:"تعذر تحديث البيانات.","error");
+    }finally{
+      window.__tahadiRefreshLock=null;
     }
   }
   $("backToStudents").addEventListener("click", () => showView("studentsView"));
