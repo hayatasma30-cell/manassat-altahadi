@@ -4194,5 +4194,70 @@ $("accessCategory").addEventListener("change",()=>loadItems($("accessCategory").
 $("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));
 document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));
 })();
-</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const status=document.getElementById("winnersBoardSettingStatus"),show=document.getElementById("showWinnersBoardBtn"),hide=document.getElementById("hideWinnersBoardBtn");if(!status||!show||!hide)return;async function request(action,visible){const t=localStorage.getItem("tahadi_teacher_token")||"";if(!t){status.textContent="يرجى تسجيل الدخول إلى فضاء الأستاذة أولًا.";return;}status.textContent="جارٍ حفظ الإعداد…";show.disabled=hide.disabled=true;try{const response=await fetch(endpoint,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNobnNqeGh6b2libHVhY210dmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0NzgsImV4cCI6MjEwNzk5ODQ3OH0.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+t},body:JSON.stringify(action==="teacher_set_winners_board_visibility"?{action,visible}:{action})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ الإعداد.");status.textContent=data.visible?"حالة اللوحة: ظاهرة للتلاميذ.":"حالة اللوحة: مخفية عن التلاميذ.";}catch(e){status.textContent=e.message||"تعذر الاتصال بالخادم.";}finally{show.disabled=hide.disabled=false;}}show.addEventListener("click",()=>request("teacher_set_winners_board_visibility",true));hide.addEventListener("click",()=>request("teacher_set_winners_board_visibility",false));request("teacher_winners_board_settings");})();</script></body>
+</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const status=document.getElementById("winnersBoardSettingStatus"),show=document.getElementById("showWinnersBoardBtn"),hide=document.getElementById("hideWinnersBoardBtn");if(!status||!show||!hide)return;async function request(action,visible){const t=localStorage.getItem("tahadi_teacher_token")||"";if(!t){status.textContent="يرجى تسجيل الدخول إلى فضاء الأستاذة أولًا.";return;}status.textContent="جارٍ حفظ الإعداد…";show.disabled=hide.disabled=true;try{const response=await fetch(endpoint,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNobnNqeGh6b2libHVhY210dmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0NzgsImV4cCI6MjEwNzk5ODQ3OH0.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+t},body:JSON.stringify(action==="teacher_set_winners_board_visibility"?{action,visible}:{action})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ الإعداد.");status.textContent=data.visible?"حالة اللوحة: ظاهرة للتلاميذ.":"حالة اللوحة: مخفية عن التلاميذ.";}catch(e){status.textContent=e.message||"تعذر الاتصال بالخادم.";}finally{show.disabled=hide.disabled=false;}}show.addEventListener("click",()=>request("teacher_set_winners_board_visibility",true));hide.addEventListener("click",()=>request("teacher_set_winners_board_visibility",false));request("teacher_winners_board_settings");})();</script>
+<script id="tahadi-exact-page-refresh-restore">
+/* استعادة الصفحة نفسها بعد إعادة تحميل المتصفح، دون الرجوع إلى قسم سابق */
+(function(){
+  if(window.__tahadiExactPageRestoreV1)return;
+  window.__tahadiExactPageRestoreV1=true;
+  const KEY="tahadi_exact_page_refresh_checkpoint_v1";
+  const isTeacherApp=()=>!!document.getElementById("homeView")&&!!document.getElementById("loginView");
+  function capture(){
+    if(!isTeacherApp()||window.__tahadiRestoringTeacherPage||window.__tahadiLoggingOut)return;
+    try{
+      const view=document.querySelector(".view.active")||document.querySelector('.view[style*="display: block"]');
+      if(!view||!view.id||view.id==="loginView")return;
+      const state={
+        at:Date.now(),path:location.pathname,search:location.search,view:view.id,
+        y:Math.max(0,window.scrollY||0),
+        lessonWorkspace:typeof window.tahadiGetLessonWorkspaceState==="function"?window.tahadiGetLessonWorkspaceState():null,
+        lessonPage:typeof selectedLessonPage!=="undefined"?selectedLessonPage:null,
+        lessonSubpage:typeof selectedLessonSubpage!=="undefined"?selectedLessonSubpage:null,
+        lessonMode:typeof selectedLessonMode!=="undefined"?selectedLessonMode:null,
+        incomePage:document.querySelector("#incomeView .income-current")?.id||"",
+        testPage:document.querySelector("#electronicTestsView .electronic-test-panel:not([hidden])")?.dataset.testPanel||"",
+        testLevel:typeof selectedElectronicTestLevel!=="undefined"?selectedElectronicTestLevel:""
+      };
+      sessionStorage.setItem(KEY,JSON.stringify(state));
+      localStorage.setItem(KEY,JSON.stringify(state));
+    }catch(e){console.warn("Exact page checkpoint:",e);}
+  }
+  window.addEventListener("pagehide",capture);
+  window.addEventListener("beforeunload",capture);
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")capture();});
+  function restore(){
+    if(!isTeacherApp()||!localStorage.getItem("tahadi_teacher_token"))return;
+    let state=null;
+    try{state=JSON.parse(sessionStorage.getItem(KEY)||localStorage.getItem(KEY)||"null");}catch(_){}
+    if(!state||state.path!==location.pathname||state.search!==location.search||Date.now()-Number(state.at||0)>10*60*1000)return;
+    const view=document.getElementById(state.view);
+    if(!view||!view.classList.contains("view"))return;
+    try{
+      if(typeof showView==="function")showView(state.view,{preserveScroll:true,skipHistory:true});
+      else{
+        document.querySelectorAll(".view").forEach(v=>{const active=v.id===state.view;v.classList.toggle("active",active);v.style.display=active?"block":"none";v.setAttribute("aria-hidden",active?"false":"true");});
+      }
+      if(state.view==="dailyLessonsView"){
+        if(typeof setLessonHome==="function")setLessonHome();
+        if(state.lessonMode&&typeof setLessonMode==="function")setLessonMode(state.lessonMode,"list");
+        const ws=state.lessonWorkspace||{};
+        if(typeof window.tahadiRestoreLessonSubpage==="function"){
+          window.tahadiRestoreLessonSubpage(state.lessonSubpage||ws.subpage||"calendar",ws.selectedDate,ws.cursor,ws.calendarView,ws.dayPageOpen);
+        }else if(state.lessonPage&&typeof setLessonPage==="function")setLessonPage(state.lessonPage);
+      }else if(state.view==="incomeView"&&state.incomePage&&typeof window.tahadiOpenIncomePage==="function"){
+        window.tahadiOpenIncomePage(state.incomePage);
+      }else if(state.view==="electronicTestsView"&&state.testPage){
+        const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;
+        document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==state.testPage);
+        if(state.testLevel&&typeof loadElectronicTests==="function"){selectedElectronicTestLevel=state.testLevel;loadElectronicTests();}
+      }
+      requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:Math.max(0,Number(state.y)||0),behavior:"auto"})));
+      setTimeout(()=>{if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();},900);
+    }catch(e){console.warn("Exact page restore failed:",e);}
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>setTimeout(restore,2600),{once:true});
+  else setTimeout(restore,2600);
+})();
+</script>
+</body>
 </html>
