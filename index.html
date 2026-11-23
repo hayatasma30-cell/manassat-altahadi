@@ -3048,22 +3048,20 @@ window.addEventListener("unhandledrejection",function(e){
     if(!force&&studentLessonStatsCache){renderStudentLessonStats();return;}
     status.textContent="";results.innerHTML="";
     try{
-      const response=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
-      const lessons=(response.lessons||[]).filter(x=>x.status==="تمت"&&!x.replacement_lesson_id).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
+      const response=await lessonRequest({action:"student_lesson_stats_data"});
+      const lessons=response.lessons||[];
       const students=Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[];
       const byId=new Map(students.map(st=>[String(st.id),{student:st,present:0,absent:0,zoom:0,inPerson:0,group:0,individual:0,details:[]}]));
-      const groupLessons=[];
       for(const lesson of lessons){
         if(lesson.lesson_type==="فردية"){
           if(lesson.student_id&&byId.has(String(lesson.student_id))){
             const item=byId.get(String(lesson.student_id));item.present++;item.individual++;if(lesson.delivery_mode==="in_person")item.inPerson++;else item.zoom++;
             item.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"فردية",state:"present"});
           }
-        }else groupLessons.push(lesson);
+        }
       }
-      const attendanceResult=groupLessons.length?await lessonRequest({action:"lesson_attendance_bulk_list",lesson_ids:groupLessons.map(lesson=>lesson.id)}):{attendance:[]};
-      const lessonById=new Map(groupLessons.map(lesson=>[String(lesson.id),lesson]));
-      for(const row of (attendanceResult.attendance||[])){
+      const lessonById=new Map(lessons.filter(lesson=>lesson.lesson_type==="جماعية").map(lesson=>[String(lesson.id),lesson]));
+      for(const row of (response.attendance||[])){
         const student=byId.get(String(row.student_id)),lesson=lessonById.get(String(row.lesson_id));if(!student||!lesson)continue;
         const state=String(row.status||"").toLowerCase();
         if(state==="present"||state==="حاضر"){
