@@ -3330,7 +3330,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
     let saved={};
     try{saved=JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
-    const keepView=activeView||saved.view||localStorage.getItem("tahadi_last_view_persistent")||"homeView";
+    let studentStatsCheckpoint=null;try{studentStatsCheckpoint=JSON.parse(sessionStorage.getItem("tahadi_student_stats_detail_checkpoint")||localStorage.getItem("tahadi_student_stats_detail_checkpoint")||"null");}catch(_){}const hasFreshStudentStatsCheckpoint=!!(studentStatsCheckpoint&&studentStatsCheckpoint.view==="studentsView"&&Date.now()-Number(studentStatsCheckpoint.at||0)<24*60*60*1000);const keepView=hasFreshStudentStatsCheckpoint?"studentsView":(activeView||saved.view||localStorage.getItem("tahadi_last_view_persistent")||"homeView");
     const keepY=Math.max(0,Number(window.scrollY)||Number(saved.y)||0);
     const restoreNested=async()=>{
       const target=document.getElementById(keepView);
@@ -3392,7 +3392,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     if(savedPosition.challengePage){savedPosition.challengePage="";savedPosition.challengeY=0;const clean=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,clean);localStorage.setItem(teacherPagePositionKey,clean);}
     if(new URLSearchParams(location.search).get("from")==="challenge"){savedPosition.challengePage="";const cleanPosition=JSON.stringify(savedPosition);sessionStorage.setItem(teacherPagePositionKey,cleanPosition);localStorage.setItem(teacherPagePositionKey,cleanPosition);}
     const returningFromQuestions=new URLSearchParams(location.search).get("returnFromQuestions")==="1"||new URLSearchParams(location.search).get("from")==="teacher-questions";
-    const lastView=returningFromQuestions?"homeView":(savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view"));
+    let studentStatsCheckpoint=null;try{studentStatsCheckpoint=JSON.parse(sessionStorage.getItem("tahadi_student_stats_detail_checkpoint")||localStorage.getItem("tahadi_student_stats_detail_checkpoint")||"null");}catch(_){}const hasFreshStudentStatsCheckpoint=!!(studentStatsCheckpoint&&studentStatsCheckpoint.view==="studentsView"&&Date.now()-Number(studentStatsCheckpoint.at||0)<24*60*60*1000);const lastView=returningFromQuestions?"homeView":(hasFreshStudentStatsCheckpoint?"studentsView":(savedPosition.view||localStorage.getItem("tahadi_last_view_persistent")||sessionStorage.getItem("tahadi_last_view")));
     if(lastView&&document.getElementById(lastView)?.classList.contains("view"))showView(lastView,{preserveScroll:true});
     /* Restore the nested teacher workspace immediately, before the dashboard network request finishes. */
     if(lastView==="electronicTestsView"){
