@@ -2878,6 +2878,33 @@ window.addEventListener("unhandledrejection",function(e){
    }
    if(shouldLoad)loadDailyLessons();
   }
+  // التنقل الموحد بين التقويم ونموذج إضافة/تعديل الحصة.
+  function setLessonPage(page){
+    const addPanel=$("lessonAddPanel"),listPanel=$("lessonListPanel");
+    if(page==="add"){
+      selectedLessonPage="add";
+      if(addPanel)addPanel.hidden=false;
+      if(listPanel)listPanel.hidden=true;
+      return;
+    }
+    if(page==="calendar"||page==="library"){
+      if(addPanel)addPanel.hidden=true;
+      if(listPanel)listPanel.hidden=false;
+      setLessonSubpage("calendar",false);
+      selectedLessonPage="library";
+      loadDailyLessons();
+      return;
+    }
+    if(addPanel)addPanel.hidden=true;
+    if(listPanel)listPanel.hidden=false;
+    setLessonSubpage(page,false);
+    selectedLessonPage="library";
+    loadDailyLessons();
+  }
+  function setLessonHome(){
+    showView("dailyLessonsView");
+    setLessonPage("calendar");
+  }
   document.querySelectorAll("[data-lesson-subpage]").forEach(btn=>btn.addEventListener("click",()=>setLessonSubpage(btn.dataset.lessonSubpage)));
   window.tahadiGetLessonWorkspaceState=()=>({subpage:selectedLessonSubpage||"all",selectedDate:lessonCalendarSelectedDate||"",cursor:lessonCalendarCursor?lessonCalendarCursor.toISOString():"",calendarView:lessonCalendarView||"month",dayPageOpen:!!lessonCalendarDayPageOpen});
   window.tahadiRestoreLessonSubpage=(page,date,cursor,calendarView,dayPageOpen)=>{if(date)lessonCalendarSelectedDate=date;if(cursor){const parsed=new Date(cursor);if(!Number.isNaN(parsed.getTime()))lessonCalendarCursor=parsed;}if(["month","week","day"].includes(calendarView))lessonCalendarView=calendarView;lessonCalendarDayPageOpen=false;setLessonSubpage("calendar");};
