@@ -3061,18 +3061,16 @@ window.addEventListener("unhandledrejection",function(e){
           }
         }else groupLessons.push(lesson);
       }
-      const attendanceResponses=await Promise.all(groupLessons.map(async lesson=>{try{return {lesson,data:await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id})};}catch(error){return {lesson,error};}}));
-      for(const item of attendanceResponses){
-        if(item.error)continue;
-        for(const row of (item.data.attendance||[])){
-          const student=byId.get(String(row.student_id));if(!student)continue;
-          const state=String(row.status||"").toLowerCase();
-          if(state==="present"||state==="حاضر"){
-            student.present++;student.group++;if(item.lesson.delivery_mode==="in_person")student.inPerson++;else student.zoom++;
-            student.details.push({date:item.lesson.lesson_date,time:item.lesson.lesson_time,level:item.lesson.level,mode:item.lesson.delivery_mode,type:"جماعية",state:"present"});
-          }else if(state==="absent"||state==="غائب"){
-            student.absent++;student.details.push({date:item.lesson.lesson_date,time:item.lesson.lesson_time,level:item.lesson.level,mode:item.lesson.delivery_mode,type:"جماعية",state:"absent"});
-          }
+      const attendanceResult=groupLessons.length?await lessonRequest({action:"lesson_attendance_bulk_list",lesson_ids:groupLessons.map(lesson=>lesson.id)}):{attendance:[]};
+      const lessonById=new Map(groupLessons.map(lesson=>[String(lesson.id),lesson]));
+      for(const row of (attendanceResult.attendance||[])){
+        const student=byId.get(String(row.student_id)),lesson=lessonById.get(String(row.lesson_id));if(!student||!lesson)continue;
+        const state=String(row.status||"").toLowerCase();
+        if(state==="present"||state==="حاضر"){
+          student.present++;student.group++;if(lesson.delivery_mode==="in_person")student.inPerson++;else student.zoom++;
+          student.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية",state:"present"});
+        }else if(state==="absent"||state==="غائب"){
+          student.absent++;student.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية",state:"absent"});
         }
       }
       studentLessonStatsCache=Array.from(byId.values()).map(x=>({...x,total:x.present+x.absent})).sort((a,b)=>String(a.student.full_name||"").localeCompare(String(b.student.full_name||""),"ar"));
