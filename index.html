@@ -3328,7 +3328,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   async function refresh() {
     const token=localStorage.getItem("tahadi_teacher_token");
     if(!token){showView("loginView");showStatus("سجلي الدخول أولًا.","error");return;}
-    if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
+    /* لا تحفظي حالة الواجهة عند بدء التحميل؛ activeView تكون homeView مؤقتًا وقد تمسح القسم المحفوظ قبل استعادته. نعتمد على لقطة pagehide/beforeunload السابقة. */
     let saved={};
     try{saved=JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
     let studentStatsCheckpoint=null;try{studentStatsCheckpoint=JSON.parse(sessionStorage.getItem("tahadi_student_stats_detail_checkpoint")||localStorage.getItem("tahadi_student_stats_detail_checkpoint")||"null");}catch(_){}const hasFreshStudentStatsCheckpoint=!!(studentStatsCheckpoint&&studentStatsCheckpoint.view==="studentsView"&&Date.now()-Number(studentStatsCheckpoint.at||0)<24*60*60*1000);const keepView=hasFreshStudentStatsCheckpoint?"studentsView":(activeView||saved.view||localStorage.getItem("tahadi_last_view_persistent")||"homeView");
