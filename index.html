@@ -1578,6 +1578,14 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
   #resourceLibraryView #learningResourceForm .actions-row button{font-size:.95rem!important}
 }
 </style>
+<style id="lesson-calendar-swipe-navigation">
+/* التنقل بين الأشهر بالسحب بدل أزرار السابق والتالي */
+#dailyLessonsView .lesson-calendar-toolbar{display:flex!important;justify-content:center!important;align-items:center!important;min-height:42px!important}
+#dailyLessonsView #lessonCalendarPrev,
+#dailyLessonsView #lessonCalendarNext{display:none!important}
+#dailyLessonsView .lesson-calendar-toolbar strong{flex:1;text-align:center}
+#dailyLessonsView #lessonCalendarGrid{touch-action:pan-y!important;overscroll-behavior-x:contain}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2744,8 +2752,37 @@ window.addEventListener("unhandledrejection",function(e){
     const panel=document.getElementById("lessonsCalendarPanel");
     if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
   };
-  $("lessonCalendarPrev").addEventListener("click",()=>{if(lessonCalendarView==="month")lessonCalendarCursor.setMonth(lessonCalendarCursor.getMonth()-1);else if(lessonCalendarView==="week"){const d=new Date((lessonCalendarSelectedDate||lessonCalendarDateKey(new Date()))+"T12:00:00");d.setDate(d.getDate()-7);lessonCalendarSelectedDate=d.toISOString().slice(0,10);}else{const d=new Date((lessonCalendarSelectedDate||lessonCalendarDateKey(new Date()))+"T12:00:00");d.setDate(d.getDate()-1);lessonCalendarSelectedDate=d.toISOString().slice(0,10);}renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);});
-  $("lessonCalendarNext").addEventListener("click",()=>{if(lessonCalendarView==="month")lessonCalendarCursor.setMonth(lessonCalendarCursor.getMonth()+1);else if(lessonCalendarView==="week"){const d=new Date((lessonCalendarSelectedDate||lessonCalendarDateKey(new Date()))+"T12:00:00");d.setDate(d.getDate()+7);lessonCalendarSelectedDate=d.toISOString().slice(0,10);}else{const d=new Date((lessonCalendarSelectedDate||lessonCalendarDateKey(new Date()))+"T12:00:00");d.setDate(d.getDate()+1);lessonCalendarSelectedDate=d.toISOString().slice(0,10);}renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);});
+  function shiftLessonCalendar(direction){
+    if(lessonCalendarDayPageOpen)return;
+    if(lessonCalendarView==="month"){
+      lessonCalendarCursor.setMonth(lessonCalendarCursor.getMonth()+direction);
+    }else{
+      const d=new Date((lessonCalendarSelectedDate||lessonCalendarDateKey(new Date()))+"T12:00:00");
+      d.setDate(d.getDate()+(lessonCalendarView==="week"?7:1)*direction);
+      lessonCalendarSelectedDate=lessonCalendarDateKey(d);
+      if(lessonCalendarView==="week"||lessonCalendarView==="day")lessonCalendarCursor=new Date(d.getFullYear(),d.getMonth(),1);
+    }
+    renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);
+  }
+  $("lessonCalendarPrev").addEventListener("click",()=>shiftLessonCalendar(-1));
+  $("lessonCalendarNext").addEventListener("click",()=>shiftLessonCalendar(1));
+  const lessonSwipeSurface=document.getElementById("lessonCalendarGrid");
+  if(lessonSwipeSurface){
+    let lessonSwipeStart=null;
+    lessonSwipeSurface.addEventListener("touchstart",e=>{
+      if(lessonCalendarDayPageOpen||!e.touches||e.touches.length!==1){lessonSwipeStart=null;return;}
+      lessonSwipeStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+    },{passive:true});
+    lessonSwipeSurface.addEventListener("touchend",e=>{
+      if(!lessonSwipeStart||!e.changedTouches||!e.changedTouches.length){lessonSwipeStart=null;return;}
+      const dx=e.changedTouches[0].clientX-lessonSwipeStart.x;
+      const dy=e.changedTouches[0].clientY-lessonSwipeStart.y;
+      lessonSwipeStart=null;
+      if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.25)return;
+      shiftLessonCalendar(dx<0?1:-1);
+    },{passive:true});
+    lessonSwipeSurface.addEventListener("touchcancel",()=>{lessonSwipeStart=null;},{passive:true});
+  }
   document.getElementById("lessonCalendarViewButtons")?.addEventListener("click",e=>{const b=e.target.closest("[data-lesson-calendar-view]");if(!b)return;lessonCalendarView=b.dataset.lessonCalendarView;renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);});
   let lessonAlarmTimer=null,lessonAlarmTarget="";
   $("armLessonAlarmBtn").addEventListener("click",async()=>{
