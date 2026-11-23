@@ -3062,8 +3062,8 @@ window.addEventListener("unhandledrejection",function(e){
         }else groupLessons.push(lesson);
       }
       let done=0;
-      for(let i=0;i<groupLessons.length;i+=6){
-        const batch=groupLessons.slice(i,i+6);
+      for(let i=0;i<groupLessons.length;i+=12){
+        const batch=groupLessons.slice(i,i+12);
         const responses=await Promise.all(batch.map(async lesson=>{try{return {lesson,data:await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id})};}catch(error){return {lesson,error};}}));
         for(const item of responses){
           done++;if(item.error)continue;
@@ -3078,7 +3078,7 @@ window.addEventListener("unhandledrejection",function(e){
             }
           }
         }
-        status.textContent="جارٍ احتساب الحضور… "+done+" من "+groupLessons.length+" حصة";
+        status.textContent="جارٍ جلب بيانات الحضور… "+done+" من "+groupLessons.length+" حصة";
       }
       studentLessonStatsCache=Array.from(byId.values()).map(x=>({...x,total:x.present+x.absent})).sort((a,b)=>String(a.student.full_name||"").localeCompare(String(b.student.full_name||""),"ar"));
       const levelSelect=$("studentLessonStatsLevel"),levels=[...new Set(students.map(st=>String(st.level||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ar"));
