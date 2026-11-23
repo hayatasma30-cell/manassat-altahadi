@@ -3083,7 +3083,9 @@ window.addEventListener("unhandledrejection",function(e){
     const box=$("studentLessonStatsResults"),q=($("studentLessonStatsSearch").value||"").trim().toLocaleLowerCase("ar"),level=$("studentLessonStatsLevel").value,mode=$("studentLessonStatsMode").value;
     if(!studentLessonStatsCache){box.innerHTML="";return;}
     const rows=studentLessonStatsCache.filter(x=>(!q||String(x.student.full_name||"").toLocaleLowerCase("ar").includes(q))&&(!level||String(x.student.level||"")===level)&&(!mode||x.details.some(d=>d.mode===mode)));
-    box.innerHTML=rows.length?rows.map(x=>'<article class="student-stats-result"><div><div class="student-stats-name">'+escapeHtml(x.student.full_name||"تلميذ")+'</div><div class="student-stats-meta">'+escapeHtml(x.student.level||"")+'</div><span class="student-stats-count">حضر '+x.present+' · غاب '+x.absent+'</span></div><button type="button" class="secondary" data-open-student-stat="'+escapeHtml(x.student.id)+'">التفاصيل ←</button></article>').join(""):'<p class="muted">لا توجد نتائج مطابقة. جرّبي «إظهار الكل» أو غيّري الفلاتر.</p>';
+    const totalPresent=rows.reduce((n,x)=>n+x.present,0),totalAbsent=rows.reduce((n,x)=>n+x.absent,0),totalRecords=totalPresent+totalAbsent,attendanceRate=totalRecords?Math.round(totalPresent/totalRecords*100):0;
+    const overview='<section class="student-stats-overview"><div class="student-stats-overview-head"><span>📊 ملخص الإحصائيات</span><small>'+rows.length+' تلميذ</small></div><div class="student-stats-overview-grid"><div class="student-stats-overview-item"><small>إجمالي الحضور</small><strong>'+totalPresent+'</strong></div><div class="student-stats-overview-item"><small>إجمالي الغياب</small><strong>'+totalAbsent+'</strong></div><div class="student-stats-overview-item"><small>نسبة الحضور</small><strong>'+attendanceRate+'٪</strong></div></div><div class="student-stats-overview-track"><span style="width:'+attendanceRate+'%"></span></div></section>';
+    box.innerHTML=overview+(rows.length?rows.map(x=>{const rate=x.total?Math.round(x.present/x.total*100):0;return '<article class="student-stats-result"><div class="student-stats-result-main"><div class="student-stats-result-top"><div><div class="student-stats-name">'+escapeHtml(x.student.full_name||"تلميذ")+'</div><div class="student-stats-meta">'+escapeHtml(x.student.level||"")+'</div></div><span class="student-stats-rate">'+rate+'٪ حضور</span></div><div class="student-stats-result-track"><span style="width:'+rate+'%"></span></div><div class="student-stats-result-bottom"><span class="student-stats-present">✓ حضر '+x.present+'</span><span class="student-stats-absent">✕ غاب '+x.absent+'</span><span class="student-stats-total">المجموع '+x.total+'</span></div></div><button type="button" class="secondary" data-open-student-stat="'+escapeHtml(x.student.id)+'">التفاصيل ←</button></article>';}).join(""):'<p class="muted">لا توجد نتائج مطابقة. جرّبي «إظهار الكل» أو غيّري الفلاتر.</p>');
   }
   function openStudentStatsDetail(studentId){
     const item=studentLessonStatsCache?.find(x=>String(x.student.id)===String(studentId));if(!item)return;
@@ -4115,6 +4117,28 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 .student-stat-row-meta span+span:before{content:"·";margin-inline-end:7px}
 .student-stat-detail-row .payment-status{grid-column:2;grid-row:1/3;white-space:nowrap}
 @media(max-width:420px){.student-stat-date{font-size:.85rem}.student-stat-row-meta{font-size:.76rem}.student-stat-profile button{min-width:75px}}
+
+/* تصميم مطوّر لإحصائيات التلاميذ */
+.student-stats-overview{padding:15px;margin:12px 0 16px;border:1px solid #dce8d9;border-radius:18px;background:linear-gradient(135deg,#f5f9f1,#edf5e9);box-shadow:0 5px 14px rgba(34,83,51,.07)}
+.student-stats-overview-head{display:flex;justify-content:space-between;align-items:center;font-weight:800;color:#205637;margin-bottom:12px}
+.student-stats-overview-head small{font-weight:600;color:#718075;background:#fff;padding:5px 10px;border-radius:20px}
+.student-stats-overview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.student-stats-overview-item{background:rgba(255,255,255,.9);border:1px solid #e5ece1;border-radius:13px;padding:10px 5px;text-align:center}
+.student-stats-overview-item small{display:block;color:#718075;font-size:.76rem}
+.student-stats-overview-item strong{display:block;color:#245b3b;font-size:1.35rem;margin-top:3px}
+.student-stats-overview-track,.student-stats-result-track{height:7px;border-radius:20px;background:#e5ece3;overflow:hidden}
+.student-stats-overview-track{margin-top:12px}
+.student-stats-overview-track span,.student-stats-result-track span{display:block;height:100%;border-radius:20px;background:linear-gradient(90deg,#8fb78b,#286443)}
+.student-stats-result{align-items:center;padding:13px;margin:11px 0;border:1px solid #e0e9dd;border-radius:17px;background:#fff;box-shadow:0 3px 10px rgba(38,75,48,.045)}
+.student-stats-result-main{flex:1;min-width:0}
+.student-stats-result-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.student-stats-result .student-stats-name{font-size:1rem;color:#244c34}
+.student-stats-rate{flex-shrink:0;background:#edf6ea;color:#205b39;border-radius:18px;padding:5px 9px;font-size:.78rem;font-weight:800}
+.student-stats-result-track{margin:10px 0 8px;height:6px}
+.student-stats-result-bottom{display:flex;gap:10px;flex-wrap:wrap;font-size:.78rem}
+.student-stats-present{color:#267047;font-weight:700}.student-stats-absent{color:#a65b52;font-weight:700}.student-stats-total{color:#7b857c}
+.student-stats-result button{align-self:center;min-width:78px}
+@media(max-width:420px){.student-stats-result{gap:8px;padding:11px}.student-stats-result button{min-width:70px;padding:7px 9px;font-size:.82rem}.student-stats-result-bottom{gap:7px;font-size:.74rem}.student-stats-rate{font-size:.72rem;padding:5px 7px}}
 </style>
 
 
