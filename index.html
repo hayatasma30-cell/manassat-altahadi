@@ -3,25 +3,10 @@
 <head>
 <script src="./tahadi-dialogs.js"></script>
 <script>
+/* لا تعيدي توجيه تحديث الصفحة الرئيسية إلى صفحة خارجية قديمة؛
+   إعادة التحميل يجب أن تبقى في نفس المنصة والقسم المحفوظ. */
 (function(){
-  try{
-    const params=new URLSearchParams(location.search);
-    /* الرجوع الصريح من مكتبة الأسئلة له الأولوية: لا تعيدي فتح الصفحة الخارجية تلقائيًا. */
-    if(params.get("returnFromQuestions")==="1" || params.get("from")==="teacher-questions"){
-      localStorage.removeItem("tahadi_last_teacher_external_page");
-      return;
-    }
-    const token=localStorage.getItem("tahadi_teacher_token");
-    const expiry=localStorage.getItem("tahadi_teacher_expires");
-    const last=localStorage.getItem("tahadi_last_teacher_external_page");
-    if(token&&expiry&&new Date(expiry).getTime()>Date.now()&&last){
-      const target=new URL(last,location.href);
-      if(target.origin===location.origin&&(target.pathname.endsWith("/daily-science-admin.html")||target.pathname.endsWith("/teacher-questions.html"))){
-        location.replace(target.href);
-        return;
-      }
-    }
-  }catch(_){}
+  try{localStorage.removeItem("tahadi_last_teacher_external_page");}catch(_){}
 })();
 </script>
 <script>
