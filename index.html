@@ -2639,8 +2639,8 @@ window.addEventListener("unhandledrejection",function(e){
           const count=individual?(x.student_id?1:0):Number(counts[x.id]?.chargeable||0);
           const unitPrice=Number(x.unit_price)||0;
           return {id:x.id,date:String(x.lesson_date||"").slice(0,10),lessonId:x.id,title:(individual?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),kind:"مستحق حصة",amount:unitPrice>0&&count>0?unitPrice*count:0};
-        }).filter(x=>/^2026-\\d{2}-\\d{2}$/.test(x.date));
-        const manualRows=(manualData.entries||[]).map(x=>({id:x.id,date:String(x.work_date||"").slice(0,10),title:x.description||"مبلغ مسجل",kind:"مداخيل يدوية",amount:Number(x.amount)||0})).filter(x=>/^2026-\\d{2}-\\d{2}$/.test(x.date));
+        }).filter(x=>/^2026-\d{2}-\d{2}$/.test(x.date));
+        const manualRows=(manualData.entries||[]).map(x=>({id:x.id,date:String(x.work_date||"").slice(0,10),title:x.description||"مبلغ مسجل",kind:"مداخيل يدوية",amount:Number(x.amount)||0})).filter(x=>/^2026-\d{2}-\d{2}$/.test(x.date));
         incomeCalendarRows=[...lessonRows,...manualRows];
         renderIncomeCalendar();
         if(summary)summary.textContent="إجمالي مستحقات الحصص المنجزة والمداخيل اليدوية المسجلة: "+calendarMoney(incomeCalendarRows.filter(x=>x.date.startsWith($("incomeCalendarMonth").value||"2026-11")).reduce((n,x)=>n+(Number(x.amount)||0),0))+" دج";
