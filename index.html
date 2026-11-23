@@ -2618,6 +2618,48 @@ window.addEventListener("unhandledrejection",function(e){
     let incomeCalendarRows=[],incomeCalendarSelected="";
     const calendarMoney=v=>Math.round(Number(v)||0).toLocaleString("fr-FR");
     const calendarCellMoney=v=>{const n=Math.round(Number(v)||0);if(n>=1000)return Number((n/1000).toFixed(1)).toLocaleString("fr-FR")+" ألف";return n.toLocaleString("fr-FR")+" دج";};
+    async function loadIncomeCalendar(){
+      const grid=$("incomeCalendarGrid"),summary=$("incomeCalendarSummary");
+      if(grid)grid.innerHTML='<p class="muted">جارٍ تحميل التقويم…</p>';
+      if(summary)summary.textContent="جارٍ تحميل التقويم…";
+      try{
+        const [lessonData,manualData]=await Promise.all([
+          lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"}),
+          dailyIncomeRequest("daily_income_data",{year:2026})
+        ]);
+        const lessons=(lessonData.lessons||[]).filter(x=>x.status==="تمت"&&!x.replacement_lesson_id&&String(x.lesson_date||"").startsWith("2026-"));
+        const ids=lessons.map(x=>x.id).filter(Boolean);
+        let counts={};
+        if(ids.length){
+          const countData=await lessonRequest({action:"lesson_attendance_counts",lesson_ids:ids});
+          counts=countData.counts||{};
+        }
+        const lessonRows=lessons.map(x=>{
+          const individual=x.lesson_type==="فردية";
+          const count=individual?(x.student_id?1:0):Number(counts[x.id]?.chargeable||0);
+          const unitPrice=Number(x.unit_price)||0;
+          return {id:x.id,date:String(x.lesson_date||"").slice(0,10),lessonId:x.id,title:(individual?"حصة فردية":"حصة جماعية")+" — "+(x.student_name||x.level||"حصة"),kind:"مستحق حصة",amount:unitPrice>0&&count>0?unitPrice*count:0};
+        }).filter(x=>/^2026-\\d{2}-\\d{2}$/.test(x.date));
+        const manualRows=(manualData.entries||[]).map(x=>({id:x.id,date:String(x.work_date||"").slice(0,10),title:x.description||"مبلغ مسجل",kind:"مداخيل يدوية",amount:Number(x.amount)||0})).filter(x=>/^2026-\\d{2}-\\d{2}$/.test(x.date));
+        incomeCalendarRows=[...lessonRows,...manualRows];
+        renderIncomeCalendar();
+        if(summary)summary.textContent="إجمالي مستحقات الحصص المنجزة والمداخيل اليدوية المسجلة: "+calendarMoney(incomeCalendarRows.filter(x=>x.date.startsWith($("incomeCalendarMonth").value||"2026-11")).reduce((n,x)=>n+(Number(x.amount)||0),0))+" دج";
+      }catch(error){
+        if(grid)grid.innerHTML='<p class="error">تعذر تحميل التقويم: '+escapeHtml(error.message||"خطأ غير معروف")+'</p>';
+        if(summary)summary.textContent="تعذر تحميل التقويم: "+(error.message||"خطأ غير معروف");
+      }
+    }
+    $("incomeCalendarMonth").addEventListener("change",()=>{incomeCalendarSelected="";renderIncomeCalendar();});
+    document.addEventListener("click",e=>{
+      const target=e.target;
+      if(!(target instanceof Element))return;
+      const day=target.closest("#incomeCalendarGrid [data-income-calendar-day]");
+      if(!day)return;
+      incomeCalendarSelected=day.getAttribute("data-income-calendar-day")||"";
+      renderIncomeCalendar();
+      const details=$("incomeCalendarDayDetails");
+      if(details)details.scrollIntoView({behavior:"smooth",block:"nearest"});
+    });
     function renderIncomeCalendar(){
       const input=$("incomeCalendarMonth"),grid=$("incomeCalendarGrid"),summary=$("incomeCalendarSummary"),label=$("incomeCalendarMonthLabel");if(!input||!grid)return;
       const month=input.value||"2026-11";if(!month.startsWith("2026-"))input.value="2026-11";const selected=input.value||"2026-11";const [yy,mm]=selected.split("-").map(Number);if(!yy||!mm)return;
