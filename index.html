@@ -3045,7 +3045,7 @@ window.addEventListener("unhandledrejection",function(e){
   function renderStudentLessonStats(){
     const box=$("studentLessonStatsResults"),q=($("studentLessonStatsSearch").value||"").trim().toLocaleLowerCase("ar"),level=$("studentLessonStatsLevel").value,mode=$("studentLessonStatsMode").value;
     if(!studentLessonStatsCache){box.innerHTML="";return;}
-    const rows=studentLessonStatsCache.filter(x=>(!q||String(x.student.full_name||"").toLocaleLowerCase("ar").includes(q))&&(!level||String(x.student.level||"")===level)&&(!mode||(mode==="zoom"?x.zoom>0&&x.inPerson===0:x.inPerson>0&&x.zoom===0)));
+    const rows=studentLessonStatsCache.filter(x=>(!q||String(x.student.full_name||"").toLocaleLowerCase("ar").includes(q))&&(!level||String(x.student.level||"")===level)&&(!mode||x.details.some(d=>d.mode===mode)));
     box.innerHTML=rows.length?rows.map((x,index)=>{
       const details=[...x.details].sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||String(a.time||"").localeCompare(String(b.time||"")));
       const detailHtml=details.length?details.map(d=>'<div class="student-stat-detail-row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #e6e9e4"><span><bdi dir="ltr">'+escapeHtml(d.date||"")+' · '+escapeHtml(d.time||"")+'</bdi><br><small>'+escapeHtml(d.level||"")+' · '+(d.mode==="in_person"?"حضوري":"Zoom")+' · '+(d.type==="فردية"?"فردية":"جماعية")+'</small></span><span class="payment-status '+(d.state==="present"?"approved":"rejected")+'">'+(d.state==="present"?"حاضر":"غائب")+'</span></div>').join(""):'<p class="muted">لا توجد سجلات حضور لهذا التلميذ.</p>';
