@@ -2118,6 +2118,7 @@ window.addEventListener("unhandledrejection",function(e){
     setTimeout(() => { tahadiHandlingPopState = false; }, 0);
   }, true);
   function showView(id, options={}) {
+    if(id!=="studentsView"){try{localStorage.removeItem("tahadi_student_stats_detail_checkpoint");sessionStorage.removeItem("tahadi_student_stats_detail_checkpoint");}catch(_){}}
     const target = document.getElementById(id);
     if (!target || !target.classList.contains("view")) id = "homeView";
     if (id !== "homeView" && id !== "loginView" && !localStorage.getItem("tahadi_teacher_token")) id = "loginView";
