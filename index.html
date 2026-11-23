@@ -2911,6 +2911,7 @@ window.addEventListener("unhandledrejection",function(e){
     if(page==="calendar"||page==="library"){
       if(addPanel)addPanel.hidden=true;
       if(listPanel)listPanel.hidden=false;
+      lessonCalendarDayPageOpen=false;
       setLessonSubpage("calendar",false);
       selectedLessonPage="library";
       loadDailyLessons();
