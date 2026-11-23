@@ -3179,11 +3179,48 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     }catch(err){status.textContent=err.message||"حدث خطأ أثناء الحفظ.";}finally{button.disabled=false;}
   });
   async function refresh() {
-    const token = localStorage.getItem("tahadi_teacher_token");
-    if (!token) { showView("loginView"); showStatus("سجلي الدخول أولًا.", "error"); return; }
-    const keepView=activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView",keepY=window.scrollY||0;
-    try { await loadDashboard(token); if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true}); setTimeout(()=>window.scrollTo({top:keepY,behavior:"instant"}),80); showStatus("تم تحديث بيانات الصفحة الحالية.", "ok"); }
-    catch (e) { if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true}); setTimeout(()=>window.scrollTo({top:keepY,behavior:"instant"}),80); showStatus(e instanceof Error ? e.message : "تعذر تحديث البيانات.", "error"); }
+    const token=localStorage.getItem("tahadi_teacher_token");
+    if(!token){showView("loginView");showStatus("سجلي الدخول أولًا.","error");return;}
+    if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
+    let saved={};
+    try{saved=JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
+    const keepView=activeView||saved.view||localStorage.getItem("tahadi_last_view_persistent")||"homeView";
+    const keepY=Math.max(0,Number(window.scrollY)||Number(saved.y)||0);
+    const restoreNested=async()=>{
+      const target=document.getElementById(keepView);
+      if(target&&target.classList.contains("view")&&activeView!==keepView)showView(keepView,{preserveScroll:true,skipHistory:true});
+      if(keepView==="dailyLessonsView"&&typeof setLessonHome==="function"){
+        setLessonHome();
+        if(saved.lessonMode&&typeof setLessonMode==="function")setLessonMode(saved.lessonMode,"list");
+        if(saved.lessonWorkspace&&typeof window.tahadiRestoreLessonSubpage==="function"){
+          const ws=saved.lessonWorkspace;
+          window.tahadiRestoreLessonSubpage(saved.lessonSubpage||ws.subpage||"calendar",ws.selectedDate,ws.cursor,ws.calendarView,ws.dayPageOpen);
+        }else if(saved.lessonSubpage&&saved.lessonSubpage!=="all"){
+          setLessonPage("library");setLessonSubpage(saved.lessonSubpage);
+        }else if(saved.lessonPage&&typeof setLessonPage==="function")setLessonPage(saved.lessonPage);
+      }else if(keepView==="incomeView"&&saved.incomePage&&typeof window.tahadiOpenIncomePage==="function"){
+        window.tahadiOpenIncomePage(saved.incomePage);
+      }else if(keepView==="electronicTestsView"&&saved.testPage){
+        const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;
+        document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==saved.testPage);
+        if(typeof loadElectronicTests==="function"){
+          selectedElectronicTestLevel=saved.testLevel||"";
+          await loadElectronicTests();
+          if(saved.testPage==="manage"&&saved.quizManageId&&typeof openQuizManagement==="function")await openQuizManagement(saved.quizManageId);
+          else if(saved.testPage==="list"&&selectedElectronicTestLevel&&typeof renderElectronicTestLevel==="function")renderElectronicTestLevel();
+        }
+      }
+      window.scrollTo({top:keepY,behavior:"auto"});
+      if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
+    };
+    try{
+      await loadDashboard(token);
+      await restoreNested();
+      showStatus("تم تحديث بيانات الصفحة الحالية دون مغادرتها.","ok");
+    }catch(e){
+      try{await restoreNested();}catch(_){if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true,skipHistory:true});}
+      showStatus(e instanceof Error?e.message:"تعذر تحديث البيانات.","error");
+    }
   }
   $("backToStudents").addEventListener("click", () => showView("studentsView"));
   $("refreshBtn").addEventListener("click", refresh);
@@ -4076,28 +4113,8 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 
 
 <script id="tahadi-global-auto-refresh">
-(function(){
- if(window.__tahadiGlobalAutoRefreshV1)return;
- window.__tahadiGlobalAutoRefreshV1=true;
- const INTERVAL=30000;let busy=false,lastRun=0;
- function run(){
-  if(busy||document.visibilityState!=="visible"||Date.now()-lastRun<INTERVAL-1000)return;
-  const view=document.querySelector(".view.active")||document.querySelector('.view[style*="display: block"]');
-  if(!view)return;
-  busy=true;lastRun=Date.now();
-  try{
-   view.querySelectorAll('button[id^="refresh" i],button[id*="Refresh" i]').forEach(button=>{
-    if(button.disabled||button.closest('[hidden]'))return;
-    button.click();
-   });
-  }catch(error){console.warn("Global automatic refresh:",error);}
-  setTimeout(()=>{busy=false;},1200);
- }
- document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){lastRun=0;setTimeout(run,700);}});
- window.addEventListener("pageshow",()=>{lastRun=0;setTimeout(run,1200);});
- document.addEventListener("click",event=>{const target=event.target instanceof Element?event.target:null;if(target&&target.closest("[data-view], [data-home], [data-course-page], [data-test-page]"))setTimeout(()=>{lastRun=0;run();},900);},true);
- setInterval(run,INTERVAL);
-})();
+/* تم إيقاف النقر الآلي على أزرار التحديث؛ التحديث يتم فقط بطلب المستخدم. */
+window.__tahadiGlobalAutoRefreshV1=true;
 </script>
 <script src="./workspace-autosave.js" defer></script>
 <script>
