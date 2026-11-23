@@ -3001,32 +3001,42 @@ window.addEventListener("unhandledrejection",function(e){
   async function loadStudentLessonStats(force=false){
     const status=$("studentLessonStatsStatus"),results=$("studentLessonStatsResults");
     if(!force&&studentLessonStatsCache){renderStudentLessonStats();return;}
-    status.textContent="جارٍ تحميل الحصص وسجلات الحضور…";results.innerHTML="";
+    status.textContent="جارٍ تحميل قائمة الحصص…";results.innerHTML="";
     try{
       const response=await lessonRequest({action:"daily_lessons_list",scope:"library",delivery_mode:"all"});
       const lessons=(response.lessons||[]).filter(x=>x.status==="تمت"&&!x.replacement_lesson_id).sort((a,b)=>String(a.lesson_date||"").localeCompare(String(b.lesson_date||""))||String(a.lesson_time||"").localeCompare(String(b.lesson_time||"")));
       const students=Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[];
       const byId=new Map(students.map(st=>[String(st.id),{student:st,present:0,absent:0,details:[]}]));
+      const groupLessons=[];
       for(const lesson of lessons){
         if(lesson.lesson_type==="فردية"){
           if(lesson.student_id&&byId.has(String(lesson.student_id))){
             const item=byId.get(String(lesson.student_id));item.present++;item.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"فردية"});
           }
-          continue;
-        }
-        const attendanceData=await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id});
-        for(const row of (attendanceData.attendance||[])){
-          const item=byId.get(String(row.student_id));if(!item)continue;
-          const state=String(row.status||"").toLowerCase();
-          if(state==="present"||state==="حاضر"){
-            item.present++;item.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية"});
-          }else if(state==="absent"||state==="غائب"){
-            item.absent++;
+        }else groupLessons.push(lesson);
+      }
+      let done=0;
+      for(let i=0;i<groupLessons.length;i+=6){
+        const batch=groupLessons.slice(i,i+6);
+        const responses=await Promise.all(batch.map(async lesson=>{
+          try{return {lesson,data:await lessonRequest({action:"lesson_attendance_list",lesson_id:lesson.id})};}
+          catch(error){return {lesson,error};}
+        }));
+        for(const item of responses){
+          done++;
+          if(item.error)continue;
+          for(const row of (item.data.attendance||[])){
+            const student=byId.get(String(row.student_id));if(!student)continue;
+            const state=String(row.status||"").toLowerCase();
+            if(state==="present"||state==="حاضر"){
+              student.present++;student.details.push({date:item.lesson.lesson_date,time:item.lesson.lesson_time,level:item.lesson.level,mode:item.lesson.delivery_mode,type:"جماعية"});
+            }else if(state==="absent"||state==="غائب")student.absent++;
           }
         }
+        status.textContent="جارٍ احتساب الحضور… "+done+" من "+groupLessons.length+" حصة";
       }
       studentLessonStatsCache=Array.from(byId.values()).map(x=>({...x,total:x.present+x.absent})).sort((a,b)=>String(a.student.full_name||"").localeCompare(String(b.student.full_name||""),"ar"));
-      status.textContent="تم تحميل الإحصائيات من سجلات الحضور للحصص المنجزة.";
+      status.textContent="اكتمل تحميل الإحصائيات. الحصص الجماعية: "+groupLessons.length+"، والفردية: "+(lessons.length-groupLessons.length)+".";
       renderStudentLessonStats();
     }catch(error){status.textContent="تعذر تحميل الإحصائيات: "+(error.message||"خطأ غير معروف");}
   }
