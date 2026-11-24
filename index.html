@@ -2258,6 +2258,23 @@ window.addEventListener("unhandledrejection",function(e){
 
     const payments = Array.isArray(d.payments) ? d.payments : [];
     for(const p of payments)window.tahadiRecordCache["student_payments:"+p.id]=p;
+    window.tahadiPaymentsData=payments;
+    window.tahadiPaymentMode=window.tahadiPaymentMode||"all";
+    window.tahadiRenderPayments=function(){
+      const mode=window.tahadiPaymentMode||"all";
+      const rows=payments.filter(p=>mode==="all"||(p.study_mode||p.student?.study_mode||"")===mode)
+        .sort((a,b)=>new Date(b.payment_date||b.created_at||0)-new Date(a.payment_date||a.created_at||0));
+      $("paymentsList").innerHTML=rows.length?rows.map(p=>{
+        const student=students.find(s=>String(s.id)===String(p.student_id||p.student?.id||""));
+        const state=String(p.status||"").toLowerCase();
+        const stateLabel=state==="approved"?"مقبول":state==="pending"?"قيد المراجعة":state==="rejected"?"مرفوض":p.status||"غير محددة";
+        const modeValue=p.study_mode||student?.study_mode||p.student?.study_mode||"";
+        const modeLabel=modeValue==="in_person"?"حضوري":modeValue==="zoom"?"زووم":"غير محددة";
+        return '<article class="data-item"><strong>'+escapeHtml(p.student_name||student?.full_name||p.student?.full_name||"تلميذ غير محدد")+'</strong><div class="small">المستوى: '+escapeHtml(p.level||student?.level||"غير محدد")+' · '+modeLabel+'</div><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+'</div><div class="payment-meta"><span>المستحق: <b>'+money(p.amount_due)+'</b></span><span>المقبوض: <b>'+money(p.amount_paid)+'</b></span><span class="payment-status '+(state==="approved"?"approved":state==="rejected"?"rejected":"pending")+'">'+escapeHtml(state==="approved"?"مقبول":state==="pending"?"قيد المراجعة":state==="rejected"?"مرفوض":p.status||"غير محددة")+'</span></div><div class="payment-date">📅 '+formatDate(p.payment_date||p.created_at)+'</div></article>';
+      }).join(""):'<div class="data-item">لا توجد دفعات في هذا التصنيف.</div>';
+      document.querySelectorAll("[data-payment-mode]").forEach(b=>{const active=b.dataset.paymentMode===mode;b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
+    };
+    window.tahadiRenderPayments();
 
     const levelFilters = $("studentLevelFilters");
     let selectedStudentLevel = "all";
@@ -3294,6 +3311,10 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
      return window.__tahadiOpenDailyLessonsImpl();
    };
   document.querySelector('[data-view="paymentsView"]').addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث إشعارات الدفع: "+(err.message||"خطأ غير معروف"),"error");console.error("paymentsView load failed",err);}});
+  $("toggleManualInPersonPayment").addEventListener("click",()=>showView("manualInPersonPaymentView"));
+  $("refreshPaymentsBtn").addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");const label=$("paymentsRefreshStatus");if(!token)return;label.textContent="جارٍ تحديث الدفعات…";try{await loadDashboard(token);label.textContent="تم تحديث إشعارات الدفع.";}catch(err){label.textContent="تعذر التحديث: "+(err.message||"خطأ غير معروف");}});
+  $("paymentModeFilters").addEventListener("click",event=>{const button=event.target.closest("[data-payment-mode]");if(!button)return;window.tahadiPaymentMode=button.dataset.paymentMode;if(typeof window.tahadiRenderPayments==="function")window.tahadiRenderPayments();});
+  document.querySelector('[data-view="unpaidPaymentsView"]').addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث الدفعات غير المقبوضة: "+(err.message||"خطأ غير معروف"),"error");}});
   const requestedLessonEdit=new URLSearchParams(location.search).get("edit_lesson");
   if(requestedLessonEdit&&localStorage.getItem("tahadi_teacher_token")){showView("dailyLessonsView");setTimeout(async()=>{try{await openDailyLessonEditor(requestedLessonEdit,false);history.replaceState(null,"",location.pathname);}catch(e){lessonMessage(e.message||"تعذر فتح تعديل الحصة.","error");}},350);}
   $("newStudentDate").value=new Date().toISOString().slice(0,10);const syncNewStudentRegistrationType=()=>{$("newStudentRegistrationTypeWrap").hidden=$("newStudentMode").value!=="in_person";};$("newStudentMode").addEventListener("change",syncNewStudentRegistrationType);syncNewStudentRegistrationType();
