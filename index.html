@@ -3324,40 +3324,14 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   async function refresh() {
     const token=localStorage.getItem("tahadi_teacher_token");
     if(!token){showView("loginView");showStatus("سجلي الدخول أولًا.","error");return;}
-    const currentView=document.querySelector(".view.active");
-    const currentViewId=currentView?.id||activeView||"homeView";
     const currentScroll=window.scrollY||0;
-    window.__tahadiRefreshLock=null;
-    const statsPanel=document.getElementById("studentLessonStatsPanel");
-    const statsPanelWasOpen=!!(statsPanel&&!statsPanel.hidden);
-    const statsDetail=document.getElementById("studentStatsDetailPage");
-    const statsDetailWasOpen=!!(statsDetail&&!statsDetail.hidden);
-    const incomePage=document.querySelector("#incomeView .income-current")?.id||"";
-    const lessonSubpage=window.tahadiGetLessonWorkspaceState?.()||null;
     try{
-      // تحميل البيانات وتحديث عناصرها فقط؛ لا نستدعي showView ولا نعيد بناء التنقل.
+      // تحديث البيانات فقط. لا نبدّل القسم ولا نعيد فتح الصفحات الفرعية.
       await loadDashboard(token);
-      // احتفظي بالقسم الفرعي المفتوح كما هو؛ loadDashboard لا يحتاج إلى تبديل الأقسام.
-      if(currentView&&currentView.isConnected){
-        document.querySelectorAll(".view").forEach(v=>{
-          const active=v===currentView;
-          v.classList.toggle("active",active);
-          v.style.display=active?"block":"none";
-          v.setAttribute("aria-hidden",active?"false":"true");
-        });
-        activeView=currentViewId;
-      }
-      if(statsPanel&&statsPanelWasOpen)statsPanel.hidden=false;
-      if(statsDetail&&statsDetailWasOpen)statsDetail.hidden=false;
-      if(incomePage&&typeof window.tahadiOpenIncomePage==="function")window.tahadiOpenIncomePage(incomePage);
-      if(lessonSubpage&&currentViewId==="dailyLessonsView"&&typeof window.tahadiRestoreLessonSubpage==="function"){
-        window.tahadiRestoreLessonSubpage(lessonSubpage.subpage||"calendar",lessonSubpage.selectedDate,lessonSubpage.cursor,lessonSubpage.calendarView,lessonSubpage.dayPageOpen);
-      }
       window.scrollTo({top:currentScroll,behavior:"auto"});
       if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
       showStatus("تم تحديث البيانات داخل الصفحة الحالية.","ok");
     }catch(e){
-      // حتى عند فشل الاتصال لا نغيّر القسم الظاهر أو موضعه.
       window.scrollTo({top:currentScroll,behavior:"auto"});
       showStatus(e instanceof Error?e.message:"تعذر تحديث البيانات.","error");
     }
