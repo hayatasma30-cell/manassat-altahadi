@@ -2264,15 +2264,26 @@ window.addEventListener("unhandledrejection",function(e){
     window.tahadiRenderPayments=function(){
       const paymentMoney=value=>(Number(value)||0).toLocaleString("fr-FR",{maximumFractionDigits:2})+" دج";
       const mode=window.tahadiPaymentMode||"all";
-      const rows=payments.filter(p=>mode==="all"||(p.study_mode||p.student?.study_mode||"")===mode)
+      const rows=payments.filter(p=>mode==="all"||(p.study_mode||p.student?.study_mode||students.find(s=>String(s.id)===String(p.student_id||p.student?.id))?.study_mode||"")===mode)
         .sort((a,b)=>new Date(b.payment_date||b.created_at||0)-new Date(a.payment_date||a.created_at||0));
-      $("paymentsList").innerHTML=rows.length?rows.map(p=>{
-        const student=students.find(s=>String(s.id)===String(p.student_id||p.student?.id||""));
-        const state=String(p.status||"").toLowerCase();
-        const stateLabel=state==="approved"?"مقبول":state==="pending"?"قيد المراجعة":state==="rejected"?"مرفوض":p.status||"غير محددة";
-        const modeValue=p.study_mode||student?.study_mode||p.student?.study_mode||"";
-        const modeLabel=modeValue==="in_person"?"حضوري":modeValue==="zoom"?"زووم":"غير محددة";
-        return '<article class="data-item"><strong>'+escapeHtml(p.student_name||student?.full_name||p.student?.full_name||"تلميذ غير محدد")+'</strong><div class="small">المستوى: '+escapeHtml(p.level||student?.level||"غير محدد")+' · '+modeLabel+'</div><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+'</div><div class="payment-meta"><span>المستحق: <b>'+paymentMoney(p.amount_due)+'</b></span><span>المقبوض: <b>'+paymentMoney(p.amount_paid)+'</b></span><span class="payment-status '+(state==="approved"?"approved":state==="rejected"?"rejected":"pending")+'">'+escapeHtml(state==="approved"?"مقبول":state==="pending"?"قيد المراجعة":state==="rejected"?"مرفوض":p.status||"غير محددة")+'</span></div><div class="payment-date">📅 '+formatDate(p.payment_date||p.created_at)+'</div><div class="actions-row"><button type="button" class="secondary" data-edit="student_payments" data-id="'+escapeHtml(p.id)+'">✏️ تعديل الدفعة</button><button type="button" class="secondary" data-delete="student_payments" data-id="'+escapeHtml(p.id)+'">🗑️ حذف الدفعة</button></div></article>';
+      const grouped=new Map();
+      rows.forEach(p=>{
+        const student=students.find(s=>String(s.id)===String(p.student_id||p.student?.id||""))||p.student||{};
+        const key=String(p.student_id||student.id||p.student_name||"unknown");
+        if(!grouped.has(key))grouped.set(key,{student,payments:[]});
+        grouped.get(key).payments.push(p);
+      });
+      const groups=[...grouped.values()].sort((a,b)=>String(a.student.full_name||a.payments[0]?.student_name||"").localeCompare(String(b.student.full_name||b.payments[0]?.student_name||""),"ar"));
+      $("paymentsList").innerHTML=groups.length?groups.map(group=>{
+        const student=group.student,studentName=student.full_name||group.payments[0]?.student_name||"تلميذ غير محدد";
+        const studentMode=student.study_mode||group.payments[0]?.study_mode||"";
+        const modeLabel=studentMode==="in_person"?"حضوري":studentMode==="zoom"?"زووم":"غير محددة";
+        const paymentRows=group.payments.map(p=>{
+          const state=String(p.status||"").toLowerCase();
+          const stateLabel=state==="approved"?"مقبول":state==="pending"?"قيد المراجعة":state==="rejected"?"مرفوض":p.status||"غير محددة";
+          return '<div class="payment-student-entry" style="border-top:1px solid #e4ebe2;padding:12px 0"><div class="small">الخدمة: '+escapeHtml(p.service_name||p.service_type||"غير محددة")+'</div><div class="payment-meta"><span>المستحق: <b>'+paymentMoney(p.amount_due)+'</b></span><span>المقبوض: <b>'+paymentMoney(p.amount_paid)+'</b></span><span class="payment-status '+(state==="approved"?"approved":state==="rejected"?"rejected":"pending")+'">'+escapeHtml(stateLabel)+'</span></div><div class="payment-date">📅 '+formatDate(p.payment_date||p.created_at)+'</div><div class="actions-row"><button type="button" class="secondary" data-edit="student_payments" data-id="'+escapeHtml(p.id)+'">✏️ تعديل الدفعة</button><button type="button" class="secondary" data-delete="student_payments" data-id="'+escapeHtml(p.id)+'">🗑️ حذف الدفعة</button></div></div>';
+        }).join("");
+        return '<article class="data-item"><strong>'+escapeHtml(studentName)+'</strong><div class="small">المستوى: '+escapeHtml(student.level||group.payments[0]?.level||"غير محدد")+' · '+modeLabel+' · '+group.payments.length+' دفعة</div>'+paymentRows+'</article>';
       }).join(""):'<div class="data-item">لا توجد دفعات في هذا التصنيف.</div>';
       document.querySelectorAll("[data-payment-mode]").forEach(b=>{const active=b.dataset.paymentMode===mode;b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
     };
