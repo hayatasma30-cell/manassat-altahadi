@@ -3324,6 +3324,72 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
      return window.__tahadiOpenDailyLessonsImpl();
    };
   document.querySelector('[data-view="paymentsView"]').addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث إشعارات الدفع: "+(err.message||"خطأ غير معروف"),"error");console.error("paymentsView load failed",err);}});
+  // تهيئة نموذج تسجيل الدفعات وربطه بواجهة الحفظ في الخادم.
+  const manualPaymentForm=$("manualInPersonPaymentForm");
+  const manualMode=$("manualPaymentMode"),manualLevel=$("manualPaymentLevel"),manualService=$("manualPaymentServiceType"),manualStudent=$("manualPaymentStudent");
+  const manualMonthsWrap=$("manualPaymentMonthsWrap"),manualIndividualWrap=$("manualPaymentIndividualLessonWrap");
+  const manualStatus=$("manualPaymentStatus"),manualSave=$("saveManualInPersonPayment");
+  const manualMoney=(v)=>Number(v||0).toLocaleString("fr-FR",{maximumFractionDigits:2})+" دج";
+  const manualStudents=()=>Array.isArray(window.tahadiDailyStudents)?window.tahadiDailyStudents:[];
+  const setManualOptions=(el,placeholder,items)=>{el.innerHTML='<option value="">'+placeholder+'</option>'+items.map(x=>'<option value="'+String(x.value).replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'">'+String(x.label).replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</option>').join("");};
+  const resetManualAfterMode=()=>{setManualOptions(manualLevel,"اختاري طريقة الدراسة أولًا",[]);manualLevel.disabled=!manualMode.value;setManualOptions(manualService,"اختاري نوع الخدمة",[]);manualService.disabled=true;setManualOptions(manualStudent,"اختاري المستوى أولًا",[]);manualStudent.disabled=true;manualIndividualWrap.hidden=true;manualMonthsWrap.hidden=false;};
+  manualMode.addEventListener("change",()=>{
+    const levels=[...new Set(manualStudents().filter(x=>(x.study_mode||"zoom")===manualMode.value).map(x=>String(x.level||"").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ar"));
+    setManualOptions(manualLevel,"اختاري المستوى الدراسي",levels.map(x=>({value:x,label:x})));
+    manualLevel.disabled=!manualMode.value;setManualOptions(manualService,"اختاري نوع الخدمة",[]);manualService.disabled=true;
+    setManualOptions(manualStudent,"اختاري المستوى أولًا",[]);manualStudent.disabled=true;manualIndividualWrap.hidden=true;manualMonthsWrap.hidden=false;
+    manualStatus.textContent="";
+  });
+  manualLevel.addEventListener("change",()=>{
+    const services=[{value:"monthly_subscription",label:manualMode.value==="in_person"?"اشتراك أربع حصص":"اشتراك شهري"},{value:"individual_session",label:"حصة فردية"}];
+    setManualOptions(manualService,"اختاري نوع الخدمة",services);manualService.disabled=!manualLevel.value;
+    setManualOptions(manualStudent,"اختاري المستوى أولًا",[]);manualStudent.disabled=true;manualIndividualWrap.hidden=true;manualMonthsWrap.hidden=false;
+  });
+  manualService.addEventListener("change",()=>{
+    const list=manualStudents().filter(x=>(x.study_mode||"zoom")===manualMode.value&&String(x.level||"").trim()===manualLevel.value);
+    setManualOptions(manualStudent,"اختاري التلميذ",list.map(x=>({value:x.id,label:x.full_name})).sort((a,b)=>a.label.localeCompare(b.label,"ar")));
+    manualStudent.disabled=!manualService.value||!list.length;
+    const individual=manualService.value==="individual_session";manualIndividualWrap.hidden=!individual;manualMonthsWrap.hidden=individual;
+    if(individual){setManualOptions($("manualPaymentIndividualLesson"),"اختاري التلميذ أولًا",[]);$("manualPaymentIndividualLesson").disabled=true;$("manualPaymentIndividualLessonStatus").textContent="اختاري التلميذ لعرض حصصه الفردية المنجزة.";}
+  });
+  manualStudent.addEventListener("change",async()=>{
+    if(manualService.value!=="individual_session")return;
+    const lessonSelect=$("manualPaymentIndividualLesson"),lessonStatus=$("manualPaymentIndividualLessonStatus");
+    setManualOptions(lessonSelect,"جارٍ تحميل الحصص…",[]);lessonSelect.disabled=true;lessonStatus.textContent="جارٍ تحميل الحصص الفردية المنجزة…";
+    try{
+      const token=localStorage.getItem("tahadi_teacher_token");
+      const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"student_lesson_stats_data"})});
+      const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الحصص.");
+      const lessons=(data.lessons||[]).filter(x=>String(x.student_id||"")===manualStudent.value&&x.lesson_type==="فردية"&&x.status==="تمت"&&x.delivery_mode===manualMode.value);
+      setManualOptions(lessonSelect,"اختاري الحصة الفردية",lessons.map(x=>({value:x.id,label:[x.lesson_date,x.lesson_time,x.subject].filter(Boolean).join(" — ")})));
+      lessonSelect.disabled=!lessons.length;lessonStatus.textContent=lessons.length?"اختاري الحصة المراد تسديدها.":"لا توجد حصص فردية منجزة لهذا التلميذ.";
+    }catch(err){lessonStatus.textContent=err.message||"تعذر تحميل الحصص.";}
+  });
+  const updateManualRemaining=()=>{const due=Number($("manualPaymentDue").value)||0,paid=Number($("manualPaymentPaid").value)||0;$("manualPaymentRemaining").textContent=manualMoney(Math.max(0,due-paid));};
+  $("manualPaymentDue").addEventListener("input",updateManualRemaining);$("manualPaymentPaid").addEventListener("input",updateManualRemaining);
+  manualPaymentForm.addEventListener("submit",async event=>{
+    event.preventDefault();manualStatus.textContent="";
+    const studentId=manualStudent.value,serviceType=manualService.value,due=Number($("manualPaymentDue").value),paid=Number($("manualPaymentPaid").value);
+    const months=[...manualPaymentForm.querySelectorAll('input[name="manualPaymentMonth"]:checked')].map(x=>x.value);
+    const lessonId=$("manualPaymentIndividualLesson").value;
+    if(!manualMode.value||!manualLevel.value||!serviceType||!studentId){manualStatus.textContent="اختاري طريقة الدراسة والمستوى والخدمة والتلميذ.";return;}
+    if(!Number.isFinite(due)||due<=0||!Number.isFinite(paid)||paid<0||paid>due){manualStatus.textContent="تحققي من المبلغ المستحق والمبلغ المقبوض.";return;}
+    if(serviceType==="monthly_subscription"&&!months.length){manualStatus.textContent="اختاري شهرًا واحدًا على الأقل.";return;}
+    if(serviceType==="individual_session"&&!lessonId){manualStatus.textContent="اختاري الحصة الفردية المراد تسديدها.";return;}
+    manualSave.disabled=true;manualStatus.textContent="جارٍ حفظ الدفعة…";
+    try{
+      const token=localStorage.getItem("tahadi_teacher_token");
+      const payment={student_id:studentId,amount_due:due,amount_paid:paid,service_type:serviceType,subscription_month:months.join("، "),lesson_id:lessonId||null,payment_date:$("manualPaymentDate").value||null,payment_method:$("manualPaymentMethod").value||null};
+      const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"manual_student_payment",payment})});
+      const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر حفظ الدفعة.");
+      manualStatus.textContent=data.message||"تم تسجيل الدفعة بنجاح.";
+      manualPaymentForm.reset();manualMode.value="";resetManualAfterMode();$("manualPaymentRemaining").textContent="—";
+      await refresh();
+      showView("paymentsView");
+    }catch(err){manualStatus.textContent=err.message||"حدث خطأ أثناء حفظ الدفعة.";}
+    finally{manualSave.disabled=false;}
+  });
+  resetManualAfterMode();
   $("toggleManualInPersonPayment").addEventListener("click",()=>showView("manualInPersonPaymentView"));
   $("refreshPaymentsBtn").addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");const label=$("paymentsRefreshStatus");if(!token)return;label.textContent="جارٍ تحديث الدفعات…";try{await loadDashboard(token);label.textContent="تم تحديث إشعارات الدفع.";}catch(err){label.textContent="تعذر التحديث: "+(err.message||"خطأ غير معروف");}});
   $("paymentModeFilters").addEventListener("click",event=>{const button=event.target.closest("[data-payment-mode]");if(!button)return;window.tahadiPaymentMode=button.dataset.paymentMode;if(typeof window.tahadiRenderPayments==="function")window.tahadiRenderPayments();});
