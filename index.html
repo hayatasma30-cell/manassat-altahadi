@@ -4492,7 +4492,9 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
    const c=av-bv;return mode.endsWith("desc")?-c:c;
   };
   indexed.sort((a,b)=>cmp(a,b)||a.index-b.index);
-  const frag=document.createDocumentFragment();indexed.forEach(x=>frag.appendChild(x.el));root.appendChild(frag);
+  const ordered=indexed.map(x=>x.el);
+  if(ordered.every((el,index)=>el===items[index]))return;
+  const frag=document.createDocumentFragment();ordered.forEach(el=>frag.appendChild(el));root.appendChild(frag);
  }
  function install(root){
   if(!root||root.dataset.tahadiSortable==="1"||root.closest("#tahadi-global-sort-controls"))return;
