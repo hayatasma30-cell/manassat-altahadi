@@ -2120,7 +2120,6 @@ window.addEventListener("unhandledrejection",function(e){
     setTimeout(() => { tahadiHandlingPopState = false; }, 0);
   }, true);
   function showView(id, options={}) {
-    const refreshLock=window.__tahadiRefreshLock;if(refreshLock&&id!==refreshLock.view)return;
     if(id!=="studentsView"){try{localStorage.removeItem("tahadi_student_stats_detail_checkpoint");sessionStorage.removeItem("tahadi_student_stats_detail_checkpoint");}catch(_){}}
     const target = document.getElementById(id);
     if (!target || !target.classList.contains("view")) id = "homeView";
@@ -3325,48 +3324,42 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   async function refresh() {
     const token=localStorage.getItem("tahadi_teacher_token");
     if(!token){showView("loginView");showStatus("سجلي الدخول أولًا.","error");return;}
-    window.__tahadiRefreshLock={view:activeView||"homeView"};
-    /* لا تحفظي حالة الواجهة عند بدء التحميل؛ activeView تكون homeView مؤقتًا وقد تمسح القسم المحفوظ قبل استعادته. نعتمد على لقطة pagehide/beforeunload السابقة. */
-    let saved={};
-    try{saved=JSON.parse(localStorage.getItem(teacherPagePositionKey)||sessionStorage.getItem(teacherPagePositionKey)||"{}")||{};}catch(_){}
-    let studentStatsCheckpoint=null;try{studentStatsCheckpoint=JSON.parse(sessionStorage.getItem("tahadi_student_stats_detail_checkpoint")||localStorage.getItem("tahadi_student_stats_detail_checkpoint")||"null");}catch(_){}const hasFreshStudentStatsCheckpoint=!!(studentStatsCheckpoint&&studentStatsCheckpoint.view==="studentsView"&&Date.now()-Number(studentStatsCheckpoint.at||0)<24*60*60*1000);const keepView=hasFreshStudentStatsCheckpoint?"studentsView":(activeView||saved.view||localStorage.getItem("tahadi_last_view_persistent")||"homeView");
-    const keepY=Math.max(0,Number(window.scrollY)||Number(saved.y)||0);
-    const restoreNested=async()=>{
-      const target=document.getElementById(keepView);
-      if(target&&target.classList.contains("view")&&activeView!==keepView)showView(keepView,{preserveScroll:true,skipHistory:true});
-      if(keepView==="studentsView")await restoreStudentStatsPosition(saved);if(keepView==="dailyLessonsView"&&typeof setLessonHome==="function"){
-        setLessonHome();
-        if(saved.lessonMode&&typeof setLessonMode==="function")setLessonMode(saved.lessonMode,"list");
-        if(saved.lessonWorkspace&&typeof window.tahadiRestoreLessonSubpage==="function"){
-          const ws=saved.lessonWorkspace;
-          window.tahadiRestoreLessonSubpage(saved.lessonSubpage||ws.subpage||"calendar",ws.selectedDate,ws.cursor,ws.calendarView,ws.dayPageOpen);
-        }else if(saved.lessonSubpage&&saved.lessonSubpage!=="all"){
-          setLessonPage("library");setLessonSubpage(saved.lessonSubpage);
-        }else if(saved.lessonPage&&typeof setLessonPage==="function")setLessonPage(saved.lessonPage);
-      }else if(keepView==="incomeView"&&saved.incomePage&&typeof window.tahadiOpenIncomePage==="function"){
-        window.tahadiOpenIncomePage(saved.incomePage);
-      }else if(keepView==="electronicTestsView"&&saved.testPage){
-        const hub=document.getElementById("electronicTestsHub");if(hub)hub.hidden=true;
-        document.querySelectorAll("#electronicTestsView .electronic-test-panel").forEach(p=>p.hidden=p.dataset.testPanel!==saved.testPage);
-        if(typeof loadElectronicTests==="function"){
-          selectedElectronicTestLevel=saved.testLevel||"";
-          await loadElectronicTests();
-          if(saved.testPage==="manage"&&saved.quizManageId&&typeof openQuizManagement==="function")await openQuizManagement(saved.quizManageId);
-          else if(saved.testPage==="list"&&selectedElectronicTestLevel&&typeof renderElectronicTestLevel==="function")renderElectronicTestLevel();
-        }
-      }
-      window.scrollTo({top:keepY,behavior:"auto"});
-      if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
-    };
+    const currentView=document.querySelector(".view.active");
+    const currentViewId=currentView?.id||activeView||"homeView";
+    const currentScroll=window.scrollY||0;
+    window.__tahadiRefreshLock=null;
+    const statsPanel=document.getElementById("studentLessonStatsPanel");
+    const statsPanelWasOpen=!!(statsPanel&&!statsPanel.hidden);
+    const statsDetail=document.getElementById("studentStatsDetailPage");
+    const statsDetailWasOpen=!!(statsDetail&&!statsDetail.hidden);
+    const incomePage=document.querySelector("#incomeView .income-current")?.id||"";
+    const lessonSubpage=window.tahadiGetLessonWorkspaceState?.()||null;
     try{
+      // تحميل البيانات وتحديث عناصرها فقط؛ لا نستدعي showView ولا نعيد بناء التنقل.
       await loadDashboard(token);
-      await restoreNested();
-      showStatus("تم تحديث بيانات الصفحة الحالية دون مغادرتها.","ok");
+      // احتفظي بالقسم الفرعي المفتوح كما هو؛ loadDashboard لا يحتاج إلى تبديل الأقسام.
+      if(currentView&&currentView.isConnected){
+        document.querySelectorAll(".view").forEach(v=>{
+          const active=v===currentView;
+          v.classList.toggle("active",active);
+          v.style.display=active?"block":"none";
+          v.setAttribute("aria-hidden",active?"false":"true");
+        });
+        activeView=currentViewId;
+      }
+      if(statsPanel&&statsPanelWasOpen)statsPanel.hidden=false;
+      if(statsDetail&&statsDetailWasOpen)statsDetail.hidden=false;
+      if(incomePage&&typeof window.tahadiOpenIncomePage==="function")window.tahadiOpenIncomePage(incomePage);
+      if(lessonSubpage&&currentViewId==="dailyLessonsView"&&typeof window.tahadiRestoreLessonSubpage==="function"){
+        window.tahadiRestoreLessonSubpage(lessonSubpage.subpage||"calendar",lessonSubpage.selectedDate,lessonSubpage.cursor,lessonSubpage.calendarView,lessonSubpage.dayPageOpen);
+      }
+      window.scrollTo({top:currentScroll,behavior:"auto"});
+      if(typeof saveTeacherPagePosition==="function")saveTeacherPagePosition();
+      showStatus("تم تحديث البيانات داخل الصفحة الحالية.","ok");
     }catch(e){
-      try{await restoreNested();}catch(_){if(document.getElementById(keepView)?.classList.contains("view"))showView(keepView,{preserveScroll:true,skipHistory:true});}
+      // حتى عند فشل الاتصال لا نغيّر القسم الظاهر أو موضعه.
+      window.scrollTo({top:currentScroll,behavior:"auto"});
       showStatus(e instanceof Error?e.message:"تعذر تحديث البيانات.","error");
-    }finally{
-      window.__tahadiRefreshLock=null;
     }
   }
   $("backToStudents").addEventListener("click", () => showView("studentsView"));
