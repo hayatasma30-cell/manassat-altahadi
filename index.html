@@ -48,6 +48,14 @@ footer{text-align:center;color:var(--muted);font-size:.8rem;padding:24px 14px}
 @media(max-width:700px){.wrap{padding:13px}.topbar{padding:10px 12px}.brand{font-size:1rem}.teacher-chip{font-size:.75rem}.hero{padding:21px 17px;border-radius:19px}.menu{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.menu-btn{min-height:102px;padding:11px;gap:8px;align-items:flex-start}.menu-icon{width:37px;height:37px;flex-basis:37px;border-radius:11px;font-size:1.1rem}.menu-copy strong{font-size:.88rem}.menu-copy small{font-size:.7rem}.chev{display:none}.panel{padding:14px}.view-head h2{font-size:1.15rem}}
 @media(max-width:380px){.menu{grid-template-columns:1fr}.menu-btn{min-height:72px;align-items:center}.menu-copy small{font-size:.76rem}}
 
+/* أزرار قسم إشعارات الدفع بنفس هوية المنصة */
+.payment-menu-panel{padding:18px;background:linear-gradient(155deg,#fffef9,#f6faf3)}
+.payment-menu-grid{display:grid;gap:13px}
+.payment-menu-btn{width:100%;min-height:66px;padding:13px 17px;display:flex;align-items:center;gap:12px;text-align:right;font:inherit;font-weight:800;font-size:1rem;color:#19472f;background:linear-gradient(145deg,#fffef9 0%,#edf6e9 100%);border:1px solid #b8d2b5;border-bottom:5px solid #78a77b;border-radius:16px;box-shadow:0 4px 0 rgba(27,107,53,.12),0 9px 16px rgba(24,63,34,.09);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.payment-menu-btn span{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:#e0efdf;font-size:1.2rem;flex:0 0 38px}
+.payment-menu-btn b{margin-right:auto;color:#36734a;font-size:1.05rem}
+.payment-menu-btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(27,107,53,.12),0 3px 7px rgba(24,63,34,.07)}
+@media(max-width:380px){.payment-menu-btn{min-height:60px;font-size:.92rem;padding:11px 13px}}
 /* فئات قوائم التلاميذ: زووم وحضوري ودورات */
 .student-mode-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 4px}
 .student-mode-card{min-height:145px;padding:18px 12px;border-radius:18px;border:1.5px solid #a9cdb0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font:inherit;font-weight:800;color:#173d2b;background:#edf7ed;box-shadow:0 4px 0 #b5d3b8,0 8px 16px #183f2215;cursor:pointer}
@@ -1913,11 +1921,12 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </section>
 <section id="paymentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div>
-<div class="panel" style="display:grid;gap:16px;padding:20px">
-<button type="button" class="primary" id="toggleManualInPersonPayment" style="width:100%;min-height:64px">💳 تسجيل دفعة جديدة</button>
-<button type="button" class="primary" data-view="paymentHistoryView" style="width:100%;min-height:64px">📚 سجل الدفعات</button>
-<button type="button" class="primary" data-view="unpaidPaymentsView" style="width:100%;min-height:64px">📌 الدفعات غير المقبوضة</button>
-</div></section>
+<div class="panel payment-menu-panel">
+<div class="payment-menu-grid">
+<button type="button" class="payment-menu-btn" id="toggleManualInPersonPayment"><span>💳</span> تسجيل دفعة جديدة <b>←</b></button>
+<button type="button" class="payment-menu-btn" data-view="paymentHistoryView"><span>📚</span> سجل الدفعات <b>←</b></button>
+<button type="button" class="payment-menu-btn" data-view="unpaidPaymentsView"><span>📌</span> الدفعات غير المقبوضة <b>←</b></button>
+</div></div></section>
 <section id="paymentRegistrationModeView" class="view"><div class="view-head"><button class="back" data-view="paymentsView" type="button">→ إشعارات الدفع</button><h2>💳 تسجيل دفعة جديدة</h2></div><div class="panel"><p class="muted">اختاري طريقة الدراسة.</p><button type="button" class="primary" data-register-mode="zoom" style="width:100%;margin:8px 0">💻 زووم</button><button type="button" class="secondary" data-register-mode="in_person" style="width:100%;margin:8px 0">🏫 حضوري</button></div></section>
 <section id="paymentHistoryView" class="view">
 <div class="view-head"><button class="back" data-view="paymentsView" type="button">→ إشعارات الدفع</button><h2>📚 سجل الدفعات</h2></div>
