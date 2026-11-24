@@ -4430,5 +4430,98 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
 })();
 </script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const status=document.getElementById("winnersBoardSettingStatus"),show=document.getElementById("showWinnersBoardBtn"),hide=document.getElementById("hideWinnersBoardBtn");if(!status||!show||!hide)return;async function request(action,visible){const t=localStorage.getItem("tahadi_teacher_token")||"";if(!t){status.textContent="يرجى تسجيل الدخول إلى فضاء الأستاذة أولًا.";return;}status.textContent="جارٍ حفظ الإعداد…";show.disabled=hide.disabled=true;try{const response=await fetch(endpoint,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNobnNqeGh6b2libHVhY210dmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0NzgsImV4cCI6MjEwNzk5ODQ3OH0.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+t},body:JSON.stringify(action==="teacher_set_winners_board_visibility"?{action,visible}:{action})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ الإعداد.");status.textContent=data.visible?"حالة اللوحة: ظاهرة للتلاميذ.":"حالة اللوحة: مخفية عن التلاميذ.";}catch(e){status.textContent=e.message||"تعذر الاتصال بالخادم.";}finally{show.disabled=hide.disabled=false;}}show.addEventListener("click",()=>request("teacher_set_winners_board_visibility",true));hide.addEventListener("click",()=>request("teacher_set_winners_board_visibility",false));request("teacher_winners_board_settings");})();</script>
 
+
+<script id="tahadi-global-sort-controls">
+(function(){
+ if(window.__tahadiGlobalSortV1)return;window.__tahadiGlobalSortV1=true;
+ const selectors=[
+  ".list","#studentsList","#dailyLessonsList","#paymentsList","#subscriptionsList",
+  "#requestsList","#weeklyGroupsList","#courseStudentsList","#courseResourcesList",
+  "#selectiveAccessList","#unpaidPaymentsList","#dailyWorkList",
+  "#incomeCalendarDayDetails","#incomeCalendar2025DayDetails",
+  "#weeklyGroupMembersList","#weeklyGroupLessonList"
+ ];
+ const modes=[
+  ["default","الترتيب الافتراضي"],
+  ["name-asc","الاسم: أ إلى ي"],["name-desc","الاسم: ي إلى أ"],
+  ["date-desc","التاريخ: الأحدث أولًا"],["date-asc","التاريخ: الأقدم أولًا"],
+  ["amount-desc","المبلغ: الأكبر أولًا"],["amount-asc","المبلغ: الأصغر أولًا"],
+  ["status","الحالة"]
+ ];
+ function directItems(root){
+  return Array.from(root.children).filter(el=>el.nodeType===1&&!el.matches("script,style,button,select,label"));
+ }
+ function parseAmount(text){
+  const matches=String(text).match(/(?:المستحق|المقبوض|المتبقي|المبلغ|السعر|الإجمالي)[^0-9]{0,24}([0-9][0-9\s.,]*)/i);
+  if(!matches)return NaN;
+  const raw=matches[1].replace(/\s/g,"").replace(/\.(?=\d{3}(?:\D|$))/g,"").replace(",",".");
+  const n=Number(raw);return Number.isFinite(n)?n:NaN;
+ }
+ function parseDate(text){
+  const s=String(text);
+  const iso=s.match(/\b(20\d{2})[-/](\d{1,2})[-/](\d{1,2})\b/);
+  if(iso)return new Date(Number(iso[1]),Number(iso[2])-1,Number(iso[3])).getTime();
+  const d=Date.parse(s);return Number.isNaN(d)?NaN:d;
+ }
+ function statusRank(text){
+  const s=String(text).toLowerCase();
+  if(/مرفوض|ملغى|غائب|غير نشط/.test(s))return 5;
+  if(/قيد المراجعة|معلق|انتظار|غير مدفوع|غير مدفوعة/.test(s))return 4;
+  if(/جزئي|متبقي/.test(s))return 3;
+  if(/مقبول|مدفوع|حاضر|نشط|تمت/.test(s))return 1;
+  return 2;
+ }
+ function sort(root,mode){
+  const items=directItems(root);
+  if(items.length<2)return;
+  const indexed=items.map((el,index)=>({el,index,text:el.innerText||el.textContent||""}));
+  const cmp=(a,b)=>{
+   let av,bv;
+   if(mode==="name-asc"||mode==="name-desc"){
+    av=a.text.trim().toLocaleLowerCase("ar");bv=b.text.trim().toLocaleLowerCase("ar");
+    const c=av.localeCompare(bv,"ar");return mode==="name-desc"?-c:c;
+   }
+   if(mode==="date-asc"||mode==="date-desc"){
+    av=parseDate(a.text);bv=parseDate(b.text);
+   }else if(mode==="amount-asc"||mode==="amount-desc"){
+    av=parseAmount(a.text);bv=parseAmount(b.text);
+   }else if(mode==="status"){
+    av=statusRank(a.text);bv=statusRank(b.text);
+   }else return a.index-b.index;
+   if(!Number.isFinite(av))return 1;if(!Number.isFinite(bv))return -1;
+   const c=av-bv;return mode.endsWith("desc")?-c:c;
+  };
+  indexed.sort((a,b)=>cmp(a,b)||a.index-b.index);
+  const frag=document.createDocumentFragment();indexed.forEach(x=>frag.appendChild(x.el));root.appendChild(frag);
+ }
+ function install(root){
+  if(!root||root.dataset.tahadiSortable==="1"||root.closest("#tahadi-global-sort-controls"))return;
+  root.dataset.tahadiSortable="1";
+  const bar=document.createElement("div");bar.className="tahadi-sort-bar";
+  bar.style.cssText="display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin:10px 0;padding:8px 10px;background:#f5f8f2;border:1px solid #dce7d8;border-radius:12px";
+  const label=document.createElement("label");label.textContent="ترتيب حسب:";label.style.cssText="font-size:13px;color:#315b3e;font-weight:700";
+  const select=document.createElement("select");select.setAttribute("aria-label","ترتيب القائمة");select.style.cssText="min-width:175px;max-width:100%;padding:9px 11px;border:1px solid #cbd9c8;border-radius:10px;background:#fff;color:#244b34;font:inherit";
+  modes.forEach(([value,title])=>{const option=document.createElement("option");option.value=value;option.textContent=title;select.appendChild(option);});
+  select.addEventListener("change",()=>sort(root,select.value));
+  label.appendChild(select);bar.appendChild(label);
+  root.parentNode.insertBefore(bar,root);
+  let scheduled=false;
+  const observer=new MutationObserver(records=>{
+   if(scheduled||select.value==="default"||records.every(x=>x.target===root&&x.addedNodes.length===0))return;
+   scheduled=true;requestAnimationFrame(()=>{scheduled=false;sort(root,select.value);});
+  });
+  observer.observe(root,{childList:true});
+ }
+ function scan(scope){
+  selectors.forEach(selector=>{
+   if(scope.matches&&scope.matches(selector))install(scope);
+   scope.querySelectorAll&&scope.querySelectorAll(selector).forEach(install);
+  });
+ }
+ function start(){scan(document);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1)scan(n);}))).observe(document.body,{childList:true,subtree:true});}
+ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
+})();
+</script>
+
 </body>
 </html>
