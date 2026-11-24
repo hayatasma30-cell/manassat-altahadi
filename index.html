@@ -1573,6 +1573,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 #dailyLessonsView .lesson-calendar-toolbar strong{flex:1;text-align:center}
 #dailyLessonsView #lessonCalendarGrid{touch-action:pan-y!important;overscroll-behavior-x:contain}
 </style>
+  <style id="student-stats-payment-status-v1">.student-stat-detail-row{grid-template-columns:minmax(100px,1fr) minmax(120px,1.2fr) auto auto!important}.student-stat-payment{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;padding:5px 9px;border-radius:999px;font-size:.76rem;font-weight:800;border:1px solid transparent}.student-stat-payment.paid{background:#e8f7e9;color:#176b35;border-color:#b7dfbd}.student-stat-payment.partial,.student-stat-payment.pending{background:#fff5df;color:#8a5a08;border-color:#ead39a}.student-stat-payment.unpaid{background:#fff0ee;color:#a33b32;border-color:#efc0ba}.student-stat-payment.unknown{background:#f1f3f1;color:#65736a;border-color:#dce3dc}@media(max-width:620px){.student-stat-detail-row{grid-template-columns:1fr auto!important}.student-stat-row-meta{grid-column:1/-1}.student-stat-payment{grid-column:1/-1;justify-self:start}}</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2253,9 +2254,11 @@ window.addEventListener("unhandledrejection",function(e){
     for(const s of students)window.tahadiRecordCache["students:"+s.id]=s;
 
     const subscriptions = Array.isArray(d.subscriptions) ? d.subscriptions : [];
+    window.tahadiDailySubscriptions = subscriptions;
     for(const x of subscriptions)window.tahadiRecordCache["student_subscriptions:"+x.id]=x;
 
     const payments = Array.isArray(d.payments) ? d.payments : [];
+    window.tahadiDailyPayments = payments;
     for(const p of payments)window.tahadiRecordCache["student_payments:"+p.id]=p;
 
     const levelFilters = $("studentLevelFilters");
@@ -3056,7 +3059,7 @@ window.addEventListener("unhandledrejection",function(e){
         if(lesson.lesson_type==="فردية"){
           if(lesson.student_id&&byId.has(String(lesson.student_id))){
             const item=byId.get(String(lesson.student_id));item.present++;item.individual++;if(lesson.delivery_mode==="in_person")item.inPerson++;else item.zoom++;
-            item.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"فردية",state:"present"});
+            item.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"فردية",state:"present",lessonId:lesson.id,studentId:lesson.student_id});
           }
         }
       }
@@ -3066,9 +3069,9 @@ window.addEventListener("unhandledrejection",function(e){
         const state=String(row.status||"").toLowerCase();
         if(state==="present"||state==="حاضر"){
           student.present++;student.group++;if(lesson.delivery_mode==="in_person")student.inPerson++;else student.zoom++;
-          student.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية",state:"present"});
+          student.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية",state:"present",lessonId:lesson.id,studentId:row.student_id});
         }else if(state==="absent"||state==="غائب"){
-          student.absent++;student.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية",state:"absent"});
+          student.absent++;student.details.push({date:lesson.lesson_date,time:lesson.lesson_time,level:lesson.level,mode:lesson.delivery_mode,type:"جماعية",state:"absent",lessonId:lesson.id,studentId:row.student_id});
         }
       }
       studentLessonStatsCache=Array.from(byId.values()).map(x=>({...x,total:x.present+x.absent})).sort((a,b)=>String(a.student.full_name||"").localeCompare(String(b.student.full_name||""),"ar"));
@@ -3087,11 +3090,24 @@ window.addEventListener("unhandledrejection",function(e){
     const overview='<section class="student-stats-overview"><div class="student-stats-overview-head"><span>📊 ملخص الإحصائيات</span><small>'+rows.length+' تلميذ</small></div><div class="student-stats-overview-grid"><div class="student-stats-overview-item"><small>إجمالي الحضور</small><strong>'+totalPresent+'</strong></div><div class="student-stats-overview-item"><small>إجمالي الغياب</small><strong>'+totalAbsent+'</strong></div><div class="student-stats-overview-item"><small>نسبة الحضور</small><strong>'+attendanceRate+'٪</strong></div></div><div class="student-stats-overview-track"><span style="width:'+attendanceRate+'%"></span></div></section>';
     box.innerHTML=overview+(rows.length?rows.map(x=>{const rate=x.total?Math.round(x.present/x.total*100):0;return '<article class="student-stats-result"><div class="student-stats-result-main"><div class="student-stats-result-top"><div><div class="student-stats-name">'+escapeHtml(x.student.full_name||"تلميذ")+'</div><div class="student-stats-meta">'+escapeHtml(x.student.level||"")+'</div></div><span class="student-stats-rate">'+rate+'٪ حضور</span></div><div class="student-stats-result-track"><span style="width:'+rate+'%"></span></div><div class="student-stats-result-bottom"><span class="student-stats-present">✓ حضر '+x.present+'</span><span class="student-stats-absent">✕ غاب '+x.absent+'</span><span class="student-stats-total">المجموع '+x.total+'</span></div></div><button type="button" class="secondary" data-open-student-stat="'+escapeHtml(x.student.id)+'">التفاصيل ←</button></article>';}).join(""):'<p class="muted">لا توجد نتائج مطابقة. جرّبي «إظهار الكل» أو غيّري الفلاتر.</p>');
   }
+  function studentStatsPaymentState(detail){
+    const studentId=String(detail.studentId||selectedStudentStatsId||""),lessonId=String(detail.lessonId||""),date=String(detail.date||"").slice(0,10),monthKey=/^\\d{4}-\\d{2}/.test(date)?date.slice(0,7):"";
+    const subs=Array.isArray(window.tahadiDailySubscriptions)?window.tahadiDailySubscriptions:[],payments=Array.isArray(window.tahadiDailyPayments)?window.tahadiDailyPayments:[];
+    let sub=subs.find(s=>lessonId&&String(s.lesson_id||"")===lessonId&&String(s.student_id||"")===studentId)||null;
+    if(!sub&&detail.type==="جماعية"&&detail.mode==="zoom"&&monthKey)sub=subs.find(s=>{if(String(s.student_id||"")!==studentId)return false;const type=String(s.service_type||"").toLowerCase();if(type!=="monthly_subscription"&&!/اشتراك.*(شهري|جماعي)/.test(String(s.service_name||"")))return false;const m=String(s.subscription_month||"").trim();return m===monthKey||m.startsWith(monthKey)||m.includes(monthKey);})||null;
+    if(!sub)return {label:"غير محددة",cls:"unknown"};
+    const due=Number(sub.amount_due||0),recorded=Number(sub.amount_paid||0),linked=payments.filter(p=>String(p.subscription_id||"")===String(sub.id||"")&&["approved","paid","confirmed"].includes(String(p.status||"").toLowerCase())),confirmed=linked.reduce((n,p)=>n+Number(p.amount_paid??p.amount??0),0),paid=Math.max(recorded,confirmed),raw=String(sub.status||"").toLowerCase();
+    if((due>0&&paid>=due)||(["paid","approved","confirmed"].includes(raw)&&(!due||paid>=due)))return {label:"مدفوعة",cls:"paid"};
+    if(paid>0&&due>paid)return {label:"مدفوعة جزئيًا",cls:"partial"};
+    if(raw==="pending"||payments.some(p=>String(p.subscription_id||"")===String(sub.id||"")&&String(p.status||"").toLowerCase()==="pending"))return {label:"قيد المراجعة",cls:"pending"};
+    if(["unpaid","rejected","overdue"].includes(raw)||(due>0&&paid<due))return {label:"غير مدفوعة",cls:"unpaid"};
+    return {label:"غير محددة",cls:"unknown"};
+  }
   function openStudentStatsDetail(studentId){
     const item=studentLessonStatsCache?.find(x=>String(x.student.id)===String(studentId));if(!item)return;
     selectedStudentStatsId=String(studentId);window.__tahadiSelectedStudentStatsId=String(studentId);
     const details=[...item.details].sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))||String(a.time||"").localeCompare(String(b.time||"")));
-    const detailHtml=details.length?details.map(d=>'<div class="student-stat-detail-row"><div class="student-stat-date"><bdi dir="ltr">'+escapeHtml(d.date||"")+'</bdi><bdi dir="ltr">'+escapeHtml(d.time||"")+'</bdi></div><div class="student-stat-row-meta"><span>'+escapeHtml(d.level||"")+'</span><span>'+(d.mode==="in_person"?"حضوري":"Zoom")+'</span><span>'+(d.type==="فردية"?"فردية":"جماعية")+'</span></div><span class="payment-status '+(d.state==="present"?"approved":"rejected")+'">'+(d.state==="present"?"حاضر":"غائب")+'</span></div>').join(""):'<p class="muted">لا توجد سجلات حضور لهذا التلميذ.</p>';
+    const detailHtml=details.length?details.map(d=>{const payment=studentStatsPaymentState({...d,studentId});return '<div class="student-stat-detail-row"><div class="student-stat-date"><bdi dir="ltr">'+escapeHtml(d.date||"") +'</bdi><bdi dir="ltr">'+escapeHtml(d.time||"") +'</bdi></div><div class="student-stat-row-meta"><span>'+escapeHtml(d.level||"") +'</span><span>'+(d.mode==="in_person"?"حضوري":"Zoom") +'</span><span>'+(d.type==="فردية"?"فردية":"جماعية") +'</span></div><span class="payment-status '+(d.state==="present"?"approved":"rejected") +'">'+(d.state==="present"?"حاضر":"غائب") +'</span><span class="student-stat-payment '+payment.cls+'">💳 '+payment.label+'</span></div>';}).join(""):'<p class="muted">لا توجد سجلات حضور لهذا التلميذ.</p>';
     $("studentStatsDetailContent").innerHTML='<article class="data-item student-stat-card student-stat-compact"><div class="student-stat-profile"><div><strong>'+escapeHtml(item.student.full_name||"تلميذ")+'</strong><p class="muted">'+escapeHtml(item.student.level||"")+'</p></div><button type="button" class="secondary" id="printStudentStatsDetail">🖨️ طباعة</button></div><div class="student-stat-main-counts"><div><small>حضر</small><strong>'+item.present+'</strong></div><div><small>غاب</small><strong>'+item.absent+'</strong></div><div><small>المجموع</small><strong>'+item.total+'</strong></div></div><details class="student-stat-extra"><summary>تفاصيل إضافية: طريقة التدريس ونوع الحصص</summary><div class="student-stat-chips"><span>Zoom: <b>'+item.zoom+'</b></span><span>حضوري: <b>'+item.inPerson+'</b></span><span>جماعية: <b>'+item.group+'</b></span><span>فردية: <b>'+item.individual+'</b></span></div></details><h4 class="student-stat-history-title">سجل الحصص <span>('+details.length+')</span></h4><div class="student-stat-history">'+detailHtml+'</div></article>';
     $("studentStatsListPage").hidden=true;$("studentStatsDetailPage").hidden=false;
     try{
