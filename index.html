@@ -2126,6 +2126,25 @@ window.addEventListener("unhandledrejection",function(e){
   document.addEventListener("click",()=>setTimeout(saveTeacherPagePosition,220),true);
   document.addEventListener("change",()=>setTimeout(saveTeacherPagePosition,180),true);
   function restoreChallengeFramePosition(y){const frame=document.getElementById("dailyChallengeFrame");if(!frame||!Number.isFinite(Number(y)))return;let tries=0;const apply=()=>{try{const win=frame.contentWindow;if(!win)return;win.scrollTo({top:Math.max(0,Number(y)||0),behavior:"auto"});if(Math.abs((win.scrollY||0)-Number(y))>3&&tries++<12)setTimeout(apply,120);}catch(_){}};frame.addEventListener("load",()=>{tries=0;requestAnimationFrame(()=>requestAnimationFrame(apply));},{once:true});requestAnimationFrame(()=>requestAnimationFrame(apply));}
+  // حفظ القسم المفتوح لحظيًا قبل أي تحديث أو مغادرة للصفحة.
+  function persistExactTeacherView(){
+    try{
+      if(window.__tahadiLoggingOut||window.__tahadiRestoringTeacherPage)return;
+      const visible=document.querySelector(".view.active")||Array.from(document.querySelectorAll(".view")).find(v=>v.style.display==="block"&&v.getAttribute("aria-hidden")!=="true");
+      const current=visible?.id||activeView||localStorage.getItem("tahadi_last_view_persistent")||"homeView";
+      if(current==="loginView")return;
+      const previous=JSON.parse(sessionStorage.getItem(teacherPagePositionKey)||localStorage.getItem(teacherPagePositionKey)||"{}");
+      const snapshot={...previous,view:current,y:window.scrollY||0,savedAt:Date.now()};
+      const value=JSON.stringify(snapshot);
+      sessionStorage.setItem(teacherPagePositionKey,value);
+      localStorage.setItem(teacherPagePositionKey,value);
+      sessionStorage.setItem("tahadi_last_view",current);
+      localStorage.setItem("tahadi_last_view_persistent",current);
+    }catch(_){}
+  }
+  window.addEventListener("pagehide",persistExactTeacherView,{capture:true});
+  window.addEventListener("beforeunload",persistExactTeacherView,{capture:true});
+  document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")persistExactTeacherView();});
   window.addEventListener("pagehide",saveTeacherPagePosition);
   window.addEventListener("beforeunload",saveTeacherPagePosition);
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")saveTeacherPagePosition();});
