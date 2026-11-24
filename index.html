@@ -2466,11 +2466,13 @@ window.addEventListener("unhandledrejection",function(e){
         const due=Number(p.amount_due)||0,paid=Number(p.amount_paid)||0;
         return {kind:"حصة فردية",student:p.student_name||student?.full_name||"تلميذ غير محدد",level:student?.level||p.level||"غير محدد",mode:(student?.study_mode||p.study_mode)==="zoom"?"زووم":(student?.study_mode||p.study_mode)==="in_person"?"حضوري":"غير محددة",service:p.service_name||"حصة فردية",period:p.payment_date?formatDate(p.payment_date):"غير محدد",due,paid,remaining:Math.max(0,due-paid),id:p.id};
       });
-      const rows=[...subscriptionDebts,...individualSubscriptionDebts,...individualDebts];
+      const allRows=[...subscriptionDebts,...individualSubscriptionDebts,...individualDebts];
+      const rows=allRows.filter(x=>window.tahadiUnpaidMode==="all"||(window.tahadiUnpaidMode==="zoom"&&x.mode==="زووم")||(window.tahadiUnpaidMode==="in_person"&&x.mode==="حضوري"));
       const total=rows.reduce((sum,x)=>sum+x.remaining,0);
       $("unpaidPaymentSummary").innerHTML=[["عدد المستحقات",rows.length],["إجمالي المبلغ المتبقي",formatUnpaidMoney(total)]].map(x=>'<div class="stat"><strong>'+escapeHtml(x[1])+'</strong><span>'+x[0]+'</span></div>').join("");
       $("unpaidPaymentsList").innerHTML=rows.length?rows.map(x=>'<article class="data-item"><strong>'+escapeHtml(x.student)+'</strong><div class="small">المستوى: '+escapeHtml(x.level)+' · '+escapeHtml(x.mode)+'</div><div class="small">النوع: '+escapeHtml(x.kind)+' · الخدمة: '+escapeHtml(x.service)+'</div><div class="small">الفترة/التاريخ: '+escapeHtml(x.period)+'</div><div class="payment-meta"><span>المستحق: <b>'+formatUnpaidMoney(x.due)+'</b></span><span>المقبوض: <b>'+formatUnpaidMoney(x.paid)+'</b></span><span class="payment-status pending">المتبقي: '+formatUnpaidMoney(x.remaining)+'</span></div></article>').join(""):'<div class="data-item">لا توجد دفعات غير مقبوضة مسجلة حاليًا.</div>';
     };
+    window.tahadiRenderUnpaidPayments=renderUnpaidPayments;
     renderUnpaidPayments();
     $("subscriptionsList").addEventListener("click",async event=>{
       const button=event.target.closest("[data-record-sub-payment]");if(!button)return;
@@ -3401,7 +3403,17 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     finally{manualSave.disabled=false;}
   });
   resetManualAfterMode();
-  $("toggleManualInPersonPayment").addEventListener("click",()=>showView("manualInPersonPaymentView"));
+  $("toggleManualInPersonPayment").addEventListener("click",()=>showView("paymentRegistrationModeView"));
+  document.querySelectorAll("[data-register-mode]").forEach(button=>button.addEventListener("click",()=>{
+    manualMode.value=button.dataset.registerMode;manualMode.dispatchEvent(new Event("change"));showView("manualInPersonPaymentView");
+  }));
+  window.tahadiUnpaidMode=window.tahadiUnpaidMode||"zoom";
+  document.querySelectorAll("[data-unpaid-mode]").forEach(button=>button.addEventListener("click",()=>{
+    window.tahadiUnpaidMode=button.dataset.unpaidMode;
+    document.querySelectorAll("[data-unpaid-mode]").forEach(b=>{const active=b.dataset.unpaidMode===window.tahadiUnpaidMode;b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
+    if(typeof window.tahadiRenderUnpaidPayments==="function")window.tahadiRenderUnpaidPayments();
+  }));
+
   $("refreshPaymentsBtn").addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");const label=$("paymentsRefreshStatus");if(!token)return;label.textContent="جارٍ تحديث الدفعات…";try{await loadDashboard(token);label.textContent="تم تحديث إشعارات الدفع.";}catch(err){label.textContent="تعذر التحديث: "+(err.message||"خطأ غير معروف");}});
   $("paymentModeFilters").addEventListener("click",event=>{const button=event.target.closest("[data-payment-mode]");if(!button)return;window.tahadiPaymentMode=button.dataset.paymentMode;if(typeof window.tahadiRenderPayments==="function")window.tahadiRenderPayments();});
   document.querySelector('[data-view="unpaidPaymentsView"]').addEventListener("click",async()=>{const token=localStorage.getItem("tahadi_teacher_token");if(!token)return;try{await loadDashboard(token);}catch(err){showStatus("تعذر تحديث الدفعات غير المقبوضة: "+(err.message||"خطأ غير معروف"),"error");}});
