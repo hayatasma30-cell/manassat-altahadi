@@ -2271,7 +2271,7 @@ window.addEventListener("unhandledrejection",function(e){
     const payments = Array.isArray(d.payments) ? d.payments : [];
     for(const p of payments)window.tahadiRecordCache["student_payments:"+p.id]=p;
     window.tahadiPaymentsData=payments;
-    window.tahadiPaymentMode=window.tahadiPaymentMode||"all";
+    window.tahadiPaymentMode=window.tahadiPaymentMode||"zoom";
     window.tahadiRenderPayments=function(){
       const paymentMoney=value=>(Number(value)||0).toLocaleString("fr-FR",{maximumFractionDigits:2})+" دج";
       const mode=window.tahadiPaymentMode||"all";
@@ -3408,6 +3408,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     manualMode.value=button.dataset.registerMode;manualMode.dispatchEvent(new Event("change"));showView("manualInPersonPaymentView");
   }));
   window.tahadiUnpaidMode=window.tahadiUnpaidMode||"zoom";
+  document.querySelectorAll("[data-unpaid-mode]").forEach(b=>{const active=b.dataset.unpaidMode===window.tahadiUnpaidMode;b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
   document.querySelectorAll("[data-unpaid-mode]").forEach(button=>button.addEventListener("click",()=>{
     window.tahadiUnpaidMode=button.dataset.unpaidMode;
     document.querySelectorAll("[data-unpaid-mode]").forEach(b=>{const active=b.dataset.unpaidMode===window.tahadiUnpaidMode;b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
