@@ -2220,7 +2220,8 @@ window.addEventListener("unhandledrejection",function(e){
     try{
       const token=localStorage.getItem("tahadi_teacher_token");
       if(del){
-        if(!await window.TahadiDialog.confirm("متأكدة من حذف هذا السجل؟ الحذف لا يمكن التراجع عنه."))return;
+        const confirmMessage=table==="student_payments"?"هل أنتِ متأكدة من حذف هذه الدفعة نهائيًا؟":"متأكدة من حذف هذا السجل؟ الحذف لا يمكن التراجع عنه.";
+        if(!await window.TahadiDialog.confirm(confirmMessage))return;
         const res=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"delete_record",table,id,confirm:true})});
         const data=await res.json();if(!res.ok||!data.ok)throw new Error(data.error||"تعذر الحذف.");
         alert("تم الحذف.");await refresh();return;
