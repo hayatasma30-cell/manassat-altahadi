@@ -1913,10 +1913,10 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </section>
 <section id="paymentsView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>💳 إشعارات الدفع</h2></div>
-<div class="panel"><p class="muted">اختاري القسم الذي تريدين الدخول إليه.</p>
-<div class="data-item" style="padding:20px;margin:12px 0"><strong>💳 تسجيل دفعة جديدة</strong><p class="muted">اختاري طريقة الدراسة أولًا.</p><button type="button" class="primary" id="toggleManualInPersonPayment" style="width:100%">＋ تسجيل دفعة جديدة</button></div>
-<div class="data-item" style="padding:20px;margin:12px 0"><strong>📚 سجل الدفعات</strong><p class="muted">عرض الدفعات المسجلة، مرتبة حسب التلميذ.</p><button type="button" class="primary" data-view="paymentHistoryView" style="width:100%">فتح سجل الدفعات ←</button></div>
-<div class="data-item" style="padding:20px;margin:12px 0"><strong>📌 الدفعات غير المقبوضة</strong><p class="muted">متابعة الاشتراكات والخدمات التي ما زال عليها مبلغ متبقٍ.</p><button type="button" class="primary" data-view="unpaidPaymentsView" style="width:100%">عرض الدفعات غير المقبوضة ←</button></div>
+<div class="panel" style="display:grid;gap:16px;padding:20px">
+<button type="button" class="primary" id="toggleManualInPersonPayment" style="width:100%;min-height:64px">💳 تسجيل دفعة جديدة</button>
+<button type="button" class="primary" data-view="paymentHistoryView" style="width:100%;min-height:64px">📚 سجل الدفعات</button>
+<button type="button" class="primary" data-view="unpaidPaymentsView" style="width:100%;min-height:64px">📌 الدفعات غير المقبوضة</button>
 </div></section>
 <section id="paymentRegistrationModeView" class="view"><div class="view-head"><button class="back" data-view="paymentsView" type="button">→ إشعارات الدفع</button><h2>💳 تسجيل دفعة جديدة</h2></div><div class="panel"><p class="muted">اختاري طريقة الدراسة.</p><button type="button" class="primary" data-register-mode="zoom" style="width:100%;margin:8px 0">💻 زووم</button><button type="button" class="secondary" data-register-mode="in_person" style="width:100%;margin:8px 0">🏫 حضوري</button></div></section>
 <section id="paymentHistoryView" class="view">
