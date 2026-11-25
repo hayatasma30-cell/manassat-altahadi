@@ -93,6 +93,86 @@
    reader.readAsDataURL(file);
   });
  }
+ let localOcrWorkerPromise=null;
+ let tesseractScriptPromise=null;
+ let pdfJsScriptPromise=null;
+ function loadScriptOnce(src,globalName,promiseName){
+  if(window[globalName])return Promise.resolve(window[globalName]);
+  if(promiseName==="tesseract"&&tesseractScriptPromise)return tesseractScriptPromise;
+  if(promiseName==="pdfjs"&&pdfJsScriptPromise)return pdfJsScriptPromise;
+  const promise=new Promise((resolve,reject)=>{
+   const script=document.createElement("script");script.src=src;script.async=true;
+   script.onload=()=>window[globalName]?resolve(window[globalName]):reject(new Error("تعذر تحميل مكتبة القراءة."));
+   script.onerror=()=>reject(new Error("تعذر تحميل القارئ المجاني. تحققي من اتصال الإنترنت."));
+   document.head.appendChild(script);
+  });
+  if(promiseName==="tesseract")tesseractScriptPromise=promise;else pdfJsScriptPromise=promise;
+  return promise;
+ }
+ async function getLocalOcrWorker(){
+  if(!localOcrWorkerPromise){
+   localOcrWorkerPromise=(async()=>{
+    const Tesseract=await loadScriptOnce("https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js","Tesseract","tesseract");
+    return await Tesseract.createWorker("ara+eng",1,{logger:(m)=>{
+     if(m.status==="loading language traineddata")setStatus("جارٍ تحميل القارئ العربي المجاني لأول مرة…");
+     else if(m.status==="recognizing text")setStatus("القارئ المجاني يقرأ النص… "+Math.round((m.progress||0)*100)+"%");
+    }});
+   })().catch(e=>{localOcrWorkerPromise=null;throw e;});
+  }
+  return await localOcrWorkerPromise;
+ }
+ async function recognizeCanvasLocally(canvas,worker){
+  const result=await worker.recognize(canvas);
+  return String(result?.data?.text||"").trim();
+ }
+ async function extractImageLocally(file,worker){
+  const image=await new Promise((resolve,reject)=>{
+   const url=URL.createObjectURL(file),img=new Image();
+   img.onload=()=>{URL.revokeObjectURL(url);resolve(img);};
+   img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("تعذر فتح الصورة."));};
+   img.src=url;
+  });
+  const maxSide=1800,scale=Math.min(1,maxSide/Math.max(image.naturalWidth,image.naturalHeight));
+  const canvas=document.createElement("canvas");
+  canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
+  canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
+  const ctx=canvas.getContext("2d",{willReadFrequently:false});
+  ctx.drawImage(image,0,0,canvas.width,canvas.height);
+  const text=await recognizeCanvasLocally(canvas,worker);
+  canvas.width=canvas.height=1;
+  return text;
+ }
+ async function extractPdfLocally(file,worker){
+  const pdfjs=await loadScriptOnce("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js","pdfjsLib","pdfjs");
+  pdfjs.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const bytes=await file.arrayBuffer();
+  const pdf=await pdfjs.getDocument({data:bytes}).promise;
+  const pageCount=Math.min(pdf.numPages,12),parts=[];
+  if(pdf.numPages>12)setStatus("الملف طويل؛ سيُقرأ أول 12 صفحة في الوضع المجاني.");
+  for(let n=1;n<=pageCount;n++){
+   setStatus("القارئ المجاني يقرأ الصفحة "+n+" من "+pageCount+"…");
+   const page=await pdf.getPage(n);
+   const viewport=page.getViewport({scale:1.35});
+   const canvas=document.createElement("canvas");
+   canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+   await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+   const text=await recognizeCanvasLocally(canvas,worker);
+   parts.push("— الصفحة "+n+" —\n"+text);
+   canvas.width=canvas.height=1;
+   page.cleanup();
+  }
+  return parts.join("\n\n").trim();
+ }
+ async function extractLocally(file){
+  setStatus("تعذّر استخدام خدمة الذكاء الاصطناعي؛ جارٍ تشغيل القارئ المجاني على الهاتف…");
+  const worker=await getLocalOcrWorker();
+  const isPdf=file.type==="application/pdf"||file.name.toLowerCase().endsWith(".pdf");
+  return isPdf?await extractPdfLocally(file,worker):await extractImageLocally(file,worker);
+ }
+ function canUseLocalFallback(error){
+  if(error?.status===401||error?.status===400||error?.status===413)return false;
+  return error?.status===429||error?.status>=500||error instanceof TypeError||/رصيد|حد الاستخدام|تعذر الاتصال|فشل الشبكة|OpenAI/i.test(error?.message||"");
+ }
  async function extractWithAI(file){
   const mime=file.type||(file.name.toLowerCase().endsWith(".pdf")?"application/pdf":"");
   const token=teacherToken();
@@ -109,12 +189,23 @@
    body:JSON.stringify({filename:file.name,mime_type:mime,file_data:fileData})
   });
   let data={};try{data=await response.json();}catch(_){}
-  if(!response.ok||!data.ok)throw new Error(data.error||"تعذر استخراج النص من الملف.");
+  if(!response.ok||!data.ok){const error=new Error(data.error||"تعذر استخراج النص من الملف.");error.status=response.status;throw error;}
   return String(data.text||"").trim();
  }
   $('extractBtn').addEventListener('click',async()=>{
   const file=fileInput.files&&fileInput.files[0];if(!file){setStatus('اختاري صورة أو ملف PDF أولًا.');return;}if(file.size>15*1024*1024){setStatus('حجم الملف أكبر من 15 ميغابايت.');return;}
-  const btn=$('extractBtn');btn.disabled=true;try{const text=await extractWithAI(file);$('topicText').value=text;setStatus(text?'اكتمل استخراج النص بالذكاء الاصطناعي. راجعي الكلمات والرموز العلمية قبل إعداد الحل.':'لم يتم العثور على نص واضح. يمكنك كتابة الموضوع يدويًا.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
+  const btn=$('extractBtn');btn.disabled=true;try{
+   let text="",method="الذكاء الاصطناعي";
+   try{text=await extractWithAI(file);}
+   catch(aiError){
+    if(!canUseLocalFallback(aiError))throw aiError;
+    method="القارئ المجاني";
+    setStatus("لم يتوفر رصيد أو اتصال بخدمة الذكاء الاصطناعي؛ سنستخدم القارئ المجاني الآن…");
+    text=await extractLocally(file);
+   }
+   $('topicText').value=text;
+   setStatus(text?'اكتمل استخراج النص بواسطة '+method+'. راجعي الكلمات والرموز العلمية قبل إعداد الحل.':'لم يتم العثور على نص واضح. يمكنك كتابة الموضوع يدويًا.');
+  }catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
  });
  $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
  function teacherToken(){
