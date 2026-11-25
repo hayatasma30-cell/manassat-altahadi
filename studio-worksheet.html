@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>ورقة عمل | استوديو التصميم التعليمي</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{--green:#14532d;--green2:#1b7542;--mint:#eaf4e8;--cream:#fbf8ef;--gold:#d6ad55;--ink:#20372a;--muted:#6d7b70;--line:#dce7d9}
+*{box-sizing:border-box}body{margin:0;background:#f3f6ef;color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+.top{background:linear-gradient(120deg,#103f28,#1b7542);color:white;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.top strong{font-size:1.05rem}.top a{color:white;text-decoration:none;border:1px solid #ffffff66;border-radius:11px;padding:7px 12px;font-size:.85rem}
+.layout{max-width:1180px;margin:18px auto;padding:0 14px;display:grid;grid-template-columns:minmax(280px,390px) minmax(0,1fr);gap:16px;align-items:start}
+.form-panel,.preview-panel{background:white;border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:0 8px 24px #1b4a2910}
+h1{font-size:1.35rem;color:var(--green);margin:0 0 4px}.hint{color:var(--muted);font-size:.86rem;margin:0 0 14px}
+label{display:block;font-weight:700;font-size:.88rem;margin:10px 0 5px}
+input,select,textarea{width:100%;border:1px solid #cbd9c8;border-radius:11px;padding:10px 11px;background:#fff;color:var(--ink);font:inherit;font-size:16px}
+textarea{min-height:74px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;background:#fbfdf9}legend{padding:0 7px;color:var(--green);font-weight:800;font-size:.92rem}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid #a8c9aa;border-bottom:4px solid #6c9c70;border-radius:12px;padding:10px 14px;background:linear-gradient(145deg,#fff,#eaf5e8);color:var(--green);font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(145deg,#1c7543,#14532d);border-color:#1c7543;border-bottom-color:#0c3c20;color:#fff}.btn.gold{background:linear-gradient(145deg,#fff9e9,#f4e5bd);border-color:#dfc47e;border-bottom-color:#b18a39;color:#6e521a}.btn:active{transform:translateY(2px);border-bottom-width:2px}
+.row-editor{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:7px 0}.row-editor input{min-width:0}.remove{border:0;background:#fff0ee;color:#a12f2a;border-radius:9px;padding:0 10px;font-weight:800}
+.preview-panel{overflow:auto}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.preview-head strong{color:var(--green)}
+#posterViewport{width:100%;position:relative;overflow:hidden;min-height:1px;margin:0 auto}\n#poster{width:794px;height:1123px;min-height:1123px;margin:0;position:absolute;top:0;right:0;transform-origin:top right;background:linear-gradient(180deg,#fffef9,#f8fbf5);padding:28px 30px;color:#1c3426;border:8px double #2d7444;overflow:hidden;box-shadow:0 8px 30px #193d201b}
+#poster:before,#poster:after{content:"";position:absolute;width:170px;height:170px;border:1px solid #d8e8d2;border-radius:50%;opacity:.5;pointer-events:none}#poster:before{top:-105px;left:-75px}#poster:after{bottom:-105px;right:-75px}
+
+#poster.template-lesson{--accent:#14532d;--pale:#fff8e5;--line-accent:#d7b45e}
+#poster.template-worksheet{--accent:#175b72;--pale:#eef8fb;--line-accent:#75b6c9}
+#poster.template-exam{--accent:#333d68;--pale:#f1f2fa;--line-accent:#a9afd2}
+#poster.template-poster{--accent:#14532d;--pale:#f1f8e9;--line-accent:#d7b45e}
+#poster.template-experiment{--accent:#286548;--pale:#eff8f0;--line-accent:#8dbb8d}
+#poster.template-tables{--accent:#5b4b82;--pale:#f5f1fa;--line-accent:#b7a4d3}
+#poster[class*="template-"] .poster-title h2,#poster[class*="template-"] .section-title{background:linear-gradient(120deg,var(--accent),var(--accent));border-color:var(--line-accent)}
+#poster[class*="template-"] .poster-intro,#poster[class*="template-"] .task{background:var(--pale);border-color:var(--line-accent)}
+#poster[class*="template-"] .poster-section{border-color:var(--line-accent)}
+#poster.template-worksheet .poster-intro{border-style:dashed}
+#poster.template-exam .poster-intro{font-size:19px;font-weight:900}
+#poster.template-poster .poster-title h2{font-size:36px;padding:16px}
+#poster.template-poster .poster-section{border-width:2px}
+#poster.template-experiment .section-title{margin-inline:0;width:100%}
+#poster.template-tables .poster-section{border-radius:8px}
+.poster-content{width:100%;transform-origin:top right;will-change:transform}\n.poster-top{display:grid;grid-template-columns:110px 1fr 90px;gap:12px;align-items:center;border-bottom:2px solid #d5b35d;padding-bottom:14px;position:relative;z-index:1}
+.poster-logo{width:100px;height:100px;object-fit:contain;border-radius:50%;background:#fff;border:2px solid #d5b35d;padding:5px}
+.poster-title{text-align:center}.poster-title h2{margin:0;background:linear-gradient(120deg,#0e4a2a,#1c7543);color:#fff;border:3px solid #d7b45e;border-radius:22px;padding:10px 12px;font-size:30px;line-height:1.35;box-shadow:0 4px 0 #a77e32}.poster-title div{display:inline-block;margin-top:8px;padding:4px 17px;border-radius:18px;background:#fff6dc;border:1px solid #d7b45e;font-weight:800;font-size:17px}
+.poster-mark{font-size:50px;text-align:center;color:#c49a3f}
+.poster-intro{margin:14px 0;padding:9px 14px;border-radius:14px;border:1.5px solid #d7b45e;background:#fff8e5;text-align:center;font-weight:700;font-size:17px}
+.poster-section{margin:14px 0;border:1.5px solid #8bb38a;border-radius:18px;padding:13px;background:#ffffffd9;position:relative;z-index:1}
+.section-title{margin:-2px auto 12px;width:fit-content;max-width:100%;padding:7px 20px;border-radius:18px;background:linear-gradient(120deg,#0f4c2a,#1c7543);border:2px solid #d8b55f;color:#fff;font-size:19px;font-weight:800;text-align:center}
+.section-body{font-size:16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.poster-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:15px;background:white}
+.poster-table th{background:#e2f0d9;color:#174b2c}.poster-table th,.poster-table td{border:1px solid #477a4d;padding:7px 9px;text-align:center}
+.poster-images{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px}.poster-images img{max-width:31%;max-height:175px;object-fit:contain;border:1px solid #d7e4d2;border-radius:12px;padding:5px;background:#fff}
+.poster-tasks{display:grid;gap:9px;margin-top:14px}.task{padding:10px 13px;border:1px solid #d8b65e;border-radius:14px;background:#fffaf0;font-size:16px;font-weight:700}
+.poster-footer{margin-top:18px;padding:10px 12px;border-radius:20px;border:2px solid #d4ad55;background:linear-gradient(100deg,#fff9e9,#edf7e9);display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:800;font-size:14px}
+.poster-footer img{width:34px;height:34px;object-fit:contain}
+.status{font-size:.83rem;color:var(--muted);margin-top:8px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.preview-panel{padding:10px}#poster{transform-origin:top center}}
+@media(max-width:500px){.grid2{grid-template-columns:1fr}.top{padding:10px}.poster-head-note{display:none}}
+label[for="documentType"],#documentType,#typeHint{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><strong>🎨 ورقة عمل</strong><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="studio-design.html">الرئيسية ←</a><a href="index.html">العودة إلى منصة التحدي ←</a></div></header>
+<main class="layout">
+<section class="form-panel">
+<h1>أنشئي ورقتك التعليمية</h1>
+<p class="hint">أدخلي محتوى هذه الوثيقة، وستتحدث المعاينة تلقائيًا دون حذف أي نص.</p>
+<label for="documentType">نوع الوثيقة</label>
+<select id="documentType">
+<option value="lesson">ملخص درس</option><option value="worksheet" selected>ورقة عمل</option><option value="exam">اختبار أو فرض</option><option value="poster">ملصق علمي</option><option value="experiment">بطاقة تجربة</option><option value="tables">جداول ووثائق</option>
+</select>
+<p id="typeHint" class="status">قالب ملخص درس: عنوان واضح، فقرات، جداول وتعلمات.</p>
+<label for="level">المستوى الدراسي</label><select id="level"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select>
+<label for="title">عنوان الورقة</label><input id="title" value="أغذية النبات الأخضر">
+<label for="subtitle">العنوان الفرعي</label><input id="subtitle" value="علوم الطبيعة والحياة">
+<label for="intro">التمهيد أو الجملة التوجيهية</label><textarea id="intro">للتعرف على العناصر المعدنية الضرورية لنمو النبات الأخضر، نقوم بالدراسة التالية:</textarea>
+<fieldset><legend>القسم الأول</legend>
+<label for="section1">عنوان القسم</label><input id="section1" value="تركيب محلول كنوب (1000 mL)">
+<label for="text1">الملاحظة أو الشرح</label><textarea id="text1" placeholder="اكتبي الملاحظة أو الشرح هنا">محلول كنوب وسط معدني يحتوي على العناصر الضرورية لنمو النبات الأخضر.</textarea>
+<label>جدول العناصر المعدنية والكميات</label><div id="tableRows"></div><button class="btn" id="addTableRow" type="button">＋ إضافة سطر</button>
+</fieldset>
+<fieldset><legend>القسم الثاني</legend>
+<label for="section2">عنوان القسم</label><input id="section2" value="استنبت بذور نبات القمح في أوساط معدنية مختلفة التركيب، فكانت النتائج كالتالي:">
+<label for="text2">شرح التجربة أو النتائج</label><textarea id="text2" placeholder="اكتبي وصف التجربة أو النتائج"></textarea>
+<label>جدول التجربة</label><div id="experimentRows"></div><button class="btn" id="addExperimentRow" type="button">＋ إضافة سطر</button>
+<label for="images">صور التجربة (اختياري)</label><input id="images" type="file" accept="image/*" multiple>
+</fieldset>
+<fieldset><legend>التعلمات والأسئلة</legend>
+<label for="tasks">اكتبي كل تعليمة في سطر مستقل</label><textarea id="tasks">استخرج العناصر الأساسية في محلول كنوب.
+حدد عواقب نقص أو غياب أحد العناصر المعدنية على نمو النبات الأخضر.
+شخّص عواقب الإفراط في أحد العناصر المعدنية.</textarea>
+</fieldset>
+<fieldset><legend>هوية الصفحة</legend>
+<label for="logoUpload">رمز الصفحة الأصلي</label><input id="logoUpload" type="file" accept="image/*">
+<label for="teacher">التذييل – اسم الأستاذة</label><input id="teacher" value="الأستاذة حياة">
+<div class="status">يُحفظ الرمز المختار على هذا الجهاز لاستخدامه في الأوراق القادمة.</div>
+</fieldset>
+<div class="actions"><button class="btn primary" id="download" type="button">⬇ تحميل الصورة PNG</button><button class="btn gold" id="print" type="button">🖨 طباعة A4</button><button class="btn" id="reset" type="button">إعادة ضبط الحقول</button></div>
+<div id="status" class="status" role="status">المعاينة جاهزة. أدخلي بياناتك أو عدّلي النموذج.</div>
+</section>
+<section class="preview-panel" id="preview-panel">
+<div class="preview-head"><strong>معاينة <span id="previewType">ملخص درس</span> A4</strong><span class="status">تتحدث تلقائيًا</span></div>
+<div id="posterViewport"><article id="poster" class="template-lesson"><div id="posterContent" class="poster-content">
+<div class="poster-top"><img id="posterLogo" class="poster-logo" src="./file_00000000aa0081f484bc7f93b3e54448.png" alt="رمز الصفحة"><div class="poster-title"><h2 id="pTitle">أغذية النبات الأخضر</h2><div id="pSubtitle">السنة الأولى متوسط</div></div><div class="poster-mark">✦</div></div>
+<div class="poster-intro" id="pIntro"></div>
+<section class="poster-section"><div class="section-title" id="pSection1">تركيب محلول كنوب (1000 mL)</div><div class="section-body" id="pText1"></div><table class="poster-table"><thead><tr><th>العناصر المعدنية</th><th>الكميات</th></tr></thead><tbody id="pRows"></tbody></table></section>
+<section class="poster-section"><div class="section-title" id="pSection2"></div><div class="section-body" id="pText2"></div><table class="poster-table"><thead><tr><th>رقم النبتة</th><th>التركيب المعدني</th></tr></thead><tbody id="pExperimentRows"></tbody></table><div class="poster-images" id="pImages"></div></section>
+<div class="poster-tasks" id="pTasks"></div>
+<div class="poster-footer"><span>صفحة تحدي 20/20 في العلوم الطبيعية</span><span>من إعداد <b id="pTeacher">الأستاذة حياة</b></span></div>
+</div></article></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const defaults={title:"أغذية النبات الأخضر",subtitle:"علوم الطبيعة والحياة",intro:"للتعرف على العناصر المعدنية الضرورية لنمو النبات الأخضر، نقوم بالدراسة التالية:",section1:"تركيب محلول كنوب (1000 mL)",text1:"محلول كنوب وسط معدني يحتوي على العناصر الضرورية لنمو النبات الأخضر.",section2:"استنبت بذور نبات القمح في أوساط معدنية مختلفة التركيب، فكانت النتائج كالتالي:",text2:"",tasks:"استخرج العناصر الأساسية في محلول كنوب.\nحدد عواقب نقص أو غياب أحد العناصر المعدنية على نمو النبات الأخضر.\nشخّص عواقب الإفراط في أحد العناصر المعدنية.",teacher:"الأستاذة حياة"};
+let logoData=localStorage.getItem("tahadi_studio_logo")||"";
+let uploadedImages=[];
+function addRow(containerId,a="",b=""){const row=document.createElement("div");row.className="row-editor";const one=document.createElement("input"),two=document.createElement("input"),del=document.createElement("button");one.placeholder=containerId==="tableRows"?"العنصر المعدني":"رقم النبتة";two.placeholder=containerId==="tableRows"?"الكمية":"التركيب المعدني";one.value=a;two.value=b;one.addEventListener("input",render);two.addEventListener("input",render);del.type="button";del.className="remove";del.textContent="×";del.title="حذف السطر";del.onclick=()=>{row.remove();render();};row.append(one,two,del);$(containerId).append(row);render();}
+function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
+function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
+$("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
+$("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
+$("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
+$("pImages").innerHTML="";uploadedImages.forEach(src=>{const im=document.createElement("img");im.src=src;$("pImages").append(im);});
+if(logoData)$("posterLogo").src=logoData;
+}
+function fitPoster(){const viewport=$("posterViewport"),poster=$("poster"),content=$("posterContent");if(!viewport||!poster||!content)return;content.style.transform="none";const available=1065;const natural=Math.max(content.scrollHeight,1);const contentScale=Math.min(1,available/natural);content.style.transform="scale("+contentScale+")";const scale=Math.min(1,Math.max(.25,(viewport.clientWidth-2)/794));poster.style.transform="scale("+scale+")";viewport.style.height=(1123*scale)+"px";}
+if(window.ResizeObserver){new ResizeObserver(fitPoster).observe($("preview-panel"));}window.addEventListener("resize",fitPoster);
+["documentType","level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
+$("addTableRow").onclick=()=>addRow("tableRows");$("addExperimentRow").onclick=()=>addRow("experimentRows");
+$("logoUpload").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{logoData=reader.result;try{localStorage.setItem("tahadi_studio_logo",logoData);}catch(err){$("status").textContent="تعذر حفظ الرمز بسبب مساحة التخزين؛ سيبقى ظاهرًا لهذه الجلسة.";}$("posterLogo").src=logoData;};reader.readAsDataURL(f);});
+$("images").addEventListener("change",e=>{uploadedImages=[];const files=[...e.target.files].slice(0,4);let left=files.length;if(!left){render();return;}files.forEach(f=>{const r=new FileReader();r.onload=()=>{uploadedImages.push(r.result);if(!--left)render();};r.readAsDataURL(f);});});
+$("download").onclick=async()=>{const status=$("status");if(!window.html2canvas){status.textContent="تعذر تحميل أداة تصدير الصورة؛ جرّبي الطباعة أو أعيدي فتح الصفحة مع الإنترنت.";return;}const btn=$("download");btn.disabled=true;status.textContent="جارٍ تجهيز الصورة بجودة عالية…";try{const canvas=await html2canvas($("poster"),{scale:3,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false});const a=document.createElement("a");a.download=($("title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-")+".png";a.href=canvas.toDataURL("image/png");a.click();status.textContent="تم تجهيز الصورة للتحميل."; }catch(e){fitPoster();status.textContent="تعذر إنشاء الصورة: "+(e.message||"حاولي تقليل عدد الصور.");}finally{btn.disabled=false;}};
+$("print").onclick=()=>window.print();
+$("reset").onclick=()=>{Object.entries(defaults).forEach(([k,v])=>{if($(k))$(k).value=v;});$("tableRows").innerHTML="";$("experimentRows").innerHTML="";uploadedImages=[];$("images").value="";addRow("tableRows","نترات الكالسيوم","1%");addRow("tableRows","نترات البوتاسيوم","0.25%");addRow("tableRows","فوسفات أحادي البوتاسيوم","0.25%");addRow("tableRows","كبريتات المغنزيوم","0.25%");addRow("tableRows","كلورور الحديد","آثار");addRow("experimentRows","1","NPK 2‰");addRow("experimentRows","2","PK");addRow("experimentRows","3","NK");addRow("experimentRows","4","NP");addRow("experimentRows","5","NPK 20‰");render();};
+const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge")||"";
+const expiry=localStorage.getItem("tahadi_teacher_expires")||sessionStorage.getItem("tahadi_teacher_expires_bridge")||"";
+if(token){localStorage.setItem("tahadi_teacher_token",token);if(expiry)localStorage.setItem("tahadi_teacher_expires",expiry);}
+if(!token||expiry&&new Date(expiry).getTime()<=Date.now()){document.body.innerHTML='<main style="max-width:520px;margin:12vh auto;padding:24px;background:#fff;border-radius:18px;text-align:center;font-family:Tahoma"><h2 style="color:#14532d">الدخول إلى فضاء الأستاذة</h2><p>يجب تسجيل الدخول من منصة التحدي أولًا، ثم فتح استوديو التصميم.</p><a href="index.html" style="display:inline-block;padding:12px 18px;background:#14532d;color:#fff;border-radius:10px;text-decoration:none">العودة إلى المنصة</a></main>';}
+$("reset").click();
+</script>
+<style>
+@media print{body{background:#fff}#posterViewport{width:794px!important;height:1123px!important;overflow:visible!important}#poster{position:relative!important;top:auto!important;right:auto!important;transform:none!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none}#poster{margin:0 auto;box-shadow:none;transform:none!important;width:794px;min-height:1123px;page-break-inside:avoid}@page{size:A4 portrait;margin:0}}
+</style>
+</body></html>
