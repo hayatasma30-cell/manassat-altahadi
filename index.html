@@ -2230,12 +2230,14 @@ window.addEventListener("unhandledrejection",function(e){
       event.preventDefault();event.stopImmediatePropagation();
       const token=localStorage.getItem("tahadi_teacher_token");
       if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
-      showView("dailyLessonsView");
       try{
-        // هذا المعالج خارج نطاق loadDashboard؛ استخدمي الواجهة العامة التي تنتظر تهيئة الحصص.
-        if(typeof window.tahadiOpenDailyLessons!=="function")throw new Error("لم تكتمل تهيئة التقويم. أعيدي تحميل الصفحة.");
+        // تهيئة مساحة الأستاذة أولًا؛ فهي التي تربط وظائف التقويم وأزراره.
+        await loadDashboard(token);
+        showView("dailyLessonsView");
+        if(typeof window.tahadiOpenDailyLessons!=="function")throw new Error("لم تكتمل تهيئة التقويم بعد تحميل بيانات الأستاذة.");
         await window.tahadiOpenDailyLessons();
       }catch(err){
+        showView("dailyLessonsView");
         showStatus("تعذر فتح التقويم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
         console.error("dailyLessonsView open failed",err);
       }
