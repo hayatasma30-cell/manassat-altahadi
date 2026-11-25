@@ -2233,7 +2233,7 @@ window.addEventListener("unhandledrejection",function(e){
         selectedLessonPage="library";
         selectedLessonSubpage="calendar";
         lessonCalendarDayPageOpen=false;
-        if(typeof setLessonPage==="function")setLessonPage("calendar");
+        if(typeof setLessonPage==="function")setLessonPage("calendar",false);
         const add=document.getElementById("lessonAddPanel");
         const list=document.getElementById("lessonListPanel");
         const calendar=document.getElementById("lessonsCalendarPanel");
@@ -3126,7 +3126,7 @@ window.addEventListener("unhandledrejection",function(e){
    if(shouldLoad)loadDailyLessons();
   }
   // التنقل الموحد بين التقويم ونموذج إضافة/تعديل الحصة.
-  function setLessonPage(page){
+  function setLessonPage(page,shouldLoad=true){
     const addPanel=$("lessonAddPanel"),listPanel=$("lessonListPanel");
     if(page==="add"){
       selectedLessonPage="add";
@@ -3145,14 +3145,14 @@ window.addEventListener("unhandledrejection",function(e){
       const calendarPanel=$("lessonsCalendarPanel");
       if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.setProperty("display","block","important");}
       selectedLessonPage="library";
-      loadDailyLessons();
+      if(shouldLoad)loadDailyLessons();
       return;
     }
     if(addPanel)addPanel.hidden=true;
     if(listPanel)listPanel.hidden=false;
     setLessonSubpage(page,false);
     selectedLessonPage="library";
-    loadDailyLessons();
+    if(shouldLoad)loadDailyLessons();
   }
   function setLessonHome(){
     showView("dailyLessonsView");
@@ -3161,8 +3161,9 @@ window.addEventListener("unhandledrejection",function(e){
   // دالة عامة للعودة للتقويم من زر نموذج الحصة.
   window.__tahadiReturnToLessonCalendar=async function(){
     showView("dailyLessonsView");
-    setLessonPage("calendar");
+    setLessonPage("calendar",false);
     await loadDailyLessons();
+    renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
     return true;
   };
   document.querySelectorAll("[data-lesson-subpage]").forEach(btn=>btn.addEventListener("click",()=>setLessonSubpage(btn.dataset.lessonSubpage)));
@@ -3287,8 +3288,9 @@ window.addEventListener("unhandledrejection",function(e){
       const pos=JSON.parse(localStorage.getItem(posKey)||"null");
       if(pos&&pos.view==="dailyLessonsView"){pos.lessonPage="calendar";pos.lessonSubpage="calendar";pos.lessonWorkspace={...(pos.lessonWorkspace||{}),subpage:"calendar",dayPageOpen:false};localStorage.setItem(posKey,JSON.stringify(pos));}
     }catch(_){}
-    setLessonPage("calendar");
+    setLessonPage("calendar",false);
     await loadDailyLessons();
+    renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
     return true;
   };
    } // close loadDashboard before one-time page event bindings
