@@ -1820,7 +1820,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 
 <div class="lesson-calendar-entry-heading"><p class="muted">جميع الحصص تُدار من هذا التقويم فقط.</p></div>
 <div id="lessonAddPanel" class="lesson-editor" hidden>
-<div class="lesson-editor-heading"><strong>📝 إضافة حصة</strong><button id="lessonEditorBackToCalendar" type="button" class="secondary">← العودة إلى التقويم</button><span>خطوات بسيطة لإضافة الحصة أو تعديلها</span></div><div class="lesson-wizard-progress" id="lessonWizardProgress"><div class="lesson-wizard-step active"><b>1</b><span>الموعد</span></div><i></i><div class="lesson-wizard-step"><b>2</b><span>التفاصيل</span></div><i></i><div class="lesson-wizard-step"><b>3</b><span>التكرار والسعر</span></div><i></i><div class="lesson-wizard-step"><b>4</b><span>المراجعة</span></div></div><div class="lesson-wizard-title" id="lessonWizardTitle">الخطوة 1 من 4 · تحديد الموعد</div>
+<div class="lesson-editor-heading"><strong>📝 إضافة حصة</strong><button id="lessonEditorBackToCalendar" type="button" class="secondary">← العودة إلى التقويم</button></div><div class="lesson-wizard-progress" id="lessonWizardProgress"><div class="lesson-wizard-step active"><b>1</b><span>الموعد</span></div><i></i><div class="lesson-wizard-step"><b>2</b><span>التفاصيل</span></div><i></i><div class="lesson-wizard-step"><b>3</b><span>التكرار والسعر</span></div><i></i><div class="lesson-wizard-step"><b>4</b><span>المراجعة</span></div></div><div class="lesson-wizard-title" id="lessonWizardTitle">الخطوة 1 من 4 · تحديد الموعد</div>
 <div class="lesson-form-grid">
 <div data-step="0" class="lesson-field lesson-field-full"><label for="lessonModeSelect">طريقة التدريس</label><select id="lessonModeSelect"><option value="zoom">زووم</option><option value="in_person" selected>حضوري</option></select><p id="lessonModeHint" class="muted">تسجل الحصة ضمن حصص الزووم.</p></div><div id="lessonZoomLinkWrap" data-step="0" class="lesson-field lesson-field-full" hidden><label for="lessonZoomLink">رابط حصة زووم</label><input id="lessonZoomLink" type="url" inputmode="url" placeholder="https://us06web.zoom.us/j/..." autocomplete="url"><p class="muted">الصقي رابط الاجتماع هنا. سيُحفظ مع الحصة ويظهر عند تعديلها.</p></div>
 <div data-step="0" class="lesson-field"><label for="lessonDate">تاريخ الحصة</label><input id="lessonDate" type="date"></div>
@@ -4301,6 +4301,33 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
 .student-stats-result button{align-self:center;min-width:78px}
 @media(max-width:420px){.student-stats-result{gap:8px;padding:11px}.student-stats-result button{min-width:70px;padding:7px 9px;font-size:.82rem}.student-stats-result-bottom{gap:7px;font-size:.74rem}.student-stats-rate{font-size:.72rem;padding:5px 7px}}
 </style>
+<style id="lesson-add-compact-v1">
+/* نموذج إضافة حصة مختصر: صفحة واحدة وحقول متراصة */
+#lessonAddPanel .lesson-editor-heading{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin-bottom:10px!important;padding-bottom:9px!important}
+#lessonAddPanel .lesson-editor-heading strong{font-size:1rem!important}
+#lessonAddPanel .lesson-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px 10px!important}
+#lessonAddPanel .lesson-form-grid .lesson-field{gap:4px!important}
+#lessonAddPanel .lesson-form-grid .lesson-field-full{grid-column:1/-1!important}
+#lessonAddPanel .lesson-form-grid [data-step]{display:flex!important}
+#lessonAddPanel .lesson-form-grid .muted{display:none!important}
+#lessonAddPanel .lesson-field>input,#lessonAddPanel .lesson-field>select{min-height:40px!important;padding:7px 9px!important;border-radius:10px!important}
+#lessonAddPanel #lessonStudentWrap{margin-top:2px!important;padding:9px!important}
+#lessonAddPanel #lessonGroupStudentBox>p{display:none!important}
+#lessonAddPanel #lessonRepeatWrap{margin-top:2px!important;padding:8px!important}
+#lessonAddPanel .lesson-repeat-toggle{margin:0!important;display:flex!important;align-items:center!important;gap:8px!important}
+#lessonAddPanel .lesson-repeat-toggle small{font-size:.72rem!important}
+#lessonAddPanel #lessonUnitPrice,#lessonAddPanel #lessonNotes{min-width:0!important}
+#lessonAddPanel .lesson-wizard-actions{margin-top:10px!important}
+#lessonAddPanel #saveLessonBtn{min-height:46px!important;margin-top:0!important}
+@media(max-width:380px){
+ #lessonAddPanel{padding:12px!important}
+ #lessonAddPanel .lesson-form-grid{gap:7px!important}
+ #lessonAddPanel .lesson-editor-heading{align-items:center!important}
+ #lessonAddPanel .lesson-editor-heading button{font-size:.78rem!important;padding:7px 9px!important}
+ #lessonAddPanel .lesson-field>input,#lessonAddPanel .lesson-field>select{font-size:.84rem!important}
+}
+</style>
+
 
 
 
