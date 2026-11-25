@@ -75,7 +75,9 @@
  document.querySelectorAll('[data-home]').forEach(b=>b.addEventListener('click',()=>show('homePage')));
  document.querySelectorAll('[data-action="save"]').forEach(b=>b.addEventListener('click',saveDraft));
  document.querySelectorAll('[data-action="load"]').forEach(b=>b.addEventListener('click',loadDraft));
- const fileInput=$('sourceFile'),status=$('extractStatus');\n let currentLibraryId=null;\n const LIB_KEY='tahadi_smart_assistant_library_v1';
+ const fileInput=$('sourceFile'),status=$('extractStatus');
+ let currentLibraryId=null;
+ const LIB_KEY='tahadi_smart_assistant_library_v1';
  const setStatus=s=>status.textContent=s;
  function updatePreview(){
   $('topicPreview').textContent=($('topicTitle').value||'موضوع الاختبار')+'\n\n'+($('topicText').value||'لم يتم إدخال نص الموضوع.');
