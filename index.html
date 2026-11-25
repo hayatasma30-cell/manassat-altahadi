@@ -2232,11 +2232,11 @@ window.addEventListener("unhandledrejection",function(e){
       if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
       showView("dailyLessonsView");
       try{
-        // فتح التقويم عبر دالة التنقل الموحدة فقط.
-        setLessonPage("calendar",false);
-        loadDailyLessons().catch(err=>showStatus("تعذر تحميل التقويم: "+(err.message||"خطأ غير معروف"),"error"));
+        // هذا المعالج خارج نطاق loadDashboard؛ استخدمي الواجهة العامة التي تنتظر تهيئة الحصص.
+        if(typeof window.tahadiOpenDailyLessons!=="function")throw new Error("لم تكتمل تهيئة التقويم. أعيدي تحميل الصفحة.");
+        await window.tahadiOpenDailyLessons();
       }catch(err){
-        showStatus("تعذر فتح حصص اليوم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
+        showStatus("تعذر فتح التقويم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
         console.error("dailyLessonsView open failed",err);
       }
       return;
