@@ -1598,29 +1598,6 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 #dailyLessonsView #lessonCalendarGrid{touch-action:pan-y!important;overscroll-behavior-x:contain}
 </style>
 
-<style id="tahadi-month-calendar-only-v1">
-/* صفحة التقويم: شهر واحد واضح، دون أدوات المكتبة أو الفرز العام */
-#dailyLessonsView #lessonSubpageNav,
-#dailyLessonsView #lessonSubpageBack,
-#dailyLessonsView #lessonCalendarViewButtons,
-#dailyLessonsView #lessonNextCountdown,
-#dailyLessonsView #lessonListFilters,
-#dailyLessonsView #lessonListModeHint,
-#dailyLessonsView #lessonCategoryFilterHint,
-#dailyLessonsView #dailyLessonsList,
-#dailyLessonsView #lessonListPanel > .lesson-list-heading,
-#dailyLessonsView #lessonListPanel .tahadi-sort-bar{display:none!important}
-#dailyLessonsView #lessonListPanel{display:block!important}
-#dailyLessonsView #lessonsCalendarPanel{display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;overflow:visible!important}
-#dailyLessonsView #lessonsCalendarPanel .lesson-calendar-toolbar{display:flex!important;visibility:visible!important;opacity:1!important}
-#dailyLessonsView #lessonCalendarMonth{display:block!important;visibility:visible!important}
-#dailyLessonsView #lessonCalendarGrid{display:grid!important;visibility:visible!important;opacity:1!important;min-height:220px!important;grid-template-columns:repeat(7,minmax(0,1fr))!important}
-#dailyLessonsView #lessonCalendarGrid.view-month{grid-template-columns:repeat(7,minmax(0,1fr))!important}
-#dailyLessonsView #lessonCalendarGrid .lesson-calendar-dayname,
-#dailyLessonsView #lessonCalendarGrid .lesson-calendar-day{display:flex!important;visibility:visible!important}
-#dailyLessonsView #lessonCalendarDayDetails{display:block!important;visibility:visible!important}
-#dailyLessonsView #lessonCalendarDayDetails .calendar-day-page-back{display:none!important}
-</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -1862,7 +1839,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </div>
 <div id="lessonWizardReview" data-step="3" class="lesson-wizard-review" hidden></div><div class="lesson-wizard-actions"><button id="lessonWizardPrev" type="button" class="secondary" hidden>السابق</button><button id="lessonWizardNext" type="button" class="primary">التالي</button><button id="saveLessonBtn" class="primary lesson-save-button" type="button" hidden>حفظ الحصة</button></div><div id="lessonStatus" class="status"></div>
 </div>
-<div id="lessonListPanel" class="panel lesson-management-panel" style="margin-top:14px"><div class="lesson-list-heading"><h3 id="lessonListTitle" style="margin:0">إدارة الحصص</h3><div class="lesson-calendar-actions"><button id="toggleLessonsCalendarBtn" class="secondary" type="button">📅 عرض التقويم</button></div></div><nav id="lessonSubpageNav" class="lesson-subpage-nav" aria-label="صفحات إدارة الحصص"><button type="button" data-lesson-subpage="all" class="active">📚 كل الحصص</button><button type="button" data-lesson-subpage="in_person">🏫 الحضوري</button><button type="button" data-lesson-subpage="zoom">💻 حصص Zoom</button><button type="button" data-lesson-subpage="courses">📝 الدورات</button></nav><button id="lessonSubpageBack" type="button" class="secondary" hidden>← العودة إلى أقسام إدارة الحصص</button><div id="lessonsCalendarPanel"><button id="calendarAddLessonButton" type="button" class="primary" style="width:100%;margin:0 0 12px">＋ إضافة حصة جديدة</button><p id="lessonCalendarLoadStatus" class="muted" role="status" hidden></p><div id="lessonNextCountdown" class="lesson-next-countdown" aria-live="polite"><strong>الحصة القادمة</strong><p>جارٍ حساب موعد الحصة القادمة…</p><button id="armLessonAlarmBtn" type="button" class="secondary">🔔 تفعيل المنبه للحصة القادمة</button></div><div id="lessonCalendarViewButtons" class="lesson-calendar-view-buttons"><button type="button" class="secondary active" data-lesson-calendar-view="month">شهري</button><button type="button" class="secondary" data-lesson-calendar-view="week">أسبوعي</button><button type="button" class="secondary" data-lesson-calendar-view="day">يومي</button></div><div class="lesson-calendar-toolbar"><button id="lessonCalendarPrev" class="secondary" type="button">← السابق</button><strong id="lessonCalendarMonth"></strong><button id="lessonCalendarNext" class="secondary" type="button">التالي →</button></div><div class="lesson-calendar-grid view-month" id="lessonCalendarGrid"></div><div id="lessonCalendarDayDetails"></div></div><div id="lessonListFilters" class="lesson-filters-grid"><div class="lesson-filter-field"><label for="lessonListScopeSelect">القائمة</label><select id="lessonListScopeSelect"><option value="library">مكتبة الحصص</option><option value="scheduled">الحصص المسجلة</option><option value="cancelled">الحصص الملغاة</option></select></div><div class="lesson-filter-field"><label for="lessonListModeSelect">طريقة التدريس</label><select id="lessonListModeSelect"><option value="zoom">زووم</option><option value="in_person" selected>حضوري</option></select></div><div class="lesson-filter-field lesson-category-field"><label for="lessonCategoryFilterSelect">تصنيف الحصة</label><select id="lessonCategoryFilterSelect"><option value="all">كل الحصص</option><option value="عادية">الحصص العادية</option><option value="دورة مراجعة">دورات المراجعة</option></select></div></div><p id="lessonListModeHint" class="muted">عرض حصص الزووم.</p><p id="lessonCategoryFilterHint" class="muted">عرض كل التصنيفات.</p><div id="dailyLessonsList" class="list" style="margin-top:14px"></div></div>
+<div id="lessonListPanel" class="panel lesson-management-panel" style="margin-top:14px" hidden><div class="lesson-list-heading"><h3 id="lessonListTitle" style="margin:0">إدارة الحصص</h3><div class="lesson-calendar-actions"><button id="toggleLessonsCalendarBtn" class="secondary" type="button">📅 عرض التقويم</button></div></div><nav id="lessonSubpageNav" class="lesson-subpage-nav" aria-label="صفحات إدارة الحصص"><button type="button" data-lesson-subpage="all" class="active">📚 كل الحصص</button><button type="button" data-lesson-subpage="in_person">🏫 الحضوري</button><button type="button" data-lesson-subpage="zoom">💻 حصص Zoom</button><button type="button" data-lesson-subpage="courses">📝 الدورات</button></nav><button id="lessonSubpageBack" type="button" class="secondary" hidden>← العودة إلى أقسام إدارة الحصص</button><div id="lessonsCalendarPanel" hidden><button id="calendarAddLessonButton" type="button" class="primary" style="width:100%;margin:0 0 12px">＋ إضافة حصة جديدة</button><p id="lessonCalendarLoadStatus" class="muted" role="status" hidden></p><div id="lessonNextCountdown" class="lesson-next-countdown" aria-live="polite"><strong>الحصة القادمة</strong><p>جارٍ حساب موعد الحصة القادمة…</p><button id="armLessonAlarmBtn" type="button" class="secondary">🔔 تفعيل المنبه للحصة القادمة</button></div><div id="lessonCalendarViewButtons" class="lesson-calendar-view-buttons"><button type="button" class="secondary active" data-lesson-calendar-view="month">شهري</button><button type="button" class="secondary" data-lesson-calendar-view="week">أسبوعي</button><button type="button" class="secondary" data-lesson-calendar-view="day">يومي</button></div><div class="lesson-calendar-toolbar"><button id="lessonCalendarPrev" class="secondary" type="button">← السابق</button><strong id="lessonCalendarMonth"></strong><button id="lessonCalendarNext" class="secondary" type="button">التالي →</button></div><div class="lesson-calendar-grid view-month" id="lessonCalendarGrid"></div><div id="lessonCalendarDayDetails"></div></div><div id="lessonListFilters" class="lesson-filters-grid"><div class="lesson-filter-field"><label for="lessonListScopeSelect">القائمة</label><select id="lessonListScopeSelect"><option value="library">مكتبة الحصص</option><option value="scheduled">الحصص المسجلة</option><option value="cancelled">الحصص الملغاة</option></select></div><div class="lesson-filter-field"><label for="lessonListModeSelect">طريقة التدريس</label><select id="lessonListModeSelect"><option value="zoom">زووم</option><option value="in_person" selected>حضوري</option></select></div><div class="lesson-filter-field lesson-category-field"><label for="lessonCategoryFilterSelect">تصنيف الحصة</label><select id="lessonCategoryFilterSelect"><option value="all">كل الحصص</option><option value="عادية">الحصص العادية</option><option value="دورة مراجعة">دورات المراجعة</option></select></div></div><p id="lessonListModeHint" class="muted">عرض حصص الزووم.</p><p id="lessonCategoryFilterHint" class="muted">عرض كل التصنيفات.</p><div id="dailyLessonsList" class="list" style="margin-top:14px"></div></div>
 </section>
 <style>
 .weekly-group-filters{display:flex;gap:8px;margin:8px 0 14px}.weekly-group-filters button{flex:1;padding:9px 6px;border-radius:12px}.weekly-group-filters button.active{background:#176b42;color:white;border-color:#176b42}.weekly-level-group{margin:18px 0}.weekly-level-group>h3{font-size:1rem;color:#174b32;margin:0 0 9px}.weekly-level-group>h3 small{color:#718078;font-weight:400}.weekly-group-warning{font-style:normal;font-size:11px;color:#9a5a14;background:#fff1d9;border-radius:8px;padding:3px 7px}.weekly-group-open{width:100%;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:right;padding:14px 16px;margin:8px 0;border:1px solid #cbdccf;border-radius:15px;background:#fbfdfb;color:#174b32;box-shadow:0 4px 0 #dce8dd}.weekly-group-open span{font-weight:700}.weekly-group-open small{color:#718078;font-size:.86rem}
@@ -2276,10 +2253,6 @@ window.addEventListener("unhandledrejection",function(e){
           saved.savedAt=Date.now();localStorage.setItem(key,JSON.stringify(saved));
         }catch(_){}
         if(typeof loadDailyLessons==="function")await loadDailyLessons();
-        // ضمان رسم الشهر حتى إذا اكتمل تحميل البيانات قبل تحديث واجهة العرض.
-        if(typeof renderLessonsCalendar==="function")renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
-        const monthGrid=document.getElementById("lessonCalendarGrid");
-        if(monthGrid&&!monthGrid.children.length&&typeof renderLessonsCalendar==="function")renderLessonsCalendar([]);
         // إعادة تثبيت العرض بعد انتهاء التحميل حتى لا تعيد حالة قديمة إخفاء التقويم.
         if(add){add.hidden=true;add.style.setProperty("display","none","important");}
         if(list){list.hidden=false;list.style.setProperty("display","block","important");list.classList.add("calendar-mode");}
@@ -2963,11 +2936,10 @@ window.addEventListener("unhandledrejection",function(e){
   }
   window.tahadiSelectLessonDate=function(date){
     lessonCalendarSelectedDate=String(date||"").slice(0,10);
-    lessonCalendarDayPageOpen=false;
-    lessonCalendarView="month";
+    lessonCalendarDayPageOpen=true;
     renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
-    const details=document.getElementById("lessonCalendarDayDetails");
-    if(details)details.scrollIntoView({behavior:"smooth",block:"nearest"});
+    const panel=document.getElementById("lessonsCalendarPanel");
+    if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
   };
   function shiftLessonCalendar(direction){
     if(lessonCalendarDayPageOpen)return;
@@ -3163,8 +3135,6 @@ window.addEventListener("unhandledrejection",function(e){
       return;
     }
     if(page==="calendar"||page==="library"){
-      lessonCalendarView="month";
-      lessonCalendarDayPageOpen=false;
       if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
       if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
       lessonCalendarDayPageOpen=false;
@@ -3293,8 +3263,7 @@ window.addEventListener("unhandledrejection",function(e){
   $("lessonWizardNext").addEventListener("click",()=>{if(!validateLessonWizardStep())return;lessonWizardStep=Math.min(3,lessonWizardStep+1);lessonMessage("");updateLessonWizard();});
   $("lessonWizardPrev").addEventListener("click",()=>{lessonWizardStep=Math.max(0,lessonWizardStep-1);lessonMessage("");updateLessonWizard();});
   function resetLessonWizard(){lessonWizardStep=0;updateLessonWizard();}
-  window.tahadiOpenNewLessonForm=function(){window.tahadiEditingLessonId="";delete window.tahadiEditingScope;$("lessonRepeatWeekly").disabled=false;$("lessonRepeatWeekly").checked=false;$("lessonRepeatEndWrap").hidden=true;$("lessonRepeatEndWrap").style.display="none";setLessonPage("add");resetLessonWizard();window.scrollTo({top:0,behavior:"smooth"});};
-  $("calendarAddLessonButton").addEventListener("click",e=>{e.preventDefault();window.tahadiOpenNewLessonForm();});
+  $("calendarAddLessonButton").addEventListener("click",()=>{window.tahadiEditingLessonId="";delete window.tahadiEditingScope;$("lessonRepeatWeekly").disabled=false;$("lessonRepeatWeekly").checked=false;$("lessonRepeatEndWrap").hidden=true;$("lessonRepeatEndWrap").style.display="none";setLessonPage("add");resetLessonWizard();window.scrollTo({top:0,behavior:"smooth"});});
   $("lessonEditorBackToCalendar").addEventListener("click",()=>{setLessonPage("calendar");window.scrollTo({top:0,behavior:"smooth"});});
   resetLessonWizard();
   $("lessonWizardReview").addEventListener("click",e=>{const back=e.target instanceof Element?e.target.closest("#lessonWizardReturnCalendar"):null;if(!back)return;e.preventDefault();window.tahadiLessonEditSaved=false;showView("dailyLessonsView");setLessonHome();setLessonPage("library");setLessonSubpage("calendar");window.scrollTo({top:0,behavior:"smooth"});});
