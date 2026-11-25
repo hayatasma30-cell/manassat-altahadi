@@ -138,22 +138,37 @@ function clearPosterPages(){
  extras.forEach(page=>{const box=page.querySelector(".poster-content");if(box){[...box.children].forEach(node=>{if(node.classList.contains("poster-tasks")&&!node.id){const tasks=$("pTasks");[...node.children].forEach(x=>tasks.appendChild(x));}else main.appendChild(node);});}page.remove();});
  }
  function paginatePoster(){
- const viewport=$("posterViewport"),first=$("poster"),main=$("posterContent");if(!viewport||!first||!main)return;
+ const viewport=$("posterViewport"),first=$("poster"),main=$("posterContent");
+ if(!viewport||!first||!main)return;
  clearPosterPages();
- const type=$("documentType").value;first.className="template-"+type;
- const taskNodes=[...$("pTasks").children];
- if(taskNodes.length>1){const firstTask=taskNodes.shift();$("pTasks").replaceChildren(firstTask);taskNodes.forEach(task=>{const group=document.createElement("div");group.className="poster-tasks";group.appendChild(task);main.appendChild(group);});}
- const nodes=[...main.children];main.replaceChildren();
- const width=Math.min(viewport.clientWidth,794);first.style.width=width+"px";
- let page=first,box=main;
- const newPage=()=>{const p=document.createElement("article");p.className="poster-page template-"+type;p.style.width=width+"px";const c=document.createElement("div");c.className="poster-content";p.appendChild(c);viewport.appendChild(p);return {page:p,box:c};};
- nodes.forEach(node=>{
-   box.appendChild(node);
-   if(box.scrollHeight>box.clientHeight+2&&box.children.length>1){
-     box.removeChild(node);
-     const next=newPage();page=next.page;box=next.box;box.appendChild(node);
-   }
- });
+ first.className="template-"+$("documentType").value;
+ const width=Math.min(viewport.clientWidth,794);
+ first.style.width=width+"px";
+ // Keep every content block on one A4 sheet; scale the complete composition
+ // proportionally only when its natural height exceeds the printable area.
+ main.style.setProperty("height","auto","important");
+ main.style.setProperty("min-height","0","important");
+ main.style.setProperty("overflow","visible","important");
+ main.style.setProperty("transform","none","important");
+ main.style.setProperty("transform-origin","top center","important");
+ main.style.setProperty("width","100%","important");
+ main.style.setProperty("margin-inline","auto","important");
+ const cs=getComputedStyle(first);
+ const available=first.clientHeight-
+   (parseFloat(cs.paddingTop)||0)-(parseFloat(cs.paddingBottom)||0)-4;
+ let scale=1;
+ for(let i=0;i<4;i++){
+   const natural=Math.max(main.scrollHeight,main.getBoundingClientRect().height,1);
+   scale=Math.min(1,available/natural);
+   main.style.setProperty("width",(100/scale)+"%","important");
+   main.style.setProperty("transform","none","important");
+ }
+ const finalHeight=Math.max(main.scrollHeight,main.getBoundingClientRect().height,1);
+ scale=Math.min(1,available/finalHeight);
+ main.style.setProperty("width",(100/scale)+"%","important");
+ main.style.setProperty("transform","scale("+scale+")","important");
+ main.style.setProperty("transform-origin","top center","important");
+ main.dataset.fitScale=String(scale);
  }
  function fitPoster(){const viewport=$("posterViewport"),poster=$("poster");if(!viewport||!poster)return;const width=Math.min(viewport.clientWidth,794);poster.style.width=width+"px";paginatePoster();}
 
