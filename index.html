@@ -937,6 +937,73 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
  #studentLevelView #studentsList .student-card-meta .student-chip{white-space:nowrap}
 }
 \n/* إظهار اختيار نوع الاحتساب وسعر الدورة بوضوح في كل مسارات الحضور */\n.lesson-roster-row{grid-template-columns:minmax(0,1fr) 74px 68px!important;row-gap:8px!important;padding:12px 4px!important}\n.lesson-roster-billing{grid-column:1/-1!important;display:flex!important;justify-content:flex-start!important;gap:8px!important;white-space:normal!important;font-size:.82rem!important;color:#245b39}\n.lesson-roster-billing select{width:auto!important;min-width:125px!important;min-height:38px!important;padding:5px 9px!important;border:1px solid #b8d5b5!important;border-radius:9px!important;background:#fff!important;color:#18382a!important}\n.lesson-course-price-wrap{margin:14px 0;padding:13px;border:1px solid #b7d8b8;border-right:4px solid #21834c;border-radius:13px;background:#f0f8ed}\n.lesson-course-price-wrap[hidden]{display:none!important}\n.lesson-course-price-wrap label{display:grid;gap:7px;font-weight:800;color:#14532d}\n.lesson-course-price-wrap input{width:100%;min-height:46px;padding:10px 12px;border:1px solid #9fc7a2;border-radius:11px;background:#fff}\n@media(max-width:420px){.lesson-roster-row{grid-template-columns:minmax(0,1fr) 62px 58px!important}.lesson-roster-row label{font-size:.75rem!important}}\n
+.resource-level-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:18px}.resource-level-card{min-height:125px!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:15px!important;border:1px solid #b8d5b5!important;border-bottom:4px solid #67996a!important;border-radius:18px!important;background:linear-gradient(145deg,#fff,#eef7eb)!important;color:#14532d!important;box-shadow:0 4px 0 #1b6b3518,0 9px 18px #173f2215!important}.resource-level-card:nth-child(2){background:linear-gradient(145deg,#fff,#eef5ff)!important;border-color:#b5cbe8!important;border-bottom-color:#6f99c7!important;color:#245b91!important}.resource-level-card:nth-child(3){background:linear-gradient(145deg,#fff,#f5f0ff)!important;border-color:#d2c2e8!important;border-bottom-color:#9b7bc5!important;color:#62458d!important}.resource-level-card:nth-child(4){background:linear-gradient(145deg,#fff,#fff7e8)!important;border-color:#e5d2a5!important;border-bottom-color:#c49b43!important;color:#80601e!important}.resource-level-card>span{font-size:27px}.resource-level-card strong{font-size:14px}.resource-level-card small{font-size:11px;color:inherit}.resource-level-card:active{transform:translateY(3px)}@media(max-width:380px){.resource-level-grid{gap:9px}.resource-level-card{min-height:112px!important;padding:10px!important}.resource-level-card strong{font-size:12px}}
+/* إصلاح ظهور مستويات المكتبة التعليمية */
+#resourceLibraryView #resourceListSection:not([hidden]){display:block!important;visibility:visible!important}
+#resourceLibraryView #resourceLevelChooser:not([hidden]){display:block!important;visibility:visible!important}
+#resourceLibraryView #resourceLevelChooser[hidden],
+#resourceLibraryView #resourceLevelItems[hidden],
+#resourceLibraryView #resourceListSection[hidden],
+#resourceLibraryView #resourceLibraryHome[hidden],
+#resourceLibraryView #resourceAddSection[hidden]{display:none!important}
+#resourceLibraryView .resource-level-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#resourceLibraryView .resource-level-card{display:flex!important;visibility:visible!important}
+/* تطوير واجهة المكتبة التعليمية للأستاذة — تصميم فقط */
+#resourceLibraryView .view-head{margin-bottom:16px}
+#resourceListSection>.panel{border:1px solid #dfe9dc!important;border-radius:24px!important;background:linear-gradient(180deg,#fff 0%,#fbfdf9 100%)!important;box-shadow:0 5px 0 #e8efe4,0 14px 28px #174b2b0c!important;padding:clamp(14px,3.5vw,22px)!important}
+#resourceListSection>.panel>.section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:3px 2px 15px;margin-bottom:14px;border-bottom:1px solid #e7eee4}
+#resourceListSection .section-heading h3{margin:0;color:#174b32;font-size:1.2rem}
+#resourceListSection #refreshLearningResources{min-height:40px!important;padding:8px 14px!important;border-radius:12px!important;background:linear-gradient(145deg,#f4faf1,#e6f2e2)!important;color:#185b36!important;border:1px solid #cfe1ca!important;box-shadow:0 3px 0 #d9e8d5!important}
+#resourceListSection #learningResourcesList{gap:14px!important}
+#resourceListSection .data-item{position:relative;margin:0!important;padding:17px!important;border:1px solid #dce8d9!important;border-radius:20px!important;background:linear-gradient(155deg,#fff 0%,#fbfdf9 65%,#f5faf2 100%)!important;box-shadow:0 3px 0 #e4eee1,0 9px 20px #174b2b0b!important;transition:transform .18s ease,box-shadow .18s ease}
+#resourceListSection .data-item:before{content:"";position:absolute;top:0;right:0;left:0;height:3px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,#dcebd8,#27814a,#dcebd8)}
+#resourceListSection .data-item>.section-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+#resourceListSection .data-item>.section-heading>div{flex:1;min-width:0}
+#resourceListSection .data-item>.section-heading strong{color:#174b32;font-size:1.04rem;line-height:1.9;margin:0;overflow-wrap:anywhere}
+#resourceListSection .resource-drag-handle{flex:0 0 42px!important;border-radius:13px!important;background:linear-gradient(145deg,#fff,#edf6ea)!important;color:#24603b!important;border:1px solid #cfe0cb!important;border-bottom:4px solid #9db99a!important;box-shadow:0 4px 9px #174b2b12!important}
+#resourceListSection .badge{display:inline-flex;align-items:center;white-space:nowrap;padding:6px 11px;border-radius:30px;background:#e9f4e6;color:#17613a;border:1px solid #d6e8d1;font-weight:800;font-size:.78rem}
+#resourceListSection .data-item>p{line-height:1.8;margin:8px 0;color:#6e7d72;overflow-wrap:anywhere}
+#resourceListSection .data-item>p.small{font-size:.83rem}
+#resourceListSection .data-item>p[dir="ltr"]{padding:9px 11px;border-radius:11px;background:#f3f8f0;text-align:left}
+#resourceListSection .data-item>p[dir="ltr"] a{color:#17633a;font-weight:800;text-decoration:none}
+#resourceListSection .data-item .actions-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid #e7eee4}
+#resourceListSection .data-item .actions-row button{min-width:0;min-height:43px!important;margin:0!important;padding:8px 5px!important;border-radius:12px!important;font-size:.86rem!important;font-weight:800!important;box-shadow:0 3px 0 #dce7d9!important}
+#resourceListSection .data-item .actions-row button[data-edit-resource]{background:linear-gradient(145deg,#f5faf2,#e8f3e5)!important;color:#185b36!important;border:1px solid #cfe1ca!important}
+#resourceListSection .data-item .actions-row button[data-toggle-resource]{background:linear-gradient(145deg,#fff9e8,#f7edcf)!important;color:#795a16!important;border:1px solid #ead9a7!important;box-shadow:0 3px 0 #e8dfc6!important}
+#resourceListSection .data-item .actions-row button[data-delete-resource]{background:linear-gradient(145deg,#fff5f4,#fbe9e7)!important;color:#a33b37!important;border:1px solid #edcfca!important;box-shadow:0 3px 0 #eadbd8!important}
+#resourceListSection .resource-dragging{opacity:.75;transform:scale(.99);border:2px dashed #27814a!important}
+@media(hover:hover){#resourceListSection .data-item:hover{transform:translateY(-2px);box-shadow:0 5px 0 #e4eee1,0 14px 24px #174b2b12!important}}
+@media(max-width:480px){#resourceListSection>.panel{padding:13px!important;border-radius:20px!important}#resourceListSection .data-item{padding:14px!important;border-radius:18px!important}#resourceListSection .data-item>.section-heading strong{font-size:.98rem!important}#resourceListSection .data-item .actions-row{gap:6px}#resourceListSection .data-item .actions-row button{font-size:.78rem!important;min-height:41px!important}}
+@media(prefers-reduced-motion:reduce){#resourceListSection .data-item{transition:none!important}}
+
+
+/* اللمسات الاحترافية النهائية لبطاقات الموارد */
+#resourceListSection>.panel{position:relative;overflow:hidden}
+#resourceListSection>.panel:before{content:"";position:absolute;top:0;right:0;width:125px;height:125px;border-radius:0 0 0 100%;background:radial-gradient(circle at top right,#e8f3e4 0%,#f5faf2 58%,transparent 60%);pointer-events:none}
+#resourceListSection>.panel>.section-heading{position:relative;z-index:1;padding-bottom:17px}
+#resourceListSection>.panel>.section-heading h3{display:flex;align-items:center;gap:9px;font-size:1.24rem;letter-spacing:.1px}
+#resourceListSection>.panel>.section-heading h3:before{content:"📚";display:grid;place-items:center;width:39px;height:39px;border-radius:13px;background:#edf6e9;font-size:1.15rem;box-shadow:inset 0 0 0 1px #dcebd7}
+#resourceListSection .data-item{padding:19px!important;border-radius:22px!important}
+#resourceListSection .data-item>.section-heading{align-items:center!important;gap:12px!important}
+#resourceListSection .data-item>.section-heading>div{gap:12px!important}
+#resourceListSection .data-item>.section-heading strong{font-size:1.08rem!important;line-height:1.95!important;letter-spacing:.05px}
+#resourceListSection .resource-drag-handle{width:46px!important;height:46px!important;min-width:46px!important;flex-basis:46px!important;border-radius:15px!important;font-size:21px!important;background:linear-gradient(145deg,#f8fcf6,#e9f3e6)!important}
+#resourceListSection .badge{padding:7px 13px!important;font-size:.8rem!important;box-shadow:inset 0 1px #fff}
+#resourceListSection .data-item>p.small{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:12px 0!important;padding:9px 11px;border-radius:12px;background:#f5f8f2;color:#667568!important}
+#resourceListSection .data-item>p.small span[style*="17683a"]{display:inline-flex;padding:4px 9px;border-radius:30px;background:#e2f2e2;font-weight:800}
+#resourceListSection .data-item>p.small span[style*="946b16"]{display:inline-flex;padding:4px 9px;border-radius:30px;background:#fff2d4;font-weight:800}
+#resourceListSection .data-item>p[dir="ltr"]{display:flex;align-items:center;justify-content:flex-start;min-height:48px;margin:14px 0!important;padding:11px 14px!important;border:1px solid #e3eee0;background:linear-gradient(100deg,#f8fbf6,#eff7ec)!important}
+#resourceListSection .data-item>p[dir="ltr"] a{display:inline-flex;align-items:center;gap:8px;font-size:.98rem}
+#resourceListSection .data-item .actions-row{gap:10px!important;margin-top:16px!important;padding-top:15px!important}
+#resourceListSection .data-item .actions-row button{min-height:46px!important;border-radius:14px!important;font-size:.88rem!important;transition:transform .15s ease,filter .15s ease}
+#resourceListSection .data-item .actions-row button:active{transform:translateY(2px);filter:brightness(.97)}
+#resourceListSection .data-item .actions-row button[data-edit-resource]{border-bottom:3px solid #bcd5b6!important}
+#resourceListSection .data-item .actions-row button[data-toggle-resource]{border-bottom:3px solid #e4d49f!important}
+#resourceListSection .data-item .actions-row button[data-delete-resource]{border-bottom:3px solid #e5c5c1!important}
+@media(max-width:480px){#resourceListSection>.panel>.section-heading h3{font-size:1.12rem}#resourceListSection .data-item{padding:15px!important}#resourceListSection .data-item>.section-heading strong{font-size:1rem!important}#resourceListSection .resource-drag-handle{width:42px!important;height:42px!important;min-width:42px!important;flex-basis:42px!important}#resourceListSection .data-item .actions-row{gap:7px!important}#resourceListSection .data-item .actions-row button{min-height:44px!important;font-size:.8rem!important;padding:7px 3px!important}}
+@media(prefers-reduced-motion:reduce){#resourceListSection .data-item .actions-row button{transition:none!important}}
+
+
 </style>
 
 <style id="home-redesign-clean-v3">
@@ -1448,7 +1515,77 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 .lesson-roster-panel[data-zoom="true"] .lesson-roster-billing{grid-column:2/-1!important}
 </style>
 
-
+<style id="resource-edit-form-polish">
+/* تحسين استمارة إضافة وتعديل المورد على الهاتف والحاسوب */
+#resourceLibraryView #resourceAddSection>.panel{
+  max-width:820px;margin:14px auto 26px;padding:clamp(18px,4vw,30px)!important;
+  border:1px solid #dce8d9!important;border-radius:24px!important;
+  background:linear-gradient(180deg,#fff 0%,#fbfdf9 100%)!important;
+  box-shadow:0 4px 0 #e6eee2,0 14px 28px #174b2b0c!important
+}
+#resourceLibraryView #resourceFormTitle{
+  display:flex;align-items:center;gap:10px;margin:0 0 10px!important;
+  padding-bottom:15px;border-bottom:1px solid #e8efe5;
+  color:#174b32;font-size:clamp(1.2rem,4vw,1.55rem);font-weight:900
+}
+#resourceLibraryView #resourceAddSection>.panel>p.muted{
+  margin:0 0 22px!important;line-height:1.9;color:#758579
+}
+#resourceLibraryView #learningResourceForm{
+  display:grid;grid-template-columns:1fr;gap:9px
+}
+#resourceLibraryView #learningResourceForm>label:not([style]){
+  display:block;margin:10px 0 0!important;color:#244b35;font-size:1rem;font-weight:800
+}
+#resourceLibraryView #learningResourceForm input:not([type=hidden]):not([type=checkbox]),
+#resourceLibraryView #learningResourceForm select,
+#resourceLibraryView #learningResourceForm textarea{
+  display:block;width:100%;min-width:0;min-height:54px;margin:0!important;
+  padding:13px 15px!important;border:1px solid #d4dfd2!important;border-radius:15px!important;
+  background:#fff!important;color:#244333!important;font:inherit!important;font-size:1rem!important;
+  box-shadow:inset 0 1px 2px #173f2608!important;box-sizing:border-box
+}
+#resourceLibraryView #learningResourceForm textarea{
+  min-height:112px;resize:vertical;line-height:1.9
+}
+#resourceLibraryView #learningResourceForm input[type=file]{
+  direction:ltr;text-align:left;background:#f8fbf7!important;
+  font-size:.9rem!important;padding:9px!important
+}
+#resourceLibraryView #learningResourceForm input[type=file]::file-selector-button{
+  border:1px solid #cbdcc8;border-radius:10px;background:#edf5e9;color:#205b38;
+  padding:9px 12px;margin-inline-end:10px;font-weight:700
+}
+#resourceLibraryView #learningResourceForm small.muted{
+  display:block;margin:0 0 7px!important;line-height:1.8;color:#7a887c
+}
+#resourceLibraryView #resourcePublished{
+  width:21px!important;height:21px!important;min-height:21px!important;
+  accent-color:#176b3d;flex:0 0 auto
+}
+#resourceLibraryView #learningResourceForm>label[for=resourcePublished]{
+  display:flex;align-items:center;gap:10px;padding:13px 14px;margin-top:12px!important;
+  border:1px solid #dce9d8;border-radius:14px;background:#f5faf2;line-height:1.7
+}
+#resourceLibraryView #learningResourceForm .actions-row{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:10px
+}
+#resourceLibraryView #learningResourceForm .actions-row button{
+  min-height:52px!important;margin:0!important;border-radius:14px!important;font-weight:800!important
+}
+#resourceLibraryView #resourceFormStatus{min-height:24px;margin:3px 0 0!important;line-height:1.8}
+#resourceLibraryView #resourceAddSection>.actions-row{margin:0 0 12px}
+#resourceLibraryView #resourceAddSection>.actions-row button{min-height:46px;border-radius:13px}
+@media(max-width:520px){
+  #resourceLibraryView #resourceAddSection>.panel{padding:17px 14px!important;border-radius:20px!important}
+  #resourceLibraryView #learningResourceForm{gap:8px}
+  #resourceLibraryView #learningResourceForm input:not([type=hidden]):not([type=checkbox]),
+  #resourceLibraryView #learningResourceForm select,
+  #resourceLibraryView #learningResourceForm textarea{font-size:16px!important}
+  #resourceLibraryView #learningResourceForm .actions-row{grid-template-columns:1fr 1fr;gap:9px}
+  #resourceLibraryView #learningResourceForm .actions-row button{font-size:.95rem!important}
+}
+</style>
 <style id="lesson-calendar-swipe-navigation">
 /* التنقل بين الأشهر بالسحب بدل أزرار السابق والتالي */
 #dailyLessonsView .lesson-calendar-toolbar{display:flex!important;justify-content:center!important;align-items:center!important;min-height:42px!important}
@@ -1484,6 +1621,8 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <details class="section-category"><summary><span class="category-title">📘 المكتبة التعليمية</span><small>التعلّم اليومي ودورات المراجعة</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons"><a class="menu-btn" href="daily-science-admin.html" style="text-decoration:none"><span class="menu-icon">💡</span><span class="menu-copy"><strong>إدارة المكتبة العلمية</strong><small>إضافة المعلومات العلمية ونشرها للتلاميذ</small></span><span class="chev">‹</span></a>
 <button class="menu-btn" id="teacherTestsInboxLink" data-view="electronicTestsView" style="position:relative"><span class="menu-icon">📝</span><span class="menu-copy"><strong>الاختبارات والتحديات</strong><small>إدارة الاختبارات الإلكترونية والتحديات اليومية</small></span><span class="chev">‹</span><span id="teacherQuizUnreadBadge" hidden style="display:inline-grid;place-items:center;min-width:23px;height:23px;padding:0 6px;border-radius:99px;background:#b42318;color:#fff;font-size:12px;font-weight:900;margin-inline-start:auto"></span></button>
 <button class="menu-btn" data-view="reviewCoursesView"><span class="menu-icon">📚</span><span class="menu-copy"><strong>دورات المراجعة</strong><small>إنشاء الدورات وإدارة المشاركين والمحتوى</small></span><span class="chev">‹</span></button>
+<button class="menu-btn" data-view="resourceLibraryView" type="button"><span class="menu-icon">📖</span><span class="menu-copy"><strong>مكتبة الدروس والموارد</strong><small>إضافة الدروس والملخصات والتمارين وإدارة الموارد</small></span><span class="chev">‹</span></button>
+
 <button class="menu-btn" data-view="learningResourcesView" id="contentAccessShortcut" type="button"><span class="menu-icon">🔐</span><span class="menu-copy"><strong>إدارة إتاحة المحتوى</strong><small>قفل أو فتح الدروس والاختبارات والدورات والتحديات</small></span><span class="chev">‹</span></button>
 </div></details>
 <details class="section-category"><summary><span class="category-title">💼 الإدارة المالية</span><small>الاشتراكات والمدفوعات والحسابات والملخص والتسجيلات</small><span class="category-arrow">＋</span></summary><button class="category-back-button" type="button">← رجوع للأقسام</button><div class="category-buttons">
@@ -1508,7 +1647,22 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <p id="selectiveAccessStatus" class="muted" role="status"></p><div id="selectiveAccessList" class="list"></div>
 </section>
 </section>
-
+<section id="resourceLibraryView" class="view"><div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📖 مكتبة الدروس والموارد التعليمية</h2></div>
+<div id="resourceLibraryHome" class="panel"><h3>📚 مكتبة الدروس والموارد التعليمية</h3><p class="muted">اختاري العملية التي تريدين تنفيذها.</p><div class="student-mode-cards"><button type="button" class="student-mode-card in-person" id="openAddResourceSection"><span class="student-mode-icon">➕</span><strong>إضافة مورد تعليمي</strong><small>فتح الصفحة ←</small></button><button type="button" class="student-mode-card zoom" id="openResourceListSection"><span class="student-mode-icon">📖</span><strong>المكتبة التعليمية</strong><small>فتح المكتبة ←</small></button></div></div>
+<div id="resourceAddSection" hidden><div class="actions-row"><button type="button" class="secondary" id="backToResourceLibraryHome">→ رجوع إلى المكتبة</button></div>
+<div class="panel"><h3 id="resourceFormTitle">➕ إضافة مورد تعليمي</h3><p class="muted">أضيفي رابط درس أو ملخص أو تمرين أو فيديو. اختاري المستوى، ثم انشريه ليظهر للتلاميذ المسجلين في المستوى نفسه.</p>
+<form id="learningResourceForm">
+<input id="resourceId" type="hidden">
+<label for="resourceTitle">عنوان المورد</label><input id="resourceTitle" required maxlength="180" placeholder="مثال: ملخص الزلازل والتشوهات التكتونية">
+<label for="resourceLevel">المستوى الدراسي</label><select id="resourceLevel" required><option value="">اختاري المستوى</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option><option>السنة الثانية ثانوي — علوم تجريبية</option><option>السنة الثالثة ثانوي — علوم تجريبية</option></select>
+<label for="resourceType">نوع المورد</label><select id="resourceType"><option value="lesson">درس</option><option value="summary">ملخص</option><option value="exercise">تمرين</option></select>
+<label for="resourcePdfFile">ملف PDF</label><input id="resourcePdfFile" type="file" accept="application/pdf,.pdf"><small class="muted">اختاري ملف PDF من هاتفك (الحد الأقصى 15 ميغابايت). اتركيه فارغًا عند تعديل مورد والاحتفاظ بملفه الحالي.</small><input id="resourceStoredPath" type="hidden">
+<label for="resourceDescription">وصف مختصر (اختياري)</label><textarea id="resourceDescription" rows="4" maxlength="1000" placeholder="اكتبي وصفًا مختصرًا للمورد أو تعليمات للتلميذ..."></textarea>
+<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input id="resourcePublished" type="checkbox" style="width:auto"> نشر المورد في فضاء التلميذ فورًا</label>
+<div class="actions-row"><button class="primary" id="saveLearningResource" type="submit">حفظ المورد</button><button class="secondary" id="cancelResourceEdit" type="button">إفراغ الحقول</button></div><p id="resourceFormStatus" class="muted" role="status"></p></form></div>
+</div>
+<div id="resourceListSection" hidden><div class="actions-row"><button type="button" class="secondary" id="backToResourceLibraryHomeFromList">→ رجوع إلى المكتبة</button></div><div id="resourceLevelChooser" class="panel"><h3>📚 اختاري المستوى الدراسي</h3><p class="muted">تظهر هنا مستويات التعليم المتوسط، ثم موارد المستوى الذي تختارينه فقط.</p><div class="resource-level-grid"><button type="button" class="resource-level-card" data-resource-level="السنة الأولى متوسط"><span>🌱</span><strong>السنة الأولى متوسط</strong><small>فتح الموارد ←</small></button><button type="button" class="resource-level-card" data-resource-level="السنة الثانية متوسط"><span>📗</span><strong>السنة الثانية متوسط</strong><small>فتح الموارد ←</small></button><button type="button" class="resource-level-card" data-resource-level="السنة الثالثة متوسط"><span>🔬</span><strong>السنة الثالثة متوسط</strong><small>فتح الموارد ←</small></button><button type="button" class="resource-level-card" data-resource-level="السنة الرابعة متوسط"><span>🎓</span><strong>السنة الرابعة متوسط</strong><small>فتح الموارد ←</small></button></div></div><div id="resourceLevelItems" hidden><div class="actions-row"><button type="button" class="secondary" id="backToResourceLevels">→ رجوع إلى المستويات</button></div><div class="panel"><div class="section-heading"><h3 id="resourceSelectedLevelTitle">موارد المستوى</h3><button class="secondary" id="refreshLearningResources" type="button">تحديث القائمة</button></div><div id="learningResourcesList" class="list"><p class="muted">جارٍ تحميل الموارد…</p></div></div></div></div>
+</section>
 <section id="reviewCoursesView" class="view">
 <div class="view-head"><button class="back" data-home type="button">→ الرئيسية</button><h2>📚 دورات المراجعة</h2></div>
 <div id="courseCatalogPanel" class="panel"><div class="section-heading"><div><h3>مكتبة الدورات</h3><p class="muted">أنشئي دورة جديدة أو افتحي دورة محفوظة لإدارة المشاركين والملخصات والتمارين.</p></div><button class="secondary" id="refreshCourseCatalog" type="button">تحديث</button></div><button class="primary" id="createReviewCourse" type="button">＋ إنشاء دورة جديدة</button><div id="courseCatalogList" class="list"><p class="muted">جارٍ تحميل الدورات…</p></div></div>
@@ -3609,8 +3763,40 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   $("courseResourceForm")?.addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveCourseResource"),status=$("courseResourceStatus");btn.disabled=true;status.textContent="جارٍ الحفظ…";try{await courseRequest("course_save_resource",{id:$("courseResourceId").value||undefined,course_key:courseKey(),title:$("courseResourceTitle").value.trim(),resource_type:$("courseResourceType").value,resource_url:$("courseResourceUrl").value.trim(),description:$("courseResourceDescription").value.trim(),is_published:$("courseResourcePublished").checked});status.textContent="تم حفظ المورد."; $("courseResourceId").value="";$("courseResourceForm").reset();await loadCourseResources();}catch(e){status.textContent=e.message;}finally{btn.disabled=false;}});
   $("resetCourseResource")?.addEventListener("click",()=>{$("courseResourceForm").reset();$("courseResourceId").value="";$("courseResourceStatus").textContent="";});
   $("refreshCourseResources")?.addEventListener("click",loadCourseResources);
-
-
+  const resourceTypeNames={lesson:"درس",summary:"ملخص",exercise:"تمرين",video:"فيديو",link:"رابط تعليمي"};
+  let selectedResourceLibraryLevel="";
+  async function loadLearningResources(levelFilter=selectedResourceLibraryLevel){
+    const list=$("learningResourcesList");if(!list)return;list.innerHTML='<p class="muted">جارٍ تحميل الموارد…</p>';
+    try{
+      const d=await resourceRequest("teacher_list_resources");const allRows=d.resources||[];const nonLibraryTypes=new Set(["quiz","test","exam","challenge","daily_challenge","electronic_test","electronic_quiz","daily_quiz"]);const rows=allRows.filter(r=>!nonLibraryTypes.has(String(r.resource_type||"").trim().toLowerCase())&&String(r.level||"").trim()===String(levelFilter||"").trim());
+      if(!rows.length){list.innerHTML='<div class="empty-state">لا توجد موارد مضافة لهذا المستوى بعد.</div>';return;}
+      list.innerHTML=rows.map(r=>'<article class="data-item" data-resource-card="'+r.id+'" style="margin:10px 0"><div class="section-heading"><div style="display:flex;align-items:center;gap:10px;min-width:0"><button type="button" class="secondary resource-drag-handle" aria-label="اسحبي لترتيب المورد" title="اسحبي لترتيب المورد" style="min-width:42px;width:42px;height:42px;padding:0;font-size:22px;touch-action:none;cursor:grab">⠿</button><strong>'+escapeHtml(r.title)+'</strong></div><span class="badge">'+escapeHtml(resourceTypeNames[r.resource_type]||r.resource_type)+'</span></div><p class="small">'+escapeHtml(r.level)+' • '+(r.is_published?'<span style="color:#17683a">منشور للتلاميذ</span>':'<span style="color:#946b16">مسودة — لا يظهر للتلاميذ</span>')+'</p>'+(r.description?'<p>'+escapeHtml(r.description)+'</p>':'')+((r.resource_open_url||r.resource_url)?'<p dir="ltr"><a href="'+escapeHtml(r.resource_open_url||r.resource_url)+'" target="_blank" rel="noopener">فتح المورد ↗</a></p>':'<p class="small">لم يرفق ملف بالمورد.</p>')+'<div class="actions-row"><button type="button" class="secondary" data-edit-resource="'+r.id+'">تعديل</button><button type="button" class="secondary" data-toggle-resource="'+r.id+'" data-published="'+(!r.is_published)+'">'+(r.is_published?'إلغاء النشر':'نشر للتلاميذ')+'</button><button type="button" class="danger" data-delete-resource="'+r.id+'">حذف</button></div></article>').join("");
+      list.querySelectorAll(".resource-drag-handle").forEach(handle=>{
+        const card=handle.closest("[data-resource-card]");let active=false,touchId=null,moved=false;
+        const move=(x,y)=>{const target=document.elementFromPoint(x,y)?.closest("[data-resource-card]");if(!target||target===card||target.parentElement!==list)return;const rect=target.getBoundingClientRect();list.insertBefore(card,y<rect.top+rect.height/2?target:target.nextSibling);moved=true;};
+        const cleanup=()=>{document.removeEventListener("touchmove",onMove);document.removeEventListener("touchend",onEnd);document.removeEventListener("touchcancel",onEnd);card.classList.remove("resource-dragging");active=false;};
+        const onMove=e=>{if(!active)return;const t=[...e.changedTouches].find(x=>x.identifier===touchId);if(!t)return;e.preventDefault();move(t.clientX,t.clientY);};
+        const onEnd=e=>{if(!active)return;if(e?.changedTouches?.length&&![...e.changedTouches].some(x=>x.identifier===touchId))return;cleanup();if(!moved)return;list.dataset.reordering="1";const ids=[...list.querySelectorAll("[data-resource-card]")].map(x=>x.dataset.resourceCard);const status=$("resourceFormStatus");if(status)status.textContent="جارٍ حفظ الترتيب…";resourceRequest("teacher_reorder_resources",{ids}).then(()=>{if(status)status.textContent="تم حفظ الترتيب، وسيظهر للتلاميذ بنفس الطريقة.";}).catch(async err=>{if(status)status.textContent=err.message||"تعذر حفظ الترتيب.";await loadLearningResources();}).finally(()=>{delete list.dataset.reordering;});};
+        handle.addEventListener("touchstart",e=>{if(!e.changedTouches.length)return;const t=e.changedTouches[0];e.preventDefault();e.stopPropagation();active=true;moved=false;touchId=t.identifier;card.classList.add("resource-dragging");if(navigator.vibrate)navigator.vibrate(20);document.addEventListener("touchmove",onMove,{passive:false});document.addEventListener("touchend",onEnd);document.addEventListener("touchcancel",onEnd);},{passive:false});
+      });
+      list.querySelectorAll("[data-edit-resource]").forEach(btn=>btn.addEventListener("click",()=>{const r=rows.find(x=>x.id===btn.dataset.editResource);if(!r)return;$("resourceId").value=r.id;$("resourceTitle").value=r.title;$("resourceLevel").value=r.level;$("resourceType").value=["lesson","summary","exercise"].includes(r.resource_type)?r.resource_type:"lesson";$("resourceStoredPath").value=r.resource_url||"";$("resourcePdfFile").value="";$("resourceDescription").value=r.description||"";$("resourcePublished").checked=!!r.is_published;$("resourceFormTitle").textContent="✏️ تعديل مورد تعليمي";setResourceSection("resourceLibraryHome",false);setResourceSection("resourceListSection",false);setResourceSection("resourceAddSection",true);$("resourceFormStatus").textContent="عدّلي بيانات المورد، ويمكنك ترك خانة PDF فارغة للاحتفاظ بالملف الحالي."; $("resourceFormTitle").scrollIntoView({behavior:"smooth",block:"center"});}));
+      list.querySelectorAll("[data-toggle-resource]").forEach(btn=>btn.addEventListener("click",async()=>{btn.disabled=true;try{const r=rows.find(x=>x.id===btn.dataset.toggleResource);await resourceRequest("teacher_save_resource",{...r,is_published:btn.dataset.published==="true"});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
+      list.querySelectorAll("[data-delete-resource]").forEach(btn=>btn.addEventListener("click",async()=>{if(!await window.TahadiDialog.confirm("هل تريدين حذف هذا المورد نهائيًا؟"))return;btn.disabled=true;try{await resourceRequest("teacher_delete_resource",{id:btn.dataset.deleteResource});await loadLearningResources();}catch(e){alert(e.message)}finally{btn.disabled=false;}}));
+    }catch(e){list.innerHTML='<p class="error">'+escapeHtml(e.message)+'</p>';}
+  }
+  const setResourceSection=(id,visible)=>{const el=$(id);if(!el)return;el.hidden=!visible;if(visible){el.removeAttribute("hidden");el.style.setProperty("display","block","important");}else{el.setAttribute("hidden","");el.style.setProperty("display","none","important");}};
+   const showResourceLibraryHome=()=>{setResourceSection("resourceLibraryHome",true);setResourceSection("resourceAddSection",false);setResourceSection("resourceListSection",false);};
+   $("openAddResourceSection").addEventListener("click",()=>{setResourceSection("resourceLibraryHome",false);setResourceSection("resourceListSection",false);setResourceSection("resourceAddSection",true);});
+   $("openResourceListSection").addEventListener("click",()=>{setResourceSection("resourceLibraryHome",false);setResourceSection("resourceAddSection",false);setResourceSection("resourceListSection",true);setResourceSection("resourceLevelChooser",true);setResourceSection("resourceLevelItems",false);selectedResourceLibraryLevel="";});
+   document.querySelectorAll("[data-resource-level]").forEach(btn=>btn.addEventListener("click",async()=>{selectedResourceLibraryLevel=btn.dataset.resourceLevel;$("resourceSelectedLevelTitle").textContent="📚 "+selectedResourceLibraryLevel;setResourceSection("resourceLevelChooser",false);setResourceSection("resourceLevelItems",true);await loadLearningResources(selectedResourceLibraryLevel);}));
+   $("backToResourceLevels").addEventListener("click",()=>{setResourceSection("resourceLevelItems",false);setResourceSection("resourceLevelChooser",true);});
+   $("backToResourceLibraryHome").addEventListener("click",showResourceLibraryHome);
+  $("backToResourceLibraryHomeFromList").addEventListener("click",showResourceLibraryHome);
+  $("learningResourceForm").addEventListener("submit",async e=>{e.preventDefault();const btn=$("saveLearningResource"),status=$("resourceFormStatus"),file=$("resourcePdfFile").files[0];btn.disabled=true;try{let resourcePath=$("resourceStoredPath").value||"";if(file){if(file.type!=="application/pdf"&&!file.name.toLowerCase().endsWith(".pdf"))throw Error("اختاري ملف PDF فقط.");if(file.size>15*1024*1024)throw Error("حجم ملف PDF يجب ألا يتجاوز 15 ميغابايت.");status.textContent="جارٍ تجهيز رفع ملف PDF…";const ticket=await resourceRequest("teacher_create_resource_upload",{size:file.size,content_type:"application/pdf"});status.textContent="جارٍ رفع ملف PDF…";const upload=await fetch(ticket.signed_url,{method:"PUT",headers:{"Content-Type":"application/pdf","x-upsert":"false"},body:file});if(!upload.ok)throw Error("تعذر رفع ملف PDF. تحققي من الاتصال وحاولي مجددًا.");resourcePath=ticket.path;}if(!resourcePath)throw Error("اختاري ملف PDF قبل حفظ المورد.");status.textContent="جارٍ حفظ بيانات المورد…";const body={id:$("resourceId").value||undefined,title:$("resourceTitle").value,level:$("resourceLevel").value,resource_type:$("resourceType").value,resource_url:resourcePath,description:$("resourceDescription").value,is_published:$("resourcePublished").checked};await resourceRequest("teacher_save_resource",body);status.textContent="تم رفع ملف PDF وحفظ المورد بنجاح.";resetResourceForm();await loadLearningResources();}catch(e){status.textContent=e.message||"تعذر حفظ المورد."}finally{btn.disabled=false;}});
+  function resetResourceForm(){$("learningResourceForm").reset();$("resourceId").value="";$("resourceStoredPath").value="";$("resourceFormTitle").textContent="➕ إضافة مورد تعليمي";}
+  $("cancelResourceEdit").addEventListener("click",resetResourceForm);
+  $("refreshLearningResources").addEventListener("click",loadLearningResources);
+  document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
 })();
 
 /* ساعة المنصة والتذكيرات الشخصية */
@@ -4389,7 +4575,10 @@ $("accessCategory").addEventListener("change",()=>loadItems($("accessCategory").
 $("lockSelectedContent").addEventListener("click",()=>set(true));$("unlockSelectedContent").addEventListener("click",()=>set(false));
 document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.addEventListener("click",load));
 })();
-</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script>
+</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access";const ids={question:"teacherQuestionUnreadBadge",quiz:"teacherQuizUnreadBadge",challenge:"teacherChallengeUnreadBadge"};function setBadge(type,count){const el=document.getElementById(ids[type]);if(!el)return;el.textContent=count>99?"99+":String(count);el.hidden=count<1;el.style.display=count>0?"inline-grid":"none";el.setAttribute("aria-label",count+" عناصر غير مقروءة");}async function refreshTeacherInboxBadges(){try{const token=localStorage.getItem("tahadi_teacher_token"),expiry=localStorage.getItem("tahadi_teacher_expires");if(!token||!expiry||new Date(expiry).getTime()<=Date.now())return;const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_inbox_list"}),cache:"no-store"});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الوارد");const counts={question:0,quiz:0,challenge:0};(data.items||[]).forEach(item=>{if(item&&counts[item.type]!==undefined&&!item.is_read)counts[item.type]++;});Object.keys(counts).forEach(type=>setBadge(type,counts[type]));}catch(error){console.warn("تعذر تحديث عدادات وارد الأستاذة",error);}}window.refreshTeacherInboxBadges=refreshTeacherInboxBadges;if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",refreshTeacherInboxBadges,{once:true});else refreshTeacherInboxBadges();document.addEventListener("visibilitychange",()=>{if(!document.hidden)refreshTeacherInboxBadges();});window.addEventListener("focus",refreshTeacherInboxBadges);window.addEventListener("pageshow",refreshTeacherInboxBadges);})();</script><script>(function(){const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge";const status=document.getElementById("winnersBoardSettingStatus"),show=document.getElementById("showWinnersBoardBtn"),hide=document.getElementById("hideWinnersBoardBtn");if(!status||!show||!hide)return;async function request(action,visible){const t=localStorage.getItem("tahadi_teacher_token")||"";if(!t){status.textContent="يرجى تسجيل الدخول إلى فضاء الأستاذة أولًا.";return;}status.textContent="جارٍ حفظ الإعداد…";show.disabled=hide.disabled=true;try{const response=await fetch(endpoint,{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNobnNqeGh6b2libHVhY210dmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI0MjI0NzgsImV4cCI6MjEwNzk5ODQ3OH0.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+t},body:JSON.stringify(action==="teacher_set_winners_board_visibility"?{action,visible}:{action})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر حفظ الإعداد.");status.textContent=data.visible?"حالة اللوحة: ظاهرة للتلاميذ.":"حالة اللوحة: مخفية عن التلاميذ.";}catch(e){status.textContent=e.message||"تعذر الاتصال بالخادم.";}finally{show.disabled=hide.disabled=false;}}show.addEventListener("click",()=>request("teacher_set_winners_board_visibility",true));hide.addEventListener("click",()=>request("teacher_set_winners_board_visibility",false));request("teacher_winners_board_settings");})();
+/* مزامنة الدروس الجديدة مع معرفة المساعد العلمي */
+(()=>{const status=document.getElementById("resourceFormStatus");if(!status||!window.MutationObserver)return;let busy=false;new MutationObserver(async()=>{if(busy||!status.textContent.includes("تم رفع ملف PDF وحفظ المورد بنجاح."))return;busy=true;try{const r=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/teacher-science-assistant",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+(localStorage.getItem("tahadi_teacher_token")||"")},body:JSON.stringify({action:"sync_library"})});const d=await r.json();status.textContent=d.ok?"تم حفظ المورد وتحديث معرفة المساعد العلمي. فُهرس "+d.indexed+" موردًا.":"تم حفظ المورد، لكن تعذرت مزامنة معرفة المساعد: "+(d.error||"");}catch(e){status.textContent="تم حفظ المورد، لكن تعذرت مزامنة معرفة المساعد.";}finally{busy=false;}}).observe(status,{childList:true,characterData:true,subtree:true});})();
+</script>
 
 
 <script id="tahadi-global-sort-controls">
