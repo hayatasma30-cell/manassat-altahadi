@@ -240,7 +240,7 @@ input,textarea,select{border-radius:12px}
 <div class="editor-publish"><label><input id="published" type="checkbox" checked> نشر المعلومة للتلاميذ</label><span>يمكنك معاينتها قبل النشر.</span></div>
 <div class="toolbar editor-actions"><button class="btn" id="previewDraftBtn" type="button">👁 معاينة</button><button class="btn primary" id="saveBtn" type="button">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div>
 <p id="status" class="status"></p></section>
-<section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="libraryStats" class="library-stats"></div><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><details class="all-filters"><summary>⚙️ تصفية وترتيب المعلومات <span>▼</span></summary><div class="filter-panel"><label>الموضوع<select id="topicFilter"><option value="">كل الموضوعات</option></select></label><label>المستوى<select id="levelFilter"><option value="">كل المستويات</option></select></label><label>الفئة<select id="audienceFilter"><option value="">كل الفئات</option></select></label><label>الحالة<select id="statusFilter"><option value="">كل الحالات</option><option value="published">منشورة</option><option value="draft">مسودة / مخفية</option></select></label><label>الترتيب<select id="sortFilter"><option value="manual">الترتيب اليدوي</option><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option></select></label><button class="btn" id="clearLibraryFilters" type="button">مسح التصفية</button></div></details></div><div id="libraryTopicNav"></div><div id="libraryTopicBack" class="hide"><button class="btn" type="button" id="libraryBackTopics">← كل المواضيع</button><strong id="librarySelectedTopic"></strong></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section><div id="previewOverlay" class="preview-overlay hide" style="position:fixed;inset:0;background:#102d1fcc;z-index:9999;display:grid;place-items:center;padding:16px"><div style="width:min(680px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:18px"><h2 id="previewTitle"></h2><div class="item-meta" id="previewMeta"></div><h3>المعلومة العلمية</h3><p id="previewInfo" style="white-space:pre-wrap;line-height:1.9"></p><h3>السؤال</h3><p id="previewQuestion" style="white-space:pre-wrap;line-height:1.9"></p><button class="btn" type="button" id="closePreview">إغلاق المعاينة</button></div></div>
+<section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="libraryStats" class="library-stats"></div><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><details class="all-filters"><summary>⚙️ تصفية وترتيب المعلومات <span>▼</span></summary><div class="filter-panel"><label>الموضوع<select id="topicFilter"><option value="">كل الموضوعات</option></select></label><label>المستوى<select id="levelFilter"><option value="">كل المستويات</option></select></label><label>الفئة<select id="audienceFilter"><option value="">كل الفئات</option></select></label><label>الحالة<select id="statusFilter"><option value="">كل الحالات</option><option value="published">منشورة</option><option value="draft">مسودة / مخفية</option></select></label><label>الترتيب<select id="sortFilter"><option value="manual">الترتيب اليدوي</option><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option></select></label><button class="btn" id="clearLibraryFilters" type="button">مسح التصفية</button></div></details></div><div id="libraryLevelNav" class="library-topic-grid"></div><div id="libraryLevelBack" class="hide"><button class="btn" type="button" id="libraryBackLevels">← المستويات الدراسية</button><strong id="librarySelectedLevel"></strong></div><div id="libraryTopicNav" class="hide"></div><div id="libraryTopicBack" class="hide"><button class="btn" type="button" id="libraryBackTopics">← كل المواضيع</button><strong id="librarySelectedTopic"></strong></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section><div id="previewOverlay" class="preview-overlay hide" style="position:fixed;inset:0;background:#102d1fcc;z-index:9999;display:grid;place-items:center;padding:16px"><div style="width:min(680px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:18px"><h2 id="previewTitle"></h2><div class="item-meta" id="previewMeta"></div><h3>المعلومة العلمية</h3><p id="previewInfo" style="white-space:pre-wrap;line-height:1.9"></p><h3>السؤال</h3><p id="previewQuestion" style="white-space:pre-wrap;line-height:1.9"></p><button class="btn" type="button" id="closePreview">إغلاق المعاينة</button></div></div>
 
 
 </main>
@@ -300,27 +300,40 @@ function card(x){
 function draw(){const latest=[...facts].sort((a,b)=>String(b.info_date).localeCompare(String(a.info_date)))[0];$("todayContent").innerHTML=latest?card(latest):'<div class="empty-state">لا توجد معلومة منشورة بعد.</div>';refreshLibrary()}
 function drawStats(){const total=facts.length,published=facts.filter(x=>x.is_published!==false).length,drafts=total-published;$("libraryStats").innerHTML='<div class="stat-tile"><strong>'+total+'</strong><span>إجمالي المعلومات</span></div><div class="stat-tile"><strong>'+published+'</strong><span>منشورة</span></div><div class="stat-tile"><strong>'+drafts+'</strong><span>مسودة / مخفية</span></div>'}
 function fillLibraryFilters(){const sets=[["levelFilter",[...new Set(facts.map(x=>x.target_level).filter(Boolean))],"كل المستويات"],["audienceFilter",[...new Set(facts.map(x=>x.target_audience).filter(Boolean))],"كل الفئات"]];for(const [id,values,label] of sets){const el=$(id),selected=el.value;el.innerHTML='<option value="">'+label+'</option>'+values.map(v=>'<option value="'+esc(v)+'">'+esc(v)+'</option>').join("");el.value=selected}}
-let activeLibraryTopic="";
+let activeLibraryTopic="",activeLibraryLevel="";
+const libraryLevels=["السنة الأولى متوسط","السنة الثانية متوسط","السنة الثالثة متوسط","السنة الرابعة متوسط"];
 function renderLibraryTopics(){
- const host=$("libraryTopicNav");if(!host)return;
+ const levelHost=$("libraryLevelNav"),host=$("libraryTopicNav");if(!levelHost||!host)return;
+ levelHost.classList.toggle("hide",!!activeLibraryLevel);
+ host.classList.toggle("hide",!activeLibraryLevel);
+ if(!activeLibraryLevel){
+  levelHost.innerHTML=libraryLevels.map((level,i)=>'<button type="button" class="library-topic-choice" data-library-level="'+esc(level)+'"><span style="display:flex;align-items:center;gap:12px"><span class="menu-icon">'+["①","②","③","④"][i]+'</span><span>'+esc(level)+'</span><span style="margin-right:auto;color:#237447">‹</span></span></button>').join("");
+  levelHost.querySelectorAll("[data-library-level]").forEach(btn=>btn.addEventListener("click",()=>{
+   activeLibraryLevel=btn.dataset.libraryLevel;activeLibraryTopic="";
+   $("librarySelectedLevel").textContent=activeLibraryLevel;
+   $("libraryLevelBack").classList.remove("hide");
+   $("libraryTopicBack").classList.add("hide");
+   renderLibraryTopics();filter();
+  }));
+  host.innerHTML="";
+  return;
+ }
  const saved=[...topics].sort((a,b)=>(Number(a.sort_order)||0)-(Number(b.sort_order)||0));
  const known=new Set(saved.map(t=>String(t.title||"").trim()));
- const extra=[...new Set(facts.map(x=>String(x.topic||"").trim()).filter(name=>name&&!known.has(name)))].map(title=>({id:"",title}));
- const rows=[...saved,...extra];
- host.className=activeLibraryTopic?"hide":"library-topic-grid";
- host.innerHTML=rows.map(t=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(t.title)+'" data-topic-id="'+esc(t.id||"")+'">📁 '+esc(t.title)+'　'+(t.id?'<span class="topic-drag-hint" title="اسحبي لترتيب الموضوع" aria-label="اسحبي لترتيب الموضوع">⠿</span>':'')+'　‹</button>').join("")||'<div class="empty-state">لم تُضَف مواضيع بعد.</div>';
- host.querySelectorAll("[data-library-topic]").forEach(btn=>{
-  btn.addEventListener("click",e=>{
-   if(suppressTopicClick){e.preventDefault();e.stopImmediatePropagation();return;}
-   activeLibraryTopic=btn.dataset.libraryTopic;$("librarySelectedTopic").textContent="📁 "+activeLibraryTopic;$("libraryTopicBack").classList.remove("hide");host.classList.add("hide");filter();
-  });
- });
+ const extra=[...new Set(facts.filter(x=>String(x.target_level||"").trim()===activeLibraryLevel).map(x=>String(x.topic||"").trim()).filter(name=>name&&!known.has(name)))].map(title=>({id:"",title}));
+ const rows=[...saved,...extra].filter(t=>facts.some(x=>String(x.target_level||"").trim()===activeLibraryLevel&&String(x.topic||"").trim()===String(t.title||"").trim()));
+ host.innerHTML=rows.map(t=>'<button type="button" class="library-topic-choice" data-library-topic="'+esc(t.title)+'" data-topic-id="'+esc(t.id||"")+'">📁 '+esc(t.title)+'　'+(t.id?'<span class="topic-drag-hint" title="اسحبي لترتيب الموضوع" aria-label="اسحبي لترتيب الموضوع">⠿</span>':'')+'　‹</button>').join("")||'<div class="empty-state">لا توجد معلومات محفوظة لهذا المستوى بعد.</div>';
+ host.querySelectorAll("[data-library-topic]").forEach(btn=>btn.addEventListener("click",e=>{
+  if(suppressTopicClick){e.preventDefault();e.stopImmediatePropagation();return;}
+  activeLibraryTopic=btn.dataset.libraryTopic;$("librarySelectedTopic").textContent="📁 "+activeLibraryTopic;$("libraryTopicBack").classList.remove("hide");host.classList.add("hide");filter();
+ }));
  bindTopicDrag();
 }
+$("libraryBackLevels").onclick=()=>{activeLibraryLevel="";activeLibraryTopic="";$("libraryLevelBack").classList.add("hide");$("libraryTopicBack").classList.add("hide");renderLibraryTopics();filter()};
 $("libraryBackTopics").onclick=()=>{activeLibraryTopic="";$("libraryTopicBack").classList.add("hide");renderLibraryTopics();filter()};
 function filter(){
  const q=$("search").value.trim().toLowerCase(),topic=$("topicFilter").value,level=$("levelFilter").value,audience=$("audienceFilter").value,status=$("statusFilter").value,sort=$("sortFilter").value;
- let a=facts.filter(x=>(!activeLibraryTopic||String(x.topic||"")===activeLibraryTopic)&&(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));
+ let a=facts.filter(x=>(!activeLibraryLevel||String(x.target_level||"").trim()===activeLibraryLevel)&&(!activeLibraryTopic||String(x.topic||"")===activeLibraryTopic)&&(!topic||x.topic===topic)&&(!level||x.target_level===level)&&(!audience||x.target_audience===audience)&&(!status||(status==="published"?x.is_published!==false:x.is_published===false))&&[x.title,x.topic,x.daily_information,x.scientific_question,x.target_level,x.target_audience].join(" ").toLowerCase().includes(q));
  a=[...a];if(sort==="newest")a.sort((x,y)=>String(y.info_date||"").localeCompare(String(x.info_date||"")));else if(sort==="oldest")a.sort((x,y)=>String(x.info_date||"").localeCompare(String(y.info_date||"")));else a.sort((x,y)=>(Number(x.sort_order)||0)-(Number(y.sort_order)||0));$("cards").innerHTML=activeLibraryTopic?(a.map(card).join("")||'<div class="empty-state">لا توجد معلومات مطابقة في هذا الموضوع.</div>'):'<div class="empty-state">اختاري موضوعًا لعرض المعلومات التابعة له.</div>';
  $("libraryCount").textContent=activeLibraryTopic?"عدد المعلومات المعروضة: "+a.length+" من أصل "+facts.filter(x=>String(x.topic||"")===activeLibraryTopic).length:"عدد المعلومات: "+facts.length+" — اختاري موضوعًا";
  bindFactDrag();
