@@ -2276,6 +2276,10 @@ window.addEventListener("unhandledrejection",function(e){
           saved.savedAt=Date.now();localStorage.setItem(key,JSON.stringify(saved));
         }catch(_){}
         if(typeof loadDailyLessons==="function")await loadDailyLessons();
+        // ضمان رسم الشهر حتى إذا اكتمل تحميل البيانات قبل تحديث واجهة العرض.
+        if(typeof renderLessonsCalendar==="function")renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
+        const monthGrid=document.getElementById("lessonCalendarGrid");
+        if(monthGrid&&!monthGrid.children.length&&typeof renderLessonsCalendar==="function")renderLessonsCalendar([]);
         // إعادة تثبيت العرض بعد انتهاء التحميل حتى لا تعيد حالة قديمة إخفاء التقويم.
         if(add){add.hidden=true;add.style.setProperty("display","none","important");}
         if(list){list.hidden=false;list.style.setProperty("display","block","important");list.classList.add("calendar-mode");}
