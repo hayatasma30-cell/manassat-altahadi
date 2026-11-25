@@ -21,8 +21,10 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid #a8c9aa;border-bottom:4px solid #6c9c70;border-radius:12px;padding:10px 14px;background:linear-gradient(145deg,#fff,#eaf5e8);color:var(--green);font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(145deg,#1c7543,#14532d);border-color:#1c7543;border-bottom-color:#0c3c20;color:#fff}.btn.gold{background:linear-gradient(145deg,#fff9e9,#f4e5bd);border-color:#dfc47e;border-bottom-color:#b18a39;color:#6e521a}.btn:active{transform:translateY(2px);border-bottom-width:2px}
 .row-editor{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:7px 0}.row-editor input{min-width:0}.remove{border:0;background:#fff0ee;color:#a12f2a;border-radius:9px;padding:0 10px;font-weight:800}
 .preview-panel{overflow:auto}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.preview-head strong{color:var(--green)}
-#posterViewport{width:100%;position:relative;display:flex;justify-content:center;overflow:visible;min-height:1px;margin:0 auto}
-#poster{width:100%;max-width:794px;min-height:0;height:auto;aspect-ratio:210 / 297;margin:0 auto;position:relative;transform:none!important;transform-origin:top center;background:linear-gradient(180deg,#fffef9,#f8fbf5);padding:28px 30px;color:#1c3426;border:8px double #2d7444;overflow:visible;box-shadow:0 8px 30px #193d201b;box-sizing:border-box}
+#posterViewport{width:100%;position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;overflow:visible;min-height:1px;margin:0 auto}
+#poster,.poster-page{width:100%;max-width:794px;height:auto;aspect-ratio:210 / 297;flex:none;margin:0 auto;position:relative;transform:none!important;transform-origin:top center;background:linear-gradient(180deg,#fffef9,#f8fbf5);padding:28px 30px;color:#1c3426;border:8px double #2d7444;overflow:hidden;box-shadow:0 8px 30px #193d201b;box-sizing:border-box}
+#poster{min-height:0}
+.poster-content{width:100%;height:100%;overflow:hidden;transform:none!important;display:block}
 .poster-section,.poster-tasks,.poster-footer{break-inside:avoid;page-break-inside:avoid}.poster-table tr{break-inside:avoid;page-break-inside:avoid}
 #poster:before,#poster:after{content:"";position:absolute;width:170px;height:170px;border:1px solid #d8e8d2;border-radius:50%;opacity:.5;pointer-events:none}#poster:before{top:-105px;left:-75px}#poster:after{bottom:-105px;right:-75px}
 
@@ -128,13 +130,37 @@ $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Bool
 $("pImages").innerHTML="";uploadedImages.forEach(src=>{const im=document.createElement("img");im.src=src;$("pImages").append(im);});
 if(logoData)$("posterLogo").src=logoData;
 }
-function fitPoster(){const viewport=$("posterViewport"),poster=$("poster"),content=$("posterContent");if(!viewport||!poster||!content)return;poster.style.transform="none";content.style.transform="none";const width=Math.min(viewport.clientWidth,794);poster.style.width=width+"px";viewport.style.height="auto";}
+function clearPosterPages(){
+ const first=$("poster"),main=$("posterContent");if(!first||!main)return;
+ const extras=[...$("posterViewport").querySelectorAll(".poster-page")];
+ extras.forEach(page=>{const box=page.querySelector(".poster-content");if(box){[...box.children].forEach(node=>{if(node.classList.contains("poster-tasks")&&!node.id){const tasks=$("pTasks");[...node.children].forEach(x=>tasks.appendChild(x));}else main.appendChild(node);});}page.remove();});
+ }
+ function paginatePoster(){
+ const viewport=$("posterViewport"),first=$("poster"),main=$("posterContent");if(!viewport||!first||!main)return;
+ clearPosterPages();
+ const type=$("documentType").value;first.className="template-"+type;
+ const taskNodes=[...$("pTasks").children];
+ if(taskNodes.length>1){const firstTask=taskNodes.shift();$("pTasks").replaceChildren(firstTask);taskNodes.forEach(task=>{const group=document.createElement("div");group.className="poster-tasks";group.appendChild(task);main.appendChild(group);});}
+ const nodes=[...main.children];main.replaceChildren();
+ const width=Math.min(viewport.clientWidth,794);first.style.width=width+"px";
+ let page=first,box=main;
+ const newPage=()=>{const p=document.createElement("article");p.className="poster-page template-"+type;p.style.width=width+"px";const c=document.createElement("div");c.className="poster-content";p.appendChild(c);viewport.appendChild(p);return {page:p,box:c};};
+ nodes.forEach(node=>{
+   box.appendChild(node);
+   if(box.scrollHeight>box.clientHeight+2&&box.children.length>1){
+     box.removeChild(node);
+     const next=newPage();page=next.page;box=next.box;box.appendChild(node);
+   }
+ });
+ }
+ function fitPoster(){const viewport=$("posterViewport"),poster=$("poster");if(!viewport||!poster)return;const width=Math.min(viewport.clientWidth,794);poster.style.width=width+"px";paginatePoster();}
+
 if(window.ResizeObserver){new ResizeObserver(fitPoster).observe($("preview-panel"));}window.addEventListener("resize",fitPoster);
 ["documentType","level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
 $("addTableRow").onclick=()=>addRow("tableRows");$("addExperimentRow").onclick=()=>addRow("experimentRows");
 $("logoUpload").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{logoData=reader.result;try{localStorage.setItem("tahadi_studio_logo",logoData);}catch(err){$("status").textContent="تعذر حفظ الرمز بسبب مساحة التخزين؛ سيبقى ظاهرًا لهذه الجلسة.";}$("posterLogo").src=logoData;};reader.readAsDataURL(f);});
 $("images").addEventListener("change",e=>{uploadedImages=[];const files=[...e.target.files].slice(0,4);let left=files.length;if(!left){render();return;}files.forEach(f=>{const r=new FileReader();r.onload=()=>{uploadedImages.push(r.result);if(!--left)render();};r.readAsDataURL(f);});});
-$("download").onclick=async()=>{const status=$("status");if(!window.html2canvas){status.textContent="تعذر تحميل أداة تصدير الصورة؛ جرّبي الطباعة أو أعيدي فتح الصفحة مع الإنترنت.";return;}const btn=$("download");btn.disabled=true;status.textContent="جارٍ تجهيز الصورة بجودة عالية…";try{const canvas=await html2canvas($("#poster"),{scale:3,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const pageHeight=1123*3,pageCount=Math.max(1,Math.ceil(canvas.height/pageHeight));const base=($("#title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");for(let page=0;page<pageCount;page++){const part=document.createElement("canvas");part.width=canvas.width;part.height=Math.min(pageHeight,canvas.height-page*pageHeight);part.getContext("2d").drawImage(canvas,0,page*pageHeight,canvas.width,part.height,0,0,canvas.width,part.height);const a=document.createElement("a");a.download=base+(pageCount>1?"-صفحة-"+(page+1):"")+".png";a.href=part.toDataURL("image/png");a.click();await new Promise(resolve=>setTimeout(resolve,350));}status.textContent=pageCount>1?"تم تجهيز "+pageCount+" صور A4؛ وافقي على تنزيلها من المتصفح.":"تم تجهيز صورة A4 للتحميل."; }catch(e){fitPoster();status.textContent="تعذر إنشاء الصورة: "+(e.message||"حاولي تقليل عدد الصور.");}finally{btn.disabled=false;}};
+$("download").onclick=async()=>{const status=$("status");if(!window.html2canvas){status.textContent="تعذر تحميل أداة تصدير الصورة؛ جرّبي الطباعة أو أعيدي فتح الصفحة مع الإنترنت.";return;}const btn=$("download");btn.disabled=true;status.textContent="جارٍ تجهيز الصورة بجودة عالية…";try{const pages=[...$("posterViewport").querySelectorAll("#poster,.poster-page")];for(let page=0;page<pages.length;page++){const canvas=await html2canvas(pages[page],{scale:3,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const a=document.createElement("a");const base=($("#title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");a.download=base+(pages.length>1?"-صفحة-"+(page+1):"")+".png";a.href=canvas.toDataURL("image/png");a.click();await new Promise(resolve=>setTimeout(resolve,350));}status.textContent=pages.length>1?"تم تجهيز "+pages.length+" صور A4 منفصلة.":"تم تجهيز صورة A4 للتحميل."; }catch(e){fitPoster();status.textContent="تعذر إنشاء الصورة: "+(e.message||"حاولي تقليل عدد الصور.");}finally{btn.disabled=false;}};
 $("print").onclick=()=>window.print();
 $("reset").onclick=()=>{Object.entries(defaults).forEach(([k,v])=>{if($(k))$(k).value=v;});$("tableRows").innerHTML="";$("experimentRows").innerHTML="";uploadedImages=[];$("images").value="";addRow("tableRows","نترات الكالسيوم","1%");addRow("tableRows","نترات البوتاسيوم","0.25%");addRow("tableRows","فوسفات أحادي البوتاسيوم","0.25%");addRow("tableRows","كبريتات المغنزيوم","0.25%");addRow("tableRows","كلورور الحديد","آثار");addRow("experimentRows","1","NPK 2‰");addRow("experimentRows","2","PK");addRow("experimentRows","3","NK");addRow("experimentRows","4","NP");addRow("experimentRows","5","NPK 20‰");render();};
 const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge")||"";
@@ -144,6 +170,6 @@ if(!token||expiry&&new Date(expiry).getTime()<=Date.now()){document.body.innerHT
 $("reset").click();
 </script>
 <style>
-@media print{body{background:#fff}#posterViewport{width:210mm!important;height:auto!important;overflow:visible!important}#poster{position:relative!important;top:auto!important;right:auto!important;transform:none!important;width:210mm;min-height:277mm;height:auto;overflow:visible;padding:8mm;box-shadow:none;border:1.5mm double #2d7444}.poster-content{transform:none!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}.poster-section,.poster-tasks,.poster-footer{break-inside:avoid;page-break-inside:avoid}@page{size:A4 portrait;margin:0}}
+@media print{body{background:#fff}#posterViewport{display:block;width:210mm!important;overflow:visible!important}#poster,.poster-page{display:block;position:relative!important;width:210mm!important;height:297mm!important;min-height:297mm!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:8mm!important;overflow:hidden!important;box-shadow:none;border:1.5mm double #2d7444;transform:none!important;break-after:page;page-break-after:always}.poster-content{height:100%!important;overflow:hidden!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}@page{size:A4 portrait;margin:0}}
 </style>
 </body></html>
