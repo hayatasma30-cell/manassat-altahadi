@@ -3098,28 +3098,32 @@ window.addEventListener("unhandledrejection",function(e){
    if(shouldLoad)loadDailyLessons();
   }
   // التنقل الموحد بين التقويم ونموذج إضافة/تعديل الحصة.
-  function setLessonPage(page){
-    const addPanel=$("lessonAddPanel"),listPanel=$("lessonListPanel");
+  function setLessonPage(page,shouldLoad=true){
+    const addPanel=$("lessonAddPanel"),listPanel=$("lessonListPanel"),calendarPanel=$("lessonsCalendarPanel");
     if(page==="add"){
       selectedLessonPage="add";
-      if(addPanel)addPanel.hidden=false;
-      if(listPanel)listPanel.hidden=true;
+      if(addPanel){addPanel.hidden=false;addPanel.style.setProperty("display","block","important");}
+      if(listPanel){listPanel.hidden=true;listPanel.style.setProperty("display","none","important");}
+      if(calendarPanel){calendarPanel.hidden=true;calendarPanel.style.setProperty("display","none","important");}
       return;
     }
     if(page==="calendar"||page==="library"){
-      if(addPanel)addPanel.hidden=true;
-      if(listPanel)listPanel.hidden=false;
+      if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+      if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
       lessonCalendarDayPageOpen=false;
       setLessonSubpage("calendar",false);
+      if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+      if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
+      if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.setProperty("display","block","important");}
       selectedLessonPage="library";
-      loadDailyLessons();
+      if(shouldLoad)loadDailyLessons();
       return;
     }
-    if(addPanel)addPanel.hidden=true;
-    if(listPanel)listPanel.hidden=false;
+    if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+    if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
     setLessonSubpage(page,false);
     selectedLessonPage="library";
-    loadDailyLessons();
+    if(shouldLoad)loadDailyLessons();
   }
   function setLessonHome(){
     showView("dailyLessonsView");
