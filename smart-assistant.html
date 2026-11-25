@@ -39,8 +39,8 @@
 
 <section id="editTopicPage" class="view no-print">
 <div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>📝 تحرير الموضوع</h2></div><div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span></div>
-<div class="panel"><label for="topicTitle">عنوان الموضوع</label><input id="topicTitle" placeholder="مثال: فرض الفصل الأول في العلوم الطبيعية"><label for="topicLevel">المستوى الدراسي</label><select id="topicLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option><option>السنة الثانية ثانوي</option><option>السنة الثالثة ثانوي</option></select>
-<label for="topicText">نص الموضوع والأسئلة والوثائق</label><textarea id="topicText" placeholder="اكتبي أو راجعي النص المستخرج هنا..."></textarea>
+<div class="panel"><label for="topicTitle">عنوان الموضوع</label><input id="topicTitle" placeholder="اكتبي عنوانًا واضحًا للموضوع، مثل: فرض الفصل الأول"><label for="topicLevel">المستوى الدراسي</label><select id="topicLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option><option>السنة الثانية ثانوي</option><option>السنة الثالثة ثانوي</option></select>
+<label for="topicText">نص الموضوع والأسئلة والوثائق</label><div class="hint">ملاحظة: استخراج النص من الصور قد يخطئ في الحروف العربية والرموز العلمية. راجعي النص المستخرج وصححيه قبل إعداد الحل.</div><textarea id="topicText" placeholder="اكتبي أو راجعي النص المستخرج هنا..."></textarea>
 <div class="actions"><button class="secondary" data-go="uploadPage" type="button">→ رجوع إلى رفع الملف</button><button class="primary" data-go="solutionPage" type="button">التالي: إعداد الحل ←</button></div></div>
 </section>
 
@@ -87,7 +87,15 @@
  }
  async function recognizeImage(blob){
   if(!window.Tesseract)throw new Error('تعذر تحميل محرك قراءة الصور. تحققي من الاتصال بالإنترنت.');
-  const result=await Tesseract.recognize(blob,'ara+eng',{logger:m=>{if(m.status)setStatus('قراءة النص: '+m.status+(m.progress?' '+Math.round(m.progress*100)+'%':''));}});
+  const img=await createImageBitmap(blob);
+  const scale=Math.min(2.5,Math.max(1.5,2400/Math.max(img.width,img.height)));
+  const canvas=document.createElement('canvas');canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);
+  const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);img.close();
+  const pixels=ctx.getImageData(0,0,canvas.width,canvas.height),d=pixels.data;
+  for(let i=0;i<d.length;i+=4){const gray=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];const enhanced=Math.max(0,Math.min(255,(gray-128)*1.22+128));d[i]=d[i+1]=d[i+2]=enhanced;}
+  ctx.putImageData(pixels,0,0);
+  const result=await Tesseract.recognize(canvas,'ara+eng',{logger:m=>{if(m.status)setStatus('قراءة النص العربي والرموز العلمية: '+m.status+(m.progress?' '+Math.round(m.progress*100)+'%':''));}});
   return result.data.text||'';
  }
  async function pdfText(file){
@@ -97,13 +105,13 @@
   for(let i=1;i<=pdf.numPages;i++){
    setStatus('معالجة صفحة '+i+' من '+pdf.numPages+'…');
    const page=await pdf.getPage(i),content=await page.getTextContent();let text=content.items.map(x=>x.str).join(' ').trim();
-   if(text.length<25){const vp=page.getViewport({scale:1.7}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));}
+   if(text.length<25){const vp=page.getViewport({scale:2.2}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));}
    out+='\n\n— الصفحة '+i+' —\n'+text;
   }return out.trim();
  }
  $('extractBtn').addEventListener('click',async()=>{
   const file=fileInput.files&&fileInput.files[0];if(!file){setStatus('اختاري صورة أو ملف PDF أولًا.');return;}if(file.size>15*1024*1024){setStatus('حجم الملف أكبر من 15 ميغابايت.');return;}
-  const btn=$('extractBtn');btn.disabled=true;try{setStatus('جارٍ تجهيز الملف…');const text=(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))?await pdfText(file):await recognizeImage(file);$('topicText').value=text;if(!$('topicTitle').value)$('topicTitle').value=file.name.replace(/\.[^.]+$/,'');setStatus(text?'اكتمل استخراج النص. انتقلي إلى مراجعة الموضوع.':'لم يتم العثور على نص واضح.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
+  const btn=$('extractBtn');btn.disabled=true;try{setStatus('جارٍ تجهيز الملف…');const text=(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))?await pdfText(file):await recognizeImage(file);$('topicText').value=text;setStatus(text?'اكتمل استخراج النص مبدئيًا. راجعي الكلمات والرموز العلمية وصححيها قبل الانتقال إلى الحل.':'لم يتم العثور على نص واضح. يمكنك كتابة الموضوع يدويًا.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
  });
  $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
  function teacherToken(){
