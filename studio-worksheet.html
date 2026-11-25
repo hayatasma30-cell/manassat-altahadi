@@ -174,5 +174,109 @@ $("reset").click();
 </script>
 <style>
 @media print{body{background:#fff}#posterViewport{display:block;width:210mm!important;overflow:visible!important}#poster,.poster-page{display:block;position:relative!important;width:210mm!important;height:297mm!important;min-height:297mm!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:8mm!important;overflow:hidden!important;box-shadow:none;border:1.5mm double #2d7444;transform:none!important;break-after:page;page-break-after:always}.poster-content{height:100%!important;overflow:hidden!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}@page{size:A4 portrait;margin:0}}
+
+/* Worksheet: polished illustrated A4 layout inspired by the supplied reference */
+#poster.template-worksheet,.poster-page.template-worksheet{
+ --accent:#075b32;--pale:#fff8e7;--line-accent:#d7b24f;
+ background:linear-gradient(180deg,#fffef8 0%,#fdfcf5 100%);
+ border:7px double #17633b;padding:22px 24px;color:#142d20;
+}
+#poster.template-worksheet .poster-content,.poster-page.template-worksheet .poster-content{
+ display:flex;flex-direction:column;gap:8px;height:100%;overflow:hidden;
+}
+#poster.template-worksheet .poster-top,.poster-page.template-worksheet .poster-top{
+ display:grid;grid-template-columns:minmax(0,1fr) 118px 46px;gap:10px;
+ align-items:center;border:0;border-bottom:3px solid #d7b24f;padding:0 0 12px;
+}
+#poster.template-worksheet .poster-logo,.poster-page.template-worksheet .poster-logo{
+ grid-column:2;grid-row:1;width:112px;height:112px;border:0;background:transparent;padding:0;object-fit:contain;
+}
+#poster.template-worksheet .poster-title,.poster-page.template-worksheet .poster-title{grid-column:1;grid-row:1;text-align:center}
+#poster.template-worksheet .poster-title h2,.poster-page.template-worksheet .poster-title h2{
+ font-size:31px;line-height:1.25;border:4px solid #d8b34f;border-radius:30px;padding:12px 15px;
+ box-shadow:0 5px 0 #a77e32;background:linear-gradient(120deg,#07512d,#148044);
+}
+#poster.template-worksheet .poster-title div,.poster-page.template-worksheet .poster-title div{
+ background:#fff4d5;border:2px solid #d7b24f;font-size:18px;font-weight:900;padding:5px 18px;
+}
+#poster.template-worksheet .poster-mark,.poster-page.template-worksheet .poster-mark{
+ grid-column:3;grid-row:1;font-size:36px;color:#d0a32c;
+}
+#poster.template-worksheet .poster-intro,.poster-page.template-worksheet .poster-intro{
+ margin:2px 0 6px;padding:10px 15px;border:2px solid #d9b54f;border-radius:18px;
+ background:linear-gradient(90deg,#fff8e6,#fffdf6);font-size:18px;font-weight:900;
+}
+#poster.template-worksheet .poster-section,.poster-page.template-worksheet .poster-section{
+ display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:8px 14px;
+ margin:2px 0;padding:12px;border:2px solid #4d8b5d;border-radius:20px;background:#fbfff8;
+}
+#poster.template-worksheet .poster-section .section-title,.poster-page.template-worksheet .poster-section .section-title{
+ grid-column:1/-1;width:100%;margin:0;padding:9px 14px;border:3px solid #d7b24f;
+ border-radius:24px;background:linear-gradient(100deg,#07512d,#168044);font-size:19px;
+}
+#poster.template-worksheet .poster-section .section-title:before,.poster-page.template-worksheet .poster-section .section-title:before{
+ counter-increment:worksheet-section;content:counter(worksheet-section);
+ display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-inline-end:8px;
+ border-radius:50%;background:#fff0c5;color:#12492c;border:2px solid #d7b24f;font-weight:900;
+}
+#poster.template-worksheet,.poster-page.template-worksheet{counter-reset:worksheet-section}
+#poster.template-worksheet .poster-section:nth-of-type(1) .section-body,.poster-page.template-worksheet .poster-section:nth-of-type(1) .section-body{
+ grid-column:2;grid-row:2;align-self:stretch;display:flex;align-items:center;justify-content:center;
+ text-align:center;padding:10px;border:2px solid #e0b64e;border-radius:18px;background:#fff8e5;
+ font-size:16px;font-weight:800;line-height:1.5;
+}
+#poster.template-worksheet .poster-section:nth-of-type(1) .poster-table,.poster-page.template-worksheet .poster-section:nth-of-type(1) .poster-table{
+ grid-column:1;grid-row:2;width:100%;align-self:center;margin:0;font-size:15px;
+}
+#poster.template-worksheet .poster-section:nth-of-type(2) .section-body,.poster-page.template-worksheet .poster-section:nth-of-type(2) .section-body{
+ grid-column:1/-1;grid-row:2;font-size:15px;font-weight:700;text-align:center;
+}
+#poster.template-worksheet .poster-section:nth-of-type(2) .poster-table,.poster-page.template-worksheet .poster-section:nth-of-type(2) .poster-table{
+ grid-column:1;grid-row:3;width:100%;align-self:center;margin:0;font-size:15px;
+}
+#poster.template-worksheet .poster-section:nth-of-type(2) .poster-images,.poster-page.template-worksheet .poster-section:nth-of-type(2) .poster-images{
+ grid-column:2;grid-row:3;display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+ gap:7px;margin:0;padding:8px;border-radius:15px;background:#edf5e7;
+}
+#poster.template-worksheet .poster-images img,.poster-page.template-worksheet .poster-images img{
+ max-width:100%;width:100%;max-height:150px;object-fit:contain;border:0;background:transparent;padding:0;
+}
+#poster.template-worksheet .poster-table,.poster-page.template-worksheet .poster-table{
+ border:2px solid #25663d;border-radius:10px;overflow:hidden;background:white;font-size:15px;
+}
+#poster.template-worksheet .poster-table th,.poster-page.template-worksheet .poster-table th{
+ background:#e1efd6;color:#164a2d;font-weight:900;
+}
+#poster.template-worksheet .poster-table th,#poster.template-worksheet .poster-table td,
+.poster-page.template-worksheet .poster-table th,.poster-page.template-worksheet .poster-table td{
+ border:1.5px solid #477a4d;padding:8px 7px;text-align:center;
+}
+#poster.template-worksheet .poster-tasks,.poster-page.template-worksheet .poster-tasks{
+ display:grid;gap:8px;margin:4px 0 0;
+}
+#poster.template-worksheet .task,.poster-page.template-worksheet .task{
+ position:relative;padding:11px 14px 11px 15px;border:2px solid #d8b34f;border-radius:25px;
+ background:linear-gradient(90deg,#fff9e9,#fffef8);font-size:17px;font-weight:900;line-height:1.45;
+}
+#poster.template-worksheet .task b,.poster-page.template-worksheet .task b{
+ color:#075b32;background:#f9edc7;border:1px solid #d6b14d;border-radius:18px;padding:3px 9px;margin-inline-end:6px;
+}
+#poster.template-worksheet .poster-footer,.poster-page.template-worksheet .poster-footer{
+ margin-top:auto;padding:10px 14px;border:3px solid #d5ad4d;border-radius:24px;
+ background:linear-gradient(90deg,#fff8e7,#edf6e9);font-size:15px;font-weight:900;
+}
+@media(max-width:520px){
+ #poster.template-worksheet,.poster-page.template-worksheet{padding:14px 12px}
+ #poster.template-worksheet .poster-top,.poster-page.template-worksheet .poster-top{grid-template-columns:minmax(0,1fr) 78px 25px;gap:5px}
+ #poster.template-worksheet .poster-logo,.poster-page.template-worksheet .poster-logo{width:76px;height:76px}
+ #poster.template-worksheet .poster-title h2,.poster-page.template-worksheet .poster-title h2{font-size:23px;padding:8px}
+ #poster.template-worksheet .poster-title div,.poster-page.template-worksheet .poster-title div{font-size:14px}
+ #poster.template-worksheet .poster-section,.poster-page.template-worksheet .poster-section{gap:7px;padding:8px;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)}
+ #poster.template-worksheet .poster-section .section-title,.poster-page.template-worksheet .poster-section .section-title{font-size:16px;padding:7px}
+ #poster.template-worksheet .poster-table,.poster-page.template-worksheet .poster-table{font-size:12px}
+ #poster.template-worksheet .poster-table th,#poster.template-worksheet .poster-table td,
+ .poster-page.template-worksheet .poster-table th,.poster-page.template-worksheet .poster-table td{padding:5px 3px}
+ #poster.template-worksheet .task,.poster-page.template-worksheet .task{font-size:14px;padding:8px 10px}
+}
 </style>
 </body></html>
