@@ -4707,6 +4707,18 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
  function editRule(rule){$("scienceRuleEditor").hidden=false;$("scienceRuleEditorTitle").textContent="تعديل القاعدة المعتمدة";$("scienceRuleEditId").value=rule.id;$("scienceRuleTitle").value=rule.title;$("scienceRuleText").value=rule.rule_text;$("scienceRuleContext").value=rule.source_context||"";}
  $("saveScienceRule")?.addEventListener("click",async()=>{const id=$("scienceRuleEditId").value;try{await call(id?"update_rule":"save_rule",{id,title:$("scienceRuleTitle").value.trim(),rule_text:$("scienceRuleText").value.trim(),source_context:$("scienceRuleContext").value.trim()});$("scienceRuleEditor").hidden=true;await loadRules();}catch(e){alert(e.message);}});
  $("cancelScienceRuleEdit")?.addEventListener("click",()=>$("scienceRuleEditor").hidden=true);
+ // بعد نجاح إضافة/تعديل مورد في المكتبة، حدّث معرفة المساعد تلقائيًا.
+ const resourceStatus=$("resourceFormStatus");
+ if(resourceStatus&&window.MutationObserver){
+  let indexing=false;
+  new MutationObserver(async()=>{
+   if(indexing||!resourceStatus.textContent.includes("تم رفع ملف PDF وحفظ المورد بنجاح."))return;
+   indexing=true;
+   try{const d=await call("sync_library");resourceStatus.textContent="تم حفظ المورد وتحديث معرفة المساعد العلمي. فُهرس "+d.indexed+" موردًا."+(d.errors?.length?" تعذرت فهرسة بعض الملفات: "+d.errors.join("؛ "):"");}
+   catch(err){resourceStatus.textContent="تم حفظ المورد، لكن تعذرت مزامنة معرفة المساعد: "+(err.message||"");}
+   finally{indexing=false;}
+  }).observe(resourceStatus,{childList:true,characterData:true,subtree:true});
+ }
 })();
 </script>
 
