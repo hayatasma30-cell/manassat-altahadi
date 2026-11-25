@@ -4674,5 +4674,23 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
 })();
 
+/* إصلاح احتياطي مباشر لزر العودة إلى تقويم الحصص من نموذج الإضافة */
+document.addEventListener("click",function(event){
+ const backButton=event.target instanceof Element?event.target.closest("#lessonEditorBackToCalendar"):null;
+ if(!backButton)return;
+ event.preventDefault();
+ event.stopImmediatePropagation();
+ try{
+  if(typeof showView==="function")showView("dailyLessonsView");
+  if(typeof setLessonPage==="function")setLessonPage("calendar");
+  else if(typeof setLessonHome==="function")setLessonHome();
+  window.scrollTo({top:0,behavior:"smooth"});
+ }catch(error){
+  console.error("lesson calendar back navigation failed",error);
+  const status=document.getElementById("lessonCalendarLoadStatus");
+  if(status){status.hidden=false;status.textContent="تعذر فتح التقويم. أعيدي المحاولة.";}
+ }
+},true);
+
 /* تم إيقاف الجزء القديم غير المكتمل الخاص بالمساعد العلمي. */
 </script>
