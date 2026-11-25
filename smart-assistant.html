@@ -38,7 +38,7 @@
 
 <section id="editTopicPage" class="view no-print">
 <div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>📝 تحرير الموضوع</h2></div><div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span></div>
-<div class="panel"><label for="topicTitle">عنوان الموضوع</label><input id="topicTitle" placeholder="مثال: فرض الفصل الأول في العلوم الطبيعية">
+<div class="panel"><label for="topicTitle">عنوان الموضوع</label><input id="topicTitle" placeholder="مثال: فرض الفصل الأول في العلوم الطبيعية"><label for="topicLevel">المستوى الدراسي</label><select id="topicLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option><option>السنة الثانية ثانوي</option><option>السنة الثالثة ثانوي</option></select>
 <label for="topicText">نص الموضوع والأسئلة والوثائق</label><textarea id="topicText" placeholder="اكتبي أو راجعي النص المستخرج هنا..."></textarea>
 <div class="actions"><button class="secondary" data-go="uploadPage" type="button">→ رجوع إلى رفع الملف</button><button class="primary" data-go="solutionPage" type="button">التالي: إعداد الحل ←</button></div></div>
 </section>
@@ -107,7 +107,7 @@
  function readLibrary(){try{const v=JSON.parse(localStorage.getItem(LIB_KEY)||'[]');return Array.isArray(v)?v:[];}catch(_){return [];}}
  function writeLibrary(items){localStorage.setItem(LIB_KEY,JSON.stringify(items));}
  function saveDraft(){
-  const now=new Date().toISOString(),data={title:$('topicTitle').value.trim()||'موضوع دون عنوان',topic:$('topicText').value,solution:$('solutionText').value,updatedAt:now};
+  const now=new Date().toISOString(),data={title:$('topicTitle').value.trim()||'موضوع دون عنوان',level:$('topicLevel').value,topic:$('topicText').value,solution:$('solutionText').value,updatedAt:now};
   try{
    localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify(data));
    const items=readLibrary();
@@ -116,8 +116,8 @@
    writeLibrary(items);$('draftStatus').textContent='حُفظ الموضوع والحل في مكتبتك وعلى هذا الجهاز.';$('homeStatus').textContent='تم حفظ الموضوع والحل في مكتبتك.';renderLibrary();
   }catch(e){$('draftStatus').textContent='تعذر الحفظ؛ قد تكون مساحة التخزين ممتلئة.';$('homeStatus').textContent='تعذر حفظ المسودة.';}
  }
- function loadDraft(){try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('homeStatus').textContent='لا توجد مسودة محفوظة على هذا الجهاز.';return;}currentLibraryId=null;$('topicTitle').value=d.title||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحفوظة.';show('editTopicPage');}catch(e){$('homeStatus').textContent='تعذر استرجاع المسودة.';}}
- function openLibraryItem(id){const item=readLibrary().find(x=>x.id===id);if(!item)return;$('topicTitle').value=item.title||'';$('topicText').value=item.topic||'';$('solutionText').value=item.solution||'';currentLibraryId=item.id;show('editTopicPage');}
+ function loadDraft(){try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('homeStatus').textContent='لا توجد مسودة محفوظة على هذا الجهاز.';return;}currentLibraryId=null;$('topicTitle').value=d.title||'';$('topicLevel').value=d.level||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحفوظة.';show('editTopicPage');}catch(e){$('homeStatus').textContent='تعذر استرجاع المسودة.';}}
+ function openLibraryItem(id){const item=readLibrary().find(x=>x.id===id);if(!item)return;$('topicTitle').value=item.title||'';$('topicLevel').value=item.level||'';$('topicText').value=item.topic||'';$('solutionText').value=item.solution||'';currentLibraryId=item.id;show('editTopicPage');}
  function renderLibrary(){
   const host=$('libraryList');if(!host)return;const items=readLibrary();host.innerHTML='';
   if(!items.length){host.innerHTML='<div class="hint">لم تحفظي أي موضوع بعد. ابدئي بموضوع جديد، ثم اضغطي «حفظ المسودة» لإضافته إلى مكتبتك.</div>';return;}
@@ -125,7 +125,7 @@
   items.forEach(item=>{
    const card=document.createElement('article');card.className='panel';card.style.margin='0';card.style.borderRadius='15px';
    const head=document.createElement('div');head.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap';
-   const info=document.createElement('div');info.style.minWidth='0';const title=document.createElement('strong');title.textContent=item.title||'موضوع دون عنوان';title.style.cssText='display:block;color:#15532f;font-size:1rem';const date=document.createElement('small');date.className='muted';date.textContent='آخر تعديل: '+new Date(item.updatedAt||item.createdAt||Date.now()).toLocaleString('ar-DZ');info.append(title,date);head.append(info);
+   const info=document.createElement('div');info.style.minWidth='0';const title=document.createElement('strong');title.textContent=item.title||'موضوع دون عنوان';title.style.cssText='display:block;color:#15532f;font-size:1rem';const date=document.createElement('small');date.className='muted';date.textContent=(item.level?item.level+' • ':'')+'آخر تعديل: '+new Date(item.updatedAt||item.createdAt||Date.now()).toLocaleString('ar-DZ');info.append(title,date);head.append(info);
    const preview=document.createElement('p');preview.className='muted';preview.style.margin='7px 0';preview.textContent=(item.topic||'لا يوجد نص للموضوع').slice(0,150)+(item.topic&&item.topic.length>150?'…':'');
    const actions=document.createElement('div');actions.className='actions';actions.style.marginTop='8px';
    const open=document.createElement('button');open.className='primary';open.type='button';open.textContent='فتح وتعديل';open.addEventListener('click',()=>openLibraryItem(item.id));
@@ -135,7 +135,7 @@
   });
  }
  $('saveDraft').addEventListener('click',saveDraft);
- $('newLibraryItem').addEventListener('click',()=>{currentLibraryId=null;$('topicTitle').value='';$('topicText').value='';$('solutionText').value='';fileInput.value='';show('uploadPage');});
+ $('newLibraryItem').addEventListener('click',()=>{currentLibraryId=null;$('topicTitle').value='';$('topicLevel').value='';$('topicText').value='';$('solutionText').value='';fileInput.value='';show('uploadPage');});
  document.querySelectorAll('[data-go="libraryPage"]').forEach(b=>b.addEventListener('click',renderLibrary));
  renderLibrary();
  $('preparePrint').addEventListener('click',()=>{
