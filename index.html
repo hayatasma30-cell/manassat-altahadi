@@ -3152,6 +3152,8 @@ window.addEventListener("unhandledrejection",function(e){
       return;
     }
     if(page==="calendar"||page==="library"){
+      lessonCalendarView="month";
+      lessonCalendarDayPageOpen=false;
       if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
       if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
       lessonCalendarDayPageOpen=false;
