@@ -1825,8 +1825,8 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div data-step="0" class="lesson-field"><label for="lessonEndTime">وقت النهاية</label><input id="lessonEndTime" type="time" step="300" aria-label="اختاري وقت نهاية الحصة"></div>
 <div data-step="1" class="lesson-field"><label for="lessonCategory">نوع الموعد</label><select id="lessonCategory"><option value="عادية">حصة عادية</option><option value="دورة مراجعة">دورة</option></select><p id="lessonCategoryHint" class="muted">الحصة العادية لا تُضاف إلى مكتبة الدورات.</p></div>
 <div data-step="1" class="lesson-field"><label for="lessonType">نوع الحصة</label><select id="lessonType"><option value="جماعية">جماعية</option><option value="فردية">فردية</option></select></div>
-<div <div id="lessonDurationWrap" data-step="1" class="lesson-field" hidden><label for="lessonDuration">مدة الحصة الفردية</label><select id="lessonDuration"><option value="60">ساعة واحدة</option><option value="90">ساعة ونصف</option><option value="120">ساعتان</option></select></div>
-<div <div data-step="1" class="lesson-field lesson-field-full" id="lessonCourseFields" hidden><label for="lessonCourseKind">نوع الدورة</label><select id="lessonCourseKind"><option value="فرض">دورة فرض</option><option value="اختبار">دورة اختبار</option></select><label for="lessonCourseNumber">عدد الدورة</label><select id="lessonCourseNumber"><option value="1">الدورة 1</option><option value="2">الدورة 2</option><option value="3">الدورة 3</option><option value="4">الدورة 4</option><option value="5">الدورة 5</option><option value="6">الدورة 6</option><option value="7">الدورة 7</option><option value="8">الدورة 8</option><option value="9">الدورة 9</option><option value="10">الدورة 10</option></select><label for="lessonCourseTerm">الفصل الدراسي</label><select id="lessonCourseTerm"><option>الفصل الأول</option><option>الفصل الثاني</option><option>الفصل الثالث</option></select></div>
+<div id="lessonDurationWrap" data-step="1" class="lesson-field" hidden><label for="lessonDuration">مدة الحصة الفردية</label><select id="lessonDuration"><option value="60">ساعة واحدة</option><option value="90">ساعة ونصف</option><option value="120">ساعتان</option></select></div>
+<div data-step="1" class="lesson-field lesson-field-full" id="lessonCourseFields" hidden><label for="lessonCourseKind">نوع الدورة</label><select id="lessonCourseKind"><option value="فرض">دورة فرض</option><option value="اختبار">دورة اختبار</option></select><label for="lessonCourseNumber">عدد الدورة</label><select id="lessonCourseNumber"><option value="1">الدورة 1</option><option value="2">الدورة 2</option><option value="3">الدورة 3</option><option value="4">الدورة 4</option><option value="5">الدورة 5</option><option value="6">الدورة 6</option><option value="7">الدورة 7</option><option value="8">الدورة 8</option><option value="9">الدورة 9</option><option value="10">الدورة 10</option></select><label for="lessonCourseTerm">الفصل الدراسي</label><select id="lessonCourseTerm"><option>الفصل الأول</option><option>الفصل الثاني</option><option>الفصل الثالث</option></select></div>
 <div data-step="1" class="lesson-field lesson-field-full"><label for="lessonLevel">المستوى الدراسي</label><select id="lessonLevel"><option value="">اختاري المستوى الدراسي</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الثانية ثانوي — علوم تجريبية</option></select></div>
 <div id="lessonStudentWrap" data-step="1" class="lesson-field lesson-field-full"><label id="lessonStudentLabel" for="lessonStudent">التلاميذ المسجلون في الحصة</label><div id="lessonIndividualStudentBox"><select id="lessonStudent"><option value="">اختاري التلميذ</option></select><p class="muted">في الحصة الفردية، اختاري تلميذًا واحدًا فقط.</p></div><div id="lessonGroupStudentBox" hidden><p class="muted">حددي التلاميذ الذين تريدين تسجيلهم في هذه الحصة الجماعية.</p><div id="lessonGroupStudents" class="lesson-group-students"></div></div></div>
 <div id="lessonRepeatWrap" data-step="2" class="lesson-field lesson-field-full">
@@ -2229,11 +2229,36 @@ window.addEventListener("unhandledrejection",function(e){
       if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
       showView("dailyLessonsView");
       try{
-        if(typeof setLessonHome==="function")setLessonHome();
+        // هذا هو معالج النقر الفعلي؛ معالجات الاسترداد اللاحقة لا تصل إليه بسبب stopImmediatePropagation.
+        selectedLessonPage="library";
+        selectedLessonSubpage="calendar";
+        lessonCalendarDayPageOpen=false;
         if(typeof setLessonPage==="function")setLessonPage("calendar");
-        if(typeof loadDailyLessons==="function")loadDailyLessons();
+        const add=document.getElementById("lessonAddPanel");
+        const list=document.getElementById("lessonListPanel");
+        const calendar=document.getElementById("lessonsCalendarPanel");
+        if(add){add.hidden=true;add.style.setProperty("display","none","important");}
+        if(list){list.hidden=false;list.style.setProperty("display","block","important");list.classList.add("calendar-mode");}
+        if(calendar){calendar.hidden=false;calendar.style.setProperty("display","block","important");calendar.classList.add("calendar-clean-page");}
+        const nav=document.getElementById("lessonSubpageNav");if(nav)nav.hidden=true;
+        const back=document.getElementById("lessonSubpageBack");if(back)back.hidden=true;
+        ["lessonListFilters","lessonListModeHint","lessonCategoryFilterHint","dailyLessonsList"].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=true;});
+        const heading=document.querySelector("#lessonListPanel .lesson-list-heading");if(heading)heading.hidden=true;
+        const title=document.getElementById("lessonListTitle");if(title)title.textContent="📅 تقويم الحصص";
+        try{
+          const key="tahadi_workspace_checkpoint_v1";
+          const saved=JSON.parse(localStorage.getItem(key)||"null")||{};
+          saved.view="dailyLessonsView";saved.lessonPage="calendar";saved.activeSubpage="calendar";
+          saved.lessonWorkspace={...(saved.lessonWorkspace||{}),subpage:"calendar",dayPageOpen:false};
+          saved.savedAt=Date.now();localStorage.setItem(key,JSON.stringify(saved));
+        }catch(_){}
+        if(typeof loadDailyLessons==="function")await loadDailyLessons();
+        // إعادة تثبيت العرض بعد انتهاء التحميل حتى لا تعيد حالة قديمة إخفاء التقويم.
+        if(add){add.hidden=true;add.style.setProperty("display","none","important");}
+        if(list){list.hidden=false;list.style.setProperty("display","block","important");list.classList.add("calendar-mode");}
+        if(calendar){calendar.hidden=false;calendar.style.setProperty("display","block","important");calendar.classList.add("calendar-clean-page");}
       }catch(err){
-        showStatus("تعذر فتح حصص اليوم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
+        showStatus("تعذر فتح التقويم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
         console.error("dailyLessonsView open failed",err);
       }
       return;
