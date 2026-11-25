@@ -1598,6 +1598,25 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 #dailyLessonsView #lessonCalendarGrid{touch-action:pan-y!important;overscroll-behavior-x:contain}
 </style>
 
+<style id="tahadi-lessons-month-only">
+/* تقويم الحصص: واجهة شهرية واحدة */
+#dailyLessonsView #lessonSubpageNav,
+#dailyLessonsView #lessonSubpageBack,
+#dailyLessonsView #lessonCalendarViewButtons,
+#dailyLessonsView #lessonNextCountdown,
+#dailyLessonsView #lessonListFilters,
+#dailyLessonsView #lessonListModeHint,
+#dailyLessonsView #lessonCategoryFilterHint,
+#dailyLessonsView #dailyLessonsList,
+#dailyLessonsView #lessonListPanel .lesson-list-heading,
+#dailyLessonsView #lessonListPanel .tahadi-sort-bar{display:none!important}
+#dailyLessonsView #lessonListPanel{display:block!important}
+#dailyLessonsView #lessonsCalendarPanel{display:block!important;visibility:visible!important;opacity:1!important}
+#dailyLessonsView #lessonCalendarGrid{display:grid!important;visibility:visible!important;grid-template-columns:repeat(7,minmax(0,1fr))!important}
+#dailyLessonsView #lessonCalendarGrid.view-month{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+#dailyLessonsView .lesson-calendar-toolbar{display:flex!important;visibility:visible!important}
+#dailyLessonsView #lessonCalendarDayDetails{display:block!important;visibility:visible!important}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2936,10 +2955,11 @@ window.addEventListener("unhandledrejection",function(e){
   }
   window.tahadiSelectLessonDate=function(date){
     lessonCalendarSelectedDate=String(date||"").slice(0,10);
-    lessonCalendarDayPageOpen=true;
+    lessonCalendarView="month";
+    lessonCalendarDayPageOpen=false;
     renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
-    const panel=document.getElementById("lessonsCalendarPanel");
-    if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
+    const details=document.getElementById("lessonCalendarDayDetails");
+    if(details)details.scrollIntoView({behavior:"smooth",block:"nearest"});
   };
   function shiftLessonCalendar(direction){
     if(lessonCalendarDayPageOpen)return;
