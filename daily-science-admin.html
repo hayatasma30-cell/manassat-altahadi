@@ -464,7 +464,7 @@ window.openDailyScienceEditor=function(){location.href="daily-science-admin.html
  let lastAnswer="",lastQuestion="",rulesCache=[],conversationHistory=[],assistantOpened=false;
  async function call(action,extra={}){const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر تنفيذ العملية.");return d;}
  function show(section){location.href="daily-science-admin.html?view=home";}
- if(new URLSearchParams(location.search).get("view")==="assistant"&&!assistantOpened){assistantOpened=true;$("scienceAssistantStatus").textContent="جارٍ تجهيز معرفة الدروس الموجودة في المكتبة…";try{const d=await call("sync_library");$("scienceAssistantStatus").textContent="تم تجهيز المساعد: فُهرس "+d.indexed+" موردًا."+(d.errors?.length?" تعذرت فهرسة بعض الملفات: "+d.errors.join("؛ "):"");}catch(err){$("scienceAssistantStatus").textContent="تعذر تحديث معرفة الدروس تلقائيًا: "+(err.message||"")+". يمكنك إعادة المحاولة من زر تحديث معرفة الدروس.";} }});
+ if(new URLSearchParams(location.search).get("view")==="assistant"&&!assistantOpened){assistantOpened=true;$("scienceAssistantStatus").textContent="جارٍ تجهيز معرفة الدروس الموجودة في المكتبة…";try{const d=await call("sync_library");$("scienceAssistantStatus").textContent="تم تجهيز المساعد: فُهرس "+d.indexed+" موردًا."+(d.errors?.length?" تعذرت فهرسة بعض الملفات: "+d.errors.join("؛ "):"");}catch(err){$("scienceAssistantStatus").textContent="تعذر تحديث معرفة الدروس تلقائيًا: "+(err.message||"")+". يمكنك إعادة المحاولة من زر تحديث معرفة الدروس.";} }}
  if(new URLSearchParams(location.search).get("view")==="rules")loadRules();
  document.querySelectorAll("[data-science-home]").forEach(b=>b.addEventListener("click",()=>{location.href="daily-science-admin.html?view=home";}));
  function addMessage(role,text,sources){const root=$("scienceAssistantMessages"),el=document.createElement("div");el.className="science-ai-message "+role;el.textContent=text;if(role==="assistant"&&sources?.length){const src=document.createElement("div");src.className="science-ai-sources";src.textContent="المراجع المستعملة: "+sources.map(x=>x.title+" ("+x.level+")").join("، ");el.appendChild(src);}root.appendChild(el);root.scrollTop=root.scrollHeight;}
@@ -481,5 +481,6 @@ window.openDailyScienceEditor=function(){location.href="daily-science-admin.html
  $("saveScienceRule")?.addEventListener("click",async()=>{const id=$("scienceRuleEditId").value;try{await call(id?"update_rule":"save_rule",{id,title:$("scienceRuleTitle").value.trim(),rule_text:$("scienceRuleText").value.trim(),source_context:$("scienceRuleContext").value.trim()});$("scienceRuleEditor").hidden=true;await loadRules();}catch(e){alert(e.message);}});
  $("cancelScienceRuleEdit")?.addEventListener("click",()=>$("scienceRuleEditor").hidden=true);
 
+})();
 </script>
 </body></html>
