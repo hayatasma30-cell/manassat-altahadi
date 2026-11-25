@@ -65,8 +65,7 @@
 <section class="paper" id="topicPaper"><h1 id="printTopicTitle">موضوع الاختبار</h1><div class="body" id="printTopicBody"></div></section>
 <section class="paper" id="solutionPaper"><h1>الحل النموذجي</h1><h2 id="printSolutionTitle"></h2><div class="body" id="printSolutionBody"></div></section>
 </main>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <script>
 (()=> {
  const $=id=>document.getElementById(id);
@@ -79,48 +78,43 @@
  const fileInput=$('sourceFile'),status=$('extractStatus');
  let currentLibraryId=null;
  const LIB_ENDPOINT='https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/teacher-exam-library';
+ const OCR_ENDPOINT='https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/ai-document-extract';
  let libraryCache=[];
  const setStatus=s=>status.textContent=s;
  function updatePreview(){
   $('topicPreview').textContent=($('topicTitle').value||'موضوع الاختبار')+'\n\n'+($('topicText').value||'لم يتم إدخال نص الموضوع.');
   $('solutionPreview').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';
  }
- let ocrWorkerPromise=null;
- async function getOcrWorker(){
-  if(!window.Tesseract)throw new Error('تعذر تحميل محرك قراءة الصور. تحققي من الاتصال بالإنترنت.');
-  if(!ocrWorkerPromise){
-   ocrWorkerPromise=Tesseract.createWorker('ara+eng',1,{logger:m=>{
-    if(m.status){const p=m.progress?Math.round(m.progress*100)+'%':'';setStatus('تهيئة قارئ العربية والرموز العلمية: '+m.status+(p?' '+p:''));}
-   }}).catch(err=>{ocrWorkerPromise=null;throw err;});
+ async function fileToDataUrl(file){
+  return await new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onload=()=>resolve(String(reader.result||""));
+   reader.onerror=()=>reject(new Error("تعذر قراءة الملف من الهاتف."));
+   reader.readAsDataURL(file);
+  });
+ }
+ async function extractWithAI(file){
+  const mime=file.type||(file.name.toLowerCase().endsWith(".pdf")?"application/pdf":"");
+  const token=teacherToken();
+  if(!mime)throw new Error("تعذر تحديد نوع الملف.");
+  if(mime!=="application/pdf"&&!["image/jpeg","image/png","image/webp","image/gif"].includes(mime)){
+   throw new Error("اختاري ملف PDF أو صورة JPG أو PNG أو WEBP.");
   }
-  return ocrWorkerPromise;
+  setStatus("جارٍ تجهيز الملف وإرساله إلى قارئ الذكاء الاصطناعي…");
+  const fileData=await fileToDataUrl(file);
+  setStatus("جارٍ قراءة النص العربي والرموز العلمية…");
+  const response=await fetch(OCR_ENDPOINT,{
+   method:"POST",cache:"no-store",
+   headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},
+   body:JSON.stringify({filename:file.name,mime_type:mime,file_data:fileData})
+  });
+  let data={};try{data=await response.json();}catch(_){}
+  if(!response.ok||!data.ok)throw new Error(data.error||"تعذر استخراج النص من الملف.");
+  return String(data.text||"").trim();
  }
- async function recognizeImage(blob){
-  const img=await createImageBitmap(blob);
-  const longest=Math.max(img.width,img.height);
-  const scale=Math.min(1.6,1600/longest);
-  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
-  const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,canvas.width,canvas.height);img.close();
-  const worker=await getOcrWorker();
-  await worker.setParameters({tessedit_pageseg_mode:'6'});
-  const result=await worker.recognize(canvas);
-  return result.data.text||'';
- }
- async function pdfText(file){
-  if(!window.pdfjsLib)throw new Error('تعذر تحميل قارئ PDF. تحققي من الاتصال بالإنترنت.');
-  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;let out='';
-  for(let i=1;i<=pdf.numPages;i++){
-   setStatus('معالجة الصفحة '+i+' من '+pdf.numPages+'…');
-   const page=await pdf.getPage(i),content=await page.getTextContent();let text=content.items.map(x=>x.str).join(' ').trim();
-   if(text.length<25){const vp=page.getViewport({scale:1.4}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));}
-   out+='\n\n— الصفحة '+i+' —\n'+text;
-  }return out.trim();
- }
- $('extractBtn').addEventListener('click',async()=>{
+  $('extractBtn').addEventListener('click',async()=>{
   const file=fileInput.files&&fileInput.files[0];if(!file){setStatus('اختاري صورة أو ملف PDF أولًا.');return;}if(file.size>15*1024*1024){setStatus('حجم الملف أكبر من 15 ميغابايت.');return;}
-  const btn=$('extractBtn');btn.disabled=true;try{setStatus('جارٍ تجهيز الملف…');const text=(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))?await pdfText(file):await recognizeImage(file);$('topicText').value=text;setStatus(text?'اكتمل استخراج النص مبدئيًا. راجعي الكلمات والرموز العلمية وصححيها قبل الانتقال إلى الحل.':'لم يتم العثور على نص واضح. يمكنك كتابة الموضوع يدويًا.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
+  const btn=$('extractBtn');btn.disabled=true;try{const text=await extractWithAI(file);$('topicText').value=text;setStatus(text?'اكتمل استخراج النص بالذكاء الاصطناعي. راجعي الكلمات والرموز العلمية قبل إعداد الحل.':'لم يتم العثور على نص واضح. يمكنك كتابة الموضوع يدويًا.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
  });
  $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
  function teacherToken(){
