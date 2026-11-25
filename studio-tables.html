@@ -71,6 +71,13 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <section class="form-panel">
 <h1>أنشئي ورقتك التعليمية</h1>
 <p class="hint">أدخلي محتوى هذه الوثيقة، وستتحدث المعاينة تلقائيًا دون حذف أي نص.</p>
+<fieldset class="design-picker" id="designPicker"><legend>اختاري تصميم الورقة</legend><p>اختاري الطابع البصري، وستتغير المعاينة مباشرة دون تغيير معلوماتك.</p><div class="design-options">
+<button type="button" class="design-choice" data-design="emerald" aria-pressed="true"><span class="swatches"><i style="background:#075b32"></i><i style="background:#d7b24f"></i></span>أخضر وذهبي فاخر</button>
+<button type="button" class="design-choice" data-design="ocean" aria-pressed="false"><span class="swatches"><i style="background:#075a78"></i><i style="background:#72b8ce"></i></span>أزرق علمي</button>
+<button type="button" class="design-choice" data-design="lavender" aria-pressed="false"><span class="swatches"><i style="background:#59417c"></i><i style="background:#b9a3d8"></i></span>بنفسجي هادئ</button>
+<button type="button" class="design-choice" data-design="minimal" aria-pressed="false"><span class="swatches"><i style="background:#34433b"></i><i style="background:#dce2dc"></i></span>أبيض بسيط وأنيق</button>
+<button type="button" class="design-choice" data-design="botanical" aria-pressed="false"><span class="swatches"><i style="background:#39713c"></i><i style="background:#a4c36d"></i></span>طبيعي نباتي</button>
+</div></fieldset>
 <label for="documentType">نوع الوثيقة</label>
 <select id="documentType">
 <option value="lesson">ملخص درس</option><option value="worksheet">ورقة عمل</option><option value="exam">اختبار أو فرض</option><option value="poster">ملصق علمي</option><option value="experiment">بطاقة تجربة</option><option value="tables" selected>جداول ووثائق</option>
@@ -124,7 +131,9 @@ let uploadedImages=[];
 function addRow(containerId,a="",b=""){const row=document.createElement("div");row.className="row-editor";const one=document.createElement("input"),two=document.createElement("input"),del=document.createElement("button");one.placeholder=containerId==="tableRows"?"العنصر المعدني":"رقم النبتة";two.placeholder=containerId==="tableRows"?"الكمية":"التركيب المعدني";one.value=a;two.value=b;one.addEventListener("input",render);two.addEventListener("input",render);del.type="button";del.className="remove";del.textContent="×";del.title="حذف السطر";del.onclick=()=>{row.remove();render();};row.append(one,two,del);$(containerId).append(row);render();}
 function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
+let activeDesign="emerald";
+document.querySelectorAll(".design-choice").forEach(btn=>btn.addEventListener("click",()=>{activeDesign=btn.dataset.design;document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b===btn)));render();fitPoster();}));
+function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
@@ -146,7 +155,7 @@ function clearPosterPages(){
  const nodes=[...main.children];main.replaceChildren();
  const width=Math.min(viewport.clientWidth,794);first.style.width=width+"px";
  let page=first,box=main;
- const newPage=()=>{const p=document.createElement("article");p.className="poster-page template-"+type;p.style.width=width+"px";const c=document.createElement("div");c.className="poster-content";p.appendChild(c);viewport.appendChild(p);return {page:p,box:c};};
+ const newPage=()=>{const p=document.createElement("article");p.className="poster-page template-"+type+" design-"+activeDesign;p.style.width=width+"px";const c=document.createElement("div");c.className="poster-content";p.appendChild(c);viewport.appendChild(p);return {page:p,box:c};};
  nodes.forEach(node=>{
    box.appendChild(node);
    if(box.scrollHeight>box.clientHeight+2&&box.children.length>1){
@@ -174,5 +183,29 @@ $("reset").click();
 </script>
 <style>
 @media print{body{background:#fff}#posterViewport{display:block;width:210mm!important;overflow:visible!important}#poster,.poster-page{display:block;position:relative!important;width:210mm!important;height:297mm!important;min-height:297mm!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:8mm!important;overflow:hidden!important;box-shadow:none;border:1.5mm double #2d7444;transform:none!important;break-after:page;page-break-after:always}.poster-content{height:100%!important;overflow:hidden!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}@page{size:A4 portrait;margin:0}}
+
+/* Design chooser presets */
+.design-picker{margin:12px 0 16px;padding:12px;border:1px solid #dce7d9;border-radius:15px;background:#fbfdf9}
+.design-picker legend{color:#14532d;font-weight:900;padding:0 7px}
+.design-picker p{margin:0 0 9px;color:#718075;font-size:.82rem}
+.design-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.design-choice{display:flex;align-items:center;gap:8px;min-height:48px;padding:8px 9px;border:1px solid #d5dfd3;border-radius:12px;background:#fff;color:#263c2d;font:inherit;font-size:.85rem;font-weight:800;text-align:right;cursor:pointer}
+.design-choice .swatches{display:flex;flex:0 0 auto;gap:3px}
+.design-choice i{display:block;width:11px;height:23px;border-radius:5px}
+.design-choice[aria-pressed="true"]{border:2px solid #17633b;background:#f0f7ed;box-shadow:0 2px 0 #c8d9c5}
+.design-choice:focus-visible{outline:3px solid #d6ad55;outline-offset:2px}
+#poster.design-emerald,.poster-page.design-emerald{--accent:#075b32;--pale:#fff8e7;--line-accent:#d7b24f;background:linear-gradient(180deg,#fffef8,#f8fbf3);border-color:#17633b}
+#poster.design-ocean,.poster-page.design-ocean{--accent:#075a78;--pale:#edf8fc;--line-accent:#72b8ce;background:linear-gradient(180deg,#fbfeff,#eef8fb);border-color:#247c94}
+#poster.design-lavender,.poster-page.design-lavender{--accent:#59417c;--pale:#f5f0fb;--line-accent:#b9a3d8;background:linear-gradient(180deg,#fff,#f8f4fc);border-color:#76619a}
+#poster.design-minimal,.poster-page.design-minimal{--accent:#34433b;--pale:#f5f6f4;--line-accent:#aebbb1;background:#fff;border:2px solid #aebbb1;box-shadow:none}
+#poster.design-botanical,.poster-page.design-botanical{--accent:#39713c;--pale:#f0f7e9;--line-accent:#a4c36d;background:linear-gradient(180deg,#fffef7,#f3f8e9);border-color:#588447}
+#poster[class*="design-"] .poster-title h2,#poster[class*="design-"] .section-title{background:linear-gradient(120deg,var(--accent),var(--accent));border-color:var(--line-accent)}
+#poster[class*="design-"] .poster-intro,#poster[class*="design-"] .task{background:var(--pale);border-color:var(--line-accent)}
+#poster[class*="design-"] .poster-section{border-color:var(--line-accent)}
+#poster.design-minimal .poster-title h2,#poster.design-minimal .section-title{box-shadow:none;border-radius:8px}
+#poster.design-minimal .poster-section{border-radius:8px;background:#fff}
+#poster.design-botanical .poster-section{border-radius:22px;background:#fbfff5}
+#poster.design-botanical .poster-title h2{border-radius:28px}
+@media(max-width:520px){.design-options{grid-template-columns:1fr 1fr}.design-choice{font-size:.78rem;padding:7px}}
 </style>
 </body></html>
