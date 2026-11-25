@@ -2248,34 +2248,23 @@ window.addEventListener("unhandledrejection",function(e){
       if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
       showView("dailyLessonsView");
       try{
-        // هذا هو معالج النقر الفعلي؛ معالجات الاسترداد اللاحقة لا تصل إليه بسبب stopImmediatePropagation.
-        selectedLessonPage="library";
-        selectedLessonSubpage="calendar";
-        lessonCalendarDayPageOpen=false;
-        if(typeof setLessonPage==="function")setLessonPage("calendar",false);
+        // استدعاء واجهة التقويم العامة التي تهيّئ الحالة وتحمل البيانات وترسم الشهر.
         const add=document.getElementById("lessonAddPanel");
         const list=document.getElementById("lessonListPanel");
         const calendar=document.getElementById("lessonsCalendarPanel");
+        if(add){add.hidden=true;add.style.setProperty("display","none","important");}
+        if(list){list.hidden=false;list.style.setProperty("display","block","important");}
+        if(calendar){calendar.hidden=false;calendar.style.removeProperty("display");}
+        if(typeof window.tahadiOpenDailyLessons!=="function"){
+          throw new Error("لم تكتمل تهيئة التقويم. أعيدي تحميل الصفحة ثم حاولي مجددًا.");
+        }
+        await window.tahadiOpenDailyLessons();
         if(add){add.hidden=true;add.style.setProperty("display","none","important");}
         if(list){list.hidden=false;list.style.setProperty("display","block","important");list.classList.add("calendar-mode");}
         if(calendar){calendar.hidden=false;calendar.style.setProperty("display","block","important");calendar.classList.add("calendar-clean-page");}
         const nav=document.getElementById("lessonSubpageNav");if(nav)nav.hidden=true;
         const back=document.getElementById("lessonSubpageBack");if(back)back.hidden=true;
-        ["lessonListFilters","lessonListModeHint","lessonCategoryFilterHint","dailyLessonsList"].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=true;});
         const heading=document.querySelector("#lessonListPanel .lesson-list-heading");if(heading)heading.hidden=true;
-        const title=document.getElementById("lessonListTitle");if(title)title.textContent="📅 تقويم الحصص";
-        try{
-          const key="tahadi_workspace_checkpoint_v1";
-          const saved=JSON.parse(localStorage.getItem(key)||"null")||{};
-          saved.view="dailyLessonsView";saved.lessonPage="calendar";saved.activeSubpage="calendar";
-          saved.lessonWorkspace={...(saved.lessonWorkspace||{}),subpage:"calendar",dayPageOpen:false};
-          saved.savedAt=Date.now();localStorage.setItem(key,JSON.stringify(saved));
-        }catch(_){}
-        if(typeof loadDailyLessons==="function")await loadDailyLessons();
-        // إعادة تثبيت العرض بعد انتهاء التحميل حتى لا تعيد حالة قديمة إخفاء التقويم.
-        if(add){add.hidden=true;add.style.setProperty("display","none","important");}
-        if(list){list.hidden=false;list.style.setProperty("display","block","important");list.classList.add("calendar-mode");}
-        if(calendar){calendar.hidden=false;calendar.style.setProperty("display","block","important");calendar.classList.add("calendar-clean-page");}
       }catch(err){
         showStatus("تعذر فتح التقويم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
         console.error("dailyLessonsView open failed",err);
