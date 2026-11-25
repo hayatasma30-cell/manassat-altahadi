@@ -23,6 +23,7 @@
 <button class="menu-card" data-go="previewPage"><span class="menu-icon">🖨️</span><span class="menu-copy"><strong>المعاينة والطباعة</strong><small>مراجعة ورقة الموضوع والحل A4</small></span><span class="arrow">‹</span></button>
 <button class="menu-card" data-action="save"><span class="menu-icon">💾</span><span class="menu-copy"><strong>حفظ المسودة</strong><small>حفظ العمل الحالي على هذا الجهاز</small></span><span class="arrow">‹</span></button>
 <button class="menu-card" data-action="load"><span class="menu-icon">📂</span><span class="menu-copy"><strong>استرجاع مسودة</strong><small>متابعة العمل الذي حفظته سابقًا</small></span><span class="arrow">‹</span></button>
+<button class="menu-card" data-go="libraryPage"><span class="menu-icon">🗂️</span><span class="menu-copy"><strong>مكتبتي للمواضيع والحلول</strong><small>كل المواضيع المحفوظة في مكان واحد</small></span><span class="arrow">‹</span></button>
 </div>
 <p id="homeStatus" class="status">كل خدمة تفتح في صفحة مستقلة. يمكنك العودة إلى هذه القائمة في أي وقت.</p>
 </section>
@@ -54,6 +55,12 @@
 <div class="actions"><button id="saveDraft" class="secondary" type="button">💾 حفظ المسودة</button><button id="preparePrint" class="primary" type="button">طباعة الموضوع والحل A4</button></div><p id="draftStatus" class="status">المسودة تحفظ محليًا على هذا الجهاز فقط.</p></div>
 </section>
 
+<section id="libraryPage" class="view no-print">
+<div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>🗂️ مكتبتي للمواضيع والحلول</h2></div>
+<div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h3 style="margin:0">مواضيعي المحفوظة</h3><p class="muted" style="margin:4px 0">افتحي أي موضوع لمراجعة نصه وحلّه أو تعديله وطباعته.</p></div><button class="primary" id="newLibraryItem" type="button">＋ موضوع جديد</button></div>
+<p id="libraryStatus" class="status" role="status">المكتبة تحفظ العناصر على هذا الجهاز والمتصفح فقط.</p>
+<div id="libraryList" style="display:grid;gap:11px"><p class="muted">جارٍ تحميل المكتبة…</p></div></div>
+</section>
 <section class="paper" id="topicPaper"><h1 id="printTopicTitle">موضوع الاختبار</h1><div class="body" id="printTopicBody"></div></section>
 <section class="paper" id="solutionPaper"><h1>الحل النموذجي</h1><h2 id="printSolutionTitle"></h2><div class="body" id="printSolutionBody"></div></section>
 </main>
@@ -62,13 +69,13 @@
 <script>
 (()=> {
  const $=id=>document.getElementById(id);
- const pages=['homePage','uploadPage','editTopicPage','solutionPage','previewPage'];
+ const pages=['homePage','uploadPage','editTopicPage','solutionPage','previewPage','libraryPage'];
  function show(id){pages.forEach(x=>$(x).classList.toggle('active',x===id));if(id==='previewPage')updatePreview();window.scrollTo({top:0,behavior:'instant'});}
  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
  document.querySelectorAll('[data-home]').forEach(b=>b.addEventListener('click',()=>show('homePage')));
  document.querySelectorAll('[data-action="save"]').forEach(b=>b.addEventListener('click',saveDraft));
  document.querySelectorAll('[data-action="load"]').forEach(b=>b.addEventListener('click',loadDraft));
- const fileInput=$('sourceFile'),status=$('extractStatus');
+ const fileInput=$('sourceFile'),status=$('extractStatus');\n let currentLibraryId=null;\n const LIB_KEY='tahadi_smart_assistant_library_v1';
  const setStatus=s=>status.textContent=s;
  function updatePreview(){
   $('topicPreview').textContent=($('topicTitle').value||'موضوع الاختبار')+'\n\n'+($('topicText').value||'لم يتم إدخال نص الموضوع.');
@@ -95,9 +102,40 @@
   const btn=$('extractBtn');btn.disabled=true;try{setStatus('جارٍ تجهيز الملف…');const text=(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))?await pdfText(file):await recognizeImage(file);$('topicText').value=text;if(!$('topicTitle').value)$('topicTitle').value=file.name.replace(/\.[^.]+$/,'');setStatus(text?'اكتمل استخراج النص. انتقلي إلى مراجعة الموضوع.':'لم يتم العثور على نص واضح.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
  });
  $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
- function saveDraft(){const data={title:$('topicTitle').value,topic:$('topicText').value,solution:$('solutionText').value,updatedAt:new Date().toISOString()};try{localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify(data));$('draftStatus').textContent='حُفظت المسودة على هذا الجهاز.';$('homeStatus').textContent='تم حفظ المسودة بنجاح على هذا الجهاز.';}catch(e){$('draftStatus').textContent='تعذر الحفظ؛ قد تكون مساحة التخزين ممتلئة.';$('homeStatus').textContent='تعذر حفظ المسودة.';}}
- function loadDraft(){try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('homeStatus').textContent='لا توجد مسودة محفوظة على هذا الجهاز.';return;}$('topicTitle').value=d.title||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحفوظة.';show('editTopicPage');}catch(e){$('homeStatus').textContent='تعذر استرجاع المسودة.';}}
+ function readLibrary(){try{const v=JSON.parse(localStorage.getItem(LIB_KEY)||'[]');return Array.isArray(v)?v:[];}catch(_){return [];}}
+ function writeLibrary(items){localStorage.setItem(LIB_KEY,JSON.stringify(items));}
+ function saveDraft(){
+  const now=new Date().toISOString(),data={title:$('topicTitle').value.trim()||'موضوع دون عنوان',topic:$('topicText').value,solution:$('solutionText').value,updatedAt:now};
+  try{
+   localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify(data));
+   const items=readLibrary();
+   if(currentLibraryId){const i=items.findIndex(x=>x.id===currentLibraryId);if(i>=0)items[i]={...items[i],...data};else{currentLibraryId=String(Date.now());items.unshift({id:currentLibraryId,...data,createdAt:now});}}
+   else{currentLibraryId=String(Date.now());items.unshift({id:currentLibraryId,...data,createdAt:now});}
+   writeLibrary(items);$('draftStatus').textContent='حُفظ الموضوع والحل في مكتبتك وعلى هذا الجهاز.';$('homeStatus').textContent='تم حفظ الموضوع والحل في مكتبتك.';renderLibrary();
+  }catch(e){$('draftStatus').textContent='تعذر الحفظ؛ قد تكون مساحة التخزين ممتلئة.';$('homeStatus').textContent='تعذر حفظ المسودة.';}
+ }
+ function loadDraft(){try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('homeStatus').textContent='لا توجد مسودة محفوظة على هذا الجهاز.';return;}currentLibraryId=null;$('topicTitle').value=d.title||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحفوظة.';show('editTopicPage');}catch(e){$('homeStatus').textContent='تعذر استرجاع المسودة.';}}
+ function openLibraryItem(id){const item=readLibrary().find(x=>x.id===id);if(!item)return;$('topicTitle').value=item.title||'';$('topicText').value=item.topic||'';$('solutionText').value=item.solution||'';currentLibraryId=item.id;show('editTopicPage');}
+ function renderLibrary(){
+  const host=$('libraryList');if(!host)return;const items=readLibrary();host.innerHTML='';
+  if(!items.length){host.innerHTML='<div class="hint">لم تحفظي أي موضوع بعد. ابدئي بموضوع جديد، ثم اضغطي «حفظ المسودة» لإضافته إلى مكتبتك.</div>';return;}
+  items.sort((a,b)=>(b.updatedAt||b.createdAt||'').localeCompare(a.updatedAt||a.createdAt||''));
+  items.forEach(item=>{
+   const card=document.createElement('article');card.className='panel';card.style.margin='0';card.style.borderRadius='15px';
+   const head=document.createElement('div');head.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap';
+   const info=document.createElement('div');info.style.minWidth='0';const title=document.createElement('strong');title.textContent=item.title||'موضوع دون عنوان';title.style.cssText='display:block;color:#15532f;font-size:1rem';const date=document.createElement('small');date.className='muted';date.textContent='آخر تعديل: '+new Date(item.updatedAt||item.createdAt||Date.now()).toLocaleString('ar-DZ');info.append(title,date);head.append(info);
+   const preview=document.createElement('p');preview.className='muted';preview.style.margin='7px 0';preview.textContent=(item.topic||'لا يوجد نص للموضوع').slice(0,150)+(item.topic&&item.topic.length>150?'…':'');
+   const actions=document.createElement('div');actions.className='actions';actions.style.marginTop='8px';
+   const open=document.createElement('button');open.className='primary';open.type='button';open.textContent='فتح وتعديل';open.addEventListener('click',()=>openLibraryItem(item.id));
+   const print=document.createElement('button');print.className='secondary';print.type='button';print.textContent='طباعة';print.addEventListener('click',()=>{openLibraryItem(item.id);setTimeout(()=>{ $('printTopicTitle').textContent=$('topicTitle').value||'موضوع الاختبار';$('printTopicBody').textContent=$('topicText').value||'لم يتم إدخال نص الموضوع.';$('printSolutionTitle').textContent=$('topicTitle').value||'';$('printSolutionBody').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';window.print();},80);});
+   const del=document.createElement('button');del.className='secondary';del.type='button';del.textContent='حذف';del.addEventListener('click',()=>{if(!confirm('هل تريدين حذف هذا الموضوع وحلّه من المكتبة؟'))return;writeLibrary(readLibrary().filter(x=>x.id!==item.id));if(currentLibraryId===item.id)currentLibraryId=null;renderLibrary();});
+   actions.append(open,print,del);card.append(head,preview,actions);host.append(card);
+  });
+ }
  $('saveDraft').addEventListener('click',saveDraft);
+ $('newLibraryItem').addEventListener('click',()=>{currentLibraryId=null;$('topicTitle').value='';$('topicText').value='';$('solutionText').value='';fileInput.value='';show('uploadPage');});
+ document.querySelectorAll('[data-go="libraryPage"]').forEach(b=>b.addEventListener('click',renderLibrary));
+ renderLibrary();
  $('preparePrint').addEventListener('click',()=>{
   $('printTopicTitle').textContent=$('topicTitle').value||'موضوع الاختبار';$('printTopicBody').textContent=$('topicText').value||'لم يتم إدخال نص الموضوع.';$('printSolutionTitle').textContent=$('topicTitle').value||'';$('printSolutionBody').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';
   document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500);
