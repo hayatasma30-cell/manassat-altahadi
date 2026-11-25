@@ -4398,7 +4398,19 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
     views.forEach(view=>{const active=view===page;view.classList.toggle("active",active);view.style.display=active?"block":"none";view.setAttribute("aria-hidden",active?"false":"true");});
     window.scrollTo({top:0,behavior:"smooth"});
     if(typeof window.tahadiOpenDailyLessons==="function"){
-      Promise.resolve(window.tahadiOpenDailyLessons()).catch(function(error){
+      Promise.resolve(window.tahadiOpenDailyLessons()).then(function(){
+        // فرض عرض التقويم مباشرة بعد اكتمال التهيئة، دون الاعتماد على حالة العرض القديمة.
+        const add=document.getElementById("lessonAddPanel");
+        const list=document.getElementById("lessonListPanel");
+        const calendar=document.getElementById("lessonsCalendarPanel");
+        if(add){add.hidden=true;add.style.setProperty("display","none","important");}
+        if(list){list.hidden=false;list.style.setProperty("display","block","important");}
+        if(calendar){calendar.hidden=false;calendar.style.setProperty("display","block","important");}
+        const nav=document.getElementById("lessonSubpageNav");if(nav)nav.hidden=true;
+        const title=document.getElementById("lessonListTitle");if(title)title.textContent="📅 تقويم الحصص";
+        ["lessonListFilters","lessonListModeHint","lessonCategoryFilterHint","dailyLessonsList"].forEach(function(id){const el=document.getElementById(id);if(el)el.hidden=true;});
+        const heading=document.querySelector("#lessonListPanel .lesson-list-heading");if(heading)heading.hidden=true;
+      }).catch(function(error){
         const status=document.getElementById("status");
         if(status){status.textContent="تعذر تحميل الحصص: "+(error&&error.message?error.message:"خطأ غير معروف");status.className="status show error";}
       });
