@@ -3082,7 +3082,13 @@ window.addEventListener("unhandledrejection",function(e){
     if(edit||duplicate){e.preventDefault();e.stopPropagation();}
     const summary=e.target.closest(".calendar-lesson-entry summary");if(summary){const current=summary.parentElement;document.querySelectorAll("#lessonCalendarDayDetails .calendar-lesson-entry[open]").forEach(item=>{if(item!==current)item.open=false;});}if(edit){openDailyLessonEditor(edit.dataset.calendarEdit,false).catch(err=>lessonMessage(err.message,"error"));return;}if(duplicate){openDailyLessonEditor(duplicate.dataset.calendarDuplicate,true).catch(err=>lessonMessage(err.message,"error"));return;}if(del){const recurring=del.dataset.calendarRecurring==="1";let scope="this";if(recurring){const scopeChoice=await window.TahadiDialog.prompt("هذه الحصة مرتبطة بتكرار أسبوعي. اختاري نطاق الحذف:\n1 = هذه الحصة فقط\n2 = هذه الحصة والحصص المكررة بعدها\n3 = كامل الحصص المكررة","1");if(scopeChoice===null)return;const scopeMap={"1":"this","2":"future","3":"all"};if(!scopeMap[scopeChoice]){lessonMessage("اختاري 1 أو 2 أو 3.","error");return;}scope=scopeMap[scopeChoice];}const scopeLabel=scope==="this"?"هذه الحصة فقط":scope==="future"?"هذه الحصة والحصص المكررة بعدها":"كامل الحصص المكررة";if(!await window.TahadiDialog.confirm("تأكيد حذف "+scopeLabel+" نهائيًا؟"))return;(async()=>{try{del.disabled=true;const result=await lessonRequest({action:"daily_lessons_series_mutation",operation:"delete",scope,id:del.dataset.calendarDelete});if(!Number(result.affected))throw new Error("لم تُحذف الحصة؛ لم تؤكد قاعدة البيانات حذف أي سجل.");await loadDailyLessons();renderLessonsCalendar(window.tahadiLoadedLessonRows||[]);lessonMessage("تم حذف "+result.affected+" حصة بنجاح.");}catch(err){del.disabled=false;lessonMessage(err.message,"error");}})();return;}});
   function setLessonSubpage(page,shouldLoad=true){[$("lessonAddPanel"),$("lessonListPanel"),$("lessonsCalendarPanel")].forEach(panel=>{if(panel)panel.style.removeProperty("display");});
-   selectedLessonSubpage=page;document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.dataset.lessonPage==="calendar"?page==="calendar":b.dataset.lessonPage==="library";b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
+   selectedLessonSubpage=page;
+   // فرض حالة العرض صراحةً لتجاوز تعارض قواعد CSS القديمة مع خاصية hidden.
+   const listPanel=$("lessonListPanel"),calendarPanel=$("lessonsCalendarPanel"),addPanel=$("lessonAddPanel");
+   if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
+   if(calendarPanel){calendarPanel.hidden=page!=="calendar";calendarPanel.style.setProperty("display",page==="calendar"?"block":"none","important");}
+   if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.dataset.lessonPage==="calendar"?page==="calendar":b.dataset.lessonPage==="library";b.classList.toggle("primary",active);b.classList.toggle("secondary",!active);});
    selectedLessonPage="library";
    selectedLessonCategoryFilter=page==="courses"?"دورة مراجعة":"all";
    selectedLessonMode=page==="zoom"?"zoom":"in_person";
@@ -3093,6 +3099,9 @@ window.addEventListener("unhandledrejection",function(e){
    $("lessonSubpageNav").hidden=true;$("lessonSubpageBack").hidden=page==="calendar";$("lessonListHeading")?.classList.add("lesson-subpage-open");
    const calendar=page==="calendar";
    $("lessonsCalendarPanel").hidden=!calendar;
+   $("lessonsCalendarPanel").style.setProperty("display",calendar?"block":"none","important");
+   $("lessonListPanel").hidden=false;
+   $("lessonListPanel").style.setProperty("display","block","important");
    $("lessonsCalendarPanel").classList.toggle("calendar-clean-page",calendar);
    $("lessonListPanel").classList.toggle("calendar-mode",calendar);
    ["lessonListFilters","lessonListModeHint","lessonCategoryFilterHint","dailyLessonsList"].forEach(id=>{const el=$(id);if(el)el.hidden=calendar;});
