@@ -228,6 +228,7 @@ $("reset").click();
 #poster.template-worksheet .poster-section:nth-of-type(1) .poster-table,.poster-page.template-worksheet .poster-section:nth-of-type(1) .poster-table{
  grid-column:1;grid-row:2;width:100%;align-self:center;margin:0;font-size:15px;
 }
+#poster.template-worksheet .poster-section:nth-of-type(2),.poster-page.template-worksheet .poster-section:nth-of-type(2){grid-template-columns:minmax(0,1fr) minmax(0,1.7fr)}
 #poster.template-worksheet .poster-section:nth-of-type(2) .section-body,.poster-page.template-worksheet .poster-section:nth-of-type(2) .section-body{
  grid-column:1/-1;grid-row:2;font-size:15px;font-weight:700;text-align:center;
 }
@@ -235,11 +236,11 @@ $("reset").click();
  grid-column:1;grid-row:3;width:100%;align-self:center;margin:0;font-size:15px;
 }
 #poster.template-worksheet .poster-section:nth-of-type(2) .poster-images,.poster-page.template-worksheet .poster-section:nth-of-type(2) .poster-images{
- grid-column:2;grid-row:3;display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+ grid-column:2;grid-row:3;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;
  gap:7px;margin:0;padding:8px;border-radius:15px;background:#edf5e7;
 }
 #poster.template-worksheet .poster-images img,.poster-page.template-worksheet .poster-images img{
- max-width:100%;width:100%;max-height:150px;object-fit:contain;border:0;background:transparent;padding:0;
+ max-width:48%;width:48%;max-height:150px;object-fit:contain;border:0;background:transparent;padding:0;
 }
 #poster.template-worksheet .poster-table,.poster-page.template-worksheet .poster-table{
  border:2px solid #25663d;border-radius:10px;overflow:hidden;background:white;font-size:15px;
