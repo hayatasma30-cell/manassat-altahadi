@@ -730,13 +730,12 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 #dailyLessonsView #lessonsCalendarPanel[hidden]{display:none!important}
 #dailyLessonsView #lessonAddPanel:not([hidden]){display:block!important}
 #dailyLessonsView #lessonListPanel:not([hidden]){display:block!important}
-/* نموذج موحد لإضافة الحصة: كل الحقول في صفحة واحدة */
-#lessonAddPanel #lessonWizardProgress,#lessonAddPanel #lessonWizardTitle,
-#lessonAddPanel #lessonWizardPrev,#lessonAddPanel #lessonWizardNext,
-#lessonAddPanel #lessonWizardReview{display:none!important}
-#lessonAddPanel .lesson-form-grid [data-step]{display:flex!important}
-#lessonAddPanel #saveLessonBtn[hidden]{display:block!important}
-
+/* استعادة معالج إضافة الحصة بأربع خطوات */
+#lessonAddPanel #lessonWizardProgress[hidden],#lessonAddPanel #lessonWizardTitle[hidden],
+#lessonAddPanel #lessonWizardPrev[hidden],#lessonAddPanel #lessonWizardNext[hidden],
+#lessonAddPanel #lessonWizardReview[hidden],#lessonAddPanel #saveLessonBtn[hidden]{display:none!important}
+#lessonAddPanel .lesson-form-grid [data-step]{display:none!important}
+#lessonAddPanel .lesson-form-grid [data-step].wizard-active{display:flex!important}
 #dailyLessonsList{display:grid!important;gap:10px!important}
 #dailyLessonsList .lesson-compact-card{padding:12px!important;margin:0!important;border:1px solid #dce7d8!important;border-radius:16px!important;background:linear-gradient(145deg,#fff 0%,#f9fcf7 100%)!important;box-shadow:0 3px 10px rgba(20,83,45,.05)!important}
 #dailyLessonsList .lesson-compact-head{display:flex;align-items:flex-start;justify-content:space-between;gap:9px}
@@ -3233,12 +3232,30 @@ document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.datas
   let lessonWizardStep=0;
   const lessonWizardNames=["تحديد الموعد","تفاصيل الحصة","التكرار والسعر","مراجعة الحصة"];
   function updateLessonWizard(){
-    /* مسار واحد مباشر: جميع حقول الحصة في نموذج واحد دون تقسيم إلى خطوات. */
-    document.querySelectorAll("#lessonAddPanel .lesson-form-grid [data-step]").forEach(el=>{el.classList.add("wizard-active");el.style.setProperty("display","flex","important");});
-    const review=$("lessonWizardReview");review.hidden=true;
-    if(lessonWizardStep===3){const val=id=>{const el=$(id);if(!el)return "—";if(el.tagName==="SELECT")return el.selectedOptions[0]?.textContent||"—";return el.value||"—";};const pairs=[["طريقة التدريس",val("lessonModeSelect")],...(val("lessonModeSelect")==="زووم"?[["رابط Zoom",String($("lessonZoomLink").value||"").trim()?"تم إدخال الرابط وسيُحفظ مع الحصة":"لم يُضف الرابط"]]:[]),["التاريخ",val("lessonDate")],["التوقيت",val("lessonTime")+" – "+val("lessonEndTime")],["نوع الموعد",val("lessonCategory")],["نوع الحصة",val("lessonType")],["المستوى",val("lessonLevel")],["التلميذ",val("lessonType")==="فردية"?val("lessonStudent"):"جماعية"],["التكرار", $("lessonRepeatWeekly").checked?"أسبوعيًا حتى "+val("lessonRepeatEnd"):"حصة واحدة"],["السعر",val("lessonUnitPrice")+" دج"],["ملاحظات",val("lessonNotes")]];review.innerHTML="<h4>تأكدي من بيانات الحصة</h4><div class='lesson-review-grid'>"+pairs.map(p=>"<div class='lesson-review-item'><small>"+p[0]+"</small><strong>"+String(p[1]).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+"</strong></div>").join("")+"</div>"+(window.tahadiLessonEditSaved?"<button type='button' id='lessonWizardReturnCalendar' class='primary' style='width:100%;margin-top:16px'>العودة إلى التقويم</button>":"");}
-    $("lessonWizardTitle").hidden=true;$("lessonWizardProgress").hidden=true;
-    $("lessonWizardPrev").hidden=true;$("lessonWizardNext").hidden=true;$("saveLessonBtn").hidden=false;
+    const fields=document.querySelectorAll("#lessonAddPanel .lesson-form-grid [data-step]");
+    fields.forEach(el=>{
+      const active=Number(el.dataset.step)===lessonWizardStep;
+      el.classList.toggle("wizard-active",active);
+      el.style.setProperty("display",active?"flex":"none","important");
+    });
+    const review=$("lessonWizardReview");
+    review.hidden=lessonWizardStep!==3;
+    review.style.setProperty("display",lessonWizardStep===3?"block":"none","important");
+    if(lessonWizardStep===3){
+      const val=id=>{const el=$(id);if(!el)return "—";if(el.tagName==="SELECT")return el.selectedOptions[0]?.textContent||"—";return el.value||"—";};
+      const pairs=[["طريقة التدريس",val("lessonModeSelect")],...(val("lessonModeSelect")==="زووم"?[["رابط Zoom",String($("lessonZoomLink").value||"").trim()?"تم إدخال الرابط وسيُحفظ مع الحصة":"لم يُضف الرابط"]]:[]),["التاريخ",val("lessonDate")],["التوقيت",val("lessonTime")+" – "+val("lessonEndTime")],["نوع الموعد",val("lessonCategory")],["نوع الحصة",val("lessonType")],["المستوى",val("lessonLevel")],["التلميذ",val("lessonType")==="فردية"?val("lessonStudent"):"جماعية"],["التكرار",$("lessonRepeatWeekly").checked?"أسبوعيًا حتى "+val("lessonRepeatEnd"):"حصة واحدة"],["السعر",val("lessonUnitPrice")+" دج"],["ملاحظات",val("lessonNotes")]];
+      review.innerHTML="<h4>تأكدي من بيانات الحصة</h4><div class='lesson-review-grid'>"+pairs.map(p=>"<div class='lesson-review-item'><small>"+p[0]+"</small><strong>"+String(p[1]).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))+"</strong></div>").join("")+"</div>"+(window.tahadiLessonEditSaved?"<button type='button' id='lessonWizardReturnCalendar' class='primary' style='width:100%;margin-top:16px'>العودة إلى التقويم</button>":"");
+    }
+    $("lessonWizardProgress").hidden=false;
+    $("lessonWizardTitle").hidden=false;
+    $("lessonWizardTitle").textContent="الخطوة "+(lessonWizardStep+1)+" من 4 · "+lessonWizardNames[lessonWizardStep];
+    document.querySelectorAll("#lessonWizardProgress .lesson-wizard-step").forEach((el,index)=>{
+      el.classList.toggle("active",index===lessonWizardStep);
+      el.classList.toggle("done",index<lessonWizardStep);
+    });
+    $("lessonWizardPrev").hidden=lessonWizardStep===0;
+    $("lessonWizardNext").hidden=lessonWizardStep===3;
+    $("saveLessonBtn").hidden=lessonWizardStep!==3;
   }
   function validateLessonWizardStep(){
     if(lessonWizardStep===0){if(!$("lessonDate").value||!$("lessonTime").value||!$("lessonEndTime").value){lessonMessage("أكملي تاريخ الحصة ووقت البداية والنهاية.","error");return false;}if($("lessonEndTime").value<=$("lessonTime").value){lessonMessage("وقت النهاية يجب أن يكون بعد وقت البداية.","error");return false;}if(selectedLessonMode==="zoom"){const raw=String($("lessonZoomLink").value||"").trim();let valid=false;try{const u=new URL(raw);valid=u.protocol==="https:"&&(u.hostname==="zoom.us"||u.hostname.endsWith(".zoom.us"));}catch(_){}if(!valid){lessonMessage("أضيفي رابط Zoom صحيحًا يبدأ بـ https:// ويخص موقع zoom.us.","error");return false;}}}
