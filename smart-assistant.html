@@ -58,7 +58,7 @@
 <section id="libraryPage" class="view no-print">
 <div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>🗂️ مكتبتي للمواضيع والحلول</h2></div>
 <div class="panel"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><div><h3 style="margin:0">مواضيعي المحفوظة</h3><p class="muted" style="margin:4px 0">افتحي أي موضوع لمراجعة نصه وحلّه أو تعديله وطباعته.</p></div><button class="primary" id="newLibraryItem" type="button">＋ موضوع جديد</button></div>
-<p id="libraryStatus" class="status" role="status">المكتبة تحفظ العناصر على هذا الجهاز والمتصفح فقط.</p>
+<p id="libraryStatus" class="status" role="status">المكتبة السحابية تحفظ مواضيعك وحلولك في Supabase.</p>
 <div id="libraryList" style="display:grid;gap:11px"><p class="muted">جارٍ تحميل المكتبة…</p></div></div>
 </section>
 <section class="paper" id="topicPaper"><h1 id="printTopicTitle">موضوع الاختبار</h1><div class="body" id="printTopicBody"></div></section>
@@ -77,7 +77,8 @@
  document.querySelectorAll('[data-action="load"]').forEach(b=>b.addEventListener('click',loadDraft));
  const fileInput=$('sourceFile'),status=$('extractStatus');
  let currentLibraryId=null;
- const LIB_KEY='tahadi_smart_assistant_library_v1';
+ const LIB_ENDPOINT='https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/teacher-exam-library';
+ let libraryCache=[];
  const setStatus=s=>status.textContent=s;
  function updatePreview(){
   $('topicPreview').textContent=($('topicTitle').value||'موضوع الاختبار')+'\n\n'+($('topicText').value||'لم يتم إدخال نص الموضوع.');
@@ -104,35 +105,60 @@
   const btn=$('extractBtn');btn.disabled=true;try{setStatus('جارٍ تجهيز الملف…');const text=(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))?await pdfText(file):await recognizeImage(file);$('topicText').value=text;if(!$('topicTitle').value)$('topicTitle').value=file.name.replace(/\.[^.]+$/,'');setStatus(text?'اكتمل استخراج النص. انتقلي إلى مراجعة الموضوع.':'لم يتم العثور على نص واضح.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
  });
  $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
- function readLibrary(){try{const v=JSON.parse(localStorage.getItem(LIB_KEY)||'[]');return Array.isArray(v)?v:[];}catch(_){return [];}}
- function writeLibrary(items){localStorage.setItem(LIB_KEY,JSON.stringify(items));}
- function saveDraft(){
-  const now=new Date().toISOString(),data={title:$('topicTitle').value.trim()||'موضوع دون عنوان',level:$('topicLevel').value,topic:$('topicText').value,solution:$('solutionText').value,updatedAt:now};
-  try{
-   localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify(data));
-   const items=readLibrary();
-   if(currentLibraryId){const i=items.findIndex(x=>x.id===currentLibraryId);if(i>=0)items[i]={...items[i],...data};else{currentLibraryId=String(Date.now());items.unshift({id:currentLibraryId,...data,createdAt:now});}}
-   else{currentLibraryId=String(Date.now());items.unshift({id:currentLibraryId,...data,createdAt:now});}
-   writeLibrary(items);$('draftStatus').textContent='حُفظ الموضوع والحل في مكتبتك وعلى هذا الجهاز.';$('homeStatus').textContent='تم حفظ الموضوع والحل في مكتبتك.';renderLibrary();
-  }catch(e){$('draftStatus').textContent='تعذر الحفظ؛ قد تكون مساحة التخزين ممتلئة.';$('homeStatus').textContent='تعذر حفظ المسودة.';}
+ function teacherToken(){
+  const token=localStorage.getItem('tahadi_teacher_token')||sessionStorage.getItem('tahadi_teacher_token_bridge')||'';
+  const expiry=localStorage.getItem('tahadi_teacher_expires')||sessionStorage.getItem('tahadi_teacher_expires_bridge')||'';
+  if(!token)throw new Error('سجّلي الدخول إلى فضاء الأستاذة أولًا.');
+  if(expiry&&new Date(expiry).getTime()<=Date.now())throw new Error('انتهت جلسة الأستاذة. سجّلي الدخول من جديد.');
+  return token;
  }
- function loadDraft(){try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('homeStatus').textContent='لا توجد مسودة محفوظة على هذا الجهاز.';return;}currentLibraryId=null;$('topicTitle').value=d.title||'';$('topicLevel').value=d.level||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحفوظة.';show('editTopicPage');}catch(e){$('homeStatus').textContent='تعذر استرجاع المسودة.';}}
- function openLibraryItem(id){const item=readLibrary().find(x=>x.id===id);if(!item)return;$('topicTitle').value=item.title||'';$('topicLevel').value=item.level||'';$('topicText').value=item.topic||'';$('solutionText').value=item.solution||'';currentLibraryId=item.id;show('editTopicPage');}
- function renderLibrary(){
-  const host=$('libraryList');if(!host)return;const items=readLibrary();host.innerHTML='';
-  if(!items.length){host.innerHTML='<div class="hint">لم تحفظي أي موضوع بعد. ابدئي بموضوع جديد، ثم اضغطي «حفظ المسودة» لإضافته إلى مكتبتك.</div>';return;}
-  items.sort((a,b)=>(b.updatedAt||b.createdAt||'').localeCompare(a.updatedAt||a.createdAt||''));
-  items.forEach(item=>{
-   const card=document.createElement('article');card.className='panel';card.style.margin='0';card.style.borderRadius='15px';
-   const head=document.createElement('div');head.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap';
-   const info=document.createElement('div');info.style.minWidth='0';const title=document.createElement('strong');title.textContent=item.title||'موضوع دون عنوان';title.style.cssText='display:block;color:#15532f;font-size:1rem';const date=document.createElement('small');date.className='muted';date.textContent=(item.level?item.level+' • ':'')+'آخر تعديل: '+new Date(item.updatedAt||item.createdAt||Date.now()).toLocaleString('ar-DZ');info.append(title,date);head.append(info);
-   const preview=document.createElement('p');preview.className='muted';preview.style.margin='7px 0';preview.textContent=(item.topic||'لا يوجد نص للموضوع').slice(0,150)+(item.topic&&item.topic.length>150?'…':'');
-   const actions=document.createElement('div');actions.className='actions';actions.style.marginTop='8px';
-   const open=document.createElement('button');open.className='primary';open.type='button';open.textContent='فتح وتعديل';open.addEventListener('click',()=>openLibraryItem(item.id));
-   const print=document.createElement('button');print.className='secondary';print.type='button';print.textContent='طباعة';print.addEventListener('click',()=>{openLibraryItem(item.id);setTimeout(()=>{ $('printTopicTitle').textContent=$('topicTitle').value||'موضوع الاختبار';$('printTopicBody').textContent=$('topicText').value||'لم يتم إدخال نص الموضوع.';$('printSolutionTitle').textContent=$('topicTitle').value||'';$('printSolutionBody').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';window.print();},80);});
-   const del=document.createElement('button');del.className='secondary';del.type='button';del.textContent='حذف';del.addEventListener('click',()=>{if(!confirm('هل تريدين حذف هذا الموضوع وحلّه من المكتبة؟'))return;writeLibrary(readLibrary().filter(x=>x.id!==item.id));if(currentLibraryId===item.id)currentLibraryId=null;renderLibrary();});
-   actions.append(open,print,del);card.append(head,preview,actions);host.append(card);
-  });
+ async function libraryRequest(action,extra={}){
+  const response=await fetch(LIB_ENDPOINT,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','Authorization':'Bearer '+teacherToken()},body:JSON.stringify({action,...extra})});
+  let data={};try{data=await response.json();}catch(_){}
+  if(!response.ok||!data.ok)throw new Error(data.error||'تعذر الاتصال بمكتبة Supabase.');
+  return data;
+ }
+ async function saveDraft(){
+  const payload={id:currentLibraryId||undefined,title:$('topicTitle').value.trim()||'موضوع دون عنوان',level:$('topicLevel').value,topic_text:$('topicText').value,solution_text:$('solutionText').value};
+  try{
+   const result=await libraryRequest('save',payload);const item=result.item;currentLibraryId=item.id;
+   $('draftStatus').textContent='تم حفظ الموضوع والحل في Supabase بنجاح.';$('homeStatus').textContent='تم حفظ الموضوع والحل في مكتبتك السحابية.';
+   localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify({title:item.title,level:item.level,topic:item.topic_text,solution:item.solution_text,updatedAt:item.updated_at}));
+   await renderLibrary();
+  }catch(e){$('draftStatus').textContent=e.message||'تعذر حفظ الموضوع في المكتبة السحابية.';$('homeStatus').textContent=e.message||'تعذر حفظ المسودة.';}
+ }
+ async function loadDraft(){
+  try{
+   const result=await libraryRequest('list');libraryCache=result.items||[];
+   if(libraryCache.length){openLibraryItem(libraryCache[0].id);$('homeStatus').textContent='تم استرجاع أحدث موضوع من مكتبة Supabase.';return;}
+   const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');
+   if(!d){$('homeStatus').textContent='لا توجد مواضيع محفوظة في المكتبة بعد.';return;}
+   currentLibraryId=null;$('topicTitle').value=d.title||'';$('topicLevel').value=d.level||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحلية القديمة. احفظيها لمزامنتها مع Supabase.';show('editTopicPage');
+  }catch(e){$('homeStatus').textContent=e.message||'تعذر استرجاع المكتبة.';}
+ }
+ function openLibraryItem(id){
+  const item=libraryCache.find(x=>x.id===id);if(!item)return;
+  $('topicTitle').value=item.title||'';$('topicLevel').value=item.level||'';$('topicText').value=item.topic_text||'';$('solutionText').value=item.solution_text||'';currentLibraryId=item.id;show('editTopicPage');
+ }
+ async function renderLibrary(){
+  const host=$('libraryList');if(!host)return;host.innerHTML='<p class="muted">جارٍ تحميل مكتبتك من Supabase…</p>';
+  try{
+   const result=await libraryRequest('list');libraryCache=result.items||[];const items=libraryCache;host.innerHTML='';
+   $('libraryStatus').textContent='مكتبتك متزامنة مع Supabase ويمكنك الوصول إليها بعد تسجيل الدخول من أجهزتك.';
+   if(!items.length){host.innerHTML='<div class="hint">لم تحفظي أي موضوع بعد. ابدئي بموضوع جديد، ثم اضغطي «حفظ المسودة» لإضافته إلى مكتبتك السحابية.</div>';return;}
+   items.forEach(item=>{
+    const card=document.createElement('article');card.className='panel';card.style.margin='0';card.style.borderRadius='15px';
+    const head=document.createElement('div');head.style.cssText='display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap';
+    const info=document.createElement('div');info.style.minWidth='0';const title=document.createElement('strong');title.textContent=item.title||'موضوع دون عنوان';title.style.cssText='display:block;color:#15532f;font-size:1rem';
+    const date=document.createElement('small');date.className='muted';date.textContent=(item.level?item.level+' • ':'')+'آخر تعديل: '+new Date(item.updated_at||item.created_at||Date.now()).toLocaleString('ar-DZ');info.append(title,date);head.append(info);
+    const preview=document.createElement('p');preview.className='muted';preview.style.margin='7px 0';preview.textContent=(item.topic_text||'لا يوجد نص للموضوع').slice(0,150)+(item.topic_text&&item.topic_text.length>150?'…':'');
+    const actions=document.createElement('div');actions.className='actions';actions.style.marginTop='8px';
+    const open=document.createElement('button');open.className='primary';open.type='button';open.textContent='فتح وتعديل';open.addEventListener('click',()=>openLibraryItem(item.id));
+    const print=document.createElement('button');print.className='secondary';print.type='button';print.textContent='طباعة';print.addEventListener('click',()=>{openLibraryItem(item.id);setTimeout(()=>{$('printTopicTitle').textContent=$('topicTitle').value||'موضوع الاختبار';$('printTopicBody').textContent=$('topicText').value||'لم يتم إدخال نص الموضوع.';$('printSolutionTitle').textContent=$('topicTitle').value||'';$('printSolutionBody').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';window.print();},100);});
+    const del=document.createElement('button');del.className='secondary';del.type='button';del.textContent='حذف';del.addEventListener('click',async()=>{if(!confirm('هل تريدين حذف هذا الموضوع وحلّه نهائيًا من المكتبة؟'))return;del.disabled=true;try{await libraryRequest('delete',{id:item.id});if(currentLibraryId===item.id)currentLibraryId=null;await renderLibrary();}catch(e){$('libraryStatus').textContent=e.message||'تعذر حذف الموضوع.';del.disabled=false;}});
+    actions.append(open,print,del);card.append(head,preview,actions);host.append(card);
+   });
+  }catch(e){host.innerHTML='';$('libraryStatus').textContent=e.message||'تعذر تحميل المكتبة السحابية.';const retry=document.createElement('button');retry.className='primary';retry.textContent='إعادة المحاولة';retry.addEventListener('click',renderLibrary);host.append(retry);}
  }
  $('saveDraft').addEventListener('click',saveDraft);
  $('newLibraryItem').addEventListener('click',()=>{currentLibraryId=null;$('topicTitle').value='';$('topicLevel').value='';$('topicText').value='';$('solutionText').value='';fileInput.value='';show('uploadPage');});
