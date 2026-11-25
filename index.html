@@ -3114,6 +3114,11 @@ window.addEventListener("unhandledrejection",function(e){
       if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
       lessonCalendarDayPageOpen=false;
       setLessonSubpage("calendar",false);
+      // ثبّتي إظهار حاوية التقويم بعد أن تغيّر setLessonSubpage أنماط العرض الداخلية.
+      if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+      if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
+      const calendarPanel=$("lessonsCalendarPanel");
+      if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.setProperty("display","block","important");}
       selectedLessonPage="library";
       loadDailyLessons();
       return;
