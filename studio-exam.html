@@ -133,6 +133,7 @@ if(logoData)$("posterLogo").src=logoData;
 function clearPosterPages(){
  const first=$("poster"),main=$("posterContent");if(!first||!main)return;
  const extras=[...$("posterViewport").querySelectorAll(".poster-page")];
+ [...main.querySelectorAll(":scope > .poster-tasks:not(#pTasks)")].forEach(group=>{const tasks=$("pTasks");[...group.children].forEach(x=>tasks.appendChild(x));group.remove();});
  extras.forEach(page=>{const box=page.querySelector(".poster-content");if(box){[...box.children].forEach(node=>{if(node.classList.contains("poster-tasks")&&!node.id){const tasks=$("pTasks");[...node.children].forEach(x=>tasks.appendChild(x));}else main.appendChild(node);});}page.remove();});
  }
  function paginatePoster(){
