@@ -1599,7 +1599,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 </style>
 
 <style id="tahadi-month-calendar-only-v1">
-/* تقويم الأستاذة: عرض شهري واحد دون أقسام المكتبة أو تبديل العرض */
+/* صفحة التقويم: شهر واحد واضح، دون أدوات المكتبة أو الفرز العام */
 #dailyLessonsView #lessonSubpageNav,
 #dailyLessonsView #lessonSubpageBack,
 #dailyLessonsView #lessonCalendarViewButtons,
@@ -1608,10 +1608,17 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 #dailyLessonsView #lessonListModeHint,
 #dailyLessonsView #lessonCategoryFilterHint,
 #dailyLessonsView #dailyLessonsList,
-#dailyLessonsView #lessonListPanel > .lesson-list-heading{display:none!important}
+#dailyLessonsView #lessonListPanel > .lesson-list-heading,
+#dailyLessonsView #lessonListPanel .tahadi-sort-bar{display:none!important}
 #dailyLessonsView #lessonListPanel{display:block!important}
-#dailyLessonsView #lessonsCalendarPanel{display:block!important;visibility:visible!important;opacity:1!important}
-#dailyLessonsView #lessonCalendarGrid.view-month{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important}
+#dailyLessonsView #lessonsCalendarPanel{display:block!important;visibility:visible!important;opacity:1!important;height:auto!important;overflow:visible!important}
+#dailyLessonsView #lessonsCalendarPanel .lesson-calendar-toolbar{display:flex!important;visibility:visible!important;opacity:1!important}
+#dailyLessonsView #lessonCalendarMonth{display:block!important;visibility:visible!important}
+#dailyLessonsView #lessonCalendarGrid{display:grid!important;visibility:visible!important;opacity:1!important;min-height:220px!important;grid-template-columns:repeat(7,minmax(0,1fr))!important}
+#dailyLessonsView #lessonCalendarGrid.view-month{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+#dailyLessonsView #lessonCalendarGrid .lesson-calendar-dayname,
+#dailyLessonsView #lessonCalendarGrid .lesson-calendar-day{display:flex!important;visibility:visible!important}
+#dailyLessonsView #lessonCalendarDayDetails{display:block!important;visibility:visible!important}
 #dailyLessonsView #lessonCalendarDayDetails .calendar-day-page-back{display:none!important}
 </style>
 </head>
