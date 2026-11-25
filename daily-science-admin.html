@@ -169,6 +169,29 @@ input,textarea,select{border-radius:12px}
 #scienceRulesList .science-rule-card{padding:14px;border:1px solid #e0e9dc;border-radius:14px;background:#fff;margin:8px 0}.science-rule-card strong{display:block;color:#174b32;margin-bottom:7px}.science-rule-card p{white-space:pre-wrap;margin:0 0 10px}.science-rule-card .actions-row{display:flex;gap:8px;flex-wrap:wrap}
 
 
+
+/* تحسين التناسق على الهاتف مع بطاقات فضاء الأستاذة */
+.knowledge-head{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px 14px;padding:15px 17px;margin-bottom:14px;border-radius:17px}
+.knowledge-head>div{min-width:0}.knowledge-head h2{font-size:1.16rem;line-height:1.5}.knowledge-head p{font-size:.9rem;line-height:1.7;margin-top:5px}
+.knowledge-back{width:auto;min-height:42px;padding:8px 13px;white-space:nowrap}
+.knowledge-grid{display:grid;grid-template-columns:1fr;gap:11px}
+.knowledge-tile{display:grid;grid-template-columns:48px minmax(0,1fr) 20px;grid-template-rows:auto auto;align-items:center;column-gap:12px;row-gap:2px;min-height:100px;padding:14px 15px;border-radius:16px}
+.knowledge-icon{grid-column:1;grid-row:1/3;width:44px;height:44px;font-size:1.25rem}
+.knowledge-tile strong{grid-column:2;grid-row:1;font-size:1rem;line-height:1.5}
+.knowledge-tile small{grid-column:2;grid-row:2;max-width:none;font-size:.82rem;line-height:1.55}
+.knowledge-arrow{position:static;grid-column:3;grid-row:1/3;justify-self:center;font-size:1.05rem}
+.knowledge-subpage{padding:14px;border-radius:16px}
+.knowledge-page-title{gap:9px}.knowledge-page-title h3{font-size:1.02rem}.knowledge-page-title p{font-size:.8rem}
+@media(max-width:560px){
+ .knowledge-head{grid-template-columns:minmax(0,1fr);padding:14px 15px;gap:9px}
+ .knowledge-head h2{font-size:1.12rem;margin:2px 0}
+ .knowledge-head p{font-size:.84rem;margin:3px 0 0}
+ .knowledge-back{justify-self:start;width:auto;min-height:39px;padding:6px 12px;font-size:.88rem}
+ .knowledge-tile{min-height:91px;padding:12px 13px;grid-template-columns:43px minmax(0,1fr) 18px;column-gap:10px}
+ .knowledge-icon{width:40px;height:40px}
+ .knowledge-tile strong{font-size:.96rem}
+ .knowledge-tile small{font-size:.78rem}
+}
 /* تصميم قاعدة المعرفة متناسق مع هوية منصة التحدي */
 .knowledge-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 20px;margin-bottom:18px;border-radius:18px;background:linear-gradient(120deg,#103f28,#166534);color:#fff;box-shadow:0 5px 16px #153d2018}
 .knowledge-head h2{margin:3px 0;color:#fff;font-size:1.3rem}.knowledge-head p{margin:2px 0;color:#dcebdd}.knowledge-kicker{font-size:.78rem;color:#d5e9d8}.knowledge-back{background:#f5fbf1}
