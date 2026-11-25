@@ -4,32 +4,56 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#14532d"><title>المساعد الذكي للأستاذة | منصة التحدي</title>
 <style>
-:root{--g:#14532d;--g2:#166534;--cream:#faf8ee;--ink:#18382a;--muted:#68786d;--line:#dfe8da;--gold:#e8c878}
-*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.8}.top{background:linear-gradient(120deg,#103f28,var(--g2));color:white;padding:14px 18px}.topin{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:900;font-size:1.1rem}.brand small{display:block;font-size:.72rem;font-weight:400;color:#d7ead9}.wrap{max-width:1050px;margin:auto;padding:18px}.hero{padding:22px;border:1px solid #e8d79d;border-radius:22px;background:linear-gradient(120deg,#fff9e8,#eef8e9);margin-bottom:16px}.hero h1{margin:0;color:var(--g);font-size:clamp(1.5rem,4vw,2.2rem)}.hero p{margin:5px 0 0;color:var(--muted)}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin:12px 0;box-shadow:0 6px 18px #173f220b}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.step{padding:9px 5px;text-align:center;background:#eff7ec;border:1px solid #d8e7d3;border-radius:12px;font-weight:800;font-size:.86rem}.step b{display:block;color:var(--g);font-size:1.2rem}label{display:block;font-weight:800;margin:12px 0 6px}input,select,textarea{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1px solid #cbd9c8;border-radius:12px;background:#fff;color:var(--ink)}textarea{min-height:170px;resize:vertical;line-height:1.9}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}button,.btn{border:1px solid #1b6a3c;border-bottom:4px solid #0d4223;border-radius:12px;background:linear-gradient(135deg,#1c7440,#14532d);color:white;font:inherit;font-weight:800;padding:10px 15px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;min-height:43px}.secondary{background:#f2f8ef;color:var(--g);border-color:#b8d2b5;border-bottom-color:#7ea77d}.status{margin:10px 0;padding:10px 12px;border-radius:10px;background:#f2f7ef;color:#315d40;min-height:24px}.muted{color:var(--muted);font-size:.88rem}.filebox{padding:16px;border:2px dashed #b9d1b5;border-radius:15px;background:#f8fcf6;text-align:center}.preview{background:#fffef9;border:1px solid #e4e8dc;border-radius:12px;padding:16px;min-height:100px;white-space:pre-wrap;overflow-wrap:anywhere}.hidden{display:none!important}.badge{display:inline-block;background:#fff3ce;color:#775a14;padding:3px 9px;border-radius:20px;font-size:.78rem;font-weight:800}.back{color:#fff;text-decoration:none}.paper{display:none}
-@media(max-width:650px){.wrap{padding:11px}.grid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.panel{padding:13px}.actions>*{flex:1 1 100%}}
-@media print{@page{size:A4 portrait;margin:15mm}body{background:white}.top,.hero,.steps,.no-print{display:none!important}.wrap{max-width:none;padding:0}.paper{display:block!important}.paper h1{text-align:center;color:#14532d;border-bottom:2px solid #14532d;padding-bottom:10px}.paper h2{margin-top:20px;color:#14532d}.paper .body{white-space:pre-wrap;line-height:2;font-size:14pt}.panel{display:none!important}}
+:root{--g:#14532d;--g2:#176b3b;--cream:#faf8ef;--ink:#193b2a;--muted:#718075;--line:#dce8d8;--gold:#dfbd61}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#f5f8ef,#fffdf6 48%,#f5f8ef);color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.8}.top{background:linear-gradient(120deg,#103c27,#176b3b);color:white;padding:13px 16px;box-shadow:0 4px 14px #123b251c}.topin{max-width:980px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{font-weight:900;font-size:1.05rem}.brand small{display:block;font-size:.7rem;font-weight:500;color:#dcebdd}.top a{color:#fff;text-decoration:none;font-size:.85rem;font-weight:700}.wrap{max-width:980px;margin:auto;padding:17px}.hero{position:relative;overflow:hidden;padding:22px;border:1px solid #e5d39a;border-radius:22px;background:linear-gradient(125deg,#fff9e8,#f2f8e9);box-shadow:0 5px 0 #e9e1c9,0 10px 22px #173d2410;margin-bottom:15px}.hero:after{content:"🌿";position:absolute;left:16px;bottom:-17px;font-size:4rem;opacity:.14}.hero h1{margin:0;color:var(--g);font-size:clamp(1.4rem,4vw,2rem)}.hero p{margin:4px 0 0;color:var(--muted);font-size:.9rem}.view{display:none}.view.active{display:block;animation:appear .18s ease}@keyframes appear{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}.section-head{display:flex;align-items:center;gap:10px;margin:0 0 14px}.section-head h2{margin:0;color:var(--g);font-size:1.2rem}.back{border:1px solid #c6d9c1;border-bottom:3px solid #8cab86;border-radius:11px;background:#f0f7ed;color:var(--g);padding:7px 12px;font:inherit;font-weight:800;cursor:pointer;white-space:nowrap}.menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.menu-card{display:flex;align-items:center;gap:13px;text-align:right;min-height:103px;padding:15px;border:1px solid #c9ddc4;border-bottom:4px solid #277346;border-radius:18px;background:linear-gradient(145deg,#fff,#f1f8ee);box-shadow:0 4px 0 #dce8d7,0 8px 16px #173d240b;color:var(--ink);font:inherit;cursor:pointer;width:100%;transition:transform .15s,box-shadow .15s}.menu-card:active{transform:translateY(2px);box-shadow:0 2px 0 #dce8d7}.menu-icon{width:49px;height:49px;flex:0 0 49px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(145deg,#e6f3df,#fff);border:1px solid #d5e6cf;font-size:1.55rem;box-shadow:inset 0 1px #fff}.menu-copy{min-width:0;display:grid;gap:2px}.menu-copy strong{color:#15532f;font-size:.98rem}.menu-copy small{color:var(--muted);font-size:.78rem;line-height:1.5}.arrow{margin-inline-start:auto;color:#31764a;font-size:1.45rem}.panel{background:#fff;border:1px solid var(--line);border-radius:19px;padding:17px;margin:10px 0;box-shadow:0 6px 18px #173f2209}.panel h3{color:var(--g);margin:0 0 7px}.hint{padding:10px 12px;border-right:4px solid #398052;border-radius:11px;background:#f1f7ed;color:#49634e;font-size:.85rem;margin:10px 0}label{display:block;font-weight:800;margin:12px 0 6px;color:#244d34}input,textarea,select{width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1px solid #cbdac7;border-radius:12px;background:#fff;color:var(--ink)}textarea{min-height:220px;resize:vertical;line-height:1.9}.filebox{padding:17px;border:2px dashed #b9d1b5;border-radius:15px;background:#f8fcf6;text-align:center}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}button.primary,.primary{border:1px solid #1b6a3c;border-bottom:4px solid #0d4223;border-radius:12px;background:linear-gradient(135deg,#1c7440,#14532d);color:white;font:inherit;font-weight:800;padding:10px 16px;cursor:pointer;min-height:44px}.secondary{border:1px solid #b8d2b5;border-bottom:4px solid #7ea77d;border-radius:12px;background:linear-gradient(145deg,#fff,#eef6eb);color:var(--g);font:inherit;font-weight:800;padding:9px 14px;cursor:pointer;min-height:43px}.actions button{flex:1 1 180px}.status{margin:10px 0;padding:10px 12px;border-radius:11px;background:#f2f7ef;color:#315d40;min-height:25px;font-size:.88rem}.muted{color:var(--muted);font-size:.86rem}.preview{background:#fffef9;border:1px solid #e4e8dc;border-radius:13px;padding:15px;min-height:115px;white-space:pre-wrap;overflow-wrap:anywhere}.preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.progress{display:flex;gap:6px;margin:0 0 14px}.progress span{height:5px;flex:1;background:#e5ebdf;border-radius:10px}.progress span.on{background:#267344}.hidden{display:none!important}.paper{display:none}
+@media(max-width:620px){.wrap{padding:11px}.menu-grid{grid-template-columns:1fr;gap:10px}.menu-card{min-height:82px;padding:12px}.menu-icon{width:43px;height:43px;flex-basis:43px}.panel{padding:13px}.preview-grid{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-wrap:wrap}.actions button{flex-basis:100%}}
+@media print{@page{size:A4 portrait;margin:15mm}body{background:#fff}.top,.hero,.no-print{display:none!important}.wrap{max-width:none;padding:0}.paper{display:block!important;page-break-after:always}.paper:last-child{page-break-after:auto}.paper h1{text-align:center;color:#14532d;border-bottom:2px solid #14532d;padding-bottom:10px}.paper h2{margin-top:20px;color:#14532d}.paper .body{white-space:pre-wrap;line-height:2;font-size:14pt}}
 </style></head>
 <body>
-<header class="top"><div class="topin"><div class="brand">🌿 منصة التحدي <small>تحدي 20/20 في العلوم الطبيعية</small></div><a class="back" href="index.html">← العودة إلى المنصة</a></div></header>
+<header class="top"><div class="topin"><div class="brand">🌿 منصة التحدي <small>تحدي 20/20 في العلوم الطبيعية</small></div><a href="index.html">← فضاء الأستاذة</a></div></header>
 <main class="wrap">
-<section class="hero"><h1>✨ المساعد الذكي للأستاذة</h1><p>إدخال الموضوع أو رفع صورة/PDF، استخراج النص، تحرير الحل، ثم تجهيز ورقتين للطباعة بحجم A4.</p></section>
-<div class="steps no-print"><div class="step"><b>1</b>رفع الموضوع</div><div class="step"><b>2</b>استخراج النص</div><div class="step"><b>3</b>إدخال الحل</div><div class="step"><b>4</b>الطباعة A4</div></div>
-<section class="panel no-print">
-<h2>1. إدخال الموضوع</h2>
-<div class="filebox"><strong>📎 ارفعي صورة الموضوع أو ملف PDF</strong><p class="muted">يدعم الصور وملفات PDF. للملفات المصورة، تتم محاولة قراءة النص العربي آليًا، وقد تحتاجين إلى مراجعة الكلمات غير الواضحة.</p><input id="sourceFile" type="file" accept="image/*,application/pdf"></div>
-<div class="actions"><button id="extractBtn" type="button">استخراج النص من الملف</button><button id="clearFileBtn" class="secondary" type="button">مسح الملف</button></div>
-<p id="extractStatus" class="status" role="status">لم يتم رفع ملف بعد.</p>
-<label for="topicTitle">عنوان الموضوع</label><input id="topicTitle" placeholder="مثال: فرض الفصل الأول في العلوم الطبيعية">
-<label for="topicText">نص الموضوع والأسئلة والوثائق</label><textarea id="topicText" placeholder="يمكنك كتابة الموضوع هنا أو استخراج النص من الملف ثم مراجعته..."></textarea>
-<p class="muted">ملاحظة: استخراج النص لا يضمن قراءة الرسومات والجداول المعقدة بدقة؛ احتفظي بالملف الأصلي وراجعي الناتج قبل اعتماده.</p>
+<section class="hero"><h1>✨ المساعد الذكي للأستاذة</h1><p>حضّري موضوعك وحلّه خطوة بخطوة، في صفحات مستقلة ومنظمة.</p></section>
+
+<section id="homePage" class="view active no-print">
+<div class="section-head"><h2>اختاري الخدمة التي تريدينها</h2></div>
+<div class="menu-grid">
+<button class="menu-card" data-go="uploadPage"><span class="menu-icon">📎</span><span class="menu-copy"><strong>إدخال موضوع جديد</strong><small>رفع صورة أو ملف PDF للموضوع</small></span><span class="arrow">‹</span></button>
+<button class="menu-card" data-go="editTopicPage"><span class="menu-icon">📝</span><span class="menu-copy"><strong>تحرير الموضوع والأسئلة</strong><small>كتابة النص ومراجعته وتنظيمه</small></span><span class="arrow">‹</span></button>
+<button class="menu-card" data-go="solutionPage"><span class="menu-icon">📗</span><span class="menu-copy"><strong>إعداد الحل النموذجي</strong><small>إدخال الإجابات والتفسيرات والتنقيط</small></span><span class="arrow">‹</span></button>
+<button class="menu-card" data-go="previewPage"><span class="menu-icon">🖨️</span><span class="menu-copy"><strong>المعاينة والطباعة</strong><small>مراجعة ورقة الموضوع والحل A4</small></span><span class="arrow">‹</span></button>
+<button class="menu-card" data-action="save"><span class="menu-icon">💾</span><span class="menu-copy"><strong>حفظ المسودة</strong><small>حفظ العمل الحالي على هذا الجهاز</small></span><span class="arrow">‹</span></button>
+<button class="menu-card" data-action="load"><span class="menu-icon">📂</span><span class="menu-copy"><strong>استرجاع مسودة</strong><small>متابعة العمل الذي حفظته سابقًا</small></span><span class="arrow">‹</span></button>
+</div>
+<p id="homeStatus" class="status">كل خدمة تفتح في صفحة مستقلة. يمكنك العودة إلى هذه القائمة في أي وقت.</p>
 </section>
-<section class="panel no-print">
-<h2>2. الحل النموذجي</h2>
-<label for="solutionText">أدخلي الحل النموذجي والتفسيرات وسلم التنقيط</label><textarea id="solutionText" placeholder="اكتبي الحل النموذجي هنا..."></textarea>
-<div class="actions"><button id="saveDraft" class="secondary" type="button">حفظ مسودة على هذا الجهاز</button><button id="loadDraft" class="secondary" type="button">استرجاع المسودة</button><button id="preparePrint" type="button">معاينة وطباعة A4</button></div>
-<p id="draftStatus" class="status" role="status">المسودة تحفظ محليًا على هذا الجهاز فقط.</p>
+
+<section id="uploadPage" class="view no-print">
+<div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>📎 إدخال الموضوع</h2></div><div class="progress"><span class="on"></span><span></span><span></span><span></span></div>
+<div class="panel"><h3>رفع صورة أو ملف PDF</h3><div class="filebox"><strong>📄 اختاري ملف الموضوع</strong><p class="muted">يدعم الصور وملفات PDF حتى 15 ميغابايت.</p><input id="sourceFile" type="file" accept="image/*,application/pdf"></div>
+<div class="actions"><button id="extractBtn" class="primary" type="button">استخراج النص</button><button id="clearFileBtn" class="secondary" type="button">مسح الملف</button></div><p id="extractStatus" class="status" role="status">لم يتم رفع ملف بعد.</p>
+<div class="hint">قد تحتاج الكلمات غير الواضحة والجداول والرسومات إلى مراجعة يدوية بعد الاستخراج.</div>
+<div class="actions"><button class="primary" data-go="editTopicPage" type="button">التالي: مراجعة الموضوع ←</button></div></div>
 </section>
-<section class="panel no-print"><h2>3. معاينة قبل الطباعة</h2><div class="grid"><div><h3>ورقة الموضوع</h3><div id="topicPreview" class="preview muted">سيظهر نص الموضوع هنا.</div></div><div><h3>ورقة الحل</h3><div id="solutionPreview" class="preview muted">سيظهر الحل هنا.</div></div></div></section>
+
+<section id="editTopicPage" class="view no-print">
+<div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>📝 تحرير الموضوع</h2></div><div class="progress"><span class="on"></span><span class="on"></span><span></span><span></span></div>
+<div class="panel"><label for="topicTitle">عنوان الموضوع</label><input id="topicTitle" placeholder="مثال: فرض الفصل الأول في العلوم الطبيعية">
+<label for="topicText">نص الموضوع والأسئلة والوثائق</label><textarea id="topicText" placeholder="اكتبي أو راجعي النص المستخرج هنا..."></textarea>
+<div class="actions"><button class="secondary" data-go="uploadPage" type="button">→ رجوع إلى رفع الملف</button><button class="primary" data-go="solutionPage" type="button">التالي: إعداد الحل ←</button></div></div>
+</section>
+
+<section id="solutionPage" class="view no-print">
+<div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>📗 الحل النموذجي</h2></div><div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
+<div class="panel"><p class="muted">أدخلي الحل كما تريدين ظهوره في الورقة النهائية.</p><label for="solutionText">الإجابات والتفسيرات وسلم التنقيط</label><textarea id="solutionText" placeholder="اكتبي الحل النموذجي هنا..."></textarea>
+<div class="actions"><button class="secondary" data-go="editTopicPage" type="button">→ رجوع إلى الموضوع</button><button class="primary" data-go="previewPage" type="button">التالي: المعاينة والطباعة ←</button></div></div>
+</section>
+
+<section id="previewPage" class="view no-print">
+<div class="section-head"><button class="back" data-home>→ القائمة الرئيسية</button><h2>🖨️ المعاينة والطباعة</h2></div><div class="progress"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
+<div class="panel"><div class="preview-grid"><div><h3>ورقة الموضوع</h3><div id="topicPreview" class="preview">سيظهر نص الموضوع هنا.</div></div><div><h3>ورقة الحل</h3><div id="solutionPreview" class="preview">سيظهر الحل هنا.</div></div></div>
+<div class="actions"><button id="saveDraft" class="secondary" type="button">💾 حفظ المسودة</button><button id="preparePrint" class="primary" type="button">طباعة الموضوع والحل A4</button></div><p id="draftStatus" class="status">المسودة تحفظ محليًا على هذا الجهاز فقط.</p></div>
+</section>
+
 <section class="paper" id="topicPaper"><h1 id="printTopicTitle">موضوع الاختبار</h1><div class="body" id="printTopicBody"></div></section>
 <section class="paper" id="solutionPaper"><h1>الحل النموذجي</h1><h2 id="printSolutionTitle"></h2><div class="body" id="printSolutionBody"></div></section>
 </main>
@@ -38,71 +62,45 @@
 <script>
 (()=> {
  const $=id=>document.getElementById(id);
- const fileInput=$('sourceFile');
- const status=$('extractStatus');
+ const pages=['homePage','uploadPage','editTopicPage','solutionPage','previewPage'];
+ function show(id){pages.forEach(x=>$(x).classList.toggle('active',x===id));if(id==='previewPage')updatePreview();window.scrollTo({top:0,behavior:'instant'});}
+ document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.go)));
+ document.querySelectorAll('[data-home]').forEach(b=>b.addEventListener('click',()=>show('homePage')));
+ document.querySelectorAll('[data-action="save"]').forEach(b=>b.addEventListener('click',saveDraft));
+ document.querySelectorAll('[data-action="load"]').forEach(b=>b.addEventListener('click',loadDraft));
+ const fileInput=$('sourceFile'),status=$('extractStatus');
  const setStatus=s=>status.textContent=s;
- const esc=s=>String(s||'');
  function updatePreview(){
-  $('topicPreview').textContent=$('topicText').value||'سيظهر نص الموضوع هنا.';
-  $('solutionPreview').textContent=$('solutionText').value||'سيظهر الحل هنا.';
+  $('topicPreview').textContent=($('topicTitle').value||'موضوع الاختبار')+'\n\n'+($('topicText').value||'لم يتم إدخال نص الموضوع.');
+  $('solutionPreview').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';
  }
- $('topicText').addEventListener('input',updatePreview);
- $('solutionText').addEventListener('input',updatePreview);
- $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
  async function recognizeImage(blob){
-  if(!window.Tesseract) throw new Error('تعذر تحميل محرك قراءة الصور. تحققي من الاتصال بالإنترنت ثم أعيدي المحاولة.');
+  if(!window.Tesseract)throw new Error('تعذر تحميل محرك قراءة الصور. تحققي من الاتصال بالإنترنت.');
   const result=await Tesseract.recognize(blob,'ara+eng',{logger:m=>{if(m.status)setStatus('قراءة النص: '+m.status+(m.progress?' '+Math.round(m.progress*100)+'%':''));}});
   return result.data.text||'';
  }
  async function pdfText(file){
   if(!window.pdfjsLib)throw new Error('تعذر تحميل قارئ PDF. تحققي من الاتصال بالإنترنت.');
   pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  const data=new Uint8Array(await file.arrayBuffer());
-  const pdf=await pdfjsLib.getDocument({data}).promise;
-  let out='';
+  const pdf=await pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;let out='';
   for(let i=1;i<=pdf.numPages;i++){
    setStatus('معالجة صفحة '+i+' من '+pdf.numPages+'…');
-   const page=await pdf.getPage(i);
-   const content=await page.getTextContent();
-   let text=content.items.map(x=>x.str).join(' ').trim();
-   if(text.length<25){
-    const viewport=page.getViewport({scale:1.7});
-    const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-    await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-    text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));
-   }
+   const page=await pdf.getPage(i),content=await page.getTextContent();let text=content.items.map(x=>x.str).join(' ').trim();
+   if(text.length<25){const vp=page.getViewport({scale:1.7}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));}
    out+='\n\n— الصفحة '+i+' —\n'+text;
-  }
-  return out.trim();
+  }return out.trim();
  }
  $('extractBtn').addEventListener('click',async()=>{
-  const file=fileInput.files&&fileInput.files[0];
-  if(!file){setStatus('اختاري صورة أو ملف PDF أولًا.');return;}
-  if(file.size>15*1024*1024){setStatus('حجم الملف أكبر من 15 ميغابايت. اختاري ملفًا أصغر.');return;}
-  const btn=$('extractBtn');btn.disabled=true;
-  try{
-   setStatus('جارٍ تجهيز الملف…');
-   let text='';
-   if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))text=await pdfText(file);
-   else text=await recognizeImage(file);
-   $('topicText').value=text;updatePreview();
-   setStatus(text?'اكتمل استخراج النص. راجعيه وصححي الكلمات غير الواضحة والوثائق قبل الاعتماد.':'لم يتم العثور على نص واضح في الملف.');
-  }catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}
-  finally{btn.disabled=false;}
+  const file=fileInput.files&&fileInput.files[0];if(!file){setStatus('اختاري صورة أو ملف PDF أولًا.');return;}if(file.size>15*1024*1024){setStatus('حجم الملف أكبر من 15 ميغابايت.');return;}
+  const btn=$('extractBtn');btn.disabled=true;try{setStatus('جارٍ تجهيز الملف…');const text=(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf'))?await pdfText(file):await recognizeImage(file);$('topicText').value=text;if(!$('topicTitle').value)$('topicTitle').value=file.name.replace(/\.[^.]+$/,'');setStatus(text?'اكتمل استخراج النص. انتقلي إلى مراجعة الموضوع.':'لم يتم العثور على نص واضح.');}catch(e){setStatus('تعذر استخراج النص: '+(e.message||e));}finally{btn.disabled=false;}
  });
- $('saveDraft').addEventListener('click',()=>{
-  const data={title:$('topicTitle').value,topic:$('topicText').value,solution:$('solutionText').value,updatedAt:new Date().toISOString()};
-  try{localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify(data));$('draftStatus').textContent='حُفظت المسودة على هذا الجهاز.';}catch(e){$('draftStatus').textContent='تعذر الحفظ؛ قد تكون مساحة التخزين ممتلئة.';}
- });
- $('loadDraft').addEventListener('click',()=>{
-  try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('draftStatus').textContent='لا توجد مسودة محفوظة.';return;}$('topicTitle').value=d.title||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';updatePreview();$('draftStatus').textContent='تم استرجاع المسودة المحفوظة.';}catch(e){$('draftStatus').textContent='تعذر استرجاع المسودة.';}
- });
+ $('clearFileBtn').addEventListener('click',()=>{fileInput.value='';setStatus('تم مسح الملف.');});
+ function saveDraft(){const data={title:$('topicTitle').value,topic:$('topicText').value,solution:$('solutionText').value,updatedAt:new Date().toISOString()};try{localStorage.setItem('tahadi_smart_assistant_draft_v1',JSON.stringify(data));$('draftStatus').textContent='حُفظت المسودة على هذا الجهاز.';$('homeStatus').textContent='تم حفظ المسودة بنجاح على هذا الجهاز.';}catch(e){$('draftStatus').textContent='تعذر الحفظ؛ قد تكون مساحة التخزين ممتلئة.';$('homeStatus').textContent='تعذر حفظ المسودة.';}}
+ function loadDraft(){try{const d=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(!d){$('homeStatus').textContent='لا توجد مسودة محفوظة على هذا الجهاز.';return;}$('topicTitle').value=d.title||'';$('topicText').value=d.topic||'';$('solutionText').value=d.solution||'';$('homeStatus').textContent='تم استرجاع المسودة المحفوظة.';show('editTopicPage');}catch(e){$('homeStatus').textContent='تعذر استرجاع المسودة.';}}
+ $('saveDraft').addEventListener('click',saveDraft);
  $('preparePrint').addEventListener('click',()=>{
-  $('printTopicTitle').textContent=$('topicTitle').value||'موضوع الاختبار';
-  $('printTopicBody').textContent=$('topicText').value||'لم يتم إدخال نص الموضوع.';
-  $('printSolutionTitle').textContent=$('topicTitle').value||'';
-  $('printSolutionBody').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';
-  updatePreview();window.print();
+  $('printTopicTitle').textContent=$('topicTitle').value||'موضوع الاختبار';$('printTopicBody').textContent=$('topicText').value||'لم يتم إدخال نص الموضوع.';$('printSolutionTitle').textContent=$('topicTitle').value||'';$('printSolutionBody').textContent=$('solutionText').value||'لم يتم إدخال الحل النموذجي.';
+  document.body.classList.add('printing');window.print();setTimeout(()=>document.body.classList.remove('printing'),500);
  });
  updatePreview();
 })();
