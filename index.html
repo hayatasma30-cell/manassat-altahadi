@@ -2232,9 +2232,15 @@ window.addEventListener("unhandledrejection",function(e){
       if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
       showView("dailyLessonsView");
       try{
-        /* نقطة دخول واحدة: التقويم مع زر إضافة حصة واحد. */
-        if(typeof setLessonHome==="function")setLessonHome();
-        else if(typeof window.tahadiOpenDailyLessons==="function")window.tahadiOpenDailyLessons();
+        /* مدخل واحد ثابت: إظهار التقويم وإخفاء نموذج الإضافة القديم صراحةً. */
+        setLessonPage("calendar",false);
+        const addPanel=document.getElementById("lessonAddPanel");
+        const listPanel=document.getElementById("lessonListPanel");
+        const calendarPanel=document.getElementById("lessonsCalendarPanel");
+        if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+        if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
+        if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.setProperty("display","block","important");}
+        loadDailyLessons().catch(err=>showStatus("تعذر تحميل التقويم: "+(err.message||"خطأ غير معروف"),"error"));
       }catch(err){
         showStatus("تعذر فتح حصص اليوم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
         console.error("dailyLessonsView open failed",err);
