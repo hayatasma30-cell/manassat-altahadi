@@ -21,9 +21,9 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.btn{border:1px solid #a8c9aa;border-bottom:4px solid #6c9c70;border-radius:12px;padding:10px 14px;background:linear-gradient(145deg,#fff,#eaf5e8);color:var(--green);font-weight:800;cursor:pointer}.btn.primary{background:linear-gradient(145deg,#1c7543,#14532d);border-color:#1c7543;border-bottom-color:#0c3c20;color:#fff}.btn.gold{background:linear-gradient(145deg,#fff9e9,#f4e5bd);border-color:#dfc47e;border-bottom-color:#b18a39;color:#6e521a}.btn:active{transform:translateY(2px);border-bottom-width:2px}
 .row-editor{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin:7px 0}.row-editor input{min-width:0}.remove{border:0;background:#fff0ee;color:#a12f2a;border-radius:9px;padding:0 10px;font-weight:800}
 .preview-panel{overflow:auto}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.preview-head strong{color:var(--green)}
-#posterViewport{width:100%;position:relative;overflow:hidden;min-height:1px;margin:0 auto}\n#poster{width:794px;min-height:1123px;margin:0;position:absolute;top:0;right:0;transform-origin:top right;background:linear-gradient(180deg,#fffef9,#f8fbf5);padding:28px 30px;color:#1c3426;border:8px double #2d7444;overflow:hidden;box-shadow:0 8px 30px #193d201b}
+#posterViewport{width:100%;position:relative;overflow:hidden;min-height:1px;margin:0 auto}\n#poster{width:794px;height:1123px;min-height:1123px;margin:0;position:absolute;top:0;right:0;transform-origin:top right;background:linear-gradient(180deg,#fffef9,#f8fbf5);padding:28px 30px;color:#1c3426;border:8px double #2d7444;overflow:hidden;box-shadow:0 8px 30px #193d201b}
 #poster:before,#poster:after{content:"";position:absolute;width:170px;height:170px;border:1px solid #d8e8d2;border-radius:50%;opacity:.5;pointer-events:none}#poster:before{top:-105px;left:-75px}#poster:after{bottom:-105px;right:-75px}
-.poster-top{display:grid;grid-template-columns:110px 1fr 90px;gap:12px;align-items:center;border-bottom:2px solid #d5b35d;padding-bottom:14px;position:relative;z-index:1}
+.poster-content{width:100%;transform-origin:top right;will-change:transform}\n.poster-top{display:grid;grid-template-columns:110px 1fr 90px;gap:12px;align-items:center;border-bottom:2px solid #d5b35d;padding-bottom:14px;position:relative;z-index:1}
 .poster-logo{width:100px;height:100px;object-fit:contain;border-radius:50%;background:#fff;border:2px solid #d5b35d;padding:5px}
 .poster-title{text-align:center}.poster-title h2{margin:0;background:linear-gradient(120deg,#0e4a2a,#1c7543);color:#fff;border:3px solid #d7b45e;border-radius:22px;padding:10px 12px;font-size:30px;line-height:1.35;box-shadow:0 4px 0 #a77e32}.poster-title div{display:inline-block;margin-top:8px;padding:4px 17px;border-radius:18px;background:#fff6dc;border:1px solid #d7b45e;font-weight:800;font-size:17px}
 .poster-mark{font-size:50px;text-align:center;color:#c49a3f}
@@ -78,14 +78,14 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 </section>
 <section class="preview-panel" id="preview-panel">
 <div class="preview-head"><strong>معاينة الورقة A4</strong><span class="status">تتحدث تلقائيًا</span></div>
-<div id="posterViewport"><article id="poster">
+<div id="posterViewport"><article id="poster"><div id="posterContent" class="poster-content">
 <div class="poster-top"><img id="posterLogo" class="poster-logo" src="./file_00000000aa0081f484bc7f93b3e54448.png" alt="رمز الصفحة"><div class="poster-title"><h2 id="pTitle">أغذية النبات الأخضر</h2><div id="pSubtitle">السنة الأولى متوسط</div></div><div class="poster-mark">✦</div></div>
 <div class="poster-intro" id="pIntro"></div>
 <section class="poster-section"><div class="section-title" id="pSection1">تركيب محلول كنوب (1000 mL)</div><div class="section-body" id="pText1"></div><table class="poster-table"><thead><tr><th>العناصر المعدنية</th><th>الكميات</th></tr></thead><tbody id="pRows"></tbody></table></section>
 <section class="poster-section"><div class="section-title" id="pSection2"></div><div class="section-body" id="pText2"></div><table class="poster-table"><thead><tr><th>رقم النبتة</th><th>التركيب المعدني</th></tr></thead><tbody id="pExperimentRows"></tbody></table><div class="poster-images" id="pImages"></div></section>
 <div class="poster-tasks" id="pTasks"></div>
 <div class="poster-footer"><span>صفحة تحدي 20/20 في العلوم الطبيعية</span><span>من إعداد <b id="pTeacher">الأستاذة حياة</b></span></div>
-</article></div>
+</div></article></div>
 </section>
 </main>
 <script>
@@ -103,7 +103,7 @@ $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Bool
 $("pImages").innerHTML="";uploadedImages.forEach(src=>{const im=document.createElement("img");im.src=src;$("pImages").append(im);});
 if(logoData)$("posterLogo").src=logoData;
 }
-function fitPoster(){const viewport=$("posterViewport"),poster=$("poster");if(!viewport||!poster)return;const scale=Math.min(1,Math.max(.25,(viewport.clientWidth-2)/794));poster.style.transform="scale("+scale+")";viewport.style.height=(1123*scale)+"px";}
+function fitPoster(){const viewport=$("posterViewport"),poster=$("poster"),content=$("posterContent");if(!viewport||!poster||!content)return;content.style.transform="none";const available=1065;const natural=Math.max(content.scrollHeight,1);const contentScale=Math.min(1,available/natural);content.style.transform="scale("+contentScale+")";const scale=Math.min(1,Math.max(.25,(viewport.clientWidth-2)/794));poster.style.transform="scale("+scale+")";viewport.style.height=(1123*scale)+"px";}
 if(window.ResizeObserver){new ResizeObserver(fitPoster).observe($("preview-panel"));}window.addEventListener("resize",fitPoster);
 ["level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
 $("addTableRow").onclick=()=>addRow("tableRows");$("addExperimentRow").onclick=()=>addRow("experimentRows");
