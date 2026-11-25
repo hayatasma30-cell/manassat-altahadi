@@ -3218,7 +3218,7 @@ document.querySelectorAll("[data-lesson-page]").forEach(b=>{const active=b.datas
     }catch(e){console.warn("Student detail checkpoint:",e);}
   }
   function prefetchStudentLessonStats(){if(studentLessonStatsCache||studentLessonStatsPrefetch)return;studentLessonStatsPrefetch=loadStudentLessonStats().finally(()=>{studentLessonStatsPrefetch=null;});}
-  $("openStudentLessonStats").addEventListener("click",async()=>{studentStatsReturnState={chooser:$("studentModeChooser").hidden,content:$("studentModeContent").hidden};$("studentModeChooser").hidden=true;$("studentModeContent").hidden=true;$("studentLessonStatsPanel").hidden=false;if(studentLessonStatsPrefetch)await studentLessonStatsPrefetch;else await loadStudentLessonStats();});
+  $("openStudentLessonStats")?.addEventListener("click",async()=>{studentStatsReturnState={chooser:$("studentModeChooser").hidden,content:$("studentModeContent").hidden};$("studentModeChooser").hidden=true;$("studentModeContent").hidden=true;$("studentLessonStatsPanel").hidden=false;if(studentLessonStatsPrefetch)await studentLessonStatsPrefetch;else await loadStudentLessonStats();});
   $("closeStudentLessonStats").addEventListener("click",()=>{$("studentLessonStatsPanel").hidden=true;$("studentStatsDetailPage").hidden=true;$("studentStatsListPage").hidden=false;$("studentModeChooser").hidden=studentStatsReturnState.chooser;$("studentModeContent").hidden=studentStatsReturnState.content;});
   $("refreshStudentLessonStats").addEventListener("click",()=>loadStudentLessonStats(true));
   $("toggleStudentStatsFilters").addEventListener("click",()=>{$("studentStatsFilters").hidden=!$("studentStatsFilters").hidden;});
