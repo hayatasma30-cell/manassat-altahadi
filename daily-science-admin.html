@@ -459,7 +459,7 @@ window.openDailyScienceEditor=function(){location.href="daily-science-admin.html
 <script src="./writing-tools.js" defer></script>
 <script src="./tahadi-dialogs.js" defer></script>
 <script>/* المساعد العلمي: معزول عن بقية وظائف فضاء الأستاذة */
-(()=>{
+(async()=>{
  const $=id=>document.getElementById(id), endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/teacher-science-assistant", extractEndpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/ai-document-extract";
  let lastAnswer="",lastQuestion="",rulesCache=[],conversationHistory=[],assistantOpened=false;
  async function call(action,extra={}){const r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra})});const d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"تعذر تنفيذ العملية.");return d;}
