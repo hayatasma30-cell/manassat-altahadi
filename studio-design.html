@@ -23,6 +23,22 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 .preview-panel{overflow:auto}.preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.preview-head strong{color:var(--green)}
 #posterViewport{width:100%;position:relative;overflow:hidden;min-height:1px;margin:0 auto}\n#poster{width:794px;height:1123px;min-height:1123px;margin:0;position:absolute;top:0;right:0;transform-origin:top right;background:linear-gradient(180deg,#fffef9,#f8fbf5);padding:28px 30px;color:#1c3426;border:8px double #2d7444;overflow:hidden;box-shadow:0 8px 30px #193d201b}
 #poster:before,#poster:after{content:"";position:absolute;width:170px;height:170px;border:1px solid #d8e8d2;border-radius:50%;opacity:.5;pointer-events:none}#poster:before{top:-105px;left:-75px}#poster:after{bottom:-105px;right:-75px}
+
+#poster.template-lesson{--accent:#14532d;--pale:#fff8e5;--line-accent:#d7b45e}
+#poster.template-worksheet{--accent:#175b72;--pale:#eef8fb;--line-accent:#75b6c9}
+#poster.template-exam{--accent:#333d68;--pale:#f1f2fa;--line-accent:#a9afd2}
+#poster.template-poster{--accent:#14532d;--pale:#f1f8e9;--line-accent:#d7b45e}
+#poster.template-experiment{--accent:#286548;--pale:#eff8f0;--line-accent:#8dbb8d}
+#poster.template-tables{--accent:#5b4b82;--pale:#f5f1fa;--line-accent:#b7a4d3}
+#poster[class*="template-"] .poster-title h2,#poster[class*="template-"] .section-title{background:linear-gradient(120deg,var(--accent),var(--accent));border-color:var(--line-accent)}
+#poster[class*="template-"] .poster-intro,#poster[class*="template-"] .task{background:var(--pale);border-color:var(--line-accent)}
+#poster[class*="template-"] .poster-section{border-color:var(--line-accent)}
+#poster.template-worksheet .poster-intro{border-style:dashed}
+#poster.template-exam .poster-intro{font-size:19px;font-weight:900}
+#poster.template-poster .poster-title h2{font-size:36px;padding:16px}
+#poster.template-poster .poster-section{border-width:2px}
+#poster.template-experiment .section-title{margin-inline:0;width:100%}
+#poster.template-tables .poster-section{border-radius:8px}
 .poster-content{width:100%;transform-origin:top right;will-change:transform}\n.poster-top{display:grid;grid-template-columns:110px 1fr 90px;gap:12px;align-items:center;border-bottom:2px solid #d5b35d;padding-bottom:14px;position:relative;z-index:1}
 .poster-logo{width:100px;height:100px;object-fit:contain;border-radius:50%;background:#fff;border:2px solid #d5b35d;padding:5px}
 .poster-title{text-align:center}.poster-title h2{margin:0;background:linear-gradient(120deg,#0e4a2a,#1c7543);color:#fff;border:3px solid #d7b45e;border-radius:22px;padding:10px 12px;font-size:30px;line-height:1.35;box-shadow:0 4px 0 #a77e32}.poster-title div{display:inline-block;margin-top:8px;padding:4px 17px;border-radius:18px;background:#fff6dc;border:1px solid #d7b45e;font-weight:800;font-size:17px}
@@ -48,6 +64,11 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 <section class="form-panel">
 <h1>أنشئي ورقتك التعليمية</h1>
 <p class="hint">أدخلي المحتوى كما تريدين ظهوره، وستتحدث المعاينة مباشرة دون حذف أي نص.</p>
+<label for="documentType">نوع الوثيقة</label>
+<select id="documentType">
+<option value="lesson">ملخص درس</option><option value="worksheet">ورقة عمل</option><option value="exam">اختبار أو فرض</option><option value="poster">ملصق علمي</option><option value="experiment">بطاقة تجربة</option><option value="tables">جداول ووثائق</option>
+</select>
+<p id="typeHint" class="status">قالب ملخص درس: عنوان واضح، فقرات، جداول وتعلمات.</p>
 <label for="level">المستوى الدراسي</label><select id="level"><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select>
 <label for="title">عنوان الورقة</label><input id="title" value="أغذية النبات الأخضر">
 <label for="subtitle">العنوان الفرعي</label><input id="subtitle" value="علوم الطبيعة والحياة">
@@ -77,8 +98,8 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 <div id="status" class="status" role="status">المعاينة جاهزة. أدخلي بياناتك أو عدّلي النموذج.</div>
 </section>
 <section class="preview-panel" id="preview-panel">
-<div class="preview-head"><strong>معاينة الورقة A4</strong><span class="status">تتحدث تلقائيًا</span></div>
-<div id="posterViewport"><article id="poster"><div id="posterContent" class="poster-content">
+<div class="preview-head"><strong>معاينة <span id="previewType">ملخص درس</span> A4</strong><span class="status">تتحدث تلقائيًا</span></div>
+<div id="posterViewport"><article id="poster" class="template-lesson"><div id="posterContent" class="poster-content">
 <div class="poster-top"><img id="posterLogo" class="poster-logo" src="./file_00000000aa0081f484bc7f93b3e54448.png" alt="رمز الصفحة"><div class="poster-title"><h2 id="pTitle">أغذية النبات الأخضر</h2><div id="pSubtitle">السنة الأولى متوسط</div></div><div class="poster-mark">✦</div></div>
 <div class="poster-intro" id="pIntro"></div>
 <section class="poster-section"><div class="section-title" id="pSection1">تركيب محلول كنوب (1000 mL)</div><div class="section-body" id="pText1"></div><table class="poster-table"><thead><tr><th>العناصر المعدنية</th><th>الكميات</th></tr></thead><tbody id="pRows"></tbody></table></section>
@@ -96,7 +117,7 @@ let uploadedImages=[];
 function addRow(containerId,a="",b=""){const row=document.createElement("div");row.className="row-editor";const one=document.createElement("input"),two=document.createElement("input"),del=document.createElement("button");one.placeholder=containerId==="tableRows"?"العنصر المعدني":"رقم النبتة";two.placeholder=containerId==="tableRows"?"الكمية":"التركيب المعدني";one.value=a;two.value=b;one.addEventListener("input",render);two.addEventListener("input",render);del.type="button";del.className="remove";del.textContent="×";del.title="حذف السطر";del.onclick=()=>{row.remove();render();};row.append(one,two,del);$(containerId).append(row);render();}
 function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
-function render(){const level=$("level").value;const title=$("title").value||" ";$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
+function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
@@ -105,7 +126,7 @@ if(logoData)$("posterLogo").src=logoData;
 }
 function fitPoster(){const viewport=$("posterViewport"),poster=$("poster"),content=$("posterContent");if(!viewport||!poster||!content)return;content.style.transform="none";const available=1065;const natural=Math.max(content.scrollHeight,1);const contentScale=Math.min(1,available/natural);content.style.transform="scale("+contentScale+")";const scale=Math.min(1,Math.max(.25,(viewport.clientWidth-2)/794));poster.style.transform="scale("+scale+")";viewport.style.height=(1123*scale)+"px";}
 if(window.ResizeObserver){new ResizeObserver(fitPoster).observe($("preview-panel"));}window.addEventListener("resize",fitPoster);
-["level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
+["documentType","level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
 $("addTableRow").onclick=()=>addRow("tableRows");$("addExperimentRow").onclick=()=>addRow("experimentRows");
 $("logoUpload").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{logoData=reader.result;try{localStorage.setItem("tahadi_studio_logo",logoData);}catch(err){$("status").textContent="تعذر حفظ الرمز بسبب مساحة التخزين؛ سيبقى ظاهرًا لهذه الجلسة.";}$("posterLogo").src=logoData;};reader.readAsDataURL(f);});
 $("images").addEventListener("change",e=>{uploadedImages=[];const files=[...e.target.files].slice(0,4);let left=files.length;if(!left){render();return;}files.forEach(f=>{const r=new FileReader();r.onload=()=>{uploadedImages.push(r.result);if(!--left)render();};r.readAsDataURL(f);});});
