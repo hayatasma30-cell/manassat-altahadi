@@ -1598,6 +1598,22 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 #dailyLessonsView #lessonCalendarGrid{touch-action:pan-y!important;overscroll-behavior-x:contain}
 </style>
 
+<style id="tahadi-month-calendar-only-v1">
+/* تقويم الأستاذة: عرض شهري واحد دون أقسام المكتبة أو تبديل العرض */
+#dailyLessonsView #lessonSubpageNav,
+#dailyLessonsView #lessonSubpageBack,
+#dailyLessonsView #lessonCalendarViewButtons,
+#dailyLessonsView #lessonNextCountdown,
+#dailyLessonsView #lessonListFilters,
+#dailyLessonsView #lessonListModeHint,
+#dailyLessonsView #lessonCategoryFilterHint,
+#dailyLessonsView #dailyLessonsList,
+#dailyLessonsView #lessonListPanel > .lesson-list-heading{display:none!important}
+#dailyLessonsView #lessonListPanel{display:block!important}
+#dailyLessonsView #lessonsCalendarPanel{display:block!important;visibility:visible!important;opacity:1!important}
+#dailyLessonsView #lessonCalendarGrid.view-month{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important}
+#dailyLessonsView #lessonCalendarDayDetails .calendar-day-page-back{display:none!important}
+</style>
 </head>
 <body>
 <div class="topbar"><div class="top-inner"><div class="brand"><img class="brand-logo" src="file_00000000aa0081f484bc7f93b3e54448.png" alt="شعار منصة التحدي"><span class="brand-text">منصة التحدي<small>التعليم • التميز • المتابعة</small></span></div><div class="teacher-chip"><div class="avatar">👩‍🏫</div><span>فضاء الأستاذة</span><button class="logout" id="topLogout" type="button" hidden>خروج ↗</button></div></div></div>
@@ -2936,10 +2952,11 @@ window.addEventListener("unhandledrejection",function(e){
   }
   window.tahadiSelectLessonDate=function(date){
     lessonCalendarSelectedDate=String(date||"").slice(0,10);
-    lessonCalendarDayPageOpen=true;
+    lessonCalendarDayPageOpen=false;
+    lessonCalendarView="month";
     renderLessonsCalendar(Array.isArray(window.tahadiLoadedLessonRows)?window.tahadiLoadedLessonRows:[]);
-    const panel=document.getElementById("lessonsCalendarPanel");
-    if(panel)panel.scrollIntoView({behavior:"smooth",block:"start"});
+    const details=document.getElementById("lessonCalendarDayDetails");
+    if(details)details.scrollIntoView({behavior:"smooth",block:"nearest"});
   };
   function shiftLessonCalendar(direction){
     if(lessonCalendarDayPageOpen)return;
@@ -3263,7 +3280,8 @@ window.addEventListener("unhandledrejection",function(e){
   $("lessonWizardNext").addEventListener("click",()=>{if(!validateLessonWizardStep())return;lessonWizardStep=Math.min(3,lessonWizardStep+1);lessonMessage("");updateLessonWizard();});
   $("lessonWizardPrev").addEventListener("click",()=>{lessonWizardStep=Math.max(0,lessonWizardStep-1);lessonMessage("");updateLessonWizard();});
   function resetLessonWizard(){lessonWizardStep=0;updateLessonWizard();}
-  $("calendarAddLessonButton").addEventListener("click",()=>{window.tahadiEditingLessonId="";delete window.tahadiEditingScope;$("lessonRepeatWeekly").disabled=false;$("lessonRepeatWeekly").checked=false;$("lessonRepeatEndWrap").hidden=true;$("lessonRepeatEndWrap").style.display="none";setLessonPage("add");resetLessonWizard();window.scrollTo({top:0,behavior:"smooth"});});
+  window.tahadiOpenNewLessonForm=function(){window.tahadiEditingLessonId="";delete window.tahadiEditingScope;$("lessonRepeatWeekly").disabled=false;$("lessonRepeatWeekly").checked=false;$("lessonRepeatEndWrap").hidden=true;$("lessonRepeatEndWrap").style.display="none";setLessonPage("add");resetLessonWizard();window.scrollTo({top:0,behavior:"smooth"});};
+  $("calendarAddLessonButton").addEventListener("click",e=>{e.preventDefault();window.tahadiOpenNewLessonForm();});
   $("lessonEditorBackToCalendar").addEventListener("click",()=>{setLessonPage("calendar");window.scrollTo({top:0,behavior:"smooth"});});
   resetLessonWizard();
   $("lessonWizardReview").addEventListener("click",e=>{const back=e.target instanceof Element?e.target.closest("#lessonWizardReturnCalendar"):null;if(!back)return;e.preventDefault();window.tahadiLessonEditSaved=false;showView("dailyLessonsView");setLessonHome();setLessonPage("library");setLessonSubpage("calendar");window.scrollTo({top:0,behavior:"smooth"});});
