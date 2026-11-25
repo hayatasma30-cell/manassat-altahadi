@@ -1819,7 +1819,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="panel">
 
 <div class="lesson-calendar-entry-heading"><p class="muted">جميع الحصص تُدار من هذا التقويم فقط.</p></div>
-<div id="lessonAddPanel" class="lesson-editor">
+<div id="lessonAddPanel" class="lesson-editor" hidden>
 <div class="lesson-editor-heading"><strong>📝 إضافة حصة</strong><button id="lessonEditorBackToCalendar" type="button" class="secondary">← العودة إلى التقويم</button><span>خطوات بسيطة لإضافة الحصة أو تعديلها</span></div><div class="lesson-wizard-progress" id="lessonWizardProgress"><div class="lesson-wizard-step active"><b>1</b><span>الموعد</span></div><i></i><div class="lesson-wizard-step"><b>2</b><span>التفاصيل</span></div><i></i><div class="lesson-wizard-step"><b>3</b><span>التكرار والسعر</span></div><i></i><div class="lesson-wizard-step"><b>4</b><span>المراجعة</span></div></div><div class="lesson-wizard-title" id="lessonWizardTitle">الخطوة 1 من 4 · تحديد الموعد</div>
 <div class="lesson-form-grid">
 <div data-step="0" class="lesson-field lesson-field-full"><label for="lessonModeSelect">طريقة التدريس</label><select id="lessonModeSelect"><option value="zoom">زووم</option><option value="in_person" selected>حضوري</option></select><p id="lessonModeHint" class="muted">تسجل الحصة ضمن حصص الزووم.</p></div><div id="lessonZoomLinkWrap" data-step="0" class="lesson-field lesson-field-full" hidden><label for="lessonZoomLink">رابط حصة زووم</label><input id="lessonZoomLink" type="url" inputmode="url" placeholder="https://us06web.zoom.us/j/..." autocomplete="url"><p class="muted">الصقي رابط الاجتماع هنا. سيُحفظ مع الحصة ويظهر عند تعديلها.</p></div>
@@ -2232,14 +2232,8 @@ window.addEventListener("unhandledrejection",function(e){
       if(!token){showView("loginView");showStatus("سجلي الدخول إلى فضاء الأستاذة أولًا.","error");return;}
       showView("dailyLessonsView");
       try{
-        /* مدخل واحد ثابت: إظهار التقويم وإخفاء نموذج الإضافة القديم صراحةً. */
+        // فتح التقويم عبر دالة التنقل الموحدة فقط.
         setLessonPage("calendar",false);
-        const addPanel=document.getElementById("lessonAddPanel");
-        const listPanel=document.getElementById("lessonListPanel");
-        const calendarPanel=document.getElementById("lessonsCalendarPanel");
-        if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
-        if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
-        if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.setProperty("display","block","important");}
         loadDailyLessons().catch(err=>showStatus("تعذر تحميل التقويم: "+(err.message||"خطأ غير معروف"),"error"));
       }catch(err){
         showStatus("تعذر فتح حصص اليوم: "+(err&&err.message?err.message:"خطأ غير معروف"),"error");
@@ -3112,29 +3106,28 @@ window.addEventListener("unhandledrejection",function(e){
   // التنقل الموحد بين التقويم ونموذج إضافة/تعديل الحصة.
   function setLessonPage(page,shouldLoad=true){
     const addPanel=$("lessonAddPanel"),listPanel=$("lessonListPanel"),calendarPanel=$("lessonsCalendarPanel");
+    // نقطة تحكم واحدة: لا نترك أكثر من شاشة ظاهرة في الوقت نفسه.
     if(page==="add"){
       selectedLessonPage="add";
-      if(addPanel){addPanel.hidden=false;addPanel.style.setProperty("display","block","important");}
-      if(listPanel){listPanel.hidden=true;listPanel.style.setProperty("display","none","important");}
-      if(calendarPanel){calendarPanel.hidden=true;calendarPanel.style.setProperty("display","none","important");}
+      if(addPanel){addPanel.hidden=false;addPanel.style.removeProperty("display");}
+      if(listPanel){listPanel.hidden=true;listPanel.style.removeProperty("display");}
+      if(calendarPanel){calendarPanel.hidden=true;calendarPanel.style.removeProperty("display");}
       return;
     }
     if(page==="calendar"||page==="library"){
-      if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
-      if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
-      lessonCalendarDayPageOpen=false;
-      setLessonSubpage("calendar",false);
-      if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
-      if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
-      if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.setProperty("display","block","important");}
       selectedLessonPage="library";
+      lessonCalendarDayPageOpen=false;
+      if(addPanel){addPanel.hidden=true;addPanel.style.removeProperty("display");}
+      if(listPanel){listPanel.hidden=false;listPanel.style.removeProperty("display");}
+      if(calendarPanel){calendarPanel.hidden=false;calendarPanel.style.removeProperty("display");}
+      setLessonSubpage("calendar",false);
       if(shouldLoad)loadDailyLessons();
       return;
     }
-    if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
-    if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
-    setLessonSubpage(page,false);
     selectedLessonPage="library";
+    if(addPanel){addPanel.hidden=true;addPanel.style.removeProperty("display");}
+    if(listPanel){listPanel.hidden=false;listPanel.style.removeProperty("display");}
+    setLessonSubpage(page,false);
     if(shouldLoad)loadDailyLessons();
   }
   function setLessonHome(){
@@ -4364,54 +4357,7 @@ document.querySelectorAll(".category-back-button").forEach(function(button){
   },true);
 })();
 </script>
-<script id="tahadi-daily-lessons-click-recovery-v3">
-(function(){
-  if(window.tahadiDailyLessonsClickRecoveryV3)return;
-  window.tahadiDailyLessonsClickRecoveryV3=true;
-  window.addEventListener("click",function(event){
-    const target=event.target instanceof Element?event.target:null;
-    const button=target&&target.closest('[data-view="dailyLessonsView"]');
-    if(!button)return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const token=localStorage.getItem("tahadi_teacher_token");
-    const views=document.querySelectorAll(".view");
-    if(!token){
-      views.forEach(view=>{const active=view.id==="loginView";view.classList.toggle("active",active);view.style.display=active?"block":"none";view.setAttribute("aria-hidden",active?"false":"true");});
-      return;
-    }
-    const page=document.getElementById("dailyLessonsView");
-    if(!page)return;
-    views.forEach(view=>{const active=view===page;view.classList.toggle("active",active);view.style.display=active?"block":"none";view.setAttribute("aria-hidden",active?"false":"true");});
-    window.scrollTo({top:0,behavior:"smooth"});
-    const forceCalendarOnly=function(){
-      const add=document.getElementById("lessonAddPanel"),list=document.getElementById("lessonListPanel"),calendar=document.getElementById("lessonsCalendarPanel");
-      if(add){add.hidden=true;add.style.setProperty("display","none","important");}
-      if(list){list.hidden=false;list.style.setProperty("display","block","important");}
-      if(calendar){calendar.hidden=false;calendar.style.setProperty("display","block","important");}
-      const daily=document.getElementById("dailyLessonsList");if(daily)daily.hidden=true;
-    };
-    forceCalendarOnly();
-    if(typeof window.tahadiOpenDailyLessons==="function"){
-      Promise.resolve(window.tahadiOpenDailyLessons()).then(function(){
-        forceCalendarOnly();
-        [100,350,800].forEach(ms=>setTimeout(forceCalendarOnly,ms));
-      }).catch(function(error){
-        const status=document.getElementById("status");
-        if(status){status.textContent="تعذر تحميل الحصص: "+(error&&error.message?error.message:"خطأ غير معروف");status.className="status show error";}
-        forceCalendarOnly();
-      });
-    }else{
-      const add=document.getElementById("lessonAddPanel"),list=document.getElementById("lessonListPanel"),calendar=document.getElementById("lessonsCalendarPanel");
-      if(add)add.hidden=true;
-      if(list)list.hidden=false;
-      if(calendar)calendar.hidden=false;
-      const status=document.getElementById("status");
-      if(status){var boot=(window.__tahadiBootErrors||[])[0];status.textContent=boot?"توقف تشغيل وظائف المنصة بسبب خطأ: "+boot.message+" ("+boot.file.split("/").pop()+":"+boot.line+")":"لم يتم تحميل وظائف إدارة الحصص. لم يصل البرنامج إلى تهيئة الحصص؛ أغلقي الصفحة وافتحي الرابط من جديد.";status.className="status show error";}
-    }
-  },true);
-})();
-</script>
+
 
 <script id="tahadi-workspace-autosave-v1">
 /* حفظ مكان العمل تلقائيًا عند مغادرة الصفحة والعودة إليها */
@@ -4701,31 +4647,6 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
  function start(){scan(document);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1)scan(n);}))).observe(document.body,{childList:true,subtree:true});}
  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",start,{once:true});else start();
 })();
-
-/* إصلاح احتياطي مباشر لزر العودة إلى تقويم الحصص من نموذج الإضافة */
-document.addEventListener("click",function(event){
- const backButton=event.target instanceof Element?event.target.closest("#lessonEditorBackToCalendar"):null;
- if(!backButton)return;
- event.preventDefault();
- event.stopImmediatePropagation();
- try{
-  if(typeof window.__tahadiReturnToLessonCalendar==="function"){
-   window.__tahadiReturnToLessonCalendar().then(()=>window.scrollTo({top:0,behavior:"smooth"})).catch(error=>console.error("calendar navigation failed",error));
-  }else{
-   const add=document.getElementById("lessonAddPanel"),list=document.getElementById("lessonListPanel"),calendar=document.getElementById("lessonsCalendarPanel"),daily=document.getElementById("dailyLessonsList");
-   if(add)add.hidden=true;
-   if(list)list.hidden=false;
-   if(calendar){calendar.hidden=false;calendar.classList.add("calendar-clean-page");}
-   if(daily)daily.hidden=true;
-   const title=document.getElementById("lessonListTitle");if(title)title.textContent="📅 تقويم الحصص";
-   window.scrollTo({top:0,behavior:"smooth"});
-  }
- }catch(error){
-  console.error("lesson calendar back navigation failed",error);
-  const status=document.getElementById("lessonCalendarLoadStatus");
-  if(status){status.hidden=false;status.textContent="تعذر فتح التقويم. أعيدي المحاولة.";}
- }
-},true);
 
 /* تم إيقاف الجزء القديم غير المكتمل الخاص بالمساعد العلمي. */
 </script>
