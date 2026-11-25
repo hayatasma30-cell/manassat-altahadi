@@ -113,16 +113,32 @@
   if(!localOcrWorkerPromise){
    localOcrWorkerPromise=(async()=>{
     const Tesseract=await loadScriptOnce("https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js","Tesseract","tesseract");
-    return await Tesseract.createWorker("ara+eng",1,{logger:(m)=>{
+    const worker=await Tesseract.createWorker("ara+eng",1,{logger:(m)=>{
      if(m.status==="loading language traineddata")setStatus("جارٍ تحميل القارئ العربي المجاني لأول مرة…");
-     else if(m.status==="recognizing text")setStatus("القارئ المجاني يقرأ النص… "+Math.round((m.progress||0)*100)+"%");
+     else if(m.status==="recognizing text")setStatus("القارئ المجاني يحسّن قراءة العربية والرموز… "+Math.round((m.progress||0)*100)+"%");
     }});
+    // تهيئة محرك Tesseract للنصوص العربية ذات اتجاه الكتابة من اليمين إلى اليسار.
+    await worker.setParameters({
+     tessedit_pageseg_mode:"6",
+     preserve_interword_spaces:"1",
+     user_defined_dpi:"300"
+    });
+    return worker;
    })().catch(e=>{localOcrWorkerPromise=null;throw e;});
   }
   return await localOcrWorkerPromise;
  }
  async function recognizeCanvasLocally(canvas,worker){
-  const result=await worker.recognize(canvas);
+  // رفع التباين وإزالة الألوان الخفيفة قبل OCR لتحسين وضوح الحروف العربية.
+  const prepared=document.createElement("canvas");
+  prepared.width=canvas.width;prepared.height=canvas.height;
+  const ctx=prepared.getContext("2d",{willReadFrequently:true});
+  ctx.filter="grayscale(1) contrast(1.35)";
+  ctx.fillStyle="#fff";ctx.fillRect(0,0,prepared.width,prepared.height);
+  ctx.drawImage(canvas,0,0);
+  ctx.filter="none";
+  const result=await worker.recognize(prepared);
+  prepared.width=prepared.height=1;
   return String(result?.data?.text||"").trim();
  }
  async function extractImageLocally(file,worker){
@@ -132,7 +148,7 @@
    img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("تعذر فتح الصورة."));};
    img.src=url;
   });
-  const maxSide=1800,scale=Math.min(1,maxSide/Math.max(image.naturalWidth,image.naturalHeight));
+  const maxSide=2600,scale=Math.min(2,maxSide/Math.max(image.naturalWidth,image.naturalHeight));
   const canvas=document.createElement("canvas");
   canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));
   canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
@@ -152,7 +168,7 @@
   for(let n=1;n<=pageCount;n++){
    setStatus("القارئ المجاني يقرأ الصفحة "+n+" من "+pageCount+"…");
    const page=await pdf.getPage(n);
-   const viewport=page.getViewport({scale:1.35});
+   const viewport=page.getViewport({scale:1.9});
    const canvas=document.createElement("canvas");
    canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
    await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
