@@ -213,7 +213,7 @@ input,textarea,select{border-radius:12px}
 <section class="box" id="homeMenu"><h2>تعلّم اليوم</h2><div class="menu-grid">
 <button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=add&new=1'"><span class="menu-icon">✚</span><span class="menu-copy"><strong>إضافة معلومة</strong><small>إدخال معلومة علمية جديدة</small></span><span class="menu-chevron">‹</span></button>
 <button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=copy'"><span class="menu-icon">📋</span><span class="menu-copy"><strong>نسخ معلومة قديمة</strong><small>استعمال محتوى سابق وتعديله لمستوى آخر</small></span><span class="menu-chevron">‹</span></button>
-<button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=library'"><span class="menu-icon">📚</span><span class="menu-copy"><strong>مكتبة المعلومات</strong><small>عرض المعلومات وتعديلها</small></span><span class="menu-chevron">‹</span></button><button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=assistant'"><span class="menu-icon">🧠</span><span class="menu-copy"><strong>الدروس والمعلومات المحفوظة</strong><small>إضافة الدروس والاحتفاظ بها دائمًا في المنصة</small></span><span class="menu-chevron">‹</span></button>
+<button class="menu-btn" type="button" onclick="location.href='daily-science-admin.html?view=library'"><span class="menu-icon">📚</span><span class="menu-copy"><strong>مكتبة المعلومات</strong><small>عرض المعلومات وتعديلها</small></span><span class="menu-chevron">‹</span></button>
 </div></section>
 <section class="box hide" id="today"><h2>معلومة اليوم</h2><div id="todayContent">جارٍ التحميل…</div></section>
 <section class="box hide" id="editor">
@@ -241,39 +241,7 @@ input,textarea,select{border-radius:12px}
 <div class="toolbar editor-actions"><button class="btn" id="previewDraftBtn" type="button">👁 معاينة</button><button class="btn primary" id="saveBtn" type="button">حفظ ونشر</button><button class="btn hide" id="cancelEditBtn" type="button">إلغاء التعديل</button></div>
 <p id="status" class="status"></p></section>
 <section class="box hide" id="library"><h2>📚 مكتبة المعلومات العلمية</h2><div id="libraryStats" class="library-stats"></div><div class="library-tools"><input id="search" placeholder="ابحثي في العنوان أو الموضوع أو نص المعلومة"><details class="all-filters"><summary>⚙️ تصفية وترتيب المعلومات <span>▼</span></summary><div class="filter-panel"><label>الموضوع<select id="topicFilter"><option value="">كل الموضوعات</option></select></label><label>المستوى<select id="levelFilter"><option value="">كل المستويات</option></select></label><label>الفئة<select id="audienceFilter"><option value="">كل الفئات</option></select></label><label>الحالة<select id="statusFilter"><option value="">كل الحالات</option><option value="published">منشورة</option><option value="draft">مسودة / مخفية</option></select></label><label>الترتيب<select id="sortFilter"><option value="manual">الترتيب اليدوي</option><option value="newest">الأحدث أولًا</option><option value="oldest">الأقدم أولًا</option></select></label><button class="btn" id="clearLibraryFilters" type="button">مسح التصفية</button></div></details></div><div id="libraryTopicNav"></div><div id="libraryTopicBack" class="hide"><button class="btn" type="button" id="libraryBackTopics">← كل المواضيع</button><strong id="librarySelectedTopic"></strong></div><div id="libraryCount" class="library-count"></div><div id="cards"></div></section><div id="previewOverlay" class="preview-overlay hide" style="position:fixed;inset:0;background:#102d1fcc;z-index:9999;display:grid;place-items:center;padding:16px"><div style="width:min(680px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:18px;padding:18px"><h2 id="previewTitle"></h2><div class="item-meta" id="previewMeta"></div><h3>المعلومة العلمية</h3><p id="previewInfo" style="white-space:pre-wrap;line-height:1.9"></p><h3>السؤال</h3><p id="previewQuestion" style="white-space:pre-wrap;line-height:1.9"></p><button class="btn" type="button" id="closePreview">إغلاق المعاينة</button></div></div>
-<section class="box hide" id="scienceAssistantSection">
- <div class="knowledge-head">
-  <div><span class="knowledge-kicker">منصة التحدي · فضاء الأستاذة</span><h2>📚 قاعدة المعرفة العلمية</h2><p>مساحة خاصة لحفظ دروسك ومعلوماتك العلمية والرجوع إليها وقت الحاجة</p></div>
-  <button type="button" class="btn knowledge-back" data-science-home>← العودة إلى تعلّم اليوم</button>
- </div>
- <div id="knowledgeHome" class="knowledge-grid">
-  <a class="knowledge-tile" href="daily-science-admin.html?view=assistant&section=add"><span class="knowledge-icon">＋</span><strong>إضافة معلومة</strong><small>اكتبي درسًا أو معلومة جديدة واحفظيها في المنصة</small><span class="knowledge-arrow">←</span></a>
-  <a class="knowledge-tile" href="daily-science-admin.html?view=assistant&section=library"><span class="knowledge-icon">📚</span><strong>مكتبتي العلمية</strong><small>عرض الدروس والمعلومات المحفوظة وتعديلها</small><span class="knowledge-arrow">←</span></a>
-  <a class="knowledge-tile" href="daily-science-admin.html?view=assistant&section=search"><span class="knowledge-icon">🔎</span><strong>البحث في معلوماتي</strong><small>ابحثي عن معلومة داخل ما حفظتِه سابقًا</small><span class="knowledge-arrow">←</span></a>
- </div>
- <div id="knowledgeAddPage" class="knowledge-subpage hide">
-  <div class="knowledge-page-title"><button type="button" class="btn" data-knowledge-home>← القائمة</button><div><h3>إضافة معلومة علمية</h3><p>أدخلي المحتوى بنفسك، وستحفظه المنصة في قاعدة بياناتها</p></div></div>
-  <div class="knowledge-form-card">
-   <form id="scienceAssistantForm" class="science-ai-form">
-    <label for="scienceAssistantLevel">المستوى الدراسي</label><select id="scienceAssistantLevel"><option value="">كل المستويات</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي — جذع مشترك علوم وتكنولوجيا</option></select>
-    <label for="scienceAssistantTitle">عنوان الدرس أو المعلومة</label><input id="scienceAssistantTitle" maxlength="180" placeholder="مثال: أغذية النبات الأخضر">
-    <label for="scienceAssistantQuestion">المحتوى العلمي</label><textarea id="scienceAssistantQuestion" rows="9" maxlength="120000" placeholder="اكتبي أو الصقي هنا الدرس أو المعلومة العلمية التي تريدين حفظها..."></textarea>
-    <div class="knowledge-actions"><button class="primary" id="scienceAssistantSend" type="submit">حفظ في المنصة</button><button class="btn" type="button" id="scienceAssistantClear">معلومة جديدة</button></div>
-   </form><p id="scienceAssistantStatus" class="knowledge-status" role="status"></p>
-  </div>
- </div>
- <div id="knowledgeSearchPage" class="knowledge-subpage hide">
-  <div class="knowledge-page-title"><button type="button" class="btn" data-knowledge-home>← القائمة</button><div><h3>البحث في معلوماتي</h3><p>استرجعي ما حفظتِه سابقًا دون إعادة كتابة الدرس</p></div></div>
-  <div class="knowledge-form-card">
-   <form id="scienceKnowledgeSearchForm" class="science-ai-form"><label for="scienceKnowledgeSearchInput">ما المعلومة التي تريدين العثور عليها؟</label><input id="scienceKnowledgeSearchInput" maxlength="500" placeholder="مثال: ما دور الضوء في التركيب الضوئي؟" required><button class="primary" id="scienceKnowledgeSearchButton" type="submit">ابحث في معرفتي</button></form>
-   <div id="scienceKnowledgeSearchStatus" class="knowledge-status" role="status"></div><div id="scienceKnowledgeSearchResults" aria-live="polite"></div>
-  </div>
- </div>
- <div id="knowledgeLibraryPage" class="knowledge-subpage hide">
-  <div class="knowledge-page-title"><button type="button" class="btn" data-knowledge-home>← القائمة</button><div><h3>مكتبتي العلمية</h3><p>جميع الدروس والمعلومات التي حفظتِها في المنصة</p></div></div>
-  <div class="knowledge-library-count" id="knowledgeLibraryCount">المعلومات المحفوظة</div><div id="scienceAssistantMessages" class="science-ai-messages" aria-live="polite"><p class="muted">جارٍ تحميل المعلومات المحفوظة…</p></div>
- </div>
-</section>
+
 
 </main>
 <script>
@@ -493,7 +461,6 @@ function setPageView(){
  $("today").classList.toggle("hide",pageView!=="today");
  $("library").classList.toggle("hide",pageView!=="library");
  $("editor").classList.toggle("hide",pageView!=="add");
- $("scienceAssistantSection").classList.toggle("hide",pageView!=="assistant");
  
  if(pageView==="add")$("editor").classList.remove("hide");
  $("menuBtn").classList.toggle("hide",pageView==="home");
@@ -521,45 +488,5 @@ window.openDailyScienceEditor=function(){location.href="daily-science-admin.html
 <script src="./workspace-autosave.js" defer></script>
 <script src="./writing-tools.js" defer></script>
 <script src="./tahadi-dialogs.js" defer></script>
-<script>
-/* قاعدة المعرفة العلمية: إدخال وحفظ واستعراض فقط */
-(async()=>{
- const $=id=>document.getElementById(id),endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/teacher-science-assistant";
- let selectedMemory=null;
- async function call(action,extra={}){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);let r;try{r=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action,...extra}),signal:controller.signal});}catch(e){if(e.name==="AbortError")throw new Error("تأخر رد قاعدة البيانات أكثر من 15 ثانية. تحققي من الاتصال ثم اضغطي إعادة المحاولة.");throw new Error("تعذر الاتصال بقاعدة المعرفة. تحققي من الإنترنت ثم أعيدي المحاولة.");}finally{clearTimeout(timer);}let d;try{d=await r.json();}catch(_){throw new Error("وصل رد غير مفهوم من قاعدة البيانات.");}if(!r.ok||!d.ok)throw new Error(d.error||("تعذر تنفيذ العملية ("+r.status+")."));return d;}
- function renderMemoryList(items){const root=$("scienceAssistantMessages");root.replaceChildren();if(!items.length){const empty=document.createElement("p");empty.className="muted";empty.textContent="لا توجد معلومات محفوظة بعد. أضيفي أول درس من النموذج أعلاه.";root.appendChild(empty);return;}items.forEach(item=>{const card=document.createElement("button");card.type="button";card.className="science-rule-card";card.style.display="block";card.style.width="100%";card.style.textAlign="right";card.style.margin="8px 0";card.style.cursor="pointer";const title=document.createElement("strong");title.textContent=item.title||"معلومة علمية";const meta=document.createElement("div");meta.className="muted";const sourceLabel=item.source_type==="manual"?"معلومة أضفتِها":item.source_type==="exam"?"مرجع من مكتبة الاختبارات":item.source_type==="resource"?"درس من المكتبة العلمية":"مرجع محفوظ";meta.textContent=(item.level||"كل المستويات")+" · "+sourceLabel+" · "+new Date(item.updated_at||item.created_at||Date.now()).toLocaleDateString("ar-DZ");const excerpt=document.createElement("p");const body=String(item.content_text||"");excerpt.textContent=body.slice(0,220)+(body.length>220?"…":"");card.append(title,meta,excerpt);card.addEventListener("click",()=>{location.href="daily-science-admin.html?view=assistant&section=add&edit="+encodeURIComponent(item.id);});root.appendChild(card);});}
- async function loadMemoryList(){const root=$("scienceAssistantMessages");root.textContent="جارٍ تحميل الدروس والمعلومات المحفوظة…";try{const d=await call("list_knowledge");renderMemoryList(d.items||[]);if($("scienceAssistantStatus"))$("scienceAssistantStatus").textContent="قاعدة المعرفة محدّثة. عدد العناصر المحفوظة: "+(d.items||[]).length+".";}catch(e){root.replaceChildren();const box=document.createElement("div");box.style.cssText="padding:16px;border:1px solid #e4c8b9;border-radius:14px;background:#fff8f3";const msg=document.createElement("p");msg.textContent=e.message||"تعذر تحميل المعلومات المحفوظة.";const retry=document.createElement("button");retry.type="button";retry.className="primary";retry.textContent="إعادة تحميل المعلومات";retry.addEventListener("click",loadMemoryList);box.append(msg,retry);root.appendChild(box);if($("scienceAssistantStatus"))$("scienceAssistantStatus").textContent="لم يكتمل الاتصال بقاعدة المعرفة. معلوماتك المحفوظة لم تُحذف.";}}
- async function searchKnowledge(query){
-  const status=$("scienceKnowledgeSearchStatus"),root=$("scienceKnowledgeSearchResults"),button=$("scienceKnowledgeSearchButton");
-  status.textContent="جارٍ البحث داخل الدروس والمعلومات المحفوظة…";root.replaceChildren();button.disabled=true;
-  try{
-   const d=await call("search_knowledge",{query,level:""});
-   status.textContent=d.note||"اكتمل البحث.";
-   if(!d.results?.length){const p=document.createElement("p");p.className="muted";p.textContent="لم نعثر على مقطع مطابق. جرّبي كلمات أخرى أو أضيفي الدرس إلى قاعدة المعرفة.";root.appendChild(p);return;}
-   d.results.forEach(item=>{
-    const card=document.createElement("article");card.className="science-rule-card";card.style.cssText="margin:10px 0;padding:14px;border:1px solid #dce8d9;border-radius:14px;background:#fff";
-    const title=document.createElement("strong");title.textContent=item.title||"معلومة علمية";
-    const meta=document.createElement("p");meta.className="muted";meta.textContent=(item.level||"كل المستويات")+" · "+(item.source_type==="manual"?"معلومة محفوظة يدويًا":"مرجع محفوظ");
-    const excerpt=document.createElement("p");excerpt.style.cssText="white-space:pre-wrap;line-height:1.9;margin-bottom:0";excerpt.textContent=item.excerpt||"";
-    card.append(title,meta,excerpt);root.appendChild(card);
-   });
-  }catch(e){status.textContent=e.message||"تعذر البحث في قاعدة المعرفة.";}
-  finally{button.disabled=false;}
- }
- $("scienceKnowledgeSearchForm")?.addEventListener("submit",e=>{e.preventDefault();const q=$("scienceKnowledgeSearchInput").value.trim();if(q.length>=2)searchKnowledge(q);});
- function clearEntry(){selectedMemory=null;$("scienceAssistantTitle").value="";$("scienceAssistantLevel").value="";$("scienceAssistantQuestion").value="";$("scienceAssistantSend").textContent="حفظ في المنصة";$("scienceAssistantClear").textContent="معلومة جديدة";$("scienceAssistantStatus").textContent="";}
- $("scienceAssistantForm")?.addEventListener("submit",async e=>{e.preventDefault();const button=$("scienceAssistantSend"),status=$("scienceAssistantStatus"),titleInput=$("scienceAssistantTitle"),q=$("scienceAssistantQuestion");button.disabled=true;try{const title=titleInput.value.trim(),content=q.value.trim();if(title.length<2){status.textContent="اكتبي عنوان الدرس أو المعلومة أولًا.";return;}if(content.length<3){status.textContent="اكتبي أو الصقي محتوى المعلومة التي تريدين حفظها.";return;}if(selectedMemory){await call("update_knowledge",{id:selectedMemory.id,title,level:$("scienceAssistantLevel").value,content_text:content});status.textContent="تم تحديث المعلومة في قاعدة بيانات المنصة بنجاح.";}else{await call("save_knowledge",{title,level:$("scienceAssistantLevel").value,content_text:content});status.textContent="تم حفظ المعلومة في قاعدة بيانات المنصة. ستبقى محفوظة بعد الخروج وتحديث الصفحة.";}clearEntry();await loadMemoryList();}catch(err){status.textContent=err.message||"تعذر حفظ المعلومة.";}finally{button.disabled=false;}});
- $("scienceAssistantClear")?.addEventListener("click",async()=>{if(selectedMemory){if(!confirm("هل تريدين حذف هذه المعلومة نهائيًا من قاعدة بيانات المنصة؟"))return;const b=$("scienceAssistantClear");b.disabled=true;try{await call("delete_knowledge",{id:selectedMemory.id});clearEntry();$("scienceAssistantStatus").textContent="تم حذف المعلومة.";await loadMemoryList();}catch(e){$("scienceAssistantStatus").textContent=e.message||"تعذر حذف المعلومة.";}finally{b.disabled=false;}return;}clearEntry();});
- document.querySelectorAll("[data-science-home]").forEach(b=>b.addEventListener("click",()=>{location.href="daily-science-admin.html?view=library";}));
- if(new URLSearchParams(location.search).get("view")==="assistant"){
-  const params=new URLSearchParams(location.search),section=params.get("section")||"home";
-  $("knowledgeHome").classList.toggle("hide",section!=="home");
-  $("knowledgeAddPage").classList.toggle("hide",section!=="add");
-  $("knowledgeSearchPage").classList.toggle("hide",section!=="search");
-  $("knowledgeLibraryPage").classList.toggle("hide",section!=="library");
-  document.querySelectorAll("[data-knowledge-home]").forEach(b=>b.addEventListener("click",()=>{location.href="daily-science-admin.html?view=assistant";}));
-  if(section==="library"||section==="add"){try{await loadMemoryList();const editId=params.get("edit");if(section==="add"&&editId){const d=await call("list_knowledge");const item=(d.items||[]).find(x=>String(x.id)===editId);if(item){selectedMemory=item;$("scienceAssistantTitle").value=item.title||"";$("scienceAssistantLevel").value=item.level||"";$("scienceAssistantQuestion").value=item.content_text||"";$("scienceAssistantSend").textContent="حفظ التعديل";$("scienceAssistantClear").textContent="حذف المحدد";}}}catch(e){if($("scienceAssistantStatus"))$("scienceAssistantStatus").textContent=e.message||"تعذر تحميل قاعدة المعرفة.";}}
- }
-})();
-</script>
+
 </body></html>
