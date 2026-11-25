@@ -673,6 +673,9 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 @media(max-width:380px){#sessionActions{gap:7px!important}#sessionActions #logoutBtn,#sessionActions #teacherPushEnable{font-size:11px!important;padding:8px 5px!important}}
 .calendar-lesson-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px}.calendar-lesson-primary-actions{display:flex;flex:1 1 100%;gap:8px}.calendar-lesson-primary-actions button{flex:1;min-width:0}.calendar-lesson-actions>[data-calendar-edit]{flex:1 1 48%}.calendar-lesson-more{flex:1 1 48%}.calendar-lesson-more>summary{list-style:none;cursor:pointer;text-align:center;padding:12px;border:1px solid #d7e2d5;border-radius:12px;background:#f4f8f1;font-weight:700}.calendar-lesson-more>summary::-webkit-details-marker{display:none}.calendar-lesson-more-menu{display:grid;gap:7px;padding:9px;margin-top:7px;border:1px solid #d7e2d5;border-radius:12px;background:#fff}.calendar-lesson-more-menu button{width:100%;margin:0}
 /* نموذج حصصي اليومية: تصميم مضغوط وإصلاح إظهار التكرار */
+/* احترام حالة الإخفاء رغم display:block!important في تصميم المحرر */
+#lessonAddPanel[hidden]{display:none!important}
+
 #lessonAddPanel.lesson-editor{display:block!important;padding:16px!important;border:1px solid #e0e9dc!important;border-radius:20px!important;background:linear-gradient(180deg,#fff 0%,#fbfdf9 100%)!important}
 .lesson-editor-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 14px;padding-bottom:11px;border-bottom:1px solid #e7eee3;color:#174b2c}
 .lesson-editor-heading strong{font-size:1.05rem}.lesson-editor-heading span{font-size:.78rem;color:#718073}
@@ -1813,7 +1816,7 @@ input,select,textarea{max-width:100%;box-sizing:border-box}
 <div class="panel">
 
 <div class="lesson-calendar-entry-heading"><p class="muted">جميع الحصص تُدار من هذا التقويم فقط.</p></div>
-<div id="lessonAddPanel" class="lesson-editor">
+<div id="lessonAddPanel" class="lesson-editor" hidden>
 <div class="lesson-editor-heading"><strong>📝 إضافة حصة</strong><button id="lessonEditorBackToCalendar" type="button" class="secondary">← العودة إلى التقويم</button><span>خطوات بسيطة لإضافة الحصة أو تعديلها</span></div><div class="lesson-wizard-progress" id="lessonWizardProgress"><div class="lesson-wizard-step active"><b>1</b><span>الموعد</span></div><i></i><div class="lesson-wizard-step"><b>2</b><span>التفاصيل</span></div><i></i><div class="lesson-wizard-step"><b>3</b><span>التكرار والسعر</span></div><i></i><div class="lesson-wizard-step"><b>4</b><span>المراجعة</span></div></div><div class="lesson-wizard-title" id="lessonWizardTitle">الخطوة 1 من 4 · تحديد الموعد</div>
 <div class="lesson-form-grid">
 <div data-step="0" class="lesson-field lesson-field-full"><label for="lessonModeSelect">طريقة التدريس</label><select id="lessonModeSelect"><option value="zoom">زووم</option><option value="in_person" selected>حضوري</option></select><p id="lessonModeHint" class="muted">تسجل الحصة ضمن حصص الزووم.</p></div><div id="lessonZoomLinkWrap" data-step="0" class="lesson-field lesson-field-full" hidden><label for="lessonZoomLink">رابط حصة زووم</label><input id="lessonZoomLink" type="url" inputmode="url" placeholder="https://us06web.zoom.us/j/..." autocomplete="url"><p class="muted">الصقي رابط الاجتماع هنا. سيُحفظ مع الحصة ويظهر عند تعديلها.</p></div>
@@ -3102,13 +3105,13 @@ window.addEventListener("unhandledrejection",function(e){
     const addPanel=$("lessonAddPanel"),listPanel=$("lessonListPanel");
     if(page==="add"){
       selectedLessonPage="add";
-      if(addPanel)addPanel.hidden=false;
-      if(listPanel)listPanel.hidden=true;
+      if(addPanel){addPanel.hidden=false;addPanel.style.setProperty("display","block","important");}
+      if(listPanel){listPanel.hidden=true;listPanel.style.setProperty("display","none","important");}
       return;
     }
     if(page==="calendar"||page==="library"){
-      if(addPanel)addPanel.hidden=true;
-      if(listPanel)listPanel.hidden=false;
+      if(addPanel){addPanel.hidden=true;addPanel.style.setProperty("display","none","important");}
+      if(listPanel){listPanel.hidden=false;listPanel.style.setProperty("display","block","important");}
       lessonCalendarDayPageOpen=false;
       setLessonSubpage("calendar",false);
       selectedLessonPage="library";
