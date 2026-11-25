@@ -98,11 +98,12 @@
  async function recognizeImage(blob){
   const img=await createImageBitmap(blob);
   const longest=Math.max(img.width,img.height);
-  const scale=Math.min(1.8,1800/longest);
+  const scale=Math.min(2.4,2400/longest);
   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));
   const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(img,0,0,canvas.width,canvas.height);img.close();
   const worker=await getOcrWorker();
+  await worker.setParameters({preserve_interword_spaces:'1',tessedit_pageseg_mode:'6'});
   const result=await worker.recognize(canvas);
   return result.data.text||'';
  }
@@ -113,7 +114,7 @@
   for(let i=1;i<=pdf.numPages;i++){
    setStatus('معالجة الصفحة '+i+' من '+pdf.numPages+'…');
    const page=await pdf.getPage(i),content=await page.getTextContent();let text=content.items.map(x=>x.str).join(' ').trim();
-   if(text.length<25){const vp=page.getViewport({scale:1.65}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));}
+   if(text.length<25){const vp=page.getViewport({scale:2.0}),canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;text=await recognizeImage(await new Promise(resolve=>canvas.toBlob(resolve,'image/png')));}
    out+='\n\n— الصفحة '+i+' —\n'+text;
   }return out.trim();
  }
