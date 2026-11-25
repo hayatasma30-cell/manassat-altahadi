@@ -3125,6 +3125,13 @@ window.addEventListener("unhandledrejection",function(e){
     showView("dailyLessonsView");
     setLessonPage("calendar");
   }
+  // دالة عامة للعودة للتقويم من زر نموذج الحصة.
+  window.__tahadiReturnToLessonCalendar=async function(){
+    showView("dailyLessonsView");
+    setLessonPage("calendar");
+    await loadDailyLessons();
+    return true;
+  };
   document.querySelectorAll("[data-lesson-subpage]").forEach(btn=>btn.addEventListener("click",()=>setLessonSubpage(btn.dataset.lessonSubpage)));
   window.tahadiGetLessonWorkspaceState=()=>({subpage:selectedLessonSubpage||"all",selectedDate:lessonCalendarSelectedDate||"",cursor:lessonCalendarCursor?lessonCalendarCursor.toISOString():"",calendarView:lessonCalendarView||"month",dayPageOpen:!!lessonCalendarDayPageOpen});
   window.tahadiRestoreLessonSubpage=(page,date,cursor,calendarView,dayPageOpen)=>{if(date)lessonCalendarSelectedDate=date;if(cursor){const parsed=new Date(cursor);if(!Number.isNaN(parsed.getTime()))lessonCalendarCursor=parsed;}if(["month","week","day"].includes(calendarView))lessonCalendarView=calendarView;lessonCalendarDayPageOpen=!!dayPageOpen;setLessonSubpage(page||"all");};
@@ -4681,10 +4688,17 @@ document.addEventListener("click",function(event){
  event.preventDefault();
  event.stopImmediatePropagation();
  try{
-  if(typeof showView==="function")showView("dailyLessonsView");
-  if(typeof setLessonPage==="function")setLessonPage("calendar");
-  else if(typeof setLessonHome==="function")setLessonHome();
-  window.scrollTo({top:0,behavior:"smooth"});
+  if(typeof window.__tahadiReturnToLessonCalendar==="function"){
+   window.__tahadiReturnToLessonCalendar().then(()=>window.scrollTo({top:0,behavior:"smooth"})).catch(error=>console.error("calendar navigation failed",error));
+  }else{
+   const add=document.getElementById("lessonAddPanel"),list=document.getElementById("lessonListPanel"),calendar=document.getElementById("lessonsCalendarPanel"),daily=document.getElementById("dailyLessonsList");
+   if(add)add.hidden=true;
+   if(list)list.hidden=false;
+   if(calendar){calendar.hidden=false;calendar.classList.add("calendar-clean-page");}
+   if(daily)daily.hidden=true;
+   const title=document.getElementById("lessonListTitle");if(title)title.textContent="📅 تقويم الحصص";
+   window.scrollTo({top:0,behavior:"smooth"});
+  }
  }catch(error){
   console.error("lesson calendar back navigation failed",error);
   const status=document.getElementById("lessonCalendarLoadStatus");
