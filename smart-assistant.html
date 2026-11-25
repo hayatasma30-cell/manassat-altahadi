@@ -140,10 +140,27 @@
   const item=libraryCache.find(x=>x.id===id);if(!item)return;
   $('topicTitle').value=item.title||'';$('topicLevel').value=item.level||'';$('topicText').value=item.topic_text||'';$('solutionText').value=item.solution_text||'';currentLibraryId=item.id;show('editTopicPage');
  }
+ async function migrateLegacyLocalLibrary(existing){
+  const marker='tahadi_smart_assistant_library_migrated_v1';
+  if(localStorage.getItem(marker)==='1')return existing;
+  let old=[];try{const raw=JSON.parse(localStorage.getItem('tahadi_smart_assistant_library_v1')||'[]');if(Array.isArray(raw))old=raw;}catch(_){}
+  try{const draft=JSON.parse(localStorage.getItem('tahadi_smart_assistant_draft_v1')||'null');if(draft&&(draft.topic||draft.solution))old.push(draft);}catch(_){}
+  for(const item of old){
+   const title=String(item.title||'موضوع دون عنوان').trim().slice(0,180)||'موضوع دون عنوان';
+   const level=String(item.level||'').slice(0,100);
+   const topicText=String(item.topic_text??item.topic??'');
+   const solutionText=String(item.solution_text??item.solution??'');
+   if(existing.some(x=>x.title===title&&x.topic_text===topicText&&x.solution_text===solutionText))continue;
+   const saved=await libraryRequest('save',{title,level,topic_text:topicText,solution_text:solutionText});
+   existing.unshift(saved.item);
+  }
+  localStorage.setItem(marker,'1');
+  return existing;
+ }
  async function renderLibrary(){
   const host=$('libraryList');if(!host)return;host.innerHTML='<p class="muted">جارٍ تحميل مكتبتك من Supabase…</p>';
   try{
-   const result=await libraryRequest('list');libraryCache=result.items||[];const items=libraryCache;host.innerHTML='';
+   let result=await libraryRequest('list');libraryCache=result.items||[];libraryCache=await migrateLegacyLocalLibrary(libraryCache);if(localStorage.getItem('tahadi_smart_assistant_library_migrated_v1')==='1'){result=await libraryRequest('list');libraryCache=result.items||[];}const items=libraryCache;host.innerHTML='';
    $('libraryStatus').textContent='مكتبتك متزامنة مع Supabase ويمكنك الوصول إليها بعد تسجيل الدخول من أجهزتك.';
    if(!items.length){host.innerHTML='<div class="hint">لم تحفظي أي موضوع بعد. ابدئي بموضوع جديد، ثم اضغطي «حفظ المسودة» لإضافته إلى مكتبتك السحابية.</div>';return;}
    items.forEach(item=>{
