@@ -351,7 +351,18 @@ body.embed .grade-state{color:#65756a;font-size:12px}
   <button type="button" class="challenge-action-card" id="openChallengeAnswers"><span class="challenge-action-icon">📝</span><strong>الإجابات والنتائج</strong><small>اختيار التحدي ومراجعة مشاركات التلاميذ وتصحيحها</small></button>
  </div>
 </section>
-<section class="panel hidden" id="editor"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px"><h2 id="formTitle" style="margin:0">إعداد تحدٍّ جديد</h2><button class="btn alt" type="button" id="backToLibrary">← العودة إلى المكتبة</button></div><div class="grid"><div><label>عنوان التحدي</label><input id="title" maxlength="180" placeholder="مثال: تحدي الزلازل"></div><div><label>المستوى المستهدف</label><select id="level"><option>الكل</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select></div><div><label for="starts">موعد ظهور الاختبار للتلاميذ</label><input id="starts" type="datetime-local"><small class="muted">لن يظهر الاختبار في فضاء التلميذ قبل هذا الموعد، حتى بعد نشره.</small></div><div><label for="ends">موعد انتهاء المشاركة (اختياري)</label><input id="ends" type="datetime-local"><small class="muted">بعد هذا الموعد يُخفى الاختبار ويتوقف استقبال الإجابات.</small></div><div><label>المدة بالدقائق</label><input id="duration" type="number" min="1" max="180" value="10"></div></div><label for="description">تعليمات التحدي</label><textarea id="description" rows="5" dir="rtl" placeholder="اكتبي تعليمات التحدي هنا… يمكنك كتابة عدة أسطر، وسيزداد ارتفاع المربع تلقائياً."></textarea><p class="muted" style="margin:5px 2px 12px">اكتبي التعليمات براحتك، ويمكنك تقسيمها إلى أسطر ونقاط.</p><div class="row" style="justify-content:space-between;margin-top:16px"><h2 style="margin:0">الأسئلة</h2></div><div id="questions"></div><div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn alt" type="button" id="addQBottom">＋ إضافة سؤال آخر</button></div><div class="row"><button class="btn" id="saveBtn">حفظ المسودة</button><button class="btn alt hidden" id="publishBtn">نشر التحدي</button><button class="btn warn hidden" id="cancelEdit">إلغاء التعديل</button></div></section>
+<section class="panel hidden" id="editor"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px"><h2 id="formTitle" style="margin:0">إعداد تحدٍّ جديد</h2><button class="btn alt" type="button" id="backToLibrary">← العودة إلى المكتبة</button></div><div class="grid"><div><label>عنوان التحدي</label><input id="title" maxlength="180" placeholder="مثال: تحدي الزلازل"></div><div><label>المستوى المستهدف</label><select id="level"><option>الكل</option><option>السنة الأولى متوسط</option><option>السنة الثانية متوسط</option><option>السنة الثالثة متوسط</option><option>السنة الرابعة متوسط</option><option>السنة الأولى ثانوي</option></select></div><div><label for="starts">موعد ظهور الاختبار للتلاميذ</label><input id="starts" type="datetime-local"><small class="muted">لن يظهر الاختبار في فضاء التلميذ قبل هذا الموعد، حتى بعد نشره.</small></div><div><label for="ends">موعد انتهاء المشاركة (اختياري)</label><input id="ends" type="datetime-local"><small class="muted">بعد هذا الموعد يُخفى الاختبار ويتوقف استقبال الإجابات.</small></div><div><label>المدة بالدقائق</label><input id="duration" type="number" min="1" max="180" value="10"></div></div><label for="description">تعليمات التحدي</label><textarea id="description" rows="5" dir="rtl" placeholder="اكتبي تعليمات التحدي هنا… يمكنك كتابة عدة أسطر، وسيزداد ارتفاع المربع تلقائياً."></textarea><p class="muted" style="margin:5px 2px 12px">اكتبي التعليمات براحتك، ويمكنك تقسيمها إلى أسطر ونقاط.</p>
+<div id="savedKnowledgeSource" class="panel" style="margin:14px 0;padding:14px;border:1px solid #d8e8d6;background:#f6fbf5">
+ <h3 style="margin-top:0">📚 الاستفادة من معلوماتك المحفوظة</h3>
+ <p class="muted">اختاري درسًا سبق أن أدخلتِه في قاعدة المعرفة، لإضافته كسند إلى هذا التحدي. لا تحتاجين إلى إعادة كتابته.</p>
+ <div class="row" style="gap:8px;align-items:center">
+  <select id="savedKnowledgePicker" style="flex:1;min-width:180px"><option value="">تحميل الدروس المحفوظة…</option></select>
+  <button type="button" class="btn alt" id="refreshSavedKnowledge">تحديث القائمة</button>
+ </div>
+ <div id="savedKnowledgePreview" class="muted" style="white-space:pre-wrap;line-height:1.8;margin:10px 0;max-height:220px;overflow:auto">اختاري درسًا لعرض محتواه هنا.</div>
+ <button type="button" class="btn" id="insertSavedKnowledge">إضافة الدرس إلى سند التحدي</button>
+ <p id="savedKnowledgeStatus" class="muted" role="status"></p>
+</div><div class="row" style="justify-content:space-between;margin-top:16px"><h2 style="margin:0">الأسئلة</h2></div><div id="questions"></div><div class="row" style="justify-content:flex-start;margin-top:12px"><button class="btn alt" type="button" id="addQBottom">＋ إضافة سؤال آخر</button></div><div class="row"><button class="btn" id="saveBtn">حفظ المسودة</button><button class="btn alt hidden" id="publishBtn">نشر التحدي</button><button class="btn warn hidden" id="cancelEdit">إلغاء التعديل</button></div></section>
 <section class="panel active-panel embed-active" id="list">
 <div class="row library-heading" style="justify-content:space-between"><h2>مكتبة التحديات</h2><span class="library-caption">اختاري المستوى الدراسي</span></div>
 <div id="challengeLibraryLevels" class="challenge-level-grid"><button type="button" class="challenge-level-card" data-challenge-level="السنة الأولى متوسط"><span>📘</span><strong>السنة الأولى متوسط</strong><small id="challengeLevelCount1">التحديات</small></button><button type="button" class="challenge-level-card" data-challenge-level="السنة الثانية متوسط"><span>📗</span><strong>السنة الثانية متوسط</strong><small id="challengeLevelCount2">التحديات</small></button><button type="button" class="challenge-level-card" data-challenge-level="السنة الثالثة متوسط"><span>📙</span><strong>السنة الثالثة متوسط</strong><small id="challengeLevelCount3">التحديات</small></button><button type="button" class="challenge-level-card" data-challenge-level="السنة الرابعة متوسط"><span>📕</span><strong>السنة الرابعة متوسط</strong><small id="challengeLevelCount4">التحديات</small></button></div>
@@ -376,6 +387,44 @@ const API="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/daily-challenge
 const $=id=>document.getElementById(id),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function autoGrowDescription(){const el=$("description");if(!el)return;el.style.height="auto";el.style.height=Math.max(150,el.scrollHeight+4)+"px";} $("description").addEventListener("input",autoGrowDescription);function message(t){const box=$("message");box.textContent=t;box.classList.remove("hidden");box.setAttribute("role","status");box.setAttribute("aria-live","polite");clearTimeout(window.__challengeMessageTimer);window.__challengeMessageTimer=setTimeout(()=>box.classList.add("hidden"),7000);}
 async function call(action,data={}){if(!token)throw Error("جلسة الأستاذة غير موجودة. ارجعي إلى فضاء الأستاذة وسجّلي الدخول من جديد.");const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),12000);let response;try{response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzkyNDIyNDc4LCJleHAiOjIxMDc5OTg0Nzh9.uEnFziN-EAu0t5F3tox639Tg3jzEMUhkuVrhD4tzvbE","Authorization":"Bearer "+token},body:JSON.stringify({action,...data}),signal:controller.signal});}catch(e){if(e.name==="AbortError")throw Error("انتهت مهلة الاتصال بقاعدة البيانات بعد 12 ثانية. تحققي من الإنترنت ثم أعيدي المحاولة.");throw e;}finally{clearTimeout(timer);}let d;try{d=await response.json();}catch(_){throw Error("وصل رد غير مفهوم من الخادم. أعيدي المحاولة.");}if(!response.ok||!d.ok)throw Error(d.error||"تعذر تنفيذ العملية.");return d}
+
+/* ربط محرر التحديات بقاعدة المعرفة العلمية المحفوظة */
+(()=>{
+ const picker=document.getElementById("savedKnowledgePicker"),preview=document.getElementById("savedKnowledgePreview"),status=document.getElementById("savedKnowledgeStatus");
+ const endpoint="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/teacher-science-assistant";
+ let knowledgeItems=[];
+ async function loadSavedKnowledge(){
+  if(!picker)return;
+  const refresh=document.getElementById("refreshSavedKnowledge");if(refresh)refresh.disabled=true;
+  picker.innerHTML='<option value="">جارٍ تحميل الدروس المحفوظة…</option>';status.textContent="";
+  try{
+   const response=await fetch(endpoint,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"list_knowledge"})});
+   const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل قاعدة المعرفة.");
+   knowledgeItems=Array.isArray(data.items)?data.items:[];
+   picker.innerHTML='<option value="">اختاري درسًا محفوظًا…</option>'+knowledgeItems.map(x=>'<option value="'+esc(x.id)+'">'+esc((x.title||"معلومة علمية")+" — "+(x.level||"كل المستويات"))+'</option>').join("");
+   status.textContent=knowledgeItems.length?"تم تحميل "+knowledgeItems.length+" معلومة محفوظة.":"لا توجد معلومات محفوظة بعد. أضيفي معلوماتك أولًا من صفحة قاعدة المعرفة.";
+   preview.textContent="اختاري درسًا لعرض محتواه هنا.";
+  }catch(e){picker.innerHTML='<option value="">تعذر تحميل الدروس</option>';status.textContent=e.message||"تعذر تحميل قاعدة المعرفة.";}
+  finally{if(refresh)refresh.disabled=false;}
+ }
+ picker?.addEventListener("change",()=>{
+  const item=knowledgeItems.find(x=>String(x.id)===picker.value);
+  preview.textContent=item?((item.title||"معلومة علمية")+"\n"+(item.level||"كل المستويات")+"\n\n"+(item.content_text||"")):"اختاري درسًا لعرض محتواه هنا.";
+ });
+ document.getElementById("refreshSavedKnowledge")?.addEventListener("click",loadSavedKnowledge);
+ document.getElementById("insertSavedKnowledge")?.addEventListener("click",()=>{
+  const item=knowledgeItems.find(x=>String(x.id)===picker.value);if(!item){status.textContent="اختاري درسًا أولًا.";return;}
+  const description=document.getElementById("description");if(!description)return;
+  const source="السند العلمي — "+(item.title||"معلومة علمية")+" ("+(item.level||"كل المستويات")+")\n"+(item.content_text||"");
+  if(description.value.includes(source)){status.textContent="هذا السند مُضاف بالفعل إلى تعليمات التحدي.";return;}
+  description.value=(description.value.trim()?description.value.trim()+"\n\n":"")+source;
+  description.dispatchEvent(new Event("input",{bubbles:true}));
+  if(typeof autoGrowDescription==="function")autoGrowDescription();
+  status.textContent="أُضيف الدرس المحفوظ إلى سند التحدي. يمكنك الآن إعداد الأسئلة بالاعتماد عليه.";
+ });
+ loadSavedKnowledge();
+})();
+
 function questionMarkup(q,i){
  const type=q.type==="written"?"written":"mcq";
  const options=(q.options||[]);
