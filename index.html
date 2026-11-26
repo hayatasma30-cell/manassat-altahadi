@@ -3688,7 +3688,12 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     window.scrollTo({top:0,behavior:"instant"});
     const root=$("electronicTestManageContent"),s=r.quiz_settings||{duration_minutes:60,max_attempts:2,show_results:true,shuffle_questions:false};
     root.replaceChildren();
-    const heading=document.createElement("h3");heading.className="quiz-manage-kicker";heading.textContent="⚙️ إعدادات الاختبار";root.appendChild(heading);
+    const nav=document.createElement("div");nav.className="quiz-section-nav";nav.innerHTML='<button type="button" data-q-page="settings">⚙️ إعدادات الاختبار</button><button type="button" data-q-page="questions">✏️ تعديل الأسئلة</button><button type="button" data-q-page="preview">👁️ عرض الأسئلة والإجابات</button><button type="button" data-q-page="trial">🧪 تجربة الاختبار</button><button type="button" data-q-page="results">📊 نتائج التلاميذ</button>';root.appendChild(nav);
+    const pages={};["settings","questions","preview","trial","results"].forEach(key=>{const section=document.createElement("section");section.className="quiz-section-page";section.dataset.qSection=key;section.hidden=key!=="settings";root.appendChild(section);pages[key]=section;});
+    const showQuizSection=key=>{Object.entries(pages).forEach(([name,section])=>{section.hidden=name!==key;});nav.querySelectorAll("[data-q-page]").forEach(btn=>btn.classList.toggle("active",btn.dataset.qPage===key));root.querySelectorAll(".quiz-section-back").forEach(btn=>btn.remove());if(key!=="settings"){const back=document.createElement("button");back.type="button";back.className="secondary quiz-section-back";back.textContent="← العودة إلى قائمة وظائف الاختبار";back.addEventListener("click",()=>showQuizSection("settings"));pages[key].prepend(back);}saveTeacherPagePosition();window.scrollTo({top:0,behavior:"instant"});};
+    nav.querySelectorAll("[data-q-page]").forEach(btn=>btn.addEventListener("click",()=>{const key=btn.dataset.qPage;if(key==="results"){showQuizSection("results");const box=pages.results;box.querySelectorAll(".quiz-results-link").forEach(x=>x.remove());const jump=document.createElement("button");jump.type="button";jump.className="primary quiz-results-link";jump.textContent="فتح صفحة نتائج التلاميذ";jump.addEventListener("click",()=>{showElectronicTestPage("results");});box.append("هنا يمكنك الانتقال إلى سجل الإجابات والمحاولات المحفوظة.",jump);return;}if(key==="preview"||key==="trial"){showQuizSection(key);const box=pages[key];box.querySelectorAll(".quiz-open-link").forEach(x=>x.remove());const link=document.createElement("a");link.className="quiz-open-link";link.target="_blank";link.rel="noopener";link.href=r.resource_url||"#";if(key==="preview"){const u=new URL(r.resource_url,location.href);u.searchParams.set("teacher_preview","1");link.href=u.toString();link.textContent="👁️ فتح عرض الأسئلة مع الإجابات الصحيحة";}else{const u=new URL(r.resource_url,location.href);u.searchParams.set("teacher_trial","1");link.href=u.toString();link.textContent="🧪 بدء التجربة كالتلميذ";}box.appendChild(link);return;}showQuizSection(key);}));
+
+    const heading=document.createElement("h3");heading.className="quiz-manage-kicker";heading.textContent="⚙️ إعدادات الاختبار";pages.settings.appendChild(heading);
     if(String(r.resource_url||"").includes("test-ghaws-3am.html")){
       const editor=document.createElement("section");editor.className="panel";editor.style.cssText="margin:18px 0;padding:16px;border:1px solid #cbdcc5;border-radius:16px;background:#fbfff9";
       const eh=document.createElement("h3");eh.textContent="✏️ تعديل أسئلة الاختبار";editor.appendChild(eh);
@@ -3698,7 +3703,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
       const controls=document.createElement("div");controls.style.cssText="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px";
       const add=document.createElement("button");add.className="secondary";add.textContent="＋ إضافة سؤال";
       const saveBank=document.createElement("button");saveBank.className="primary";saveBank.style.width="auto";saveBank.textContent="💾 حفظ جميع الأسئلة";
-      controls.append(add,saveBank);editor.appendChild(controls);root.appendChild(editor);
+      controls.append(add,saveBank);editor.appendChild(controls);pages.questions.appendChild(editor);
       const teacherToken=localStorage.getItem("tahadi_teacher_token")||"";
       const bankCall=async(action,extra={})=>{const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/subduction-quiz",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+teacherToken},body:JSON.stringify({action,...extra})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تنفيذ العملية.");return data;};
       let bankQuestions=[];
@@ -3732,8 +3737,8 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     if(r.description){const desc=document.createElement("p");desc.className="quiz-manage-description";desc.textContent=r.description;root.appendChild(desc);}
     const form=document.createElement("div");form.className="quiz-manage-grid";
     form.innerHTML='<label>المدة بالدقائق<input type="number" min="1" max="240" data-q-duration value="'+Number(s.duration_minutes||60)+'"></label><label>عدد المحاولات<input type="number" min="1" max="20" data-q-attempts value="'+Number(s.max_attempts||2)+'"></label>';
-    root.appendChild(form);
-    const flags=document.createElement("div");flags.className="quiz-manage-flags";flags.innerHTML='<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" data-q-results style="width:auto" '+(s.show_results!==false?'checked':'')+'> إظهار النتائج للتلميذ</label><label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" data-q-shuffle style="width:auto" '+(s.shuffle_questions?'checked':'')+'> خلط ترتيب الأسئلة</label>';root.appendChild(flags);
+    pages.settings.appendChild(form);
+    const flags=document.createElement("div");flags.className="quiz-manage-flags";flags.innerHTML='<label style="display:flex;align-items:center;gap:8px;margin-top:12px"><input type="checkbox" data-q-results style="width:auto" '+(s.show_results!==false?'checked':'')+'> إظهار النتائج للتلميذ</label><label style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="checkbox" data-q-shuffle style="width:auto" '+(s.shuffle_questions?'checked':'')+'> خلط ترتيب الأسئلة</label>';pages.settings.appendChild(flags);
     const actions=document.createElement("div");actions.className="quiz-manage-actions";
     const save=document.createElement("button");save.className="primary";save.textContent="حفظ إعدادات الاختبار";
     const status=document.createElement("p");status.className="quiz-manage-status";status.setAttribute("role","status");
@@ -3744,7 +3749,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     if(isControlledQuiz){const openBtn=document.createElement("button");openBtn.className="primary";openBtn.textContent=r.quiz_settings?.is_open?"🔓 إغلاق الاختبار":"🔒 فتح الاختبار للتلاميذ";openBtn.addEventListener("click",async()=>{openBtn.disabled=true;try{const next={...(r.quiz_settings||s),is_open:!r.quiz_settings?.is_open};await resourceRequest("teacher_save_resource",{id:r.id,title:r.title,level:r.level,resource_type:"quiz",resource_url:r.resource_url||"",description:r.description||"",is_published:true,quiz_settings:next});r.quiz_settings=next;r.is_published=true;await loadElectronicTests();await openQuizManagement(r.id);}catch(e){alert(e.message);}finally{openBtn.disabled=false;}});actions.appendChild(openBtn);}
     const toggle=document.createElement("button");toggle.className="secondary";toggle.textContent=r.is_published?"إلغاء نشر الاختبار":"نشر الاختبار للتلاميذ";
     toggle.addEventListener("click",async()=>{toggle.disabled=true;try{await resourceRequest("teacher_save_resource",{id:r.id,title:r.title,level:r.level,resource_type:"quiz",resource_url:r.resource_url||"",description:r.description||"",is_published:!r.is_published,quiz_settings:r.quiz_settings||s});r.is_published=!r.is_published;await loadElectronicTests();await openQuizManagement(r.id);}catch(e){alert(e.message);}finally{toggle.disabled=false;}});
-    actions.appendChild(toggle);root.appendChild(actions);root.appendChild(status);
+    actions.appendChild(toggle);pages.settings.appendChild(actions);pages.settings.appendChild(status);
     saveTeacherPagePosition();
   }
   let selectedElectronicTestLevel="";
@@ -4790,3 +4795,14 @@ document.querySelectorAll('[data-view="learningResourcesView"]').forEach(b=>b.ad
 
 /* تم إيقاف الجزء القديم غير المكتمل الخاص بالمساعد العلمي. */
 </script>
+
+<style>
+#electronicTestManageContent .quiz-section-nav{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin:20px 0;padding:14px;border:1px solid #dce8d9;border-radius:18px;background:#f8fbf6}
+#electronicTestManageContent .quiz-section-nav button{min-height:66px;padding:12px 10px;border:1px solid #cbdcc8;border-bottom:4px solid #8cad8b;border-radius:14px;background:linear-gradient(145deg,#fff,#edf6ea);color:#205b39;font:inherit;font-weight:750;box-shadow:0 4px 10px #174c3010}
+#electronicTestManageContent .quiz-section-nav button.active{background:#176b3d;color:white;border-color:#176b3d;border-bottom-color:#0d4d2b}
+#electronicTestManageContent .quiz-section-page{padding:14px;border:1px solid #e0e9dd;border-radius:17px;background:#fff;margin:12px 0}
+#electronicTestManageContent .quiz-section-page[hidden]{display:none!important}
+#electronicTestManageContent .quiz-section-back{width:100%;margin:0 0 14px;min-height:44px}
+#electronicTestManageContent .quiz-open-link{display:flex;align-items:center;justify-content:center;min-height:54px;margin:14px 0;padding:12px;border-radius:13px;background:#edf6ea;border:1px solid #cfe0cb;color:#205c39;text-decoration:none;font-weight:750;text-align:center}
+@media(max-width:520px){#electronicTestManageContent .quiz-section-nav{grid-template-columns:1fr 1fr;padding:10px;gap:8px}#electronicTestManageContent .quiz-section-nav button{font-size:.9rem;min-height:62px}}
+</style>
