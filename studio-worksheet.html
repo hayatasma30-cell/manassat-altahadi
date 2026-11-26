@@ -89,6 +89,17 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <button type="button" class="design-choice" data-design="botanical" aria-pressed="false"><span class="swatches"><i style="background:#39713c"></i><i style="background:#a4c36d"></i></span>طبيعي نباتي</button>
 </div></fieldset>
 
+<fieldset class="reference-controls" id="referenceControls">
+<legend>أزرار تصميم مثل الصورة</legend>
+<p>اختاري التصميم الجاهز، ثم تحكمي في الزخارف التي تظهر في المعاينة.</p>
+<button type="button" class="btn reference-main" id="applyReferenceStyle">✨ تطبيق تصميم الصورة المرجعية</button>
+<div class="reference-toggle-grid">
+<button type="button" class="reference-toggle" data-visual="plants" aria-pressed="true">🌿 الزخارف النباتية: ظاهرة</button>
+<button type="button" class="reference-toggle" data-visual="icons" aria-pressed="true">🔬 الرموز العلمية: ظاهرة</button>
+<button type="button" class="reference-toggle" data-visual="gold" aria-pressed="true">✨ الإطار الذهبي: ظاهر</button>
+</div>
+</fieldset>
+
 <fieldset class="basic-settings"><legend>إعدادات الورقة الأساسية</legend>
 <label for="paperSize">حجم الورقة</label>
 <select id="paperSize"><option value="a4" selected>A4 — الحجم العادي</option><option value="a5">A5 — نصف A4</option><option value="a3">A3 — ضعف A4</option></select>
@@ -153,6 +164,32 @@ function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.ch
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 
 let activeDesign="emerald";
+let referenceStyle=true,showPlantDecor=true,showScienceIcons=true,showGoldFrame=true;
+function visualClassNames(){return (referenceStyle?" reference-style":"")+(showPlantDecor?"":" no-plant-decor")+(showScienceIcons?"":" no-science-icons")+(showGoldFrame?"":" no-gold-frame");}
+function syncVisualButtons(){
+ document.querySelectorAll(".reference-toggle").forEach(btn=>{
+  const key=btn.dataset.visual,enabled=key==="plants"?showPlantDecor:key==="icons"?showScienceIcons:showGoldFrame;
+  btn.setAttribute("aria-pressed",String(enabled));
+  const labels={plants:"🌿 الزخارف النباتية",icons:"🔬 الرموز العلمية",gold:"✨ الإطار الذهبي"};
+  btn.textContent=labels[key]+": "+(enabled?"ظاهرة":"مخفية");
+ });
+}
+$("applyReferenceStyle").onclick=()=>{
+ referenceStyle=true;showPlantDecor=true;showScienceIcons=true;showGoldFrame=true;
+ activeDesign="emerald";$("documentType").value="worksheet";$("paperSize").value="a4";
+ $("pageMargin").value=22;$("frameWidth").value=7;$("frameStyle").value="double";
+ document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.design==="emerald")));
+ syncVisualButtons();applyPaperSize();applyPageDecoration();render();
+ $("status").textContent="تم تطبيق التصميم المستوحى من الصورة المرجعية. يمكنك الآن تعديل المحتوى والزخارف.";
+};
+document.querySelectorAll(".reference-toggle").forEach(btn=>btn.addEventListener("click",()=>{
+ const key=btn.dataset.visual;
+ if(key==="plants")showPlantDecor=!showPlantDecor;
+ if(key==="icons")showScienceIcons=!showScienceIcons;
+ if(key==="gold")showGoldFrame=!showGoldFrame;
+ syncVisualButtons();render();
+}));
+syncVisualButtons();
 document.querySelectorAll(".design-choice").forEach(btn=>btn.addEventListener("click",()=>{activeDesign=btn.dataset.design;document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b===btn)));render();fitPoster();}));
 const PAPER_SIZES={a4:{label:"A4",w:210,h:297},a5:{label:"A5",w:148,h:210},a3:{label:"A3",w:297,h:420}};
 function applyPaperSize(){
@@ -182,7 +219,7 @@ function applyPageDecoration(){
 }
 ["pageMargin","frameWidth","frameStyle"].forEach(id=>$(id).addEventListener("input",applyPageDecoration));
 $("resetDecoration").onclick=()=>{$("pageMargin").value=24;$("frameWidth").value=6;$("frameStyle").value="double";applyPageDecoration();};
-function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
+function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign+visualClassNames();$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
@@ -199,7 +236,7 @@ function clearPosterPages(){
  const viewport=$("posterViewport"),first=$("poster"),main=$("posterContent");
  if(!viewport||!first||!main)return;
  clearPosterPages();
- first.className="template-"+$("documentType").value+" design-"+activeDesign;
+ first.className="template-"+$("documentType").value+" design-"+activeDesign+visualClassNames();
  const width=Math.min(viewport.clientWidth,794);
  first.style.width=width+"px";
  // Preserve the full A4 width. Fit vertically only, so content stays centered
@@ -414,5 +451,23 @@ $("reset").click();applyPaperSize();applyPageDecoration();
 #poster .poster-table th,#poster .poster-table td{padding:var(--ctrl-table-padding)!important}
 #poster.ctrl-title-align-right .poster-title{text-align:right!important}
 #poster.ctrl-title-align-left .poster-title{text-align:left!important}
+ 
+/* Controls for matching the supplied illustrated worksheet reference */
+.reference-controls{border:1px solid #d9c58b;background:linear-gradient(145deg,#fffdf6,#f8f5e9);border-radius:15px;padding:12px;margin:14px 0}
+.reference-controls legend{color:#14532d;font-weight:900;padding:0 7px}
+.reference-controls p{margin:0 0 10px;color:#718075;font-size:.83rem}
+.reference-main{width:100%;background:linear-gradient(120deg,#0b542e,#1b7542)!important;color:#fff!important;border:2px solid #d7b24f!important;border-bottom:4px solid #a77e32!important}
+.reference-toggle-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:9px}
+.reference-toggle{min-height:43px;border:1px solid #d6c58f;border-radius:11px;background:#fffdf6;color:#294b32;font:inherit;font-size:.82rem;font-weight:800;padding:7px;cursor:pointer}
+.reference-toggle[aria-pressed="true"]{background:#edf6e9;border:2px solid #34744a}
+#poster.reference-style,.poster-page.reference-style{position:relative}
+#poster.reference-style:before,.poster-page.reference-style:before{content:"🌿";position:absolute;top:10px;left:10px;width:auto;height:auto;border:0;border-radius:0;font-size:42px;opacity:.95;z-index:2;pointer-events:none}
+#poster.reference-style:after,.poster-page.reference-style:after{content:"🌿";position:absolute;bottom:8px;right:10px;width:auto;height:auto;border:0;border-radius:0;font-size:38px;opacity:.95;z-index:2;pointer-events:none}
+#poster.no-plant-decor:before,#poster.no-plant-decor:after,.poster-page.no-plant-decor:before,.poster-page.no-plant-decor:after{content:none!important}
+#poster.no-science-icons .poster-mark,#poster.no-science-icons .poster-section .section-title:before,.poster-page.no-science-icons .poster-mark,.poster-page.no-science-icons .poster-section .section-title:before{display:none!important}
+#poster.no-gold-frame,.poster-page.no-gold-frame{border-color:#17633b!important}
+#poster.no-gold-frame .poster-title h2,#poster.no-gold-frame .section-title,#poster.no-gold-frame .poster-intro,#poster.no-gold-frame .task,#poster.no-gold-frame .poster-footer,
+.poster-page.no-gold-frame .poster-title h2,.poster-page.no-gold-frame .section-title,.poster-page.no-gold-frame .poster-intro,.poster-page.no-gold-frame .task,.poster-page.no-gold-frame .poster-footer{border-color:#4c8a5b!important;box-shadow:none!important}
+@media(max-width:520px){.reference-toggle-grid{grid-template-columns:1fr 1fr}.reference-toggle{font-size:.75rem;padding:6px}}
 </style>
 </body></html>
