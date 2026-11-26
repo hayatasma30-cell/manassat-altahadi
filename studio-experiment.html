@@ -63,6 +63,10 @@ fieldset{border:1px solid #dce8d8;border-radius:14px;padding:10px;margin:12px 0;
 @media(max-width:850px){.layout{grid-template-columns:1fr}.preview-panel{padding:10px}#poster{padding:18px 16px}}
 @media(max-width:500px){.grid2{grid-template-columns:1fr}.top{padding:10px}.poster-head-note{display:none}}
 label[for="documentType"],#documentType,#typeHint{display:none!important}
+
+.basic-settings{border:1px solid #d8e5d5;border-radius:14px;padding:10px;margin:12px 0;background:#f8fcf6}
+.basic-settings legend{color:var(--green);font-weight:800;padding:0 7px}
+#poster,.poster-page{aspect-ratio:var(--paper-ratio,210 / 297)}
 </style>
 </head>
 <body>
@@ -78,6 +82,11 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <button type="button" class="design-choice" data-design="minimal" aria-pressed="false"><span class="swatches"><i style="background:#34433b"></i><i style="background:#dce2dc"></i></span>أبيض بسيط وأنيق</button>
 <button type="button" class="design-choice" data-design="botanical" aria-pressed="false"><span class="swatches"><i style="background:#39713c"></i><i style="background:#a4c36d"></i></span>طبيعي نباتي</button>
 </div></fieldset>
+<fieldset class="basic-settings"><legend>إعدادات الورقة الأساسية</legend>
+<label for="paperSize">حجم الورقة</label>
+<select id="paperSize"><option value="a4" selected>A4 — الحجم العادي</option><option value="a5">A5 — نصف A4</option><option value="a3">A3 — ضعف A4</option></select>
+<p class="status">رمز صفحة تحدي 20/20 ثابت ولا يتغير، وسيظهر تلقائيًا في كل الأوراق.</p>
+</fieldset>
 <label for="documentType">نوع الوثيقة</label>
 <select id="documentType">
 <option value="lesson">ملخص درس</option><option value="worksheet">ورقة عمل</option><option value="exam">اختبار أو فرض</option><option value="poster">ملصق علمي</option><option value="experiment" selected>بطاقة تجربة</option><option value="tables">جداول ووثائق</option>
@@ -103,16 +112,12 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 حدد عواقب نقص أو غياب أحد العناصر المعدنية على نمو النبات الأخضر.
 شخّص عواقب الإفراط في أحد العناصر المعدنية.</textarea>
 </fieldset>
-<fieldset><legend>هوية الصفحة</legend>
-<label for="logoUpload">رمز الصفحة الأصلي</label><input id="logoUpload" type="file" accept="image/*">
-<label for="teacher">التذييل – اسم الأستاذة</label><input id="teacher" value="الأستاذة حياة">
-<div class="status">يُحفظ الرمز المختار على هذا الجهاز لاستخدامه في الأوراق القادمة.</div>
-</fieldset>
+<fieldset><legend>التذييل</legend><label for="teacher">اسم الأستاذة في التذييل</label><input id="teacher" value="الأستاذة حياة"></fieldset>
 <div class="actions"><button class="btn primary" id="download" type="button">⬇ تحميل الصورة PNG</button><button class="btn gold" id="downloadPdf" type="button">📄 تحميل PDF</button><button class="btn gold" id="print" type="button">🖨 طباعة A4</button><button class="btn" id="reset" type="button">إعادة ضبط الحقول</button></div>
 <div id="status" class="status" role="status">المعاينة جاهزة. أدخلي بياناتك أو عدّلي النموذج.</div>
 </section>
 <section class="preview-panel" id="preview-panel">
-<div class="preview-head"><strong>معاينة <span id="previewType">ملخص درس</span> A4</strong><span class="status">تتحدث تلقائيًا</span></div>
+<div class="preview-head"><strong>معاينة <span id="previewType">ملخص درس</span> <span id="previewPaperSize">A4</span></strong><span class="status">تتحدث تلقائيًا</span></div>
 <div id="posterViewport"><article id="poster" class="template-lesson"><div id="posterContent" class="poster-content">
 <div class="poster-top"><img id="posterLogo" class="poster-logo" src="./file_00000000aa0081f484bc7f93b3e54448.png" alt="رمز الصفحة"><div class="poster-title"><h2 id="pTitle">أغذية النبات الأخضر</h2><div id="pSubtitle">السنة الأولى متوسط</div></div><div class="poster-mark">✦</div></div>
 <div class="poster-intro" id="pIntro"></div>
@@ -126,19 +131,31 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <script>
 const $=id=>document.getElementById(id);
 const defaults={title:"أغذية النبات الأخضر",subtitle:"علوم الطبيعة والحياة",intro:"للتعرف على العناصر المعدنية الضرورية لنمو النبات الأخضر، نقوم بالدراسة التالية:",section1:"تركيب محلول كنوب (1000 mL)",text1:"محلول كنوب وسط معدني يحتوي على العناصر الضرورية لنمو النبات الأخضر.",section2:"استنبت بذور نبات القمح في أوساط معدنية مختلفة التركيب، فكانت النتائج كالتالي:",text2:"",tasks:"استخرج العناصر الأساسية في محلول كنوب.\nحدد عواقب نقص أو غياب أحد العناصر المعدنية على نمو النبات الأخضر.\nشخّص عواقب الإفراط في أحد العناصر المعدنية.",teacher:"الأستاذة حياة"};
-let logoData=localStorage.getItem("tahadi_studio_logo")||"";
+const FIXED_LOGO="./file_00000000aa0081f484bc7f93b3e54448.png";
 let uploadedImages=[];
 function addRow(containerId,a="",b=""){const row=document.createElement("div");row.className="row-editor";const one=document.createElement("input"),two=document.createElement("input"),del=document.createElement("button");one.placeholder=containerId==="tableRows"?"العنصر المعدني":"رقم النبتة";two.placeholder=containerId==="tableRows"?"الكمية":"التركيب المعدني";one.value=a;two.value=b;one.addEventListener("input",render);two.addEventListener("input",render);del.type="button";del.className="remove";del.textContent="×";del.title="حذف السطر";del.onclick=()=>{row.remove();render();};row.append(one,two,del);$(containerId).append(row);render();}
 function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 let activeDesign="emerald";
 document.querySelectorAll(".design-choice").forEach(btn=>btn.addEventListener("click",()=>{activeDesign=btn.dataset.design;document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b===btn)));render();fitPoster();}));
+const PAPER_SIZES={a4:{label:"A4",w:210,h:297},a5:{label:"A5",w:148,h:210},a3:{label:"A3",w:297,h:420}};
+function applyPaperSize(){
+ const p=PAPER_SIZES[$("paperSize").value]||PAPER_SIZES.a4;
+ $("poster").style.setProperty("--paper-ratio",p.w+" / "+p.h);
+ $("poster").style.setProperty("--paper-width-mm",p.w+"mm");
+ $("poster").style.setProperty("--paper-height-mm",p.h+"mm");
+ $("previewPaperSize").textContent=p.label;
+ let st=$("dynamicPaperPrintStyle");if(!st){st=document.createElement("style");st.id="dynamicPaperPrintStyle";document.head.appendChild(st);}
+ st.textContent="@page{size:"+p.w+"mm "+p.h+"mm;margin:0}";
+ fitPoster();
+}
+$("paperSize").addEventListener("change",applyPaperSize);
 function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
 $("pImages").innerHTML="";uploadedImages.forEach(src=>{const im=document.createElement("img");im.src=src;$("pImages").append(im);});
-if(logoData)$("posterLogo").src=logoData;
+$("posterLogo").src=FIXED_LOGO;
 }
 function clearPosterPages(){
  const first=$("poster"),main=$("posterContent");if(!first||!main)return;
@@ -176,20 +193,19 @@ function clearPosterPages(){
 if(window.ResizeObserver){new ResizeObserver(fitPoster).observe($("preview-panel"));}window.addEventListener("resize",fitPoster);
 ["documentType","level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
 $("addTableRow").onclick=()=>addRow("tableRows");$("addExperimentRow").onclick=()=>addRow("experimentRows");
-$("logoUpload").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{logoData=reader.result;try{localStorage.setItem("tahadi_studio_logo",logoData);}catch(err){$("status").textContent="تعذر حفظ الرمز بسبب مساحة التخزين؛ سيبقى ظاهرًا لهذه الجلسة.";}$("posterLogo").src=logoData;};reader.readAsDataURL(f);});
 $("images").addEventListener("change",e=>{uploadedImages=[];const files=[...e.target.files].slice(0,4);let left=files.length;if(!left){render();return;}files.forEach(f=>{const r=new FileReader();r.onload=()=>{uploadedImages.push(r.result);if(!--left)render();};r.readAsDataURL(f);});});
 $("download").onclick=async()=>{const status=$("status");if(!window.html2canvas){status.textContent="تعذر تحميل أداة تصدير الصورة؛ جرّبي الطباعة أو أعيدي فتح الصفحة مع الإنترنت.";return;}const btn=$("download");btn.disabled=true;status.textContent="جارٍ تجهيز الصورة بجودة عالية…";try{const pages=[...$("posterViewport").querySelectorAll("#poster,.poster-page")];for(let page=0;page<pages.length;page++){const canvas=await html2canvas(pages[page],{scale:3,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const a=document.createElement("a");const base=($("title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");a.download=base+(pages.length>1?"-صفحة-"+(page+1):"")+".png";a.href=canvas.toDataURL("image/png");a.click();await new Promise(resolve=>setTimeout(resolve,350));}status.textContent=pages.length>1?"تم تجهيز "+pages.length+" صور A4 منفصلة.":"تم تجهيز صورة A4 للتحميل."; }catch(e){fitPoster();status.textContent="تعذر إنشاء الصورة: "+(e.message||"حاولي تقليل عدد الصور.");}finally{btn.disabled=false;}};
-$("downloadPdf").onclick=async()=>{const status=$("status"),btn=$("downloadPdf");if(!window.html2canvas||!window.jspdf||!window.jspdf.jsPDF){status.textContent="تعذر تحميل أداة PDF. تحققي من الاتصال بالإنترنت ثم أعيدي المحاولة.";return;}btn.disabled=true;status.textContent="جارٍ إنشاء ملف PDF بمقاس A4…";try{const pages=[...$("posterViewport").querySelectorAll("#poster,.poster-page")];const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4",compress:true});for(let page=0;page<pages.length;page++){const canvas=await html2canvas(pages[page],{scale:2,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const image=canvas.toDataURL("image/png");if(page>0)pdf.addPage("a4","portrait");pdf.addImage(image,"PNG",0,0,210,297,undefined,"FAST");}const base=($("title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");pdf.save(base+".pdf");status.textContent=pages.length>1?"تم إنشاء ملف PDF يحتوي على "+pages.length+" صفحات A4.":"تم إنشاء ملف PDF من صفحة A4 واحدة.";}catch(e){status.textContent="تعذر إنشاء PDF: "+(e.message||"حاولي مرة أخرى.");}finally{btn.disabled=false;}};
+$("downloadPdf").onclick=async()=>{const status=$("status"),btn=$("downloadPdf");if(!window.html2canvas||!window.jspdf||!window.jspdf.jsPDF){status.textContent="تعذر تحميل أداة PDF. تحققي من الاتصال بالإنترنت ثم أعيدي المحاولة.";return;}btn.disabled=true;status.textContent="جارٍ إنشاء ملف PDF بمقاس "+(PAPER_SIZES[$("paperSize").value]||PAPER_SIZES.a4).label+"…";try{const pages=[...$("posterViewport").querySelectorAll("#poster,.poster-page")];const {jsPDF}=window.jspdf;const paper=PAPER_SIZES[$("paperSize").value]||PAPER_SIZES.a4;const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:[paper.w,paper.h],compress:true});for(let page=0;page<pages.length;page++){const canvas=await html2canvas(pages[page],{scale:2,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const image=canvas.toDataURL("image/png");if(page>0)pdf.addPage("a4","portrait");pdf.addImage(image,"PNG",0,0,paper.w,paper.h,undefined,"FAST");}const base=($("title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");pdf.save(base+".pdf");status.textContent=pages.length>1?"تم إنشاء ملف PDF يحتوي على "+pages.length+" صفحات A4.":"تم إنشاء ملف PDF من صفحة A4 واحدة.";}catch(e){status.textContent="تعذر إنشاء PDF: "+(e.message||"حاولي مرة أخرى.");}finally{btn.disabled=false;}};
 $("print").onclick=()=>window.print();
 $("reset").onclick=()=>{Object.entries(defaults).forEach(([k,v])=>{if($(k))$(k).value=v;});$("tableRows").innerHTML="";$("experimentRows").innerHTML="";uploadedImages=[];$("images").value="";addRow("tableRows","نترات الكالسيوم","1%");addRow("tableRows","نترات البوتاسيوم","0.25%");addRow("tableRows","فوسفات أحادي البوتاسيوم","0.25%");addRow("tableRows","كبريتات المغنزيوم","0.25%");addRow("tableRows","كلورور الحديد","آثار");addRow("experimentRows","1","NPK 2‰");addRow("experimentRows","2","PK");addRow("experimentRows","3","NK");addRow("experimentRows","4","NP");addRow("experimentRows","5","NPK 20‰");render();};
 const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge")||"";
 const expiry=localStorage.getItem("tahadi_teacher_expires")||sessionStorage.getItem("tahadi_teacher_expires_bridge")||"";
 if(token){localStorage.setItem("tahadi_teacher_token",token);if(expiry)localStorage.setItem("tahadi_teacher_expires",expiry);}
 if(!token||expiry&&new Date(expiry).getTime()<=Date.now()){document.body.innerHTML='<main style="max-width:520px;margin:12vh auto;padding:24px;background:#fff;border-radius:18px;text-align:center;font-family:Tahoma"><h2 style="color:#14532d">الدخول إلى فضاء الأستاذة</h2><p>يجب تسجيل الدخول من منصة التحدي أولًا، ثم فتح استوديو التصميم.</p><a href="index.html" style="display:inline-block;padding:12px 18px;background:#14532d;color:#fff;border-radius:10px;text-decoration:none">العودة إلى المنصة</a></main>';}
-$("reset").click();
+$("reset").click();applyPaperSize();
 </script>
 <style>
-@media print{body{background:#fff}#posterViewport{display:block;width:210mm!important;overflow:visible!important}#poster,.poster-page{display:block;position:relative!important;width:210mm!important;height:297mm!important;min-height:297mm!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:8mm!important;overflow:hidden!important;box-shadow:none;border:1.5mm double #2d7444;transform:none!important;break-after:page;page-break-after:always}.poster-content{height:100%!important;overflow:hidden!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}@page{size:A4 portrait;margin:0}}
+@media print{body{background:#fff}#posterViewport{display:block;width:210mm!important;overflow:visible!important}#poster,.poster-page{display:block;position:relative!important;width:var(--paper-width-mm,210mm)!important;height:var(--paper-height-mm,297mm)!important;min-height:var(--paper-height-mm,297mm)!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:8mm!important;overflow:hidden!important;box-shadow:none;border:1.5mm double #2d7444;transform:none!important;break-after:page;page-break-after:always}.poster-content{height:100%!important;overflow:hidden!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}@page{size:A4 portrait;margin:0}}
 
 /* Design chooser presets */
 .design-picker{margin:12px 0 16px;padding:12px;border:1px solid #dce7d9;border-radius:15px;background:#fbfdf9}
