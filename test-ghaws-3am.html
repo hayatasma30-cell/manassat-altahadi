@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#14532e"><title>اختبار الغوص والظواهر الجيولوجية المرتبطة به — السنة الثالثة متوسط</title>
+<style>
+:root{--g:#276749;--g2:#14532d;--leaf:#3d8b61;--cream:#f7f5ec;--line:#d8dfd3;--ink:#203128}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#edf5e9 0,#f7f5ec 55%,#f0f3e9 100%);font:16px/1.9 Tahoma,Arial,sans-serif;color:var(--ink)}
+main{max-width:800px;margin:24px auto;padding:14px}
+.panel{background:linear-gradient(145deg,#fff 0%,#fcfdf9 100%);border:1px solid var(--line);border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 8px 0 #dce5d8,0 14px 28px #294c3218}
+.hero{border-top:7px solid var(--g);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;left:-22px;top:-30px;width:105px;height:105px;border:12px solid #dcebdc;border-radius:50%;opacity:.65;pointer-events:none}
+h1{font-size:clamp(1.35rem,4vw,1.8rem);line-height:1.5;color:var(--g2);margin:0 0 8px}
+h1:before{content:"❧ ";color:var(--leaf)}
+.muted{color:#647067}.hidden{display:none!important}label{display:block;margin:12px 0 5px;font-weight:700;color:#28583b}
+input,textarea{font:inherit;width:100%;padding:12px 14px;border:1px solid #b9cbb9;border-radius:12px;background:#fff;box-shadow:inset 0 2px 4px #173d1a0c;outline:none}
+input:focus,textarea:focus{border-color:var(--leaf);box-shadow:0 0 0 3px #3d8b6126}
+button{font:inherit;font-weight:700;border:1px solid #164b2b;border-radius:13px;padding:11px 19px;background:linear-gradient(180deg,#4b9567 0%,#276749 55%,#1c5436 100%);color:#fff;cursor:pointer;margin:5px;box-shadow:0 5px 0 #123f28,0 8px 13px #173d1a28;text-shadow:0 1px 1px #123f2866;transition:transform .12s ease,box-shadow .12s ease,filter .12s ease}
+button:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 7px 0 #123f28,0 11px 16px #173d1a2b}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #123f28,0 4px 8px #173d1a20}
+button:disabled{opacity:.6;cursor:not-allowed;transform:none}
+button.secondary{background:linear-gradient(180deg,#fff 0%,#e8f0e7 100%);border-color:#c4d3c3;color:#24432d;text-shadow:none;box-shadow:0 4px 0 #c5d3c2,0 7px 12px #173d1a12}
+button.secondary:hover{box-shadow:0 6px 0 #c5d3c2,0 9px 14px #173d1a18}
+button.secondary:active{box-shadow:0 1px 0 #c5d3c2;transform:translateY(3px)}
+.timer{font-weight:bold;color:#a33;font-size:1.2rem;background:#fff4ee;border:1px solid #f1d4c8;padding:4px 12px;border-radius:12px}
+.row,.actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.option{display:block;padding:11px 13px;border:1px solid var(--line);border-radius:13px;margin:10px 0;background:linear-gradient(145deg,#fff,#f7faf4);box-shadow:0 3px 0 #e0e8dc,0 5px 10px #2031280a;transition:border-color .12s,transform .12s}
+.option:hover{border-color:#8ab398;transform:translateY(-1px)}
+.option input{width:auto;margin-left:8px;accent-color:var(--g);transform:scale(1.12)}
+.danger{color:#a33}.progress{height:10px;background:#e4e9e4;border-radius:20px;overflow:hidden;margin:12px 0;box-shadow:inset 0 2px 3px #20312814}.bar{height:100%;background:linear-gradient(90deg,#7aa76d,#276749);width:0;border-radius:20px;transition:width .2s}
+.result{background:linear-gradient(145deg,#f0f7eb,#e2efdf);padding:15px;border-radius:14px;border:1px solid #cfdfca;box-shadow:0 4px 0 #d0e0ca}
+hr{border:0;border-top:1px solid #e1e8dd;margin:18px 0}
+@media(max-width:520px){main{padding:10px;margin:10px auto}.panel{padding:16px;border-radius:17px}.actions{gap:6px}.actions button{flex:1;min-width:95px;padding:10px 8px}}
+@media(prefers-reduced-motion:reduce){button,.option,.bar{transition:none}}
+
+.review-card{border:2px solid;border-radius:16px;padding:14px 16px;margin:14px 0;box-shadow:0 5px 0 #dce5d8,0 8px 15px #2031280d;background:#fff}
+.review-correct{border-color:#25834b;background:linear-gradient(145deg,#f4fff5,#e7f7e9);box-shadow:0 5px 0 #b9dfc0,0 8px 15px #1b6a3210}
+.review-wrong{border-color:#c93c3c;background:linear-gradient(145deg,#fff7f6,#ffebea);box-shadow:0 5px 0 #efc4c1,0 8px 15px #8f222210}
+.review-title{display:block;font-size:1.04rem;margin-bottom:8px}
+.review-line{margin:6px 0}
+.review-label{font-weight:700}
+.review-correct .review-status{display:inline-block;background:#d2f0d8;color:#155b2c;border-radius:8px;padding:3px 9px;font-weight:700;margin-top:5px}
+.review-wrong .review-status{display:inline-block;background:#f9d7d5;color:#922626;border-radius:8px;padding:3px 9px;font-weight:700;margin-top:5px}
+</style></head><body><main>
+<section class="panel hero"><h1>اختبار الغوص والظواهر الجيولوجية المرتبطة به</h1><strong>السنة الثالثة متوسط — علوم الطبيعة والحياة</strong><p class="muted" id="examInfo">المدة: 40 دقيقة | الأسئلة: 20 | العلامة النهائية: /20 — جميع الأسئلة اختيار من متعدد</p><p>يتم التحقق من هويتك تلقائيًا باستعمال جلسة فضاء التلميذ.</p><button id="start">الدخول إلى الاختبار</button><p id="loginError" class="danger"></p></section>
+<section id="exam" class="panel hidden"><div class="row"><strong id="studentLabel"></strong><span class="timer" id="timer">40:00</span></div><div class="progress"><div id="bar" class="bar"></div></div><div class="row muted"><span id="count"></span><span>لا تظهر الإجابات الصحيحة قبل الإنهاء</span></div><hr><div id="question"></div><div class="actions"><button class="secondary" id="prev">السابق</button><button id="next">السؤال التالي</button><button id="finish" class="hidden">إنهاء الاختبار</button></div><p id="examError" class="danger"></p></section>
+<section id="results" class="panel hidden"></section></main>
+<script>
+const API_URL="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/subduction-quiz";
+const teacherPreviewMode=new URLSearchParams(location.search).get("teacher_preview")==="1";
+const MCQ=
+[
+  {
+    "n": 1,
+    "q": "تتمثل ظاهرة الغوص في:",
+    "opts": [
+      "ابتعاد صفيحتين عن بعضهما وتشكل قشرة محيطية جديدة بينهما.",
+      "انزلاق القشرة المحيطية الأكثر كثافة تحت القشرة القارية الأقل كثافة.",
+      "تصادم صفيحتين قاريتين دون حدوث انزلاق لإحداهما.",
+      "انزلاق القشرة القارية تحت القشرة المحيطية وتشكل خنادق محيطية."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 2,
+    "q": "تحدث ظاهرة الغوص نتيجة:",
+    "opts": [
+      "قوى التباعد التي تؤدي إلى اتساع المحيطات وتشكل قشرة جديدة.",
+      "قوى الانضغاط (التصادم) التي تدفع صفيحة نحو الأسفل تحت أخرى.",
+      "قوى الانزلاق الجانبي التي تحرك الصفائح أفقيا على طول الفوالق.",
+      "قوى شد القشرة الأرضية التي تسبب تباعد الصفائح فيما بينها."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 3,
+    "q": "تتميز الظهرة المحيطية بأنها منطقة:",
+    "opts": [
+      "اختفاء الغلاف الصخري القديم وابتلاعه في الأعماق.",
+      "تشكل غلاف صخري محيطي جديد نتيجة صعود الماغما وتصلبها.",
+      "تصادم صفيحتين قاريتين يؤدي إلى تشكل سلاسل جبلية.",
+      "غوص القشرة المحيطية تحت القشرة القارية."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 4,
+    "q": "تتميز مناطق الغوص بحدوث:",
+    "opts": [
+      "تشكل قشرة محيطية جديدة نتيجة صعود الماغما.",
+      "تباعد الصفائح التكتونية وتوسع قيعان المحيطات.",
+      "اختفاء الغلاف الصخري المحيطي وانزلاقه في الأعماق.",
+      "توقف النشاط الزلزالي والبركاني في المنطقة."
+    ],
+    "correct": 2
+  },
+  {
+    "n": 5,
+    "q": "من الظواهر الجيولوجية المرتبطة بالغوص:",
+    "opts": [
+      "تشكل الخنادق المحيطية والبراكين والزلازل والجبال.",
+      "تشكل الظهرة المحيطية فقط.",
+      "اتساع المحيطات وازدياد حجمها فقط.",
+      "تشكل قشرة محيطية جديدة على طول حدود الصفائح."
+    ],
+    "correct": 0
+  },
+  {
+    "n": 6,
+    "q": "تتميز ماغما البركان الانفجاري بأنها:",
+    "opts": [
+      "ضعيفة اللزوجة وقليلة الغازات، مما يسمح بخروجها بسهولة.",
+      "لزجة وغنية بالغازات وبخار الماء، مما يؤدي إلى ارتفاع الضغط داخل البركان.",
+      "سائلة وفقيرة بالغازات، مما يجعل انفجاراتها هادئة.",
+      "عديمة الغازات وبخار الماء، فتخرج على شكل تدفقات هادئة."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 7,
+    "q": "يتميز البركان الطفحي بـ:",
+    "opts": [
+      "ماغما لزجة وانفجارات عنيفة تقذف الرماد بكميات كبيرة.",
+      "ماغما سائلة قليلة اللزوجة وفقيرة نسبيا بالغازات، وانفجارات هادئة.",
+      "قذف كميات كبيرة من الرماد والمواد الصلبة في جو البركان.",
+      "انفجارات عنيفة ومتكررة مصحوبة بسحب كثيفة من الغازات."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 8,
+    "q": "يتكون البركان أساسا من:",
+    "opts": [
+      "فوهة ومدخنة فقط، تسمحان بخروج الحمم إلى سطح الأرض.",
+      "غرفة ماغماتية في العمق ومدخنة تنقل الماغما نحو السطح.",
+      "فوهة ومدخنة وغرفة ماغماتية تتجمع فيها الماغما في الأعماق.",
+      "فوهة وقاعدة فقط دون وجود غرفة ماغماتية."
+    ],
+    "correct": 2
+  },
+  {
+    "n": 9,
+    "q": "ترتبط البركانية الانفجارية عن:",
+    "opts": [
+      "غوص القشرة المحيطية وانصهارها جزئيا نتيجة ارتفاع الحرارة والضغط.",
+      "تباعد صفيحتين محيطيتين وصعود الماغما من الوشاح.",
+      "تصلب الماغما فوق سطح الأرض دون وجود غازات.",
+      "غياب الغازات في الماغما وتدفقها بسهولة إلى السطح."
+    ],
+    "correct": 0
+  },
+  {
+    "n": 10,
+    "q": "تتميز مناطق الغوص بزلزالية قوية بسبب:",
+    "opts": [
+      "تباعد الصفائح واستمرار تشكل قشرة محيطية جديدة.",
+      "تراكم قوى الانضغاط بين الصفيحتين وتحررها فجأة على طول الفوالق.",
+      "غياب الحركة التكتونية في هذه المناطق.",
+      "تشكل قشرة محيطية جديدة بشكل مستمر."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 11,
+    "q": "تشكلت جبال الهملايا نتيجة:",
+    "opts": [
+      "تباعد الصفيحة الهندية عن الصفيحة الآسيوية وتشكّل محيط جديد.",
+      "تصادم الصفيحتين الهندية والآسيوية بعد اختفاء محيط تيثيس.",
+      "غوص الصفيحة الهندية تحت الصفيحة الإفريقية.",
+      "تصادم صفيحتين محيطيتين في قاع المحيط."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 12,
+    "q": "محيط تيثيس هو:",
+    "opts": [
+      "محيط حديث ما زال يتشكل حاليا بين إفريقيا وأوروبا.",
+      "محيط قديم كان يفصل بين القارة الهندية والآسيوية قبل تصادمهما.",
+      "محيط موجود حاليا في المحيط الهادي ويتميز بنشاط زلزالي قوي.",
+      "بحر ضيق يفصل بين إفريقيا وأوروبا في الوقت الحاضر."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 13,
+    "q": "تُعد قمة إفرست:",
+    "opts": [
+      "أعلى قمة جبلية في العالم يتجاوز ارتفاعها 8800 متر.",
+      "أعمق نقطة في المحيطات يزيد عمقها عن 11000 متر.",
+      "أعلى بركان نشط في العالم ويتميز بانفجارات متكررة.",
+      "أقدم سلسلة جبلية على سطح الأرض."
+    ],
+    "correct": 0
+  },
+  {
+    "n": 14,
+    "q": "تشكلت جبال الأنديز نتيجة:",
+    "opts": [
+      "غوص صفيحة أمريكا الجنوبية تحت صفيحة نازكا.",
+      "غوص صفيحة نازكا تحت صفيحة أمريكا الجنوبية.",
+      "تباعد الصفيحة الإفريقية والأمريكية وتكون محيط جديد.",
+      "تصادم الصفيحتين الهندية والآسيوية بعد اختفاء محيط قديم."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 15,
+    "q": "يعود ثبات حجم الكرة الأرضية إلى:",
+    "opts": [
+      "توقف تشكل الغلاف الصخري الجديد على مستوى الظهرة المحيطية.",
+      "توازن تشكل الغلاف الصخري الجديد واختفاء الغلاف الصخري القديم.",
+      "اختفاء الغلاف الصخري على مستوى الظهرة المحيطية مباشرة.",
+      "توقف ظاهرة الغوص نهائيا في جميع مناطق الكرة الأرضية."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 16,
+    "q": "تتمثل أوجه الاختلاف بين الظهرة المحيطية ومناطق الغوص في أن:",
+    "opts": [
+      "كلاهما مناطق تشكل للغلاف الصخري في الأعماق.",
+      "الظهرة منطقة تشكل غلاف صخري جديد، والغوص منطقة اختفاء الغلاف الصخري القديم.",
+      "الظهرة منطقة تصادم بين الصفائح، والغوص منطقة تباعد بينها.",
+      "كلاهما يؤديان إلى تشكل سلاسل جبلية قارية فقط."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 17,
+    "q": "يؤدي تصادم الصفيحة الهندية بالصفيحة الآسيوية إلى:",
+    "opts": [
+      "تباعد القارتين وتشكل محيط جديد بينهما.",
+      "انضغاط الصخور والتوائها وارتفاعها، مما أدى إلى تشكل جبال الهملايا.",
+      "اختفاء القارة الهندية كليا تحت القارة الآسيوية.",
+      "تشكل ظهرة محيطية جديدة في تلك المنطقة."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 18,
+    "q": "ينتج عن غوص صفيحة نازكا تحت صفيحة أمريكا الجنوبية:",
+    "opts": [
+      "تشكل جبال الأنديز البركانية ووجود نشاط زلزالي قوي.",
+      "تشكل جبال الهملايا نتيجة تصادم قارتين.",
+      "تشكل محيط جديد بين الصفيحتين.",
+      "تشكل الظهرة المحيطية وتوسع قاع المحيط."
+    ],
+    "correct": 0
+  },
+  {
+    "n": 19,
+    "q": "تتمثل أوجه الاختلاف بين الظهرة المحيطية ومناطق الغوص في أن:",
+    "opts": [
+      "كلاهما مناطق اختفاء للغلاف الصخري في الأعماق.",
+      "الظهرة منطقة تشكل غلاف صخري جديد، والغوص منطقة اختفاء الغلاف الصخري القديم.",
+      "الظهرة منطقة تصادم بين الصفائح، والغوص منطقة تباعد بينها.",
+      "كلاهما يؤديان إلى تشكل سلاسل جبلية قارية فقط."
+    ],
+    "correct": 1
+  },
+  {
+    "n": 20,
+    "q": "إذا استمر تشكل الغلاف الصخري في الظهرة المحيطية دون اختفائه في مناطق الغوص، فإن:",
+    "opts": [
+      "يبقى حجم الكرة الأرضية ثابتا دون أي تغير.",
+      "يزداد حجم الكرة الأرضية تدريجيا مع مرور الزمن.",
+      "يتوقف النشاط البركاني في جميع أنحاء العالم.",
+      "تختفي المحيطات نهائيا ويصبح سطح الأرض قاريا بالكامل."
+    ],
+    "correct": 1
+  }
+];
+const questions=MCQ.map(x=>({...x,type:"mcq"})).sort((a,b)=>a.n-b.n);
+const LETTERS=["A","B","C","D"];let current=0,deadline=0,timerId=null,attemptId=null,attemptToken=null,answers={},written={},finished=false;
+async function api(payload,token="",auth=""){const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",...(token?{"X-Quiz-Token":token}:{}),...(auth?{"Authorization":"Bearer "+auth}:{})},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||d.error)throw Error(d.error||"تعذر الاتصال بالخادم.");return d}
+const $=id=>document.getElementById(id);
+async function startPortalQuiz(){$("start").disabled=true;if(teacherPreviewMode){attemptId="teacher-preview";attemptToken="";finished=false;answers={};current=0;$("studentLabel").textContent="معاينة الأستاذة — دون توقيت";$("examInfo").textContent="وضع معاينة الأستاذة: يمكنك تصفح الأسئلة دون مؤقت، ولن تُحفظ هذه المعاينة ضمن نتائج التلاميذ.";$("exam").classList.remove("hidden");$("timer").classList.add("hidden");if(timerId)clearInterval(timerId);render();$("loginError").textContent="";window.scrollTo(0,0);$("start").disabled=false;return;}const sessionToken=localStorage.getItem("tahadi_student_session")||"";$("loginError").textContent="جارٍ التحقق من جلسة فضاء التلميذ…";if(!sessionToken){$("loginError").textContent="يجب فتح الاختبار من فضاء التلميذ بعد تسجيل الدخول.";$("start").disabled=false;return}try{const d=await api({action:"start_portal"},"",sessionToken);attemptId=d.attempt_id;attemptToken=d.attempt_token;deadline=Date.now()+Math.max(0,Number(d.duration_seconds||2400)-Math.floor((Date.now()-new Date(d.started_at).getTime())/1000))*1000;$("studentLabel").textContent=d.student.full_name;$("exam").classList.remove("hidden");$("start").disabled=false;render();$("timer").classList.remove("hidden");if(timerId)clearInterval(timerId);timerId=setInterval(tick,500);$("loginError").textContent="";window.scrollTo(0,0)}catch(e){$("loginError").textContent=e.message;$("start").disabled=false}}$("start").onclick=startPortalQuiz;
+function tick(){let left=Math.max(0,Math.ceil((deadline-Date.now())/1000));$("timer").textContent=String(Math.floor(left/60)).padStart(2,"0")+":"+String(left%60).padStart(2,"0");if(left<=0)submit()}
+function render(){const q=questions[current];$("count").textContent="السؤال "+(current+1)+" من "+questions.length;$("bar").style.width=((current+1)/questions.length*100)+"%";let h="<h2>"+q.n+". "+q.q+"</h2>";h+='<div>';q.opts.forEach((o,i)=>{h+='<label class="option"><input type="radio" name="choice" value="'+LETTERS[i]+'" '+(answers[q.n]===LETTERS[i]?"checked":"")+' > '+LETTERS[i]+". "+o+"</label>"});h+="</div>";if(teacherPreviewMode)h+='<div class="result" style="margin-top:14px"><strong>الإجابة الصحيحة: </strong>'+LETTERS[q.correct]+". "+q.opts[q.correct]+'</div>';$("question").innerHTML=h;$("prev").classList.toggle("hidden",current===0);$("next").classList.toggle("hidden",current===questions.length-1);$("finish").classList.toggle("hidden",current!==questions.length-1);$("examError").textContent=""}
+function saveCurrent(){const q=questions[current];const x=document.querySelector('input[name="choice"]:checked');if(x)answers[q.n]=x.value;else delete answers[q.n]}
+$("prev").onclick=()=>{saveCurrent();current--;render()};$("next").onclick=()=>{saveCurrent();current++;render()};$("finish").onclick=async()=>{saveCurrent();if(await window.TahadiDialog.confirm("هل أنت متأكد من إنهاء الاختبار وإرسال الإجابات؟"))submit()};
+async function submit(){if(finished||!attemptId)return;finished=true;if(timerId)clearInterval(timerId);$("finish").disabled=true;try{const d=teacherPreviewMode?{score:questions.reduce((sum,q)=>sum+(answers[q.n]===LETTERS[q.correct]?1:0),0)}:await api({action:"submit",attempt_id:attemptId,selected_answers:answers,written_answers:{},question_bank:questions.map(q=>({n:q.n,q:q.q,opts:q.opts}))},attemptToken);$("exam").classList.add("hidden");const results=$("results");results.classList.remove("hidden");results.innerHTML='<h2>تم إرسال الاختبار بنجاح</h2><div class="result"><h1>علامتك: '+d.score+' / 20</h1><p>تم تصحيح الأسئلة العشرين آليًا، وكل سؤال عليه نقطة واحدة.</p></div><h3>التصحيح الآلي</h3>'+questions.filter(q=>q.type==="mcq").map(q=>{const chosen=answers[q.n];const isCorrect=chosen!==undefined&&String(chosen)===LETTERS[q.correct];const cardClass=isCorrect?"review-correct":"review-wrong";const chosenIndex=LETTERS.indexOf(chosen);const chosenText=chosenIndex>=0?q.opts[chosenIndex]:chosen||"لم تجب";return '<article class="review-card '+cardClass+'"><strong class="review-title">'+q.n+'. '+q.q+'</strong><p class="review-line"><span class="review-label">إجابتك:</span> '+(chosen?chosen+". "+chosenText:"لم تجب")+'</p><p class="review-line"><span class="review-label">الإجابة الصحيحة:</span> '+LETTERS[q.correct]+'. '+q.opts[q.correct]+'</p><span class="review-status">'+(isCorrect?"✓ إجابة صحيحة":"✗ إجابة خاطئة أو بدون إجابة")+'</span></article>'}).join("")+'<p class="muted">'+(teacherPreviewMode?'هذه نتيجة معاينة محلية فقط، ولم تُسجّل محاولة أو نتيجة في قاعدة بيانات التلاميذ.':'تم حفظ نتيجتك وإجاباتك لدى الأستاذة.')+'</p>';window.scrollTo(0,0)}catch(e){finished=false;$("examError").textContent=e.message+" — لا تغلقي الصفحة، حاولي الإرسال مجددًا.";$("finish").disabled=false}}
+</script>
+<script src="./workspace-autosave.js" defer></script>
+<script src="./writing-tools.js" defer></script>
+<script src="./tahadi-dialogs.js" defer></script>
+</body></html>
