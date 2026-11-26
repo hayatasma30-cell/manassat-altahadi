@@ -363,7 +363,7 @@ function renderIllustrationEditors(){
   const heading=document.createElement("b");heading.textContent=(index+1)+". "+item.name;card.append(heading);
   const sizeLabel=document.createElement("label");sizeLabel.textContent="حجم الصورة: "+item.size+" px";
   const size=document.createElement("input");size.type="range";size.min="50";size.max="280";size.value=item.size;
-  size.addEventListener("input",()=>{item.size=Number(size.value);sizeLabel.textContent="حجم الصورة: "+item.size+" px";render();});
+  size.addEventListener("input",()=>{item.size=Number(size.value);sizeLabel.textContent="حجم الصورة: "+item.size+" px";const preview=$("pImages").children[index]?.querySelector("img");if(preview)preview.style.width=item.size+"px";});
   const positionLabel=document.createElement("label");positionLabel.textContent="مكان الصورة";
   const position=document.createElement("select");
   [["center","وسط"],["right","يمين"],["left","يسار"],["top","بداية القسم"],["bottom","نهاية القسم"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;position.append(o);});
@@ -381,7 +381,7 @@ function renderDecorationEditors(){
   const heading=document.createElement("b");heading.textContent=item.symbol+" الزخرفة "+(index+1);card.append(heading);
   const sizeLabel=document.createElement("label");sizeLabel.textContent="الحجم: "+item.size+" px";
   const size=document.createElement("input");size.type="range";size.min="18";size.max="90";size.value=item.size;
-  size.addEventListener("input",()=>{item.size=Number(size.value);sizeLabel.textContent="الحجم: "+item.size+" px";render();});
+  size.addEventListener("input",()=>{item.size=Number(size.value);sizeLabel.textContent="الحجم: "+item.size+" px";const preview=$("poster").querySelectorAll(".poster-custom-decorations span")[index];if(preview)preview.style.fontSize=item.size+"px";});
   const position=document.createElement("select");
   [["top-left","أعلى اليسار"],["top-right","أعلى اليمين"],["bottom-left","أسفل اليسار"],["bottom-right","أسفل اليمين"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;position.append(o);});
   position.value=item.position;position.addEventListener("change",()=>{item.position=position.value;render();});
