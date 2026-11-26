@@ -78,6 +78,34 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <button type="button" class="design-choice" data-design="minimal" aria-pressed="false"><span class="swatches"><i style="background:#34433b"></i><i style="background:#dce2dc"></i></span>أبيض بسيط وأنيق</button>
 <button type="button" class="design-choice" data-design="botanical" aria-pressed="false"><span class="swatches"><i style="background:#39713c"></i><i style="background:#a4c36d"></i></span>طبيعي نباتي</button>
 </div></fieldset>
+<fieldset id="layoutControls" class="layout-controls"><legend>التحكم الدقيق في تصميم الورقة</legend>
+<p class="status">عدّلي كل جزء وشاهدي النتيجة مباشرة في المعاينة.</p>
+<div class="control-grid">
+<label>حجم العنوان <output id="outTitleSize">30</output><input id="ctrlTitleSize" type="range" min="18" max="42" value="30"></label>
+<label>حجم النص <output id="outBodySize">16</output><input id="ctrlBodySize" type="range" min="10" max="24" value="16"></label>
+<label>حجم الجداول <output id="outTableSize">15</output><input id="ctrlTableSize" type="range" min="9" max="22" value="15"></label>
+<label>حجم التعليمات <output id="outTaskSize">16</output><input id="ctrlTaskSize" type="range" min="10" max="22" value="16"></label>
+<label>حجم الرمز <output id="outLogoSize">100</output><input id="ctrlLogoSize" type="range" min="35" max="150" value="100"></label>
+<label>حجم الصور <output id="outImageSize">150</output><input id="ctrlImageSize" type="range" min="45" max="240" value="150"></label>
+<label>المسافة بين الأقسام <output id="outSectionGap">14</output><input id="ctrlSectionGap" type="range" min="0" max="30" value="14"></label>
+<label>هوامش الورقة <output id="outPagePadding">24</output><input id="ctrlPagePadding" type="range" min="8" max="40" value="24"></label>
+<label>موضع الرمز<select id="ctrlLogoPosition"><option value="right">يمين العنوان</option><option value="left">يسار العنوان</option><option value="top">فوق العنوان</option><option value="hidden">إخفاء الرمز</option></select></label>
+<label>توزيع القسم الأول<select id="ctrlSection1Layout"><option value="table-note">جدول وملاحظة جنبًا إلى جنب</option><option value="note-table">ملاحظة ثم جدول</option><option value="stack">جدول بعرض كامل ثم الملاحظة</option></select></label>
+<label>توزيع القسم الثاني<select id="ctrlSection2Layout"><option value="table-images">جدول وصور جنبًا إلى جنب</option><option value="images-table">صور ثم جدول</option><option value="stack">جدول بعرض كامل ثم الصور</option></select></label>
+<label>شكل الصور<select id="ctrlImageLayout"><option value="row">صور أفقية</option><option value="column">صور عمودية</option><option value="grid">شبكة صور</option></select></label>
+<label>محاذاة المحتوى<select id="ctrlAlignment"><option value="center">وسط</option><option value="right">يمين</option><option value="justify">ضبط النص</option></select></label>
+</div>
+<div class="visibility-controls"><strong>إظهار أو إخفاء العناصر</strong>
+<label><input type="checkbox" id="showLogo" checked> رمز الصفحة</label>
+<label><input type="checkbox" id="showSubtitle" checked> العنوان الفرعي</label>
+<label><input type="checkbox" id="showIntro" checked> الجملة التوجيهية</label>
+<label><input type="checkbox" id="showText1" checked> شرح القسم الأول</label>
+<label><input type="checkbox" id="showText2" checked> شرح القسم الثاني</label>
+<label><input type="checkbox" id="showImages" checked> مساحة الصور</label>
+<label><input type="checkbox" id="showFooter" checked> التذييل</label>
+</div>
+<button class="btn" id="resetLayout" type="button">إعادة ضبط إعدادات التصميم فقط</button>
+</fieldset>
 <label for="documentType">نوع الوثيقة</label>
 <select id="documentType">
 <option value="lesson">ملخص درس</option><option value="worksheet" selected>ورقة عمل</option><option value="exam">اختبار أو فرض</option><option value="poster">ملصق علمي</option><option value="experiment">بطاقة تجربة</option><option value="tables">جداول ووثائق</option>
@@ -131,6 +159,25 @@ let uploadedImages=[];
 function addRow(containerId,a="",b=""){const row=document.createElement("div");row.className="row-editor";const one=document.createElement("input"),two=document.createElement("input"),del=document.createElement("button");one.placeholder=containerId==="tableRows"?"العنصر المعدني":"رقم النبتة";two.placeholder=containerId==="tableRows"?"الكمية":"التركيب المعدني";one.value=a;two.value=b;one.addEventListener("input",render);two.addEventListener("input",render);del.type="button";del.className="remove";del.textContent="×";del.title="حذف السطر";del.onclick=()=>{row.remove();render();};row.append(one,two,del);$(containerId).append(row);render();}
 function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+const layoutDefaults={ctrlTitleSize:30,ctrlBodySize:16,ctrlTableSize:15,ctrlTaskSize:16,ctrlLogoSize:100,ctrlImageSize:150,ctrlSectionGap:14,ctrlPagePadding:24,ctrlLogoPosition:"right",ctrlSection1Layout:"table-note",ctrlSection2Layout:"table-images",ctrlImageLayout:"row",ctrlAlignment:"center"};
+function applyLayoutControls(){
+ const p=$("poster");if(!p)return;
+ const map={ctrlTitleSize:["--ctrl-title","px","outTitleSize"],ctrlBodySize:["--ctrl-body","px","outBodySize"],ctrlTableSize:["--ctrl-table","px","outTableSize"],ctrlTaskSize:["--ctrl-task","px","outTaskSize"],ctrlLogoSize:["--ctrl-logo","px","outLogoSize"],ctrlImageSize:["--ctrl-image","px","outImageSize"],ctrlSectionGap:["--ctrl-section-gap","px","outSectionGap"],ctrlPagePadding:["--ctrl-page-pad","px","outPagePadding"]};
+ Object.entries(map).forEach(([id,[variable,unit,out]])=>{const v=$(id).value;p.style.setProperty(variable,v+unit);$(out).textContent=v;});
+ ["ctrl-logo-left","ctrl-logo-top","ctrl-logo-hidden","ctrl-s1-note-table","ctrl-s1-stack","ctrl-s2-images-table","ctrl-s2-stack","ctrl-images-column","ctrl-images-grid","ctrl-align-right","ctrl-align-justify","ctrl-hide-logo","ctrl-hide-subtitle","ctrl-hide-intro","ctrl-hide-text1","ctrl-hide-text2","ctrl-hide-images","ctrl-hide-footer"].forEach(c=>p.classList.remove(c));
+ const pos=$("ctrlLogoPosition").value;if(pos!=="right")p.classList.add("ctrl-logo-"+pos);
+ const s1=$("ctrlSection1Layout").value;if(s1!=="table-note")p.classList.add("ctrl-s1-"+(s1==="note-table"?"note-table":"stack"));
+ const s2=$("ctrlSection2Layout").value;if(s2!=="table-images")p.classList.add("ctrl-s2-"+(s2==="images-table"?"images-table":"stack"));
+ const im=$("ctrlImageLayout").value;if(im!=="row")p.classList.add("ctrl-images-"+im);
+ const al=$("ctrlAlignment").value;if(al!=="center")p.classList.add("ctrl-align-"+al);
+ const visibility=[["showLogo","ctrl-hide-logo"],["showSubtitle","ctrl-hide-subtitle"],["showIntro","ctrl-hide-intro"],["showText1","ctrl-hide-text1"],["showText2","ctrl-hide-text2"],["showImages","ctrl-hide-images"],["showFooter","ctrl-hide-footer"]];
+ visibility.forEach(([id,c])=>{if(!$(id).checked)p.classList.add(c);});
+ fitPoster();
+}
+Object.keys(layoutDefaults).forEach(id=>$(id).addEventListener("input",applyLayoutControls));
+["showLogo","showSubtitle","showIntro","showText1","showText2","showImages","showFooter"].forEach(id=>$(id).addEventListener("change",applyLayoutControls));
+$("resetLayout").onclick=()=>{Object.entries(layoutDefaults).forEach(([id,v])=>$(id).value=v);["showLogo","showSubtitle","showIntro","showText1","showText2","showImages","showFooter"].forEach(id=>$(id).checked=true);applyLayoutControls();};
 let activeDesign="emerald";
 document.querySelectorAll(".design-choice").forEach(btn=>btn.addEventListener("click",()=>{activeDesign=btn.dataset.design;document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b===btn)));render();fitPoster();}));
 function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
@@ -139,6 +186,7 @@ $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
 $("pImages").innerHTML="";uploadedImages.forEach(src=>{const im=document.createElement("img");im.src=src;$("pImages").append(im);});
 if(logoData)$("posterLogo").src=logoData;
+applyLayoutControls();
 }
 function clearPosterPages(){
  const first=$("poster"),main=$("posterContent");if(!first||!main)return;
@@ -319,5 +367,44 @@ $("reset").click();
 #poster.design-botanical .poster-section{border-radius:22px;background:#fbfff5}
 #poster.design-botanical .poster-title h2{border-radius:28px}
 @media(max-width:520px){.design-options{grid-template-columns:1fr 1fr}.design-choice{font-size:.78rem;padding:7px}}
+
+.layout-controls .control-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.layout-controls .control-grid label{margin:4px 0;font-size:.82rem}
+.layout-controls output{float:left;color:#14532d;font-weight:900}
+.layout-controls input[type=range]{padding:0;border:0;accent-color:#17633b}
+.layout-controls select{font-size:.85rem;padding:8px}
+.visibility-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:12px 0}
+.visibility-controls strong{grid-column:1/-1;color:#14532d}
+.visibility-controls label{display:flex;align-items:center;gap:5px;font-size:.82rem;margin:0}
+.visibility-controls input{width:auto}
+#poster{--ctrl-title:30px;--ctrl-body:16px;--ctrl-table:15px;--ctrl-task:16px;--ctrl-logo:100px;--ctrl-image:150px;--ctrl-section-gap:14px;--ctrl-page-pad:24px;--ctrl-align:center}
+#poster .poster-title h2{font-size:var(--ctrl-title)!important}
+#poster .section-body{font-size:var(--ctrl-body)!important;text-align:var(--ctrl-align)!important}
+#poster .poster-table{font-size:var(--ctrl-table)!important}
+#poster .task{font-size:var(--ctrl-task)!important;text-align:var(--ctrl-align)!important}
+#poster .poster-logo{width:var(--ctrl-logo)!important;height:var(--ctrl-logo)!important}
+#poster .poster-images img{max-height:var(--ctrl-image)!important}
+#poster .poster-section{margin-block:calc(var(--ctrl-section-gap)/2)!important}
+#poster{padding:var(--ctrl-page-pad)!important}
+#poster .poster-images:empty{display:none!important}
+#poster.ctrl-logo-left .poster-top{grid-template-columns:var(--ctrl-logo) minmax(0,1fr) 28px!important}
+#poster.ctrl-logo-left .poster-logo{grid-column:1!important;grid-row:1!important}
+#poster.ctrl-logo-left .poster-title{grid-column:2!important;grid-row:1!important}
+#poster.ctrl-logo-top .poster-top{display:flex!important;flex-direction:column!important}
+#poster.ctrl-logo-top .poster-logo{order:0!important}
+#poster.ctrl-logo-top .poster-title{order:1!important}
+#poster.ctrl-logo-hidden .poster-logo,#poster.ctrl-hide-logo .poster-logo{display:none!important}
+#poster.ctrl-hide-subtitle .poster-title div,#poster.ctrl-hide-intro #pIntro,#poster.ctrl-hide-text1 #pText1,#poster.ctrl-hide-text2 #pText2,#poster.ctrl-hide-images #pImages,#poster.ctrl-hide-footer .poster-footer{display:none!important}
+#poster.ctrl-align-right .section-body,#poster.ctrl-align-right .task{text-align:right!important}
+#poster.ctrl-align-justify .section-body,#poster.ctrl-align-justify .task{text-align:justify!important}
+#poster.ctrl-s1-note-table .poster-section:nth-of-type(1) .section-body{grid-column:1!important;grid-row:2!important}
+#poster.ctrl-s1-note-table .poster-section:nth-of-type(1) .poster-table{grid-column:2!important;grid-row:2!important}
+#poster.ctrl-s1-stack .poster-section:nth-of-type(1){display:flex!important;flex-direction:column!important}
+#poster.ctrl-s2-images-table .poster-section:nth-of-type(2) .poster-images{grid-column:1!important;grid-row:3!important}
+#poster.ctrl-s2-images-table .poster-section:nth-of-type(2) .poster-table{grid-column:2!important;grid-row:3!important}
+#poster.ctrl-s2-stack .poster-section:nth-of-type(2){display:flex!important;flex-direction:column!important}
+#poster.ctrl-images-column .poster-images{flex-direction:column!important}
+#poster.ctrl-images-grid .poster-images{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media(max-width:520px){.layout-controls .control-grid{grid-template-columns:1fr 1fr}.visibility-controls{grid-template-columns:1fr 1fr}}
 </style>
 </body></html>
