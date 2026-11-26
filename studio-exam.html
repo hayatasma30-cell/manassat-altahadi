@@ -68,7 +68,13 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 .basic-settings legend{color:var(--green);font-weight:800;padding:0 7px}
 #poster,.poster-page{aspect-ratio:var(--paper-ratio,210 / 297)}
 </style>
-</head>
+<style>
+.decoration-controls{border-top:1px solid #dce7d9;margin-top:12px;padding-top:10px}
+.decoration-controls input[type="range"]{padding:0;accent-color:#17633b}
+.decoration-controls output{font-weight:800;color:#14532d}
+#poster,.poster-page{padding:var(--paper-margin,24px)!important;border-width:var(--frame-width,6px)!important;border-style:var(--frame-style,double)!important}
+@media print{#poster,.poster-page{padding:var(--print-page-padding,6.35mm)!important;border-width:var(--print-frame-width,1.6mm)!important;border-style:var(--frame-style,double)!important}}
+</style></head>
 <body>
 <header class="top"><strong>🎨 اختبار أو فرض</strong><div style="display:flex;gap:8px;flex-wrap:wrap"><a href="studio-design.html">الرئيسية ←</a><a href="index.html">العودة إلى منصة التحدي ←</a></div></header>
 <main class="layout">
@@ -86,7 +92,15 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <label for="paperSize">حجم الورقة</label>
 <select id="paperSize"><option value="a4" selected>A4 — الحجم العادي</option><option value="a5">A5 — نصف A4</option><option value="a3">A3 — ضعف A4</option></select>
 <p class="status">رمز صفحة تحدي 20/20 ثابت ولا يتغير، وسيظهر تلقائيًا في كل الأوراق.</p>
-</fieldset>
+<div class="decoration-controls">
+<label for="pageMargin">هامش الورقة <output id="pageMarginValue">24</output> px</label>
+<input id="pageMargin" type="range" min="8" max="40" value="24">
+<label for="frameWidth">سماكة الإطار <output id="frameWidthValue">6</output> px</label>
+<input id="frameWidth" type="range" min="1" max="12" value="6">
+<label for="frameStyle">شكل الإطار</label>
+<select id="frameStyle"><option value="double" selected>مزدوج</option><option value="solid">متصل</option><option value="dashed">متقطع</option></select>
+<button class="btn" id="resetDecoration" type="button">إعادة ضبط الهوامش والإطار</button>
+</div></fieldset>
 <label for="documentType">نوع الوثيقة</label>
 <select id="documentType">
 <option value="lesson">ملخص درس</option><option value="worksheet">ورقة عمل</option><option value="exam" selected>اختبار أو فرض</option><option value="poster">ملصق علمي</option><option value="experiment">بطاقة تجربة</option><option value="tables">جداول ووثائق</option>
@@ -150,6 +164,22 @@ function applyPaperSize(){
  fitPoster();
 }
 $("paperSize").addEventListener("change",applyPaperSize);
+function applyPageDecoration(){
+ const margin=Number($("pageMargin").value)||24;
+ const frame=Number($("frameWidth").value)||6;
+ const style=$("frameStyle").value||"double";
+ const poster=$("poster");
+ poster.style.setProperty("--paper-margin",margin+"px");
+ poster.style.setProperty("--frame-width",frame+"px");
+ poster.style.setProperty("--frame-style",style);
+ poster.style.setProperty("--print-page-padding",(margin*25.4/96)+"mm");
+ poster.style.setProperty("--print-frame-width",(frame*25.4/96)+"mm");
+ $("pageMarginValue").textContent=margin;
+ $("frameWidthValue").textContent=frame;
+ fitPoster();
+}
+["pageMargin","frameWidth","frameStyle"].forEach(id=>$(id).addEventListener("input",applyPageDecoration));
+$("resetDecoration").onclick=()=>{$("pageMargin").value=24;$("frameWidth").value=6;$("frameStyle").value="double";applyPageDecoration();};
 function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign;$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
@@ -202,7 +232,7 @@ const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem
 const expiry=localStorage.getItem("tahadi_teacher_expires")||sessionStorage.getItem("tahadi_teacher_expires_bridge")||"";
 if(token){localStorage.setItem("tahadi_teacher_token",token);if(expiry)localStorage.setItem("tahadi_teacher_expires",expiry);}
 if(!token||expiry&&new Date(expiry).getTime()<=Date.now()){document.body.innerHTML='<main style="max-width:520px;margin:12vh auto;padding:24px;background:#fff;border-radius:18px;text-align:center;font-family:Tahoma"><h2 style="color:#14532d">الدخول إلى فضاء الأستاذة</h2><p>يجب تسجيل الدخول من منصة التحدي أولًا، ثم فتح استوديو التصميم.</p><a href="index.html" style="display:inline-block;padding:12px 18px;background:#14532d;color:#fff;border-radius:10px;text-decoration:none">العودة إلى المنصة</a></main>';}
-$("reset").click();applyPaperSize();
+$("reset").click();applyPaperSize();applyPageDecoration();
 </script>
 <style>
 @media print{body{background:#fff}#posterViewport{display:block;width:210mm!important;overflow:visible!important}#poster,.poster-page{display:block;position:relative!important;width:var(--paper-width-mm,210mm)!important;height:var(--paper-height-mm,297mm)!important;min-height:var(--paper-height-mm,297mm)!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:8mm!important;overflow:hidden!important;box-shadow:none;border:1.5mm double #2d7444;transform:none!important;break-after:page;page-break-after:always}.poster-content{height:100%!important;overflow:hidden!important}.top,.form-panel,.preview-head{display:none!important}.layout{display:block;margin:0;padding:0}.preview-panel{border:0;padding:0;box-shadow:none;width:100%}@page{size:A4 portrait;margin:0}}
