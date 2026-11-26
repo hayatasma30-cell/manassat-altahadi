@@ -100,6 +100,30 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 </div>
 </fieldset>
 
+<fieldset class="layout-controls" id="fineLayoutControls">
+<legend>التحكم في كل عنصر على حدة</legend>
+<div class="control-grid">
+<div><label for="logoPosition">مكان الرمز الثابت</label><select id="logoPosition"><option value="right">يمين العنوان</option><option value="left">يسار العنوان</option><option value="top">فوق العنوان</option><option value="hidden">إخفاء من المعاينة فقط</option></select></div>
+<div><label for="logoSize">حجم الرمز <output id="logoSizeValue">100</output> px</label><input id="logoSize" type="range" min="45" max="150" value="100"></div>
+<div><label for="titleSize">حجم العنوان <output id="titleSizeValue">30</output> px</label><input id="titleSize" type="range" min="18" max="42" value="30"></div>
+<div><label for="titleAlign">محاذاة العنوان</label><select id="titleAlign"><option value="center">وسط</option><option value="right">يمين</option><option value="left">يسار</option></select></div>
+<div><label for="tableSize">حجم خط الجداول <output id="tableSizeValue">15</output> px</label><input id="tableSize" type="range" min="10" max="22" value="15"></div>
+<div><label for="imageSize">حجم الصور <output id="imageSizeValue">150</output> px</label><input id="imageSize" type="range" min="60" max="240" value="150"></div>
+<div><label for="imageLayout">ترتيب الصور</label><select id="imageLayout"><option value="row">جنبًا إلى جنب</option><option value="column">عمودي</option><option value="grid">شبكة</option></select></div>
+<div><label for="tablePosition">ترتيب جدول القسم الأول</label><select id="tablePosition"><option value="default">حسب القالب</option><option value="swap">تبديل مكان الجدول والشرح</option><option value="stack">الجدول تحت الشرح</option></select></div>
+</div>
+<div class="visibility-controls">
+<strong>إظهار وإخفاء عناصر الورقة</strong>
+<label><input type="checkbox" id="showSubtitle" checked> العنوان الفرعي</label>
+<label><input type="checkbox" id="showIntro" checked> الجملة التوجيهية</label>
+<label><input type="checkbox" id="showText1" checked> شرح القسم الأول</label>
+<label><input type="checkbox" id="showText2" checked> شرح القسم الثاني</label>
+<label><input type="checkbox" id="showImages" checked> صور التجربة</label>
+<label><input type="checkbox" id="showFooter" checked> التذييل</label>
+</div>
+<button type="button" class="btn" id="resetFineLayout">إعادة ضبط تحكم العناصر</button>
+</fieldset>
+
 <fieldset class="basic-settings"><legend>إعدادات الورقة الأساسية</legend>
 <label for="paperSize">حجم الورقة</label>
 <select id="paperSize"><option value="a4" selected>A4 — الحجم العادي</option><option value="a5">A5 — نصف A4</option><option value="a3">A3 — ضعف A4</option></select>
@@ -179,7 +203,48 @@ $("applyReferenceStyle").onclick=()=>{
  activeDesign="emerald";$("documentType").value="worksheet";$("paperSize").value="a4";
  $("pageMargin").value=22;$("frameWidth").value=7;$("frameStyle").value="double";
  document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.design==="emerald")));
- syncVisualButtons();applyPaperSize();applyPageDecoration();render();
+ 
+syncVisualButtons();
+function applyFineLayout(){
+ const p=$("poster");
+ const pos=$("logoPosition").value;
+ p.classList.remove("ctrl-logo-left","ctrl-logo-top","ctrl-logo-hidden","ctrl-s1-note-table","ctrl-s1-stack","ctrl-images-column","ctrl-images-grid","ctrl-title-align-right","ctrl-title-align-left");
+ if(pos==="left")p.classList.add("ctrl-logo-left");
+ if(pos==="top")p.classList.add("ctrl-logo-top");
+ if(pos==="hidden")p.classList.add("ctrl-logo-hidden");
+ const vars={logoSize:"--ctrl-logo",titleSize:"--ctrl-title",tableSize:"--ctrl-table",imageSize:"--ctrl-image"};
+ Object.entries(vars).forEach(([id,key])=>p.style.setProperty(key,$(id).value+"px"));
+ $("logoSizeValue").textContent=$("logoSize").value;
+ $("titleSizeValue").textContent=$("titleSize").value;
+ $("tableSizeValue").textContent=$("tableSize").value;
+ $("imageSizeValue").textContent=$("imageSize").value;
+ const align=$("titleAlign").value;
+ if(align==="right")p.classList.add("ctrl-title-align-right");
+ if(align==="left")p.classList.add("ctrl-title-align-left");
+ const tablePos=$("tablePosition").value;
+ if(tablePos==="swap")p.classList.add("ctrl-s1-note-table");
+ if(tablePos==="stack")p.classList.add("ctrl-s1-stack");
+ const imageLayout=$("imageLayout").value;
+ if(imageLayout==="column")p.classList.add("ctrl-images-column");
+ if(imageLayout==="grid")p.classList.add("ctrl-images-grid");
+ const visibility={showSubtitle:"ctrl-hide-subtitle",showIntro:"ctrl-hide-intro",showText1:"ctrl-hide-text1",showText2:"ctrl-hide-text2",showImages:"ctrl-hide-images",showFooter:"ctrl-hide-footer"};
+ Object.entries(visibility).forEach(([id,cls])=>p.classList.toggle(cls,!$(id).checked));
+ [...$("posterViewport").querySelectorAll(".poster-page")].forEach(page=>{
+  [...p.classList].filter(c=>c.startsWith("ctrl-")||c.startsWith("no-plant")||c.startsWith("no-science")||c.startsWith("no-gold")).forEach(c=>page.classList.add(c));
+  Object.entries(vars).forEach(([id,key])=>page.style.setProperty(key,$(id).value+"px"));
+ });
+ fitPoster();
+}
+["logoPosition","logoSize","titleSize","titleAlign","tableSize","imageSize","imageLayout","tablePosition","showSubtitle","showIntro","showText1","showText2","showImages","showFooter"].forEach(id=>{
+ $(id).addEventListener("input",applyFineLayout);$(id).addEventListener("change",applyFineLayout);
+});
+$("resetFineLayout").onclick=()=>{
+ $("logoPosition").value="right";$("logoSize").value=100;$("titleSize").value=30;$("titleAlign").value="center";
+ $("tableSize").value=15;$("imageSize").value=150;$("imageLayout").value="row";$("tablePosition").value="default";
+ ["showSubtitle","showIntro","showText1","showText2","showImages","showFooter"].forEach(id=>$(id).checked=true);
+ applyFineLayout();
+};
+applyPaperSize();applyPageDecoration();render();
  $("status").textContent="تم تطبيق التصميم المستوحى من الصورة المرجعية. يمكنك الآن تعديل المحتوى والزخارف.";
 };
 document.querySelectorAll(".reference-toggle").forEach(btn=>btn.addEventListener("click",()=>{
@@ -469,5 +534,22 @@ $("reset").click();applyPaperSize();applyPageDecoration();
 #poster.no-gold-frame .poster-title h2,#poster.no-gold-frame .section-title,#poster.no-gold-frame .poster-intro,#poster.no-gold-frame .task,#poster.no-gold-frame .poster-footer,
 .poster-page.no-gold-frame .poster-title h2,.poster-page.no-gold-frame .section-title,.poster-page.no-gold-frame .poster-intro,.poster-page.no-gold-frame .task,.poster-page.no-gold-frame .poster-footer{border-color:#4c8a5b!important;box-shadow:none!important}
 @media(max-width:520px){.reference-toggle-grid{grid-template-columns:1fr 1fr}.reference-toggle{font-size:.75rem;padding:6px}}
+
+/* Fine-grained element controls */
+#poster.ctrl-logo-left .poster-top{grid-template-columns:var(--ctrl-logo) minmax(0,1fr) 28px!important}
+#poster.ctrl-logo-left .poster-logo{grid-column:1!important;grid-row:1!important}
+#poster.ctrl-logo-left .poster-title{grid-column:2!important;grid-row:1!important}
+#poster.ctrl-logo-top .poster-top{display:flex!important;flex-direction:column!important}
+#poster.ctrl-logo-top .poster-logo{order:0!important}
+#poster.ctrl-logo-top .poster-title{order:1!important}
+#poster.ctrl-logo-hidden .poster-logo{display:none!important}
+#poster.ctrl-title-align-right .poster-title{text-align:right!important}
+#poster.ctrl-title-align-left .poster-title{text-align:left!important}
+#poster.ctrl-s1-note-table .poster-section:nth-of-type(1) .section-body{grid-column:1!important;grid-row:2!important}
+#poster.ctrl-s1-note-table .poster-section:nth-of-type(1) .poster-table{grid-column:2!important;grid-row:2!important}
+#poster.ctrl-s1-stack .poster-section:nth-of-type(1){display:flex!important;flex-direction:column!important}
+#poster.ctrl-images-column .poster-images{flex-direction:column!important}
+#poster.ctrl-images-grid .poster-images{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#poster.ctrl-hide-subtitle .poster-title div,#poster.ctrl-hide-intro #pIntro,#poster.ctrl-hide-text1 #pText1,#poster.ctrl-hide-text2 #pText2,#poster.ctrl-hide-images #pImages,#poster.ctrl-hide-footer .poster-footer{display:none!important}
 </style>
 </body></html>
