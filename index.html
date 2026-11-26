@@ -3771,7 +3771,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     if(!token){status.textContent="انتهت جلسة الأستاذة. سجلي الدخول مجددًا.";return;}
     button.disabled=true;status.textContent="جارٍ تحميل محاولات التلميذ…";box.textContent="";
     const base="https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/";
-    const sources=[{url:base+"earthquakes-quiz",slug:"earthquakes-tectonic-deformation-3am"},{url:base+"nahl-quiz",slug:"nahl-community-03"}];
+    const sources=[{url:base+"earthquakes-quiz",slug:"earthquakes-tectonic-deformation-3am"},{url:base+"nahl-quiz",slug:"nahl-community-03"},{url:base+"subduction-quiz",slug:"subduction-geological-phenomena-3am"}];
     try{
       const results=await Promise.all(sources.map(async source=>{
         const response=await fetch(source.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"teacher_quiz_status",student_id:sid})});
