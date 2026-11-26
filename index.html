@@ -3689,6 +3689,44 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
     const root=$("electronicTestManageContent"),s=r.quiz_settings||{duration_minutes:60,max_attempts:2,show_results:true,shuffle_questions:false};
     root.replaceChildren();
     const heading=document.createElement("h3");heading.className="quiz-manage-kicker";heading.textContent="⚙️ إعدادات الاختبار";root.appendChild(heading);
+    if(String(r.resource_url||"").includes("test-ghaws-3am.html")){
+      const editor=document.createElement("section");editor.className="panel";editor.style.cssText="margin:18px 0;padding:16px;border:1px solid #cbdcc5;border-radius:16px;background:#fbfff9";
+      const eh=document.createElement("h3");eh.textContent="✏️ تعديل أسئلة الاختبار";editor.appendChild(eh);
+      const intro=document.createElement("p");intro.textContent="عدّلي الأسئلة والاختيارات، حددي الإجابة الصحيحة، أو أضيفي واحذفي أسئلة. تُحفظ التعديلات في قاعدة البيانات وتظهر في الاختبار مباشرة.";editor.appendChild(intro);
+      const list=document.createElement("div");list.style.cssText="display:grid;gap:14px";editor.appendChild(list);
+      const msg=document.createElement("p");msg.setAttribute("role","status");editor.appendChild(msg);
+      const controls=document.createElement("div");controls.style.cssText="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px";
+      const add=document.createElement("button");add.className="secondary";add.textContent="＋ إضافة سؤال";
+      const saveBank=document.createElement("button");saveBank.className="primary";saveBank.style.width="auto";saveBank.textContent="💾 حفظ جميع الأسئلة";
+      controls.append(add,saveBank);editor.appendChild(controls);root.appendChild(editor);
+      const teacherToken=localStorage.getItem("tahadi_teacher_token")||"";
+      const bankCall=async(action,extra={})=>{const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/subduction-quiz",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+teacherToken},body:JSON.stringify({action,...extra})});const data=await response.json();if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تنفيذ العملية.");return data;};
+      let bankQuestions=[];
+      const renderBank=()=>{
+        list.replaceChildren();
+        bankQuestions.forEach((q,idx)=>{
+          const card=document.createElement("article");card.style.cssText="padding:13px;border:1px solid #dce8d7;border-radius:13px;background:white";
+          const top=document.createElement("div");top.style.cssText="display:flex;align-items:center;justify-content:space-between;gap:8px";
+          const label=document.createElement("strong");label.textContent="السؤال "+(idx+1);
+          const del=document.createElement("button");del.type="button";del.className="secondary";del.textContent="حذف السؤال";del.style.cssText="width:auto;background:#fff0f0;color:#9f2431";
+          del.addEventListener("click",()=>{if(bankQuestions.length<=1){msg.textContent="يجب أن يبقى سؤال واحد على الأقل.";return;}bankQuestions.splice(idx,1);renderBank();});
+          top.append(label,del);card.appendChild(top);
+          const qlabel=document.createElement("label");qlabel.textContent="نص السؤال";
+          const qinput=document.createElement("textarea");qinput.value=q.q||"";qinput.rows=2;qinput.style.cssText="width:100%;padding:10px;border:1px solid #cbd7ca;border-radius:9px;font:inherit";qinput.addEventListener("input",()=>q.q=qinput.value);card.append(qlabel,qinput);
+          q.opts=(Array.isArray(q.opts)?q.opts:[]).slice(0,4);while(q.opts.length<4)q.opts.push("");
+          q.opts.forEach((opt,j)=>{const l=document.createElement("label");l.textContent="الاختيار "+["A","B","C","D"][j];const input=document.createElement("input");input.type="text";input.value=opt;input.style.cssText="width:100%;padding:10px;border:1px solid #cbd7ca;border-radius:9px";input.addEventListener("input",()=>q.opts[j]=input.value);card.append(l,input);});
+          const cl=document.createElement("label");cl.textContent="الإجابة الصحيحة";
+          const sel=document.createElement("select");sel.style.cssText="width:100%;padding:10px;border:1px solid #cbd7ca;border-radius:9px";
+          ["A","B","C","D"].forEach(letter=>{const op=document.createElement("option");op.value=letter;op.textContent=letter;sel.appendChild(op);});sel.value=["A","B","C","D"].includes(q.correct)?q.correct:"A";sel.addEventListener("change",()=>q.correct=sel.value);card.append(cl,sel);
+          list.appendChild(card);
+        });
+      };
+      try{const data=await bankCall("teacher_get_questions");bankQuestions=(data.questions||[]).map(q=>({...q,opts:[...(q.opts||[])]}));renderBank();msg.textContent="تم تحميل "+bankQuestions.length+" سؤالًا من قاعدة البيانات.";}
+      catch(e){msg.textContent=e.message||"تعذر تحميل بنك الأسئلة.";}
+      add.addEventListener("click",()=>{if(bankQuestions.length>=50){msg.textContent="الحد الأقصى 50 سؤالًا.";return;}bankQuestions.push({n:bankQuestions.length+1,q:"",opts:["","","",""],correct:"A"});renderBank();});
+      saveBank.addEventListener("click",async()=>{saveBank.disabled=true;msg.textContent="جارٍ حفظ جميع الأسئلة…";try{const data=await bankCall("teacher_save_questions",{questions:bankQuestions});msg.textContent="✓ "+data.message+" ("+data.count+" سؤالًا)";}catch(e){msg.textContent=e.message||"تعذر حفظ الأسئلة.";}finally{saveBank.disabled=false;}});
+    }
+
     const title=document.createElement("h2");title.className="quiz-manage-title";title.textContent=r.title;root.appendChild(title);
     const meta=document.createElement("p");meta.className="quiz-manage-meta";meta.textContent=(r.level||"")+" • "+(r.is_published?"منشور للتلاميذ":"مسودة");root.appendChild(meta);
     if(r.description){const desc=document.createElement("p");desc.className="quiz-manage-description";desc.textContent=r.description;root.appendChild(desc);}
