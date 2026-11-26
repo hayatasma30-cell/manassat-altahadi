@@ -85,6 +85,12 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <label>حجم النص <output id="outBodySize">16</output><input id="ctrlBodySize" type="range" min="10" max="24" value="16"></label>
 <label>حجم الجداول <output id="outTableSize">15</output><input id="ctrlTableSize" type="range" min="9" max="22" value="15"></label>
 <label>حجم التعليمات <output id="outTaskSize">16</output><input id="ctrlTaskSize" type="range" min="10" max="22" value="16"></label>
+<label>حجم عنوان القسم <output id="outSectionTitleSize">19</output><input id="ctrlSectionTitleSize" type="range" min="12" max="28" value="19"></label>
+<label>حجم الجملة التوجيهية <output id="outIntroSize">17</output><input id="ctrlIntroSize" type="range" min="10" max="24" value="17"></label>
+<label>حجم التذييل <output id="outFooterSize">14</output><input id="ctrlFooterSize" type="range" min="9" max="20" value="14"></label>
+<label>سماكة الإطار <output id="outBorderSize">2</output><input id="ctrlBorderSize" type="range" min="1" max="8" value="2"></label>
+<label>المسافة داخل القسم <output id="outSectionPadding">12</output><input id="ctrlSectionPadding" type="range" min="3" max="24" value="12"></label>
+<label>ارتفاع أسطر الجدول <output id="outTablePadding">7</output><input id="ctrlTablePadding" type="range" min="2" max="16" value="7"></label>
 <label>حجم الرمز <output id="outLogoSize">100</output><input id="ctrlLogoSize" type="range" min="35" max="150" value="100"></label>
 <label>حجم الصور <output id="outImageSize">150</output><input id="ctrlImageSize" type="range" min="45" max="240" value="150"></label>
 <label>المسافة بين الأقسام <output id="outSectionGap">14</output><input id="ctrlSectionGap" type="range" min="0" max="30" value="14"></label>
@@ -93,7 +99,7 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <label>توزيع القسم الأول<select id="ctrlSection1Layout"><option value="table-note">جدول وملاحظة جنبًا إلى جنب</option><option value="note-table">ملاحظة ثم جدول</option><option value="stack">جدول بعرض كامل ثم الملاحظة</option></select></label>
 <label>توزيع القسم الثاني<select id="ctrlSection2Layout"><option value="table-images">جدول وصور جنبًا إلى جنب</option><option value="images-table">صور ثم جدول</option><option value="stack">جدول بعرض كامل ثم الصور</option></select></label>
 <label>شكل الصور<select id="ctrlImageLayout"><option value="row">صور أفقية</option><option value="column">صور عمودية</option><option value="grid">شبكة صور</option></select></label>
-<label>محاذاة المحتوى<select id="ctrlAlignment"><option value="center">وسط</option><option value="right">يمين</option><option value="justify">ضبط النص</option></select></label>
+<label>محاذاة المحتوى<select id="ctrlAlignment"><option value="center">وسط</option><option value="right">يمين</option><option value="justify">ضبط النص</option></select></label><label>محاذاة العنوان<select id="ctrlTitleAlignment"><option value="center">وسط</option><option value="right">يمين</option><option value="left">يسار</option></select></label>
 </div>
 <div class="visibility-controls"><strong>إظهار أو إخفاء العناصر</strong>
 <label><input type="checkbox" id="showLogo" checked> رمز الصفحة</label>
@@ -160,17 +166,18 @@ function addRow(containerId,a="",b=""){const row=document.createElement("div");r
 function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 
-const layoutDefaults={ctrlTitleSize:30,ctrlBodySize:16,ctrlTableSize:15,ctrlTaskSize:16,ctrlLogoSize:100,ctrlImageSize:150,ctrlSectionGap:14,ctrlPagePadding:24,ctrlLogoPosition:"right",ctrlSection1Layout:"table-note",ctrlSection2Layout:"table-images",ctrlImageLayout:"row",ctrlAlignment:"center"};
+const layoutDefaults={ctrlTitleSize:30,ctrlBodySize:16,ctrlTableSize:15,ctrlTaskSize:16,ctrlSectionTitleSize:19,ctrlIntroSize:17,ctrlFooterSize:14,ctrlBorderSize:2,ctrlSectionPadding:12,ctrlTablePadding:7,ctrlLogoSize:100,ctrlImageSize:150,ctrlSectionGap:14,ctrlPagePadding:24,ctrlLogoPosition:"right",ctrlSection1Layout:"table-note",ctrlSection2Layout:"table-images",ctrlImageLayout:"row",ctrlAlignment:"center",ctrlTitleAlignment:"center"};
 function applyLayoutControls(){
  const p=$("poster");if(!p)return;
- const map={ctrlTitleSize:["--ctrl-title","px","outTitleSize"],ctrlBodySize:["--ctrl-body","px","outBodySize"],ctrlTableSize:["--ctrl-table","px","outTableSize"],ctrlTaskSize:["--ctrl-task","px","outTaskSize"],ctrlLogoSize:["--ctrl-logo","px","outLogoSize"],ctrlImageSize:["--ctrl-image","px","outImageSize"],ctrlSectionGap:["--ctrl-section-gap","px","outSectionGap"],ctrlPagePadding:["--ctrl-page-pad","px","outPagePadding"]};
+ const map={ctrlTitleSize:["--ctrl-title","px","outTitleSize"],ctrlBodySize:["--ctrl-body","px","outBodySize"],ctrlTableSize:["--ctrl-table","px","outTableSize"],ctrlTaskSize:["--ctrl-task","px","outTaskSize"],ctrlSectionTitleSize:["--ctrl-section-title","px","outSectionTitleSize"],ctrlIntroSize:["--ctrl-intro","px","outIntroSize"],ctrlFooterSize:["--ctrl-footer","px","outFooterSize"],ctrlBorderSize:["--ctrl-border","px","outBorderSize"],ctrlSectionPadding:["--ctrl-section-padding","px","outSectionPadding"],ctrlTablePadding:["--ctrl-table-padding","px","outTablePadding"],ctrlLogoSize:["--ctrl-logo","px","outLogoSize"],ctrlImageSize:["--ctrl-image","px","outImageSize"],ctrlSectionGap:["--ctrl-section-gap","px","outSectionGap"],ctrlPagePadding:["--ctrl-page-pad","px","outPagePadding"]};
  Object.entries(map).forEach(([id,[variable,unit,out]])=>{const v=$(id).value;p.style.setProperty(variable,v+unit);$(out).textContent=v;});
- ["ctrl-logo-left","ctrl-logo-top","ctrl-logo-hidden","ctrl-s1-note-table","ctrl-s1-stack","ctrl-s2-images-table","ctrl-s2-stack","ctrl-images-column","ctrl-images-grid","ctrl-align-right","ctrl-align-justify","ctrl-hide-logo","ctrl-hide-subtitle","ctrl-hide-intro","ctrl-hide-text1","ctrl-hide-text2","ctrl-hide-images","ctrl-hide-footer"].forEach(c=>p.classList.remove(c));
+ ["ctrl-logo-left","ctrl-logo-top","ctrl-logo-hidden","ctrl-s1-note-table","ctrl-s1-stack","ctrl-s2-images-table","ctrl-s2-stack","ctrl-images-column","ctrl-images-grid","ctrl-align-right","ctrl-align-justify","ctrl-title-align-right","ctrl-title-align-left","ctrl-hide-logo","ctrl-hide-subtitle","ctrl-hide-intro","ctrl-hide-text1","ctrl-hide-text2","ctrl-hide-images","ctrl-hide-footer"].forEach(c=>p.classList.remove(c));
  const pos=$("ctrlLogoPosition").value;if(pos!=="right")p.classList.add("ctrl-logo-"+pos);
  const s1=$("ctrlSection1Layout").value;if(s1!=="table-note")p.classList.add("ctrl-s1-"+(s1==="note-table"?"note-table":"stack"));
  const s2=$("ctrlSection2Layout").value;if(s2!=="table-images")p.classList.add("ctrl-s2-"+(s2==="images-table"?"images-table":"stack"));
  const im=$("ctrlImageLayout").value;if(im!=="row")p.classList.add("ctrl-images-"+im);
  const al=$("ctrlAlignment").value;if(al!=="center")p.classList.add("ctrl-align-"+al);
+ const ta=$("ctrlTitleAlignment").value;if(ta!=="center")p.classList.add("ctrl-title-align-"+ta);
  const visibility=[["showLogo","ctrl-hide-logo"],["showSubtitle","ctrl-hide-subtitle"],["showIntro","ctrl-hide-intro"],["showText1","ctrl-hide-text1"],["showText2","ctrl-hide-text2"],["showImages","ctrl-hide-images"],["showFooter","ctrl-hide-footer"]];
  visibility.forEach(([id,c])=>{if(!$(id).checked)p.classList.add(c);});
  fitPoster();
@@ -377,7 +384,7 @@ $("reset").click();
 .visibility-controls strong{grid-column:1/-1;color:#14532d}
 .visibility-controls label{display:flex;align-items:center;gap:5px;font-size:.82rem;margin:0}
 .visibility-controls input{width:auto}
-#poster{--ctrl-title:30px;--ctrl-body:16px;--ctrl-table:15px;--ctrl-task:16px;--ctrl-logo:100px;--ctrl-image:150px;--ctrl-section-gap:14px;--ctrl-page-pad:24px;--ctrl-align:center}
+#poster{--ctrl-title:30px;--ctrl-body:16px;--ctrl-table:15px;--ctrl-task:16px;--ctrl-logo:100px;--ctrl-image:150px;--ctrl-section-gap:14px;--ctrl-page-pad:24px;--ctrl-align:center;--ctrl-section-title:19px;--ctrl-intro:17px;--ctrl-footer:14px;--ctrl-border:2px;--ctrl-section-padding:12px;--ctrl-table-padding:7px}
 #poster .poster-title h2{font-size:var(--ctrl-title)!important}
 #poster .section-body{font-size:var(--ctrl-body)!important;text-align:var(--ctrl-align)!important}
 #poster .poster-table{font-size:var(--ctrl-table)!important}
@@ -406,5 +413,13 @@ $("reset").click();
 #poster.ctrl-images-column .poster-images{flex-direction:column!important}
 #poster.ctrl-images-grid .poster-images{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:520px){.layout-controls .control-grid{grid-template-columns:1fr 1fr}.visibility-controls{grid-template-columns:1fr 1fr}}
+
+#poster .section-title{font-size:var(--ctrl-section-title)!important;border-width:var(--ctrl-border)!important}
+#poster .poster-intro{font-size:var(--ctrl-intro)!important;border-width:var(--ctrl-border)!important}
+#poster .poster-footer{font-size:var(--ctrl-footer)!important;border-width:var(--ctrl-border)!important}
+#poster .poster-section{padding:var(--ctrl-section-padding)!important;border-width:var(--ctrl-border)!important}
+#poster .poster-table th,#poster .poster-table td{padding:var(--ctrl-table-padding)!important}
+#poster.ctrl-title-align-right .poster-title{text-align:right!important}
+#poster.ctrl-title-align-left .poster-title{text-align:left!important}
 </style>
 </body></html>
