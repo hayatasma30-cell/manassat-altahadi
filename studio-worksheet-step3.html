@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>المرحلة الثالثة | توزيع المحتوى</title>
+<style>
+:root{--g:#14532d;--gold:#d6ad55;--ink:#20372a;--muted:#718075;--line:#dce7d9}
+*{box-sizing:border-box}body{margin:0;background:#f3f6ef;color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:linear-gradient(120deg,#103f28,#1b7542);color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header strong{font-size:1rem}header a{color:#fff;text-decoration:none;border:1px solid #ffffff70;border-radius:11px;padding:7px 11px;font-size:.85rem}
+main{max-width:850px;margin:22px auto;padding:0 14px 32px}
+.intro,.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 8px 24px #1b4a290c}
+.intro{margin-bottom:15px}.step{color:#9a7935;font-weight:800;font-size:.85rem}.intro h1{margin:3px 0;color:var(--g);font-size:1.4rem}.intro p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+.panel h2{font-size:1.05rem;color:var(--g);margin:0 0 12px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{border:1.5px solid #d5e1d1;border-radius:16px;background:#fff;padding:15px;text-align:right;font:inherit;cursor:pointer;color:var(--ink)}
+.option[aria-pressed=true]{border:2px solid var(--g);background:#eff7ec;box-shadow:0 3px 0 #14532d20}
+.option strong{display:block;color:var(--g);font-size:1rem;margin-bottom:5px}
+.option small{display:block;color:var(--muted);font-size:.84rem}
+.preview{margin-top:16px;background:#f6f8f2;border:1px dashed #cbd9c8;border-radius:15px;padding:15px}
+.preview h3{margin:0 0 10px;color:var(--g);font-size:.95rem}
+.pages{display:flex;gap:9px;justify-content:center;align-items:center;flex-wrap:wrap}
+.page{width:78px;height:105px;background:#fffef9;border:4px double #2d7444;outline:1px solid #d6ad55;outline-offset:-8px;display:grid;place-items:center;color:var(--g);font-size:.75rem;font-weight:bold;box-shadow:0 3px 9px #173f2218}
+.hint{margin:12px 0 0;color:var(--muted);font-size:.85rem}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.btn{border:1px solid #a8c9aa;border-bottom:4px solid #6c9c70;border-radius:12px;padding:11px 15px;background:linear-gradient(145deg,#fff,#eaf5e8);color:var(--g);font-weight:800;font:inherit;cursor:pointer;text-decoration:none}
+.btn.primary{background:linear-gradient(145deg,#1c7543,#14532d);border-color:#1c7543;border-bottom-color:#0c3c20;color:#fff}
+.status{margin-top:12px;color:var(--g);font-size:.86rem;min-height:25px}
+@media(max-width:560px){.options{grid-template-columns:1fr}}
+</style></head>
+<body>
+<header><strong>🎨 استوديو التصميم التعليمي</strong><a href="studio-worksheet-step2.html">← المرحلة الثانية</a></header>
+<main>
+<section class="intro"><div class="step">المرحلة 3 من 10</div><h1>توزيع المحتوى وعدد الصفحات</h1><p>هنا تحددين هل تريدين جميع المعلومات في ورقة واحدة، أم توزيعها تلقائيًا على عدة صفحات.</p></section>
+<section class="panel">
+<h2>كيف تحبين تنظيم المعلومات؟</h2>
+<div class="options">
+<button class="option" data-layout="single" aria-pressed="true">
+<strong>📄 كل المعلومات في صفحة واحدة</strong>
+<small>يجمع التصميم كامل المحتوى في ورقة واحدة، مع تنظيم المساحات وتصغير العناصر عند الحاجة مع الحفاظ قدر الإمكان على وضوح القراءة.</small>
+</button>
+<button class="option" data-layout="multiple" aria-pressed="false">
+<strong>📚 توزيع المعلومات على عدة صفحات</strong>
+<small>إذا كان المحتوى طويلًا، يوزّع تلقائيًا على صفحات متتابعة بنفس الإطار والألوان والتنسيق.</small>
+</button>
+</div>
+<div class="preview">
+<h3>معاينة طريقة التوزيع</h3>
+<div class="pages" id="pages"><div class="page">كل المحتوى</div></div>
+<p class="hint" id="hint">سيكون الناتج ورقة واحدة. إذا كان المحتوى كبيرًا جدًا فقد تصبح الكتابة صغيرة؛ لذلك راجعي وضوحها قبل الطباعة.</p>
+</div>
+<div class="actions"><button class="btn primary" id="save">حفظ اختيار المرحلة الثالثة</button><button class="btn" id="reset">إعادة ضبط</button></div>
+<div class="status" id="status" role="status">الاختيار الحالي: كل المعلومات في صفحة واحدة.</div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let layout="single";
+function render(){
+document.querySelectorAll("[data-layout]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.layout===layout)));
+$("pages").innerHTML=layout==="single"?'<div class="page">كل المحتوى</div>':'<div class="page">الصفحة 1</div><div class="page">الصفحة 2</div><div class="page">الصفحة 3…</div>';
+$("hint").textContent=layout==="single"?"سيكون الناتج ورقة واحدة. إذا كان المحتوى كبيرًا جدًا فقد تصبح الكتابة صغيرة؛ لذلك راجعي وضوحها قبل الطباعة.":"سيُقسّم المحتوى على صفحات حسب حجمه، مع تكرار الهوية البصرية والإطار للحفاظ على تناسق الوثيقة.";
+$("status").textContent="الاختيار الحالي: "+(layout==="single"?"كل المعلومات في صفحة واحدة.":"توزيع المعلومات على عدة صفحات.");
+}
+document.querySelectorAll("[data-layout]").forEach(b=>b.addEventListener("click",()=>{layout=b.dataset.layout;render()}));
+$("save").addEventListener("click",()=>{try{localStorage.setItem("tahadi_worksheet_step3",JSON.stringify({layout,savedAt:new Date().toISOString()}));$("status").textContent="تم حفظ اختيار المرحلة الثالثة: "+(layout==="single"?"صفحة واحدة.":"عدة صفحات.")}catch(e){$("status").textContent="تعذر الحفظ في هذا المتصفح."}});
+$("reset").addEventListener("click",()=>{layout="single";render()});
+try{const x=JSON.parse(localStorage.getItem("tahadi_worksheet_step3")||"null");if(x&&["single","multiple"].includes(x.layout))layout=x.layout}catch(e){}render();
+</script></body></html>
