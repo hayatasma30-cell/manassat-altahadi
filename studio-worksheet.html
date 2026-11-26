@@ -205,7 +205,7 @@ $("applyReferenceStyle").onclick=()=>{
  document.querySelectorAll(".design-choice").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.design==="emerald")));
  
 syncVisualButtons();
-function applyFineLayout(){
+function syncFineLayout(){
  const p=$("poster");
  const pos=$("logoPosition").value;
  p.classList.remove("ctrl-logo-left","ctrl-logo-top","ctrl-logo-hidden","ctrl-s1-note-table","ctrl-s1-stack","ctrl-images-column","ctrl-images-grid","ctrl-title-align-right","ctrl-title-align-left");
@@ -233,8 +233,8 @@ function applyFineLayout(){
   [...p.classList].filter(c=>c.startsWith("ctrl-")||c.startsWith("no-plant")||c.startsWith("no-science")||c.startsWith("no-gold")).forEach(c=>page.classList.add(c));
   Object.entries(vars).forEach(([id,key])=>page.style.setProperty(key,$(id).value+"px"));
  });
- fitPoster();
 }
+function applyFineLayout(){syncFineLayout();fitPoster();}
 ["logoPosition","logoSize","titleSize","titleAlign","tableSize","imageSize","imageLayout","tablePosition","showSubtitle","showIntro","showText1","showText2","showImages","showFooter"].forEach(id=>{
  $(id).addEventListener("input",applyFineLayout);$(id).addEventListener("change",applyFineLayout);
 });
@@ -284,7 +284,7 @@ function applyPageDecoration(){
 }
 ["pageMargin","frameWidth","frameStyle"].forEach(id=>$(id).addEventListener("input",applyPageDecoration));
 $("resetDecoration").onclick=()=>{$("pageMargin").value=24;$("frameWidth").value=6;$("frameStyle").value="double";applyPageDecoration();};
-function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign+visualClassNames();$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
+function render(){const level=$("level").value;const title=$("title").value||" ";const type=$("documentType").value;const labels={lesson:"ملخص درس",worksheet:"ورقة عمل",exam:"اختبار أو فرض",poster:"ملصق علمي",experiment:"بطاقة تجربة",tables:"جداول ووثائق"};const hints={lesson:"عنوان واضح، فقرات، جداول وتعلمات.",worksheet:"مساحة منظمة للسندات والأسئلة والإجابة.",exam:"قالب اختبار مع مساحة للتنقيط والإجابات.",poster:"تصميم بصري بارز للعناوين والمعلومات الأساسية.",experiment:"ترتيب خطوات التجربة والملاحظة والتفسير.",tables:"تنسيق يبرز الجداول والوثائق المقارنة."};$("poster").className="template-"+type+" design-"+activeDesign+visualClassNames();syncFineLayout();$("previewType").textContent=labels[type];$("typeHint").textContent=hints[type];$("pTitle").textContent=title;$("pSubtitle").textContent=level+" • "+($("subtitle").value||"علوم الطبيعة والحياة");$("pIntro").textContent=$("intro").value;$("pSection1").textContent=$("section1").value;$("pText1").textContent=$("text1").value;$("pSection2").textContent=$("section2").value;$("pText2").textContent=$("text2").value;$("pTeacher").textContent=$("teacher").value;
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
@@ -301,7 +301,7 @@ function clearPosterPages(){
  const viewport=$("posterViewport"),first=$("poster"),main=$("posterContent");
  if(!viewport||!first||!main)return;
  clearPosterPages();
- first.className="template-"+$("documentType").value+" design-"+activeDesign+visualClassNames();
+ first.className="template-"+$("documentType").value+" design-"+activeDesign+visualClassNames();syncFineLayout();
  const width=Math.min(viewport.clientWidth,794);
  first.style.width=width+"px";
  // Preserve the full A4 width. Fit vertically only, so content stays centered
