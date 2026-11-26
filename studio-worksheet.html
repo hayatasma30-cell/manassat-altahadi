@@ -153,29 +153,21 @@ function clearPosterPages(){
  first.className="template-"+$("documentType").value+" design-"+activeDesign;
  const width=Math.min(viewport.clientWidth,794);
  first.style.width=width+"px";
- // Keep every content block on one A4 sheet; scale the complete composition
- // proportionally only when its natural height exceeds the printable area.
+ // Preserve the full A4 width. Fit vertically only, so content stays centered
+ // and headings/tables do not become narrow or drift to one side.
  main.style.setProperty("height","auto","important");
  main.style.setProperty("min-height","0","important");
  main.style.setProperty("overflow","visible","important");
+ main.style.setProperty("width","100%","important");
+ main.style.setProperty("max-width","100%","important");
+ main.style.setProperty("margin-inline","auto","important");
  main.style.setProperty("transform","none","important");
  main.style.setProperty("transform-origin","top center","important");
- main.style.setProperty("width","100%","important");
- main.style.setProperty("margin-inline","auto","important");
  const cs=getComputedStyle(first);
- const available=first.clientHeight-
-   (parseFloat(cs.paddingTop)||0)-(parseFloat(cs.paddingBottom)||0)-4;
- let scale=1;
- for(let i=0;i<4;i++){
-   const natural=Math.max(main.scrollHeight,main.getBoundingClientRect().height,1);
-   scale=Math.min(1,available/natural);
-   main.style.setProperty("width",(100/scale)+"%","important");
-   main.style.setProperty("transform","none","important");
- }
- const finalHeight=Math.max(main.scrollHeight,main.getBoundingClientRect().height,1);
- scale=Math.min(1,available/finalHeight);
- main.style.setProperty("width",(100/scale)+"%","important");
- main.style.setProperty("transform","scale("+scale+")","important");
+ const available=first.clientHeight-(parseFloat(cs.paddingTop)||0)-(parseFloat(cs.paddingBottom)||0)-6;
+ const natural=Math.max(main.scrollHeight,main.getBoundingClientRect().height,1);
+ const scale=Math.min(1,available/natural);
+ main.style.setProperty("transform","scaleY("+scale+")","important");
  main.style.setProperty("transform-origin","top center","important");
  main.dataset.fitScale=String(scale);
  }
