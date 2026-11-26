@@ -155,7 +155,17 @@ label[for="documentType"],#documentType,#typeHint{display:none!important}
 <label for="section2">عنوان القسم</label><input id="section2" value="استنبت بذور نبات القمح في أوساط معدنية مختلفة التركيب، فكانت النتائج كالتالي:">
 <label for="text2">شرح التجربة أو النتائج</label><textarea id="text2" placeholder="اكتبي وصف التجربة أو النتائج"></textarea>
 <label>جدول التجربة</label><div id="experimentRows"></div><button class="btn" id="addExperimentRow" type="button">＋ إضافة سطر</button>
-<label for="images">صور التجربة (اختياري)</label><input id="images" type="file" accept="image/*" multiple>
+<label for="images">أضيفي الرسومات والصور العلمية من جهازك (حتى 4 صور)</label><input id="images" type="file" accept="image/*" multiple>
+<div class="illustration-controls" id="illustrationControls"><strong>التحكم في كل صورة على حدة</strong><div id="illustrationEditors" class="illustration-editors"><p class="status">لم تتم إضافة صور بعد.</p></div></div>
+<div class="illustration-controls" id="decorationControls"><strong>إضافة زخارف مستقلة</strong>
+<div class="decoration-add-buttons">
+<button type="button" class="btn" data-add-decoration="🌿">🌿 ورقة نبات</button>
+<button type="button" class="btn" data-add-decoration="🧪">🧪 أنبوب اختبار</button>
+<button type="button" class="btn" data-add-decoration="🔬">🔬 مجهر</button>
+<button type="button" class="btn" data-add-decoration="☀️">☀️ شمس</button>
+</div>
+<div id="decorationEditors" class="illustration-editors"><p class="status">لم تتم إضافة زخارف بعد.</p></div>
+</div>
 </fieldset>
 <fieldset><legend>التعلمات والأسئلة</legend>
 <label for="tasks">اكتبي كل تعليمة في سطر مستقل</label><textarea id="tasks">استخرج العناصر الأساسية في محلول كنوب.
@@ -183,6 +193,7 @@ const $=id=>document.getElementById(id);
 const defaults={title:"أغذية النبات الأخضر",subtitle:"علوم الطبيعة والحياة",intro:"للتعرف على العناصر المعدنية الضرورية لنمو النبات الأخضر، نقوم بالدراسة التالية:",section1:"تركيب محلول كنوب (1000 mL)",text1:"محلول كنوب وسط معدني يحتوي على العناصر الضرورية لنمو النبات الأخضر.",section2:"استنبت بذور نبات القمح في أوساط معدنية مختلفة التركيب، فكانت النتائج كالتالي:",text2:"",tasks:"استخرج العناصر الأساسية في محلول كنوب.\nحدد عواقب نقص أو غياب أحد العناصر المعدنية على نمو النبات الأخضر.\nشخّص عواقب الإفراط في أحد العناصر المعدنية.",teacher:"الأستاذة حياة"};
 const FIXED_LOGO="./file_00000000aa0081f484bc7f93b3e54448.png";
 let uploadedImages=[];
+let customDecorations=[];
 function addRow(containerId,a="",b=""){const row=document.createElement("div");row.className="row-editor";const one=document.createElement("input"),two=document.createElement("input"),del=document.createElement("button");one.placeholder=containerId==="tableRows"?"العنصر المعدني":"رقم النبتة";two.placeholder=containerId==="tableRows"?"الكمية":"التركيب المعدني";one.value=a;two.value=b;one.addEventListener("input",render);two.addEventListener("input",render);del.type="button";del.className="remove";del.textContent="×";del.title="حذف السطر";del.onclick=()=>{row.remove();render();};row.append(one,two,del);$(containerId).append(row);render();}
 function rows(id){return [...$(id).querySelectorAll(".row-editor")].map(r=>[r.children[0].value.trim(),r.children[1].value.trim()]).filter(x=>x.some(Boolean));}
 function safe(v){return String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
@@ -288,8 +299,16 @@ function render(){const level=$("level").value;const title=$("title").value||" "
 $("pRows").innerHTML=rows("tableRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pExperimentRows").innerHTML=rows("experimentRows").map(x=>"<tr><td>"+safe(x[0])+"</td><td>"+safe(x[1])+"</td></tr>").join("");
 $("pTasks").innerHTML=$("tasks").value.split(/\n+/).map(x=>x.trim()).filter(Boolean).map((x,i)=>'<div class="task"><b>التعليمة '+(i+1)+':</b> '+safe(x)+'</div>').join("");
-$("pImages").innerHTML="";uploadedImages.forEach(src=>{const im=document.createElement("img");im.src=src;$("pImages").append(im);});
+$("pImages").innerHTML="";
+uploadedImages.forEach((item,index)=>{
+ const wrap=document.createElement("div");wrap.className="poster-illustration";wrap.dataset.position=item.position;
+ const im=document.createElement("img");im.src=item.src;im.alt=item.name||"رسم علمي";
+ im.style.width=item.size+"px";im.style.maxWidth="100%";
+ wrap.append(im);$("pImages").append(wrap);
+});
+renderIllustrationEditors();renderDecorationEditors();
 $("posterLogo").src=FIXED_LOGO;
+paintDecorations($("poster"));
 }
 function clearPosterPages(){
  const first=$("poster"),main=$("posterContent");if(!first||!main)return;
@@ -327,11 +346,66 @@ function clearPosterPages(){
 if(window.ResizeObserver){new ResizeObserver(fitPoster).observe($("preview-panel"));}window.addEventListener("resize",fitPoster);
 ["documentType","level","title","subtitle","intro","section1","text1","section2","text2","tasks","teacher"].forEach(id=>$(id).addEventListener("input",render));
 $("addTableRow").onclick=()=>addRow("tableRows");$("addExperimentRow").onclick=()=>addRow("experimentRows");
-$("images").addEventListener("change",e=>{uploadedImages=[];const files=[...e.target.files].slice(0,4);let left=files.length;if(!left){render();return;}files.forEach(f=>{const r=new FileReader();r.onload=()=>{uploadedImages.push(r.result);if(!--left)render();};r.readAsDataURL(f);});});
+$("images").addEventListener("change",e=>{
+ const files=[...e.target.files].slice(0,Math.max(0,4-uploadedImages.length));
+ let left=files.length;if(!left){$("status").textContent="يمكن إضافة أربع صور كحد أقصى.";return;}
+ files.forEach(file=>{const reader=new FileReader();reader.onload=()=>{
+ uploadedImages.push({src:reader.result,name:file.name,size:150,position:"center"});
+ if(!--left)render();
+ };reader.readAsDataURL(file);});
+ e.target.value="";
+});
+function renderIllustrationEditors(){
+ const host=$("illustrationEditors");host.innerHTML="";
+ if(!uploadedImages.length){host.textContent="لم تتم إضافة صور بعد.";return;}
+ uploadedImages.forEach((item,index)=>{
+  const card=document.createElement("div");card.className="illustration-editor";
+  const heading=document.createElement("b");heading.textContent=(index+1)+". "+item.name;card.append(heading);
+  const sizeLabel=document.createElement("label");sizeLabel.textContent="حجم الصورة: "+item.size+" px";
+  const size=document.createElement("input");size.type="range";size.min="50";size.max="280";size.value=item.size;
+  size.addEventListener("input",()=>{item.size=Number(size.value);sizeLabel.textContent="حجم الصورة: "+item.size+" px";render();});
+  const positionLabel=document.createElement("label");positionLabel.textContent="مكان الصورة";
+  const position=document.createElement("select");
+  [["center","وسط"],["right","يمين"],["left","يسار"],["top","بداية القسم"],["bottom","نهاية القسم"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;position.append(o);});
+  position.value=item.position;position.addEventListener("change",()=>{item.position=position.value;render();});
+  const remove=document.createElement("button");remove.type="button";remove.className="btn";remove.textContent="حذف هذه الصورة";
+  remove.addEventListener("click",()=>{uploadedImages.splice(index,1);render();});
+  card.append(sizeLabel,size,positionLabel,position,remove);host.append(card);
+ });
+}
+function renderDecorationEditors(){
+ const host=$("decorationEditors");host.innerHTML="";
+ if(!customDecorations.length){host.textContent="لم تتم إضافة زخارف بعد.";return;}
+ customDecorations.forEach((item,index)=>{
+  const card=document.createElement("div");card.className="illustration-editor";
+  const heading=document.createElement("b");heading.textContent=item.symbol+" الزخرفة "+(index+1);card.append(heading);
+  const sizeLabel=document.createElement("label");sizeLabel.textContent="الحجم: "+item.size+" px";
+  const size=document.createElement("input");size.type="range";size.min="18";size.max="90";size.value=item.size;
+  size.addEventListener("input",()=>{item.size=Number(size.value);sizeLabel.textContent="الحجم: "+item.size+" px";render();});
+  const position=document.createElement("select");
+  [["top-left","أعلى اليسار"],["top-right","أعلى اليمين"],["bottom-left","أسفل اليسار"],["bottom-right","أسفل اليمين"]].forEach(([v,t])=>{const o=document.createElement("option");o.value=v;o.textContent=t;position.append(o);});
+  position.value=item.position;position.addEventListener("change",()=>{item.position=position.value;render();});
+  const remove=document.createElement("button");remove.type="button";remove.className="btn";remove.textContent="حذف الزخرفة";
+  remove.addEventListener("click",()=>{customDecorations.splice(index,1);render();});
+  card.append(sizeLabel,size,document.createTextNode("مكان الزخرفة"),position,remove);host.append(card);
+ });
+}
+document.querySelectorAll("[data-add-decoration]").forEach(button=>button.addEventListener("click",()=>{
+ customDecorations.push({symbol:button.dataset.addDecoration,size:38,position:"top-left"});render();
+}));
+function paintDecorations(page){
+ const old=page.querySelector(".poster-custom-decorations");if(old)old.remove();
+ if(!customDecorations.length)return;
+ const layer=document.createElement("div");layer.className="poster-custom-decorations";
+ customDecorations.forEach(item=>{
+  const span=document.createElement("span");span.textContent=item.symbol;span.style.fontSize=item.size+"px";span.className="decor-"+item.position;layer.append(span);
+ });
+ page.append(layer);
+}
 $("download").onclick=async()=>{const status=$("status");if(!window.html2canvas){status.textContent="تعذر تحميل أداة تصدير الصورة؛ جرّبي الطباعة أو أعيدي فتح الصفحة مع الإنترنت.";return;}const btn=$("download");btn.disabled=true;status.textContent="جارٍ تجهيز الصورة بجودة عالية…";try{const pages=[...$("posterViewport").querySelectorAll("#poster,.poster-page")];for(let page=0;page<pages.length;page++){const canvas=await html2canvas(pages[page],{scale:3,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const a=document.createElement("a");const base=($("title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");a.download=base+(pages.length>1?"-صفحة-"+(page+1):"")+".png";a.href=canvas.toDataURL("image/png");a.click();await new Promise(resolve=>setTimeout(resolve,350));}status.textContent=pages.length>1?"تم تجهيز "+pages.length+" صور A4 منفصلة.":"تم تجهيز صورة A4 للتحميل."; }catch(e){fitPoster();status.textContent="تعذر إنشاء الصورة: "+(e.message||"حاولي تقليل عدد الصور.");}finally{btn.disabled=false;}};
 $("downloadPdf").onclick=async()=>{const status=$("status"),btn=$("downloadPdf");if(!window.html2canvas||!window.jspdf||!window.jspdf.jsPDF){status.textContent="تعذر تحميل أداة PDF. تحققي من الاتصال بالإنترنت ثم أعيدي المحاولة.";return;}btn.disabled=true;status.textContent="جارٍ إنشاء ملف PDF بمقاس "+(PAPER_SIZES[$("paperSize").value]||PAPER_SIZES.a4).label+"…";try{const pages=[...$("posterViewport").querySelectorAll("#poster,.poster-page")];const {jsPDF}=window.jspdf;const paper=PAPER_SIZES[$("paperSize").value]||PAPER_SIZES.a4;const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:[paper.w,paper.h],compress:true});for(let page=0;page<pages.length;page++){const canvas=await html2canvas(pages[page],{scale:2,backgroundColor:"#fffef9",useCORS:true,allowTaint:false,logging:false,windowWidth:794});const image=canvas.toDataURL("image/png");if(page>0)pdf.addPage("a4","portrait");pdf.addImage(image,"PNG",0,0,paper.w,paper.h,undefined,"FAST");}const base=($("title").value.trim()||"ورقة-تعليمية").replace(/[\\/:*?"<>|]/g,"-");pdf.save(base+".pdf");status.textContent=pages.length>1?"تم إنشاء ملف PDF يحتوي على "+pages.length+" صفحات A4.":"تم إنشاء ملف PDF من صفحة A4 واحدة.";}catch(e){status.textContent="تعذر إنشاء PDF: "+(e.message||"حاولي مرة أخرى.");}finally{btn.disabled=false;}};
 $("print").onclick=()=>window.print();
-$("reset").onclick=()=>{Object.entries(defaults).forEach(([k,v])=>{if($(k))$(k).value=v;});$("tableRows").innerHTML="";$("experimentRows").innerHTML="";uploadedImages=[];$("images").value="";addRow("tableRows","نترات الكالسيوم","1%");addRow("tableRows","نترات البوتاسيوم","0.25%");addRow("tableRows","فوسفات أحادي البوتاسيوم","0.25%");addRow("tableRows","كبريتات المغنزيوم","0.25%");addRow("tableRows","كلورور الحديد","آثار");addRow("experimentRows","1","NPK 2‰");addRow("experimentRows","2","PK");addRow("experimentRows","3","NK");addRow("experimentRows","4","NP");addRow("experimentRows","5","NPK 20‰");render();};
+$("reset").onclick=()=>{Object.entries(defaults).forEach(([k,v])=>{if($(k))$(k).value=v;});$("tableRows").innerHTML="";$("experimentRows").innerHTML="";uploadedImages=[];customDecorations=[];$("images").value="";addRow("tableRows","نترات الكالسيوم","1%");addRow("tableRows","نترات البوتاسيوم","0.25%");addRow("tableRows","فوسفات أحادي البوتاسيوم","0.25%");addRow("tableRows","كبريتات المغنزيوم","0.25%");addRow("tableRows","كلورور الحديد","آثار");addRow("experimentRows","1","NPK 2‰");addRow("experimentRows","2","PK");addRow("experimentRows","3","NK");addRow("experimentRows","4","NP");addRow("experimentRows","5","NPK 20‰");render();};
 const token=localStorage.getItem("tahadi_teacher_token")||sessionStorage.getItem("tahadi_teacher_token_bridge")||"";
 const expiry=localStorage.getItem("tahadi_teacher_expires")||sessionStorage.getItem("tahadi_teacher_expires_bridge")||"";
 if(token){localStorage.setItem("tahadi_teacher_token",token);if(expiry)localStorage.setItem("tahadi_teacher_expires",expiry);}
@@ -551,5 +625,25 @@ $("reset").click();applyPaperSize();applyPageDecoration();
 #poster.ctrl-images-column .poster-images{flex-direction:column!important}
 #poster.ctrl-images-grid .poster-images{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
 #poster.ctrl-hide-subtitle .poster-title div,#poster.ctrl-hide-intro #pIntro,#poster.ctrl-hide-text1 #pText1,#poster.ctrl-hide-text2 #pText2,#poster.ctrl-hide-images #pImages,#poster.ctrl-hide-footer .poster-footer{display:none!important}
+
+.illustration-controls{margin-top:12px;padding:10px;border:1px solid #d9e4d6;border-radius:13px;background:#fbfdf9}
+.illustration-controls>strong{display:block;color:#14532d;margin-bottom:8px}
+.illustration-editors{display:grid;gap:8px}
+.illustration-editor{display:grid;gap:6px;padding:9px;border:1px solid #dce5d9;border-radius:10px;background:white}
+.illustration-editor b{color:#14532d;overflow-wrap:anywhere}
+.illustration-editor input[type=range]{width:100%;accent-color:#17633b}
+.illustration-editor select{width:100%;padding:8px;border:1px solid #d5dfd3;border-radius:9px;background:white}
+.decoration-add-buttons{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.poster-illustration{display:flex;align-items:center;justify-content:center;max-width:100%}
+.poster-illustration[data-position="left"]{margin-right:auto}
+.poster-illustration[data-position="right"]{margin-left:auto}
+.poster-illustration[data-position="top"]{order:-1}
+.poster-illustration[data-position="bottom"]{order:10}
+.poster-custom-decorations{position:absolute;inset:0;pointer-events:none;z-index:4}
+.poster-custom-decorations span{position:absolute;line-height:1}
+.poster-custom-decorations .decor-top-left{top:10px;left:10px}
+.poster-custom-decorations .decor-top-right{top:10px;right:10px}
+.poster-custom-decorations .decor-bottom-left{bottom:10px;left:10px}
+.poster-custom-decorations .decor-bottom-right{bottom:10px;right:10px}
 </style>
 </body></html>
