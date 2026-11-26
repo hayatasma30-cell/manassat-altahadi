@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14532d">
+<title>المرحلة الثانية | إطار الورقة وزخارفها</title>
+<style>
+:root{--g:#14532d;--g2:#1b7542;--gold:#d6ad55;--ink:#20372a;--muted:#718075;--line:#dce7d9}
+*{box-sizing:border-box}body{margin:0;background:#f3f6ef;color:var(--ink);font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+header{background:linear-gradient(120deg,#103f28,#1b7542);color:#fff;padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+header strong{font-size:1rem}header a{color:#fff;text-decoration:none;border:1px solid #ffffff70;border-radius:11px;padding:7px 11px;font-size:.85rem}
+main{max-width:900px;margin:22px auto;padding:0 14px 32px}
+.intro,.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 8px 24px #1b4a290c}
+.intro{margin-bottom:15px}.step{color:#9a7935;font-weight:800;font-size:.85rem}.intro h1{margin:3px 0;color:var(--g);font-size:1.4rem}.intro p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+.panel h2{font-size:1.05rem;color:var(--g);margin:0 0 12px}
+.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{border:1.5px solid #d5e1d1;border-radius:14px;background:#fff;padding:13px 10px;text-align:center;color:var(--ink);font:inherit;font-weight:800;cursor:pointer}
+.choice[aria-pressed=true]{border:2px solid var(--g);background:#eff7ec;box-shadow:0 3px 0 #14532d20}
+.sample{height:105px;border-radius:10px;background:#fffef9;margin-bottom:9px;display:grid;place-items:center;position:relative;overflow:hidden}
+.sample span{font-size:.8rem;color:var(--g);font-weight:800;z-index:1}
+.frame-classic{border:5px double #2d7444;outline:1px solid #d6ad55;outline-offset:-10px}
+.frame-gold{border:5px solid #d6ad55;outline:2px solid #2d7444;outline-offset:-11px}
+.frame-soft{border:2px solid #2d7444;outline:1px solid #d6ad55;outline-offset:-8px;border-radius:17px}
+.frame-none{border:1px solid #dce7d9}
+.decors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.decor{border:1.5px solid #d5e1d1;border-radius:13px;background:#fff;padding:14px 7px;text-align:center;font:inherit;cursor:pointer}
+.decor[aria-pressed=true]{border:2px solid var(--g);background:#eff7ec}
+.symbol{display:block;font-size:27px;margin-bottom:4px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.btn{border:1px solid #a8c9aa;border-bottom:4px solid #6c9c70;border-radius:12px;padding:11px 15px;background:linear-gradient(145deg,#fff,#eaf5e8);color:var(--g);font-weight:800;font:inherit;cursor:pointer;text-decoration:none}
+.btn.primary{background:linear-gradient(145deg,#1c7543,#14532d);border-color:#1c7543;border-bottom-color:#0c3c20;color:#fff}
+.status{margin-top:12px;color:var(--g);font-size:.86rem;min-height:25px}
+.preview{background:#f6f8f2;border:1px dashed #cbd9c8;border-radius:15px;padding:16px;display:grid;place-items:center;margin-top:15px}
+.sheet{width:190px;height:245px;background:#fffef9;display:grid;place-items:center;position:relative;box-shadow:0 5px 18px #173f221c}
+.sheet:after{content:"";position:absolute;inset:10px;pointer-events:none}
+.sheet.classic:after{border:4px double #2d7444;outline:1px solid #d6ad55;outline-offset:-9px}
+.sheet.gold:after{border:4px solid #d6ad55;outline:2px solid #2d7444;outline-offset:-10px}
+.sheet.soft:after{border:2px solid #2d7444;outline:1px solid #d6ad55;outline-offset:-7px;border-radius:12px}
+.sheet.none:after{border:1px solid #dce7d9}
+.sheet .leaf{position:absolute;z-index:1;font-size:23px}.tl{top:13px;right:15px}.br{bottom:13px;left:15px}
+@media(max-width:560px){.choices{grid-template-columns:1fr 1fr}.decors{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body>
+<header><strong>🎨 استوديو التصميم التعليمي</strong><a href="studio-worksheet-step1.html">← المرحلة الأولى</a></header>
+<main>
+<section class="intro"><div class="step">المرحلة 2 من 10</div><h1>إطار الورقة وزخارفها</h1><p>اختاري شكل الإطار والزخارف فقط. نستلهم الأناقة الخضراء والذهبية من النموذج المرجعي، دون تغيير شعار تحدي 20/20.</p></section>
+<section class="panel">
+<h2>1. اختاري شكل الإطار</h2>
+<div class="choices" id="frames">
+<button class="choice" data-frame="classic" aria-pressed="true"><div class="sample frame-classic"><span>عنوان الدرس</span></div>إطار أخضر مزدوج وذهبي</button>
+<button class="choice" data-frame="gold" aria-pressed="false"><div class="sample frame-gold"><span>عنوان الدرس</span></div>إطار ذهبي بارز</button>
+<button class="choice" data-frame="soft" aria-pressed="false"><div class="sample frame-soft"><span>عنوان الدرس</span></div>إطار ناعم بزوايا مستديرة</button>
+<button class="choice" data-frame="none" aria-pressed="false"><div class="sample frame-none"><span>عنوان الدرس</span></div>بدون إطار مزخرف</button>
+</div>
+<h2 style="margin-top:22px">2. اختاري الزخارف</h2>
+<div class="decors" id="decorations">
+<button class="decor" data-decor="corners" aria-pressed="true"><span class="symbol">🌿</span>أوراق في الزوايا</button>
+<button class="decor" data-decor="science" aria-pressed="false"><span class="symbol">🧪</span>رموز علمية خفيفة</button>
+<button class="decor" data-decor="minimal" aria-pressed="false"><span class="symbol">✦</span>زخارف بسيطة</button>
+</div>
+<div class="preview"><div class="sheet classic" id="sheet"><span class="leaf tl">🌿</span><strong style="color:#14532d;z-index:2">معاينة الإطار</strong><span class="leaf br">🌿</span></div></div>
+<div class="actions"><button class="btn primary" id="save">حفظ اختيارات المرحلة الثانية</button><button class="btn" id="reset">إعادة ضبط</button></div>
+<div class="status" id="status" role="status">الإطار الأخضر المزدوج والذهبي، مع أوراق في الزوايا.</div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let frame="classic",decor="corners";
+function render(){
+document.querySelectorAll("[data-frame]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.frame===frame)));
+document.querySelectorAll("[data-decor]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.decor===decor)));
+const s=$("sheet");s.className="sheet "+frame;s.querySelectorAll(".leaf").forEach(x=>x.remove());
+if(decor==="corners"){s.insertAdjacentHTML("beforeend",'<span class="leaf tl">🌿</span><span class="leaf br">🌿</span>')}
+if(decor==="science"){s.insertAdjacentHTML("beforeend",'<span class="leaf tl">⚗️</span><span class="leaf br">🔬</span>')}
+if(decor==="minimal"){s.insertAdjacentHTML("beforeend",'<span class="leaf tl">✦</span><span class="leaf br">✦</span>')}
+$("status").textContent="الإطار: "+({classic:"أخضر مزدوج وذهبي",gold:"ذهبي بارز",soft:"ناعم بزوايا مستديرة",none:"بسيط دون إطار مزخرف"}[frame])+" — الزخارف: "+({corners:"أوراق في الزوايا",science:"رموز علمية خفيفة",minimal:"زخارف بسيطة"}[decor])+".";
+}
+document.querySelectorAll("[data-frame]").forEach(b=>b.addEventListener("click",()=>{frame=b.dataset.frame;render()}));
+document.querySelectorAll("[data-decor]").forEach(b=>b.addEventListener("click",()=>{decor=b.dataset.decor;render()}));
+$("save").addEventListener("click",()=>{try{localStorage.setItem("tahadi_worksheet_step2",JSON.stringify({frame,decor,savedAt:new Date().toISOString()}));$("status").textContent="تم حفظ اختيارات المرحلة الثانية. راجعي المعاينة قبل أن ننتقل لأي مرحلة أخرى."}catch(e){$("status").textContent="تعذر الحفظ في هذا المتصفح."}});
+$("reset").addEventListener("click",()=>{frame="classic";decor="corners";render()});
+try{const x=JSON.parse(localStorage.getItem("tahadi_worksheet_step2")||"null");if(x&&["classic","gold","soft","none"].includes(x.frame)&&["corners","science","minimal"].includes(x.decor)){frame=x.frame;decor=x.decor}}catch(e){}render();
+</script></body></html>
