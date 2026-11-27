@@ -27,7 +27,7 @@
 <meta charset="utf-8">
 <link rel="manifest" href="./manifest.json"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#14532d">
-<meta name="platform-build" content="2026-11-04-restore-original-individual-payment-flow-v1">
+<meta name="platform-build" content="2026-11-27-unified-quiz-results-v1">
 <meta name="description" content="منصة التحدي التعليمية - فضاء الأستاذة">
 <title>منصة التحدي | فضاء الأستاذة</title>
 <style>
@@ -457,7 +457,7 @@ button:focus-visible{outline:3px solid #d9ad53;outline-offset:3px}
 .calendar-lesson-actions{display:flex;flex-direction:row;justify-content:center;align-items:center;gap:10px;margin-top:14px}.calendar-lesson-actions .lesson-status-button{flex:0 1 145px;width:auto;min-width:0;min-height:42px!important;padding:8px 12px!important;font-size:.88rem!important;font-weight:700!important;border-radius:12px!important}.lesson-status-first{padding:13px;border:1px solid #d8e5d6;border-radius:14px;background:#fff;display:grid;gap:10px}.lesson-status-first>strong{color:#17452f;font-size:1rem}.lesson-status-first>div:first-of-type{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lesson-status-first>div:first-of-type button{min-height:46px!important;font-size:1rem!important;font-weight:800}.lesson-status-first p{margin:0}.lesson-not-done-options{display:grid;gap:9px;padding-top:10px;border-top:1px solid #e2eae0}.lesson-not-done-options>strong{color:#17452f}.lesson-defer-fields{display:grid;gap:8px;padding:12px;border-radius:12px;background:#f4f8f2}.lesson-defer-fields label{display:grid;gap:5px;font-size:.9rem}.lesson-defer-fields input{width:100%;padding:10px;border:1px solid #cbd7ca;border-radius:10px;background:#fff}.calendar-more-actions{border:1px solid #d5e2d2;border-radius:12px;padding:10px;background:#f8fbf6}.calendar-more-actions>summary{font-weight:700;color:#315c42;cursor:pointer}.calendar-more-actions>div{display:grid;gap:8px;margin-top:10px}
 @media(max-width:480px){.calendar-lesson-entry summary{padding:12px 5px}.calendar-lesson-time{font-size:.9rem}.calendar-lesson-title{font-size:.81rem}.calendar-lesson-actions button{font-size:.76rem!important}}
 
-/* لوحة الأستاذة العامة: ساعة حيّة وتذكيرات ومنبّه */
+/* لوحة الأستاذة العامة: التاريخ وبطاقة الحصة القادمة */
 .teacher-command-panel{margin:18px 0 22px;padding:18px;border:1px solid #dce8d9;border-radius:24px;background:linear-gradient(145deg,#fff 0%,#f4faf3 100%);box-shadow:0 8px 22px #183d2510;color:#173f2d}
 .command-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
 .command-kicker{font-size:.8rem;color:#64816b;font-weight:700}
@@ -1129,7 +1129,7 @@ footer{padding:18px 10px!important;color:#829084!important;font-size:.78rem!impo
 @media(max-width:480px){#homeView .command-next-lesson{padding:11px!important;gap:7px!important}#homeView .command-next-lesson>strong{font-size:.94rem!important}#homeView .command-next-lesson-countdown{font-size:1.16rem!important}}
 </style>
 <style id="teacher-lesson-bell-compact-v1">
-/* منبّه صغير بجانب عنوان الحصة القادمة */
+/* تنسيق عنوان بطاقة الحصة القادمة */
 #teacherNextLessonCard .command-next-lesson-head{justify-content:flex-start;gap:9px}
 #teacherNextLessonCard .command-next-lesson-head>span:first-child{margin-inline-end:auto}
 #teacherNextLessonCard .lesson-countdown-frame{display:flex;align-items:center;justify-content:flex-end}
@@ -3751,7 +3751,7 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
 })();
 
-/* عرض التاريخ فقط؛ تم حذف نظام التذكيرات والتنبيهات. */(function(){const el=document.getElementById("teacherLiveDate");const update=()=>{if(el)el.textContent=new Intl.DateTimeFormat("ar-DZ",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(new Date());};update();setInterval(update,60000);})();
+/* عرض التاريخ فقط بعد إزالة أدوات التذكير. */(function(){const el=document.getElementById("teacherLiveDate");const update=()=>{if(el)el.textContent=new Intl.DateTimeFormat("ar-DZ",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(new Date());};update();setInterval(update,60000);})();
 </script>
 <script>
 /* Keep the category chooser compact: show one selected category at a time. */
