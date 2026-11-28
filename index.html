@@ -3751,7 +3751,39 @@ $("lessonType").value=x.lesson_type||"جماعية";$("lessonCategory").value=x.
   document.querySelectorAll('[data-view="resourceLibraryView"]').forEach(btn=>btn.addEventListener("click",()=>loadLearningResources()));
 })();
 
-/* عرض التاريخ فقط بعد إزالة أدوات التذكير. */(function(){const el=document.getElementById("teacherLiveDate");const update=()=>{if(el)el.textContent=new Intl.DateTimeFormat("ar-DZ",{weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(new Date());};update();setInterval(update,60000);})();
+/* التاريخ ومعلومات الحصة القادمة مستقلان عن نظام التنبيهات. */
+(function(){
+ const dateEl=document.getElementById("teacherLiveDate");
+ const updateDate=()=>{if(dateEl)dateEl.textContent=new Intl.DateTimeFormat("ar-DZ",{weekday:"long",year:"numeric",month:"long",day:"numeric",timeZone:"Africa/Algiers"}).format(new Date());};
+ updateDate();setInterval(updateDate,60000);
+ async function loadNextTeacherLesson(){
+  const titleEl=document.getElementById("teacherNextLessonTitle"),dayEl=document.getElementById("teacherNextLessonDay"),timeEl=document.getElementById("teacherNextLessonTime"),modeEl=document.getElementById("teacherNextLessonMode"),countEl=document.getElementById("teacherNextLessonCountdown"),statusEl=document.getElementById("teacherNextLessonStatus");
+  if(!titleEl||!dayEl||!timeEl||!modeEl||!countEl)return;
+  try{
+   const token=localStorage.getItem("tahadi_teacher_token");
+   if(!token)throw new Error("سجّلي الدخول لعرض الحصص.");
+   const response=await fetch("https://chnsjxhzoibluacmtvbb.supabase.co/functions/v1/platform-access",{method:"POST",cache:"no-store",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({action:"daily_lessons_list",scope:"scheduled",delivery_mode:"all"})});
+   const data=await response.json();
+   if(!response.ok||!data.ok)throw new Error(data.error||"تعذر تحميل الحصص.");
+   const now=new Date();
+   const rows=(data.lessons||[]).filter(x=>x.status!=="ألغيت"&&/^\d{4}-\d{2}-\d{2}$/.test(String(x.lesson_date||""))&&String(x.lesson_time||"").match(/\d{1,2}:\d{2}/));
+   const parsed=rows.map(x=>{const m=String(x.lesson_time).match(/(\d{1,2}):(\d{2})/);if(!m)return null;const hh=Number(m[1]),mm=Number(m[2]),[yy,mo,dd]=x.lesson_date.split("-").map(Number);if(hh>23||mm>59||mo<1||mo>12||dd<1||dd>31)return null;const start=new Date(yy,mo-1,dd,hh,mm,0,0);const endMatch=String(x.lesson_time).match(/[–—-]\s*(\d{1,2}):(\d{2})/);let end=null;if(endMatch){end=new Date(yy,mo-1,dd,Number(endMatch[1]),Number(endMatch[2]),0,0);if(end<=start)end.setDate(end.getDate()+1);}return {...x,_start:start,_end:end};}).filter(x=>x&&Number.isFinite(x._start.getTime())&&(x._end?x._end>now:x._start>now)).sort((a,b)=>(a._start<=now&&a._end?a._end:a._start)-(b._start<=now&&b._end?b._end:b._start));
+   if(!parsed.length){titleEl.textContent="لا توجد حصة قادمة";dayEl.textContent="—";timeEl.textContent="—";modeEl.textContent="—";countEl.textContent="—";if(statusEl)statusEl.textContent="";window.tahadiNextTeacherLesson=null;return;}
+   const x=parsed[0];window.tahadiNextTeacherLesson=x;
+   const card=document.getElementById("teacherNextLessonCard");
+   if(card&&!card.dataset.openBound){card.dataset.openBound="1";const openDetails=()=>{const lesson=window.tahadiNextTeacherLesson;if(!lesson)return;try{sessionStorage.setItem("tahadi_selected_lesson",JSON.stringify(lesson));location.href="lesson-details.html?id="+encodeURIComponent(lesson.id||"");}catch(e){console.warn("تعذر فتح تفاصيل الحصة",e);}};card.addEventListener("click",openDetails);card.addEventListener("keydown",e=>{if(e.target===card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openDetails();}});}
+   const fmt=(d,opts)=>new Intl.DateTimeFormat("ar-DZ",{timeZone:"Africa/Algiers",...opts}).format(d);
+   titleEl.textContent=(x.lesson_type==="فردية"?"حصة فردية":x.lesson_category==="دورة مراجعة"?"دورة مراجعة":"حصة جماعية")+(x.level?" — "+x.level:"");
+   dayEl.textContent=fmt(x._start,{weekday:"long",day:"numeric",month:"long"});
+   timeEl.textContent=fmt(x._start,{hour:"2-digit",minute:"2-digit",hourCycle:"h23"});
+   modeEl.textContent=x.delivery_mode==="in_person"?"حضوري":"زووم";
+   if(statusEl)statusEl.textContent="";
+   const tick=()=>{const current=Date.now(),target=x._start.getTime()<=current&&x._end?x._end.getTime():x._start.getTime(),remaining=target-current;if(remaining<=0){countEl.textContent=x._end?"انتهت الحصة":"حان موعد الحصة";return;}const total=Math.ceil(remaining/60000),days=Math.floor(total/1440),hours=Math.floor(total%1440/60),minutes=total%60,parts=[];if(days)parts.push(days+" أيام");if(hours)parts.push(hours+" ساعة");if(minutes||!parts.length)parts.push(minutes+" دقيقة");countEl.textContent=parts.join(" · ");};
+   tick();if(window.tahadiNextTeacherLessonTicker)clearInterval(window.tahadiNextTeacherLessonTicker);window.tahadiNextTeacherLessonTicker=setInterval(tick,60000);
+  }catch(error){titleEl.textContent="تعذر تحميل الحصة القادمة";dayEl.textContent="—";timeEl.textContent="—";modeEl.textContent="—";countEl.textContent="—";if(statusEl)statusEl.textContent="سبب التعذر: "+String(error&&error.message||error||"خطأ غير معروف");console.warn("next teacher lesson",error);}
+ }
+ loadNextTeacherLesson();setInterval(loadNextTeacherLesson,60000);
+})();
 </script>
 <script>
 /* Keep the category chooser compact: show one selected category at a time. */
